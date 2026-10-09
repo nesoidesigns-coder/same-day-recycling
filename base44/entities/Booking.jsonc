@@ -1,0 +1,43 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "items_description": {
+      "type": "string"
+    },
+    "preferred_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "photo_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "scheduled",
+        "completed",
+        "cancelled"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "name",
+    "phone",
+    "address",
+    "items_description"
+  ]
+}
