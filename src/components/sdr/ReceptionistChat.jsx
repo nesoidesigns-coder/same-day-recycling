@@ -32,7 +32,6 @@ export default function ReceptionistChat() {
       const conv = await base44.agents.createConversation({ agent_name: AGENT_NAME, metadata: { name: "Website visitor" } });
       setConversation(conv);
       setMessages(conv.messages || []);
-      await base44.agents.addMessage(conv, { role: "user", content: "Hi!" });
     } finally {
       setStarting(false);
     }
@@ -57,9 +56,12 @@ export default function ReceptionistChat() {
 
   return (
     <>
-      <button onClick={handleOpen} aria-label="Chat with us" className="fixed bottom-5 right-5 z-[60] w-14 h-14 rounded-full bg-[#1d9e56] text-[#0c3b24] shadow-lg hover:bg-[#17a04c] transition-colors flex items-center justify-center">
-        {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-      </button>
+      <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-3">
+        <span className="hidden sm:inline-block rounded-full bg-white shadow-lg border border-slate-100 px-4 py-2 text-sm font-bold text-[#0c3b24]">Chat with us</span>
+        <button onClick={handleOpen} aria-label="Chat with us" className="w-14 h-14 rounded-full bg-[#1d9e56] text-[#0c3b24] shadow-lg hover:bg-[#17a04c] transition-colors flex items-center justify-center">
+          {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        </button>
+      </div>
       {open && (
         <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm h-[28rem] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
           <div className="bg-[#0c3b24] text-white px-5 py-4">
@@ -67,6 +69,13 @@ export default function ReceptionistChat() {
             <div className="text-xs text-[#1d9e56] font-semibold">Ask anything · Book a pickup</div>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {!messages.some((m) => m.role === "assistant") && (
+              <div className="flex justify-start">
+                <div className="bg-[#f4f7f5] rounded-2xl px-4 py-2.5 text-sm text-slate-700 max-w-[85%]">
+                  Hi! I'm the Same Day Recycling assistant. Want to book a pickup? Tell me what you need gone and I'll give you an instant quote — or just ask me anything.
+                </div>
+              </div>
+            )}
             {messages.length === 0 && starting && (
               <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 text-[#1d9e56] animate-spin" /></div>
             )}

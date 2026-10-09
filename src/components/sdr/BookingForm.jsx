@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 
-export default function BookingForm() {
+export default function BookingForm({ prefill }) {
   const [form, setForm] = useState({ name: "", phone: "", address: "", items_description: "", preferred_date: "" });
   const [photo, setPhoto] = useState(null);
+  const [quoteNote, setQuoteNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (prefill?.items_text) {
+      setForm((f) => ({ ...f, items_description: prefill.items_text }));
+      setQuoteNote(prefill.estimate_text || "");
+    }
+  }, [prefill]);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,7 +29,7 @@ export default function BookingForm() {
         const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: photo });
         photo_uri = file_uri;
       }
-      await base44.entities.Booking.create({ ...form, photo_uri });
+      await base44.entities.Booking.create({ ...form, quote_estimate: quoteNote, photo_uri });
       setDone(true);
     } catch (err) {
       setError("Something went wrong. Please call (604) 849-1745 and we'll take your booking over the phone.");
@@ -64,6 +72,11 @@ export default function BookingForm() {
         <Field label="Description of items" required>
           <textarea value={form.items_description} onChange={update("items_description")} required rows={3} className="input resize-none" placeholder="e.g. one sofa, one mattress, a few boxes" />
         </Field>
+        {quoteNote && (
+          <div className="rounded-xl bg-[#1d9e56]/10 px-4 py-2.5 text-sm font-semibold text-[#0c3b24]">
+            Instant quote: {quoteNote} — final price confirmed on arrival.
+          </div>
+        )}
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="Preferred pickup date">
             <input value={form.preferred_date} onChange={update("preferred_date")} type="date" className="input" />

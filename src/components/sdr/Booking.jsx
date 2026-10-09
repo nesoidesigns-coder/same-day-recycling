@@ -1,7 +1,7 @@
 import { Recycle, Leaf, Truck } from "lucide-react";
 import BookingForm from "./BookingForm";
 
-export default function Booking() {
+export default function Booking({ prefill }) {
   return (
     <section id="book" className="bg-[#f4f7f5]">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
@@ -29,7 +29,7 @@ export default function Booking() {
             ))}
           </div>
         </div>
-        <BookingForm />
+        <BookingForm prefill={prefill} />
       </div>
     </section>
   );
