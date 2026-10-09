@@ -29,7 +29,7 @@ export default function ReceptionistChat() {
   const start = async () => {
     setStarting(true);
     try {
-      const conv = base44.agents.createConversation({ agent_name: AGENT_NAME, metadata: { name: "Website visitor" } });
+      const conv = await base44.agents.createConversation({ agent_name: AGENT_NAME, metadata: { name: "Website visitor" } });
       setConversation(conv);
       setMessages(conv.messages || []);
       await base44.agents.addMessage(conv, { role: "user", content: "Hi!" });
