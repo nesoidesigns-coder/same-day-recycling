@@ -1,0 +1,30 @@
+{
+  "name": "PricingSettings",
+  "type": "object",
+  "properties": {
+    "minimum_pickup": {
+      "type": "number",
+      "default": 129
+    },
+    "eighth_truck": {
+      "type": "number",
+      "default": 189
+    },
+    "quarter_truck": {
+      "type": "number",
+      "default": 269
+    },
+    "half_truck": {
+      "type": "number",
+      "default": 419
+    },
+    "three_quarter_truck": {
+      "type": "number",
+      "default": 549
+    },
+    "full_truck": {
+      "type": "number",
+      "default": 649
+    }
+  }
+}

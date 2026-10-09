@@ -18,6 +18,12 @@
       "type": "string",
       "format": "date"
     },
+    "time_window": {
+      "type": "string"
+    },
+    "quote_estimate": {
+      "type": "string"
+    },
     "photo_uri": {
       "type": "string",
       "format": "uri"
