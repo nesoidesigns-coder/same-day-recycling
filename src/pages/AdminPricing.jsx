@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, Lock } from "lucide-react";
 
@@ -81,6 +82,7 @@ export default function AdminPricing() {
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Admin</div>
           <h1 className="text-3xl font-bold text-[#0c3b24]">Pricing settings</h1>
           <p className="text-slate-600 mt-2 text-sm">Placeholder rates — used by the instant quote calculator and the AI chat. Final price is always confirmed on arrival.</p>
+          <Link to="/admin/jobs" className="inline-block mt-3 text-sm font-semibold text-[#1d9e56] hover:underline">Dispatch, partners &amp; payouts →</Link>
         </div>
         {!row && !Object.keys(values).length ? (
           <p className="text-slate-600">Loading settings…</p>

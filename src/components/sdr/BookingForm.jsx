@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
+import { CITIES } from "@/lib/cities";
 
 export default function BookingForm({ prefill }) {
-  const [form, setForm] = useState({ name: "", phone: "", address: "", items_description: "", preferred_date: "" });
+  const [form, setForm] = useState({ city: "", name: "", phone: "", address: "", items_description: "", preferred_date: "" });
   const [photo, setPhoto] = useState(null);
   const [quoteNote, setQuoteNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -12,6 +13,9 @@ export default function BookingForm({ prefill }) {
     if (prefill?.items_text) {
       setForm((f) => ({ ...f, items_description: prefill.items_text }));
       setQuoteNote(prefill.estimate_text || "");
+    }
+    if (prefill?.city) {
+      setForm((f) => ({ ...f, city: prefill.city }));
     }
   }, [prefill]);
   const [done, setDone] = useState(false);
@@ -46,7 +50,7 @@ export default function BookingForm({ prefill }) {
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           We'll call you within 30 minutes to confirm your pickup window.
         </p>
-        <button onClick={() => { setDone(false); setForm({ name: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
+        <button onClick={() => { setDone(false); setForm({ city: "", name: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
           Book another pickup
         </button>
       </div>
@@ -58,6 +62,12 @@ export default function BookingForm({ prefill }) {
       <h3 className="text-2xl font-bold text-[#0c3b24]">Book your pickup</h3>
       <p className="text-sm text-slate-500 mt-1 mb-6">We'll call you back within 30 minutes.</p>
       <div className="space-y-4">
+        <Field label="Your city" required>
+          <select value={form.city} onChange={update("city")} required className="input">
+            <option value="" disabled>Select your city</option>
+            {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
+          </select>
+        </Field>
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="Name" required>
             <input value={form.name} onChange={update("name")} required className="input" placeholder="Your name" />

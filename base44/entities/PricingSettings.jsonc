@@ -2,6 +2,10 @@
   "name": "PricingSettings",
   "type": "object",
   "properties": {
+    "city": {
+      "type": "string",
+      "default": ""
+    },
     "minimum_pickup": {
       "type": "number",
       "default": 129
@@ -26,5 +30,6 @@
       "type": "number",
       "default": 649
     }
-  }
+  },
+  "required": []
 }

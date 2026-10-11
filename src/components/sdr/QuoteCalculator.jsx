@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calculator, Loader2, Plus, Minus, ArrowRight } from "lucide-react";
+import { CITIES } from "@/lib/cities";
 
 const CATALOG = [
   "Sofa", "Loveseat", "Mattress", "Box spring", "Dining table", "Dresser",
   "Fridge", "Washer", "Dryer", "Stove", "Dishwasher", "Treadmill", "TV", "Bags/boxes of junk",
 ];
 
-export default function QuoteCalculator({ onBook }) {
+export default function QuoteCalculator({ onBook, city: fixedCity }) {
   const [qty, setQty] = useState({});
   const [description, setDescription] = useState("");
+  const [city, setCity] = useState(fixedCity || "");
   const [loading, setLoading] = useState(false);
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState("");
@@ -22,7 +24,9 @@ export default function QuoteCalculator({ onBook }) {
     setLoading(true);
     setError("");
     try {
-      const res = await base44.functions.invoke("quoteEstimate", items.length ? { items } : { description: description.trim() });
+      const payload = items.length ? { items } : { description: description.trim() };
+      if (city) payload.city = city;
+      const res = await base44.functions.invoke("quoteEstimate", payload);
       setQuote(res.data);
     } catch {
       setError("Couldn't calculate right now — please try again or call (604) 849-1745.");
@@ -45,6 +49,20 @@ export default function QuoteCalculator({ onBook }) {
         </div>
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           <div className="rounded-3xl border border-slate-100 bg-[#f4f7f5] p-6 md:p-8">
+            {fixedCity ? (
+              <div className="mb-6 rounded-xl bg-white border border-slate-100 px-4 py-2.5 flex items-center justify-between">
+                <span className="text-sm font-semibold text-[#0c3b24]">City</span>
+                <span className="text-sm font-bold text-[#1d9e56]">{fixedCity}</span>
+              </div>
+            ) : (
+              <label className="block mb-6">
+                <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Your city</span>
+                <select value={city} onChange={(e) => setCity(e.target.value)} className="input">
+                  <option value="">Standard rates (any city)</option>
+                  {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
+                </select>
+              </label>
+            )}
             <div className="grid sm:grid-cols-2 gap-2 mb-6">
               {CATALOG.map((name) => (
                 <div key={name} className="flex items-center justify-between bg-white rounded-xl border border-slate-100 px-3 py-2">
@@ -90,7 +108,7 @@ export default function QuoteCalculator({ onBook }) {
                 <div className="mt-3 inline-block rounded-full bg-[#1d9e56]/20 text-[#1d9e56] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
                 <p className="mt-5 text-slate-300 text-sm">Final price confirmed on arrival before we lift a thing.</p>
                 <button
-                  onClick={() => onBook({ items_text: itemsText, estimate_text: `${quote.range} (${quote.label})` })}
+                  onClick={() => onBook({ items_text: itemsText, estimate_text: `${quote.range} (${quote.label})`, city })}
                   className="mt-8 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 hover:bg-[#17a04c] transition-colors flex items-center justify-center gap-2"
                 >
                   Book this pickup <ArrowRight className="w-5 h-5" />

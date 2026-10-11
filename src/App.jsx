@@ -13,6 +13,9 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminPricing from './pages/AdminPricing';
+import CityPage from './pages/CityPage';
+import AdminJobs from './pages/AdminJobs';
+import PartnersDashboard from './pages/PartnersDashboard';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -47,8 +50,11 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/city/:slug" element={<CityPage />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
+        <Route path="/admin/jobs" element={<AdminJobs />} />
+        <Route path="/partners" element={<PartnersDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -5,6 +5,7 @@ import Hero from "@/components/sdr/Hero";
 import TrustBar from "@/components/sdr/TrustBar";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
+import CitySelector from "@/components/sdr/CitySelector";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import ServiceArea from "@/components/sdr/ServiceArea";
@@ -27,6 +28,7 @@ export default function Home() {
       <TrustBar />
       <Services />
       <HowItWorks />
+      <CitySelector />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
       <ServiceArea />

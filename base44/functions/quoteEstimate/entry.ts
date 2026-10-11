@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
 import { computeQuote, itemsToEighths, DEFAULT_PRICES } from '../../shared/pricing.ts';
 
 export default async function(req) {
@@ -8,9 +8,18 @@ export default async function(req) {
     const items = Array.isArray(body?.items) ? body.items.slice(0, 50) : null;
     const description = typeof body?.description === 'string' ? body.description.slice(0, 1000) : '';
 
+    const city = typeof body?.city === 'string' ? body.city.slice(0, 60) : '';
+    const readRows = (page) => (Array.isArray(page) ? page : page?.items) || [];
     let prices = DEFAULT_PRICES;
     try {
-      const rows = await base44.asServiceRole.entities.PricingSettings.filter({}, { limit: 1 });
+      let rows = [];
+      if (city) rows = readRows(await base44.asServiceRole.entities.PricingSettings.filter({ city }, { limit: 1 }));
+      if (!rows[0]) {
+        rows = readRows(await base44.asServiceRole.entities.PricingSettings.filter(
+          { $or: [{ city: { $exists: false } }, { city: '' }] },
+          { limit: 1 }
+        ));
+      }
       if (rows[0]) prices = { ...DEFAULT_PRICES, ...rows[0] };
     } catch (e) {
       // fall back to placeholder rates
@@ -54,7 +63,7 @@ export default async function(req) {
     }
 
     const quote = computeQuote(eighths, prices);
-    return Response.json({ ...quote, eighths, items: estimateItems });
+    return Response.json({ ...quote, eighths, city, items: estimateItems });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

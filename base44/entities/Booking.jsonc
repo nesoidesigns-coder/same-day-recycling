@@ -11,6 +11,10 @@
     "address": {
       "type": "string"
     },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
     "items_description": {
       "type": "string"
     },
@@ -38,6 +42,30 @@
         "cancelled"
       ],
       "default": "new"
+    },
+    "assignment_status": {
+      "type": "string",
+      "enum": [
+        "unassigned",
+        "assigned",
+        "accepted",
+        "declined",
+        "completed"
+      ],
+      "default": "unassigned"
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "partner_name": {
+      "type": "string"
+    },
+    "job_value": {
+      "type": "number"
+    },
+    "payout_paid": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [
