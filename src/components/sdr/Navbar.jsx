@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X, Recycle } from "lucide-react";
 
 const links = [
@@ -6,6 +7,7 @@ const links = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Service Area", href: "#service-area" },
   { label: "FAQ", href: "#faq" },
+  { label: "Subscriptions", to: "/subscriptions" },
 ];
 
 export default function Navbar() {
@@ -21,9 +23,15 @@ export default function Navbar() {
         </a>
         <div className="hidden md:flex items-center gap-8">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
-              {l.label}
-            </a>
+            l.to ? (
+              <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
+                {l.label}
+              </Link>
+            ) : (
+              <a key={l.href} href={l.href} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
+                {l.label}
+              </a>
+            )
           ))}
           <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors">
             Book a Pickup
@@ -36,9 +44,15 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-slate-100 bg-white px-4 py-4 flex flex-col gap-3">
           {links.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-700 py-1">
-              {l.label}
-            </a>
+            l.to ? (
+              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-700 py-1">
+                {l.label}
+              </Link>
+            ) : (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-700 py-1">
+                {l.label}
+              </a>
+            )
           ))}
           <a href="#book" onClick={() => setOpen(false)} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-3 text-sm text-center">
             Book a Pickup

@@ -16,6 +16,7 @@ import AdminPricing from './pages/AdminPricing';
 import CityPage from './pages/CityPage';
 import AdminJobs from './pages/AdminJobs';
 import PartnersDashboard from './pages/PartnersDashboard';
+import Subscriptions from './pages/Subscriptions';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/city/:slug" element={<CityPage />} />
+      <Route path="/subscriptions" element={<Subscriptions />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />

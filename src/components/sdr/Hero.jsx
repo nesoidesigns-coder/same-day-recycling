@@ -1,9 +1,14 @@
-import { CalendarCheck, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CalendarCheck, ShieldCheck, MapPin } from "lucide-react";
 import { Image } from "@/components/ui/image";
+import { CITIES } from "@/lib/cities";
 
 const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
 
 export default function Hero() {
+  const [city, setCity] = useState("");
+  const navigate = useNavigate();
   return (
     <section id="top" className="bg-white">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
@@ -25,6 +30,27 @@ export default function Hero() {
             <a href="#book" className="rounded-full border-2 border-[#0c3b24] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#0c3b24] hover:text-white transition-colors">
               Get a Free Quote
             </a>
+          </div>
+          <div className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md">
+            <div className="relative flex-1">
+              <MapPin className="w-4 h-4 text-[#1d9e56] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="input pl-10 appearance-none"
+                aria-label="Choose your city"
+              >
+                <option value="">Choose your city…</option>
+                {CITIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+              </select>
+            </div>
+            <button
+              onClick={() => city && navigate(`/city/${city}`)}
+              disabled={!city}
+              className="rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3.5 hover:bg-[#0a3020] transition-colors disabled:opacity-50"
+            >
+              Local prices
+            </button>
           </div>
           <p className="mt-5 text-sm text-slate-500 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[#1d9e56]" />
