@@ -1,4 +1,4 @@
-const badges = ["Same-day pickup", "Upfront pricing", "Eco-friendly disposal", "Licensed & insured"];
+const badges = ["Same-day pickup", "Upfront pricing", "Eco-friendly disposal", "Recycle & donate first"];
 
 export default function TrustBar() {
   return (

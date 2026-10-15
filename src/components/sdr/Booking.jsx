@@ -15,7 +15,7 @@ export default function Booking({ prefill }) {
             {[
               { icon: Leaf, t: "Recycled or donated", d: "Everything we can is diverted from the landfill." },
               { icon: Truck, t: "Same-day dispatch", d: "Book before noon, we're usually there this afternoon." },
-              { icon: Recycle, t: "Responsible disposal", d: "Licensed, insured, and properly sorted loads." },
+              { icon: Recycle, t: "Responsible disposal", d: "Properly sorted loads — recycled or donated first." },
             ].map((p) => (
               <div key={p.t} className="flex items-start gap-4">
                 <span className="w-11 h-11 rounded-2xl bg-[#1d9e56]/10 flex items-center justify-center shrink-0">

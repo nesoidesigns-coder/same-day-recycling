@@ -6,7 +6,7 @@ const PERKS = [
   { icon: CalendarCheck, t: "Up to 4 pickups a month", d: "One flat $299/month — no per-trip scheduling fees." },
   { icon: Zap, t: "Priority same-day slots", d: "Members jump the queue. Book before noon, gone today." },
   { icon: Recycle, t: "Eco disposal reporting", d: "Donation and recycling receipts for every load." },
-  { icon: ShieldCheck, t: "Licensed & insured crews", d: "Fully covered on your properties, every visit." },
+  { icon: Recycle, t: "Eco-friendly disposal", d: "Recycled or donated first, on every visit." },
 ];
 
 export default function Subscriptions() {

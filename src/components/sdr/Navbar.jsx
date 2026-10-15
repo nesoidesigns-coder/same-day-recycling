@@ -8,6 +8,7 @@ const links = [
   { label: "Service Area", href: "#service-area" },
   { label: "FAQ", href: "#faq" },
   { label: "Subscriptions", to: "/subscriptions" },
+  { label: "Free Metal Pickup", to: "/free-metal-pickup" },
 ];
 
 export default function Navbar() {

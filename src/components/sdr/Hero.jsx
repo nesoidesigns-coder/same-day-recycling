@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CalendarCheck, ShieldCheck, MapPin } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { CITIES } from "@/lib/cities";
@@ -27,6 +27,9 @@ export default function Hero() {
             <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#17a04c] transition-colors">
               Book a Pickup
             </a>
+            <Link to="/free-metal-pickup" className="rounded-full bg-[#0c3b24] text-white font-bold px-7 py-4 text-center hover:bg-[#0a3020] transition-colors">
+              Free Metal Pickup
+            </Link>
             <a href="#book" className="rounded-full border-2 border-[#0c3b24] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#0c3b24] hover:text-white transition-colors">
               Get a Free Quote
             </a>

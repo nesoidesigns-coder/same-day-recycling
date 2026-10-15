@@ -17,6 +17,7 @@ import CityPage from './pages/CityPage';
 import AdminJobs from './pages/AdminJobs';
 import PartnersDashboard from './pages/PartnersDashboard';
 import Subscriptions from './pages/Subscriptions';
+import FreeMetalPickup from './pages/FreeMetalPickup';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -53,6 +54,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/city/:slug" element={<CityPage />} />
       <Route path="/subscriptions" element={<Subscriptions />} />
+      <Route path="/free-metal-pickup" element={<FreeMetalPickup />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
