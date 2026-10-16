@@ -29,6 +29,11 @@
     "full_truck": {
       "type": "number",
       "default": 649
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
     }
   },
   "required": [],

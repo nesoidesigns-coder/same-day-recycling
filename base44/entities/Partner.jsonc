@@ -14,6 +14,11 @@
     "active": {
       "type": "boolean",
       "default": true
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
     }
   },
   "required": [

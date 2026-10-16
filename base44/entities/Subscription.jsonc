@@ -29,6 +29,11 @@
         "cancelled"
       ],
       "default": "new"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
     }
   },
   "required": [
