@@ -1,0 +1,61 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "rating": {
+      "type": "number",
+      "default": 5
+    },
+    "text": {
+      "type": "string"
+    },
+    "approved": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "customer_name",
+    "rating",
+    "text"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.approved": true
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

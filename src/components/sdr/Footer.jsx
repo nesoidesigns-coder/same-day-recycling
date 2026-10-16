@@ -6,6 +6,7 @@ const links = [
   { label: "Contact", to: "/contact" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
   { label: "Subscriptions", to: "/subscriptions" },
+  { label: "Leave a Review", to: "/review" },
 ];
 
 export default function Footer() {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { CITIES } from "@/lib/cities";
-import { Loader2, Lock, CheckCircle2, Users, DollarSign, MapPin, Phone, PackageCheck, Plus } from "lucide-react";
+import { Loader2, Lock, CheckCircle2, Users, DollarSign, MapPin, Phone, PackageCheck, Plus, Star } from "lucide-react";
 
 const PARTNER_SHARE = 0.75;
 const RATE_FIELDS = [
@@ -14,7 +14,7 @@ const RATE_FIELDS = [
   ["full_truck", "Full truck"],
 ];
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
-const TABS = ["Jobs", "Partners", "Payouts", "City pricing"];
+const TABS = ["Jobs", "Partners", "Payouts", "City pricing", "Reviews"];
 
 export default function AdminJobs() {
   const [role, setRole] = useState("loading");
@@ -83,6 +83,7 @@ export default function AdminJobs() {
         {tab === "Partners" && <PartnersTab partners={partners} reload={loadPartners} />}
         {tab === "Payouts" && <PayoutsTab />}
         {tab === "City pricing" && <CityPricingTab />}
+        {tab === "Reviews" && <ReviewsTab />}
       </div>
     </div>
   );
@@ -374,6 +375,70 @@ function PayoutsTab() {
             <DollarSign className="w-4 h-4" />
             Mark payouts paid
           </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ReviewsTab() {
+  const [reviews, setReviews] = useState(null);
+
+  const load = async () => {
+    const { items } = await base44.entities.Review.filter({}, { sort: "-created_date", limit: 100 });
+    setReviews(items);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const setApproved = async (r, approved) => {
+    await base44.entities.Review.update(r.id, { approved });
+    load();
+  };
+
+  const remove = async (r) => {
+    await base44.entities.Review.delete(r.id);
+    load();
+  };
+
+  if (!reviews) return <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-12" />;
+  if (!reviews.length) return <p className="text-slate-500 text-center py-12">No reviews yet — reviews submitted at /review appear here for approval.</p>;
+
+  return (
+    <div className="space-y-4">
+      {reviews.map((r) => (
+        <div key={r.id} className="rounded-3xl bg-white border border-slate-100 p-5 md:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-[#0c3b24]">{r.customer_name}</span>
+                <span className="rounded-full bg-slate-100 text-slate-600 px-3 py-1 text-xs font-bold">{r.city || "—"}</span>
+                {r.approved
+                  ? <span className="rounded-full bg-[#1d9e56]/15 text-[#1d9e56] px-3 py-1 text-xs font-bold">Live</span>
+                  : <span className="rounded-full bg-amber-100 text-amber-700 px-3 py-1 text-xs font-bold">Pending</span>}
+              </div>
+              <div className="flex gap-0.5 mt-2">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Star key={n} className={`w-3.5 h-3.5 ${n <= (r.rating || 5) ? "text-[#1d9e56] fill-[#1d9e56]" : "text-slate-200"}`} />
+                ))}
+              </div>
+              <p className="text-sm text-slate-600 mt-2 max-w-xl">{r.text}</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              {r.approved ? (
+                <button onClick={() => setApproved(r, false)} className="rounded-full bg-white border border-slate-200 text-slate-600 font-bold px-4 py-2 text-sm hover:border-[#1d9e56]">
+                  Unpublish
+                </button>
+              ) : (
+                <button onClick={() => setApproved(r, true)} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-4 py-2 text-sm hover:bg-[#17a04c]">
+                  Approve
+                </button>
+              )}
+              <button onClick={() => remove(r)} className="rounded-full bg-red-50 text-red-600 font-bold px-4 py-2 text-sm hover:bg-red-100">
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       ))}
     </div>
