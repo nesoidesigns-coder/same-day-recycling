@@ -1,15 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
-import { secrets } from 'base44:runtime';
 
 const OWNER_EMAIL = 'nesoidesigns@gmail.com';
 const BUSINESS_PHONE = '(604) 849-1745';
-
-function toE164(raw) {
-  const digits = String(raw || '').replace(/\D/g, '');
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
-  return '';
-}
 
 export default async function(req) {
   try {
@@ -71,7 +63,7 @@ export default async function(req) {
       // non-fatal
     }
 
-    const notified = { owner_email: ownerEmail, customer_email: 'skipped', customer_sms: 'skipped' };
+    const notified = { owner_email: ownerEmail, customer_email: 'skipped' };
 
     // 2) Instant confirmation to the customer (email + SMS)
     const customerHtml = `<div style="font-family:sans-serif;max-width:560px">
@@ -96,28 +88,6 @@ export default async function(req) {
         notified.customer_email = 'sent';
       } catch (e) {
         notified.customer_email = 'failed';
-      }
-    }
-
-    const to = toE164(phone);
-    const sid = secrets.get('TWILIO_ACCOUNT_SID');
-    const token = secrets.get('TWILIO_AUTH_TOKEN');
-    const from = secrets.get('TWILIO_FROM_NUMBER');
-    if (to && sid && token && from) {
-      try {
-        const smsBody = `Same Day Recycling: your pickup is booked! ${items}. ${preferred}. Address: ${address}. We'll confirm your time slot shortly. ${BUSINESS_PHONE}`;
-        const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
-          method: 'POST',
-          headers: {
-            Authorization: 'Basic ' + btoa(`${sid}:${token}`),
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({ To: to, From: from, Body: smsBody.slice(0, 320) }),
-          signal: AbortSignal.timeout(10000),
-        });
-        notified.customer_sms = res.ok ? 'sent' : `failed (${res.status})`;
-      } catch (e) {
-        notified.customer_sms = 'failed';
       }
     }
 
