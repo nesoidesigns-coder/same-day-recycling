@@ -143,6 +143,13 @@ function JobsTab({ partners }) {
 
   const updateStatus = async (b, status) => {
     await base44.entities.Booking.update(b.id, { status });
+    if ((status === "confirmed" || status === "scheduled") && b.status !== status) {
+      try {
+        await base44.functions.invoke("addBookingToCalendar", { booking_id: b.id });
+      } catch (e) {
+        // calendar sync is best-effort — the status change still applies
+      }
+    }
     load(true);
   };
 

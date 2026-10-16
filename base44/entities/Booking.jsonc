@@ -71,6 +71,10 @@
     "payout_paid": {
       "type": "boolean",
       "default": false
+    },
+    "calendar_event_id": {
+      "type": "string",
+      "default": ""
     }
   },
   "required": [
