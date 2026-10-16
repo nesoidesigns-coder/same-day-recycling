@@ -1,5 +1,7 @@
-import { Recycle, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Recycle, Phone, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
 
 const links = [
   { label: "About", to: "/about" },
@@ -10,6 +12,19 @@ const links = [
 ];
 
 export default function Footer() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const me = await base44.auth.me();
+        setIsAdmin(me?.role === "admin");
+      } catch {
+        setIsAdmin(false);
+      }
+    })();
+  }, []);
+
   return (
     <footer className="bg-white border-t border-slate-100">
       <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -20,6 +35,11 @@ export default function Footer() {
           <span>© 2026 Same Day Recycling — samedayrecycling.ca</span>
         </div>
         <nav className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {isAdmin && (
+            <Link to="/admin/jobs" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
+              <Lock className="w-3.5 h-3.5" /> Admin
+            </Link>
+          )}
           {links.map((l) => (
             <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-600 hover:text-[#1d9e56] transition-colors">
               {l.label}
