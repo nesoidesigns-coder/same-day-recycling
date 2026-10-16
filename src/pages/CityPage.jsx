@@ -6,6 +6,7 @@ import Navbar from "@/components/sdr/Navbar";
 import CityHero from "@/components/sdr/CityHero";
 import TrustBar from "@/components/sdr/TrustBar";
 import Services from "@/components/sdr/Services";
+import CityMap from "@/components/sdr/CityMap";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import FAQ from "@/components/sdr/FAQ";
@@ -32,6 +33,7 @@ export default function CityPage() {
       <CityHero city={city} />
       <TrustBar />
       <Services />
+      <CityMap city={city} />
       <QuoteCalculator onBook={bookFromQuote} city={city.name} />
       <Booking prefill={{ ...quotePrefill, city: city.name }} />
       <FAQ />
