@@ -1,7 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
-import { secrets } from 'base44:runtime';
-
-const ADMIN_SMS_TO = '+16048491745';
 
 export default async function(req) {
   try {
@@ -35,7 +32,7 @@ export default async function(req) {
     });
 
     const preferred = `${preferred_date || 'any date'}${time_window ? ` · ${time_window}` : ''}`;
-    const smsBody = `New booking: ${name}, ${phone}. ${address}${city ? ', ' + city : ''}. ${items}. Preferred: ${preferred}.${quote_estimate ? ` Quote: ${quote_estimate}.` : ''}`;
+    const summary = `New booking: ${name}, ${phone}. ${address}${city ? ', ' + city : ''}. ${items}. Preferred: ${preferred}.${quote_estimate ? ` Quote: ${quote_estimate}.` : ''}`;
 
     // Email the owner immediately
     let emailSent = false;
@@ -47,7 +44,7 @@ export default async function(req) {
             to,
             from_name: 'Same Day Recycling',
             subject: `New booking: ${name}${city ? ` — ${city}` : ''}`,
-            text: smsBody,
+            text: summary,
             html: `<div style="font-family:sans-serif;max-width:560px">
               <h2 style="color:#0c3b24">New booking received</h2>
               <p style="margin:0;font-size:18px;font-weight:bold">${name}</p>
@@ -68,29 +65,7 @@ export default async function(req) {
       // admin lookup failed
     }
 
-    // SMS via Twilio (inactive until TWILIO_* secrets are set)
-    let sms = 'not configured';
-    try {
-      const sid = secrets.get('TWILIO_ACCOUNT_SID');
-      const token = secrets.get('TWILIO_AUTH_TOKEN');
-      const from = secrets.get('TWILIO_FROM_NUMBER');
-      if (sid && token && from) {
-        const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
-          method: 'POST',
-          headers: {
-            Authorization: 'Basic ' + btoa(`${sid}:${token}`),
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({ To: ADMIN_SMS_TO, From: from, Body: smsBody }),
-          signal: AbortSignal.timeout(10000),
-        });
-        sms = res.ok ? 'sent' : `failed (${res.status})`;
-      }
-    } catch (e) {
-      sms = 'failed';
-    }
-
-    return Response.json({ ok: true, booking_id: booking?.id, notified: { email: emailSent ? 'sent' : 'failed', sms } });
+    return Response.json({ ok: true, booking_id: booking?.id, notified: { email: emailSent ? 'sent' : 'failed' } });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
