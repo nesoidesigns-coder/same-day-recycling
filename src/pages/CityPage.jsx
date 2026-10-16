@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { cityFromSlug } from "@/lib/cities";
 import TopBar from "@/components/sdr/TopBar";
@@ -20,12 +20,17 @@ export default function CityPage() {
   const city = cityFromSlug(slug);
   const [quotePrefill, setQuotePrefill] = useState(null);
 
-  useEffect(() => {
-    if (!city) return;
+  // Set during render (not in an effect) so the pre-rendered HTML search engines
+  // crawl already carries the per-city title and description.
+  if (city) {
     document.title = city.seo_title;
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute("content", city.seo_description);
-  }, [city]);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", city.seo_title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", city.seo_description);
+  }
 
   if (!city) return <Navigate to="/" replace />;
 
