@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 import { CITIES } from "@/lib/cities";
+import ReviewInvite from "@/components/sdr/ReviewInvite";
 
 export default function BookingForm({ prefill }) {
   const [form, setForm] = useState({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" });
@@ -57,6 +58,7 @@ export default function BookingForm({ prefill }) {
         <button onClick={() => { setDone(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
           Book another pickup
         </button>
+        <ReviewInvite />
       </div>
     );
   }
