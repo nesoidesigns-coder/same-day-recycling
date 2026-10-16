@@ -34,6 +34,7 @@ export default function BookingForm({ prefill }) {
         photo_uri = file_uri;
       }
       await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri });
+      base44.analytics.track({ eventName: 'booking_submitted' });
       setDone(true);
     } catch (err) {
       setError("Something went wrong. Please call (604) 849-1745 and we'll take your booking over the phone.");
