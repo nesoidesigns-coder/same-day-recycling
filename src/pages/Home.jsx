@@ -6,6 +6,7 @@ import TrustBar from "@/components/sdr/TrustBar";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
 import CitySelector from "@/components/sdr/CitySelector";
+import LoadEstimator from "@/components/sdr/LoadEstimator";
 import Reviews from "@/components/sdr/Reviews";
 import SubTeaser from "@/components/sdr/SubTeaser";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
@@ -31,6 +32,7 @@ export default function Home() {
       <Services />
       <HowItWorks />
       <CitySelector />
+      <LoadEstimator onBook={bookFromQuote} />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
       <ServiceArea />

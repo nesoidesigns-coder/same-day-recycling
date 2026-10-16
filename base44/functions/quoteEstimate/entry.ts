@@ -25,10 +25,16 @@ export default async function(req) {
       // fall back to placeholder rates
     }
 
+    const loadEighths = typeof body?.load_eighths === 'number' && body.load_eighths > 0
+      ? Math.max(0, Math.min(8, body.load_eighths))
+      : null;
+
     let eighths = 0;
     let estimateItems = [];
 
-    if (items && items.length > 0) {
+    if (loadEighths !== null) {
+      eighths = loadEighths;
+    } else if (items && items.length > 0) {
       estimateItems = items.map((i) => ({
         name: String(i.name || '').slice(0, 60),
         quantity: Math.max(0, Math.min(50, Number(i.quantity) || 1)),
