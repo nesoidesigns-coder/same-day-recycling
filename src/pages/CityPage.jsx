@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { cityFromSlug } from "@/lib/cities";
 import TopBar from "@/components/sdr/TopBar";
@@ -19,6 +19,13 @@ export default function CityPage() {
   const { slug } = useParams();
   const city = cityFromSlug(slug);
   const [quotePrefill, setQuotePrefill] = useState(null);
+
+  useEffect(() => {
+    if (!city) return;
+    document.title = city.seo_title;
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", city.seo_description);
+  }, [city]);
 
   if (!city) return <Navigate to="/" replace />;
 
