@@ -5,6 +5,10 @@
     "name": {
       "type": "string"
     },
+    "email": {
+      "type": "string",
+      "default": ""
+    },
     "phone": {
       "type": "string"
     },

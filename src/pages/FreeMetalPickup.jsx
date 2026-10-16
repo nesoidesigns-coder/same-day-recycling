@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
 
 export default function FreeMetalPickup() {
-  const [form, setForm] = useState({ name: "", phone: "", address: "", metal: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", metal: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -17,6 +17,7 @@ export default function FreeMetalPickup() {
     try {
       await base44.functions.invoke('createBooking', {
         name: form.name,
+        email: form.email,
         phone: form.phone,
         address: form.address,
         items_description: `FREE METAL PICKUP — ${form.metal}`,
@@ -68,6 +69,10 @@ export default function FreeMetalPickup() {
             <label className="block">
               <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Your name</span>
               <input required value={form.name} onChange={set("name")} className="input" placeholder="Jane Smith" />
+            </label>
+            <label className="block">
+              <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Email</span>
+              <input required type="email" value={form.email} onChange={set("email")} className="input" placeholder="you@email.com" />
             </label>
             <label className="block">
               <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Phone</span>

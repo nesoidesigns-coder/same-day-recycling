@@ -1,4 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
+import { secrets } from 'base44:runtime';
+
+const OWNER_EMAIL = 'nesoidesigns@gmail.com';
+const BUSINESS_PHONE = '(604) 849-1745';
+
+function toE164(raw) {
+  const digits = String(raw || '').replace(/\D/g, '');
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return '';
+}
 
 export default async function(req) {
   try {
@@ -13,6 +24,7 @@ export default async function(req) {
     if (!name || !phone || !address || !items) {
       return Response.json({ error: 'Missing required fields: name, phone, address, items_description.' }, { status: 400 });
     }
+    const email = str(body?.email, 120);
     const city = str(body?.city, 60);
     const preferred_date = str(body?.preferred_date, 20);
     const time_window = str(body?.time_window, 40);
@@ -24,6 +36,7 @@ export default async function(req) {
       phone,
       address,
       items_description: items,
+      ...(email ? { email } : {}),
       ...(city ? { city } : {}),
       ...(preferred_date ? { preferred_date } : {}),
       ...(time_window ? { time_window } : {}),
@@ -32,40 +45,83 @@ export default async function(req) {
     });
 
     const preferred = `${preferred_date || 'any date'}${time_window ? ` · ${time_window}` : ''}`;
-    const summary = `New booking: ${name}, ${phone}. ${address}${city ? ', ' + city : ''}. ${items}. Preferred: ${preferred}.${quote_estimate ? ` Quote: ${quote_estimate}.` : ''}`;
+    const ownerText = `New booking: ${name}, ${phone}. ${address}${city ? ', ' + city : ''}. ${items}. Preferred: ${preferred}.${quote_estimate ? ` Quote: ${quote_estimate}.` : ''}${email ? ` Email: ${email}.` : ''}`;
 
-    // Email the owner immediately
-    let emailSent = false;
+    // 1) Instant email to the owner
+    let ownerEmail = 'failed';
     try {
-      const recipients = ['nesoidesigns@gmail.com'];
-      for (const to of recipients) {
-        try {
-          await base44.asServiceRole.integrations.Core.SendEmail({
-            to,
-            from_name: 'Same Day Recycling',
-            subject: `New booking: ${name}${city ? ` — ${city}` : ''}`,
-            text: summary,
-            html: `<div style="font-family:sans-serif;max-width:560px">
-              <h2 style="color:#0c3b24">New booking received</h2>
-              <p style="margin:0;font-size:18px;font-weight:bold">${name}</p>
-              <p style="margin:4px 0"><a href="tel:${phone}" style="color:#1d9e56;font-weight:bold">${phone}</a></p>
-              <p style="margin:4px 0"><strong>Address:</strong> ${address}${city ? `, ${city}` : ''}</p>
-              <p style="margin:4px 0"><strong>Items:</strong> ${items}</p>
-              <p style="margin:4px 0"><strong>Preferred:</strong> ${preferred}</p>
-              ${quote_estimate ? `<p style="margin:4px 0"><strong>Quote:</strong> ${quote_estimate}</p>` : ''}
-              <p style="margin-top:16px;color:#64748b;font-size:13px">Manage it in the admin dashboard → /admin/jobs</p>
-            </div>`,
-          });
-          emailSent = true;
-        } catch (e) {
-          // keep trying remaining admins
-        }
-      }
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: OWNER_EMAIL,
+        from_name: 'Same Day Recycling',
+        subject: `New booking: ${name}${city ? ` — ${city}` : ''}`,
+        text: ownerText,
+        html: `<div style="font-family:sans-serif;max-width:560px">
+          <h2 style="color:#0c3b24">New booking received</h2>
+          <p style="margin:0;font-size:18px;font-weight:bold">${name}</p>
+          <p style="margin:4px 0"><a href="tel:${phone}" style="color:#1d9e56;font-weight:bold">${phone}</a>${email ? ` · ${email}` : ''}</p>
+          <p style="margin:4px 0"><strong>Address:</strong> ${address}${city ? `, ${city}` : ''}</p>
+          <p style="margin:4px 0"><strong>Items:</strong> ${items}</p>
+          <p style="margin:4px 0"><strong>Preferred:</strong> ${preferred}</p>
+          ${quote_estimate ? `<p style="margin:4px 0"><strong>Quote:</strong> ${quote_estimate}</p>` : ''}
+          <p style="margin-top:16px;color:#64748b;font-size:13px">Manage it in the admin dashboard → /admin/jobs</p>
+        </div>`,
+      });
+      ownerEmail = 'sent';
     } catch (e) {
-      // admin lookup failed
+      // non-fatal
     }
 
-    return Response.json({ ok: true, booking_id: booking?.id, notified: { email: emailSent ? 'sent' : 'failed' } });
+    const notified = { owner_email: ownerEmail, customer_email: 'skipped', customer_sms: 'skipped' };
+
+    // 2) Instant confirmation to the customer (email + SMS)
+    const customerHtml = `<div style="font-family:sans-serif;max-width:560px">
+      <h2 style="color:#0c3b24">Your pickup is booked ✅</h2>
+      <p style="margin:0 0 12px">Hi ${name}, thanks for choosing Same Day Recycling. Here's what we have:</p>
+      <p style="margin:4px 0"><strong>Service:</strong> ${items}${quote_estimate ? ` (${quote_estimate})` : ''}</p>
+      <p style="margin:4px 0"><strong>Date / time:</strong> ${preferred}</p>
+      <p style="margin:4px 0"><strong>Address:</strong> ${address}${city ? `, ${city}` : ''}</p>
+      <p style="margin-top:12px">We'll confirm your exact time slot shortly.</p>
+      <p style="margin-top:12px">Questions? Call us at <a href="tel:+16048491745" style="color:#1d9e56;font-weight:bold">${BUSINESS_PHONE}</a></p>
+    </div>`;
+
+    if (email) {
+      try {
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: email,
+          from_name: 'Same Day Recycling',
+          subject: `Booking received — we'll confirm your time slot shortly`,
+          text: `Hi ${name}, your pickup is booked! Service: ${items}${quote_estimate ? ` (${quote_estimate})` : ''}. Date/time: ${preferred}. Address: ${address}${city ? ', ' + city : ''}. We'll confirm your exact time slot shortly. Questions? Call ${BUSINESS_PHONE}.`,
+          html: customerHtml,
+        });
+        notified.customer_email = 'sent';
+      } catch (e) {
+        notified.customer_email = 'failed';
+      }
+    }
+
+    const to = toE164(phone);
+    const sid = secrets.get('TWILIO_ACCOUNT_SID');
+    const token = secrets.get('TWILIO_AUTH_TOKEN');
+    const from = secrets.get('TWILIO_FROM_NUMBER');
+    if (to && sid && token && from) {
+      try {
+        const smsBody = `Same Day Recycling: your pickup is booked! ${items}. ${preferred}. Address: ${address}. We'll confirm your time slot shortly. ${BUSINESS_PHONE}`;
+        const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+          method: 'POST',
+          headers: {
+            Authorization: 'Basic ' + btoa(`${sid}:${token}`),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ To: to, From: from, Body: smsBody.slice(0, 320) }),
+          signal: AbortSignal.timeout(10000),
+        });
+        notified.customer_sms = res.ok ? 'sent' : `failed (${res.status})`;
+      } catch (e) {
+        notified.customer_sms = 'failed';
+      }
+    }
+
+    return Response.json({ ok: true, booking_id: booking?.id, notified });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

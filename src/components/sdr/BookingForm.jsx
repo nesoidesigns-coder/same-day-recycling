@@ -4,7 +4,7 @@ import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 import { CITIES } from "@/lib/cities";
 
 export default function BookingForm({ prefill }) {
-  const [form, setForm] = useState({ city: "", name: "", phone: "", address: "", items_description: "", preferred_date: "" });
+  const [form, setForm] = useState({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" });
   const [photo, setPhoto] = useState(null);
   const [quoteNote, setQuoteNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -50,7 +50,7 @@ export default function BookingForm({ prefill }) {
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           We'll call you within 30 minutes to confirm your pickup window.
         </p>
-        <button onClick={() => { setDone(false); setForm({ city: "", name: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
+        <button onClick={() => { setDone(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
           Book another pickup
         </button>
       </div>
@@ -76,6 +76,9 @@ export default function BookingForm({ prefill }) {
             <input value={form.phone} onChange={update("phone")} required type="tel" className="input" placeholder="(604) 000-0000" />
           </Field>
         </div>
+        <Field label="Email" required>
+          <input value={form.email} onChange={update("email")} required type="email" className="input" placeholder="you@email.com" />
+        </Field>
         <Field label="Pickup address" required>
           <input value={form.address} onChange={update("address")} required className="input" placeholder="Street address, city" />
         </Field>
