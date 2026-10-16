@@ -35,6 +35,9 @@ export default function BookingForm({ prefill }) {
       }
       await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri });
       base44.analytics.track({ eventName: 'booking_submitted' });
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "booking_submitted", { city: form.city, currency: "CAD", value: 1 });
+      }
       setDone(true);
     } catch (err) {
       setError("Something went wrong. Please call (604) 849-1745 and we'll take your booking over the phone.");

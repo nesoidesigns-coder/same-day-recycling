@@ -23,6 +23,10 @@ export default function FreeMetalPickup() {
         items_description: `FREE METAL PICKUP — ${form.metal}`,
         quote_estimate: "Free",
       });
+      base44.analytics.track({ eventName: 'booking_submitted' });
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "booking_submitted", { currency: "CAD", value: 1 });
+      }
       setDone(true);
     } catch {
       setError("Couldn't submit right now — please call (604) 849-1745.");
