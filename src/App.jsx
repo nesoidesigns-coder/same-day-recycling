@@ -22,6 +22,7 @@ import FreeMetalPickup from './pages/FreeMetalPickup';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import ReviewPage from './pages/ReviewPage';
+import RealtorOnePager from './pages/RealtorOnePager';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/review" element={<ReviewPage />} />
+      <Route path="/realtors" element={<RealtorOnePager />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
