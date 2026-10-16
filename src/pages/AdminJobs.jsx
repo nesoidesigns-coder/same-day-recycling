@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { CITIES } from "@/lib/cities";
 import CitySummaryTab from "@/components/admin/CitySummaryTab";
 import SeoTab from "@/components/admin/SeoTab";
+import AssignTab from "@/components/admin/AssignTab";
 import { Loader2, Lock, CheckCircle2, Users, DollarSign, MapPin, Phone, PackageCheck, Plus, Star } from "lucide-react";
 
 const PARTNER_SHARE = 0.75;
@@ -16,7 +17,7 @@ const RATE_FIELDS = [
   ["full_truck", "Full truck"],
 ];
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
-const TABS = ["Overview", "Jobs", "Partners", "Payouts", "City pricing", "Reviews", "Search keywords"];
+const TABS = ["Overview", "Jobs", "Assign", "Partners", "Payouts", "City pricing", "Reviews", "Search keywords"];
 
 export default function AdminJobs() {
   const [role, setRole] = useState("loading");
@@ -83,6 +84,7 @@ export default function AdminJobs() {
         </div>
         {tab === "Overview" && <CitySummaryTab />}
         {tab === "Jobs" && <JobsTab partners={partners} />}
+        {tab === "Assign" && <AssignTab partners={partners} />}
         {tab === "Partners" && <PartnersTab partners={partners} reload={loadPartners} />}
         {tab === "Payouts" && <PayoutsTab />}
         {tab === "City pricing" && <CityPricingTab />}
