@@ -9,6 +9,8 @@ const links = [
   { label: "FAQ", href: "#faq" },
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
 ];
 
 export default function Navbar() {
