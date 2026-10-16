@@ -13,7 +13,7 @@ export default function CityHero({ city }) {
             {city.name} &amp; area
           </div>
           <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight text-[#0c3b24]">
-            Junk Removal<br />in {city.name}
+            Junk Removal &amp; Furniture Disposal<br />in {city.name}, BC
           </h1>
           <p className="mt-6 text-lg text-slate-600 max-w-md leading-relaxed">
             {city.blurb} Same-day junk and furniture removal — book in minutes, we haul it today, and recycle or donate everything we can.
