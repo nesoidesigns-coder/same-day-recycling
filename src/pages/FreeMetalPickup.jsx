@@ -15,7 +15,7 @@ export default function FreeMetalPickup() {
     setSaving(true);
     setError("");
     try {
-      await base44.entities.Booking.create({
+      await base44.functions.invoke('createBooking', {
         name: form.name,
         phone: form.phone,
         address: form.address,

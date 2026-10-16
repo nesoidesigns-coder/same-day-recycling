@@ -36,6 +36,7 @@
       "type": "string",
       "enum": [
         "new",
+        "confirmed",
         "contacted",
         "scheduled",
         "completed",
