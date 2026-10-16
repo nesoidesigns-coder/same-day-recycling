@@ -37,12 +37,10 @@ export default async function(req) {
     const preferred = `${preferred_date || 'any date'}${time_window ? ` · ${time_window}` : ''}`;
     const smsBody = `New booking: ${name}, ${phone}. ${address}${city ? ', ' + city : ''}. ${items}. Preferred: ${preferred}.${quote_estimate ? ` Quote: ${quote_estimate}.` : ''}`;
 
-    // Email every admin immediately
+    // Email the owner immediately
     let emailSent = false;
     try {
-      const adminsPage = await base44.asServiceRole.entities.User.filter({ role: 'admin' }, { limit: 10 });
-      const recipients = ((Array.isArray(adminsPage) ? adminsPage : adminsPage.items) || [])
-        .map((u) => u.email).filter(Boolean).slice(0, 5);
+      const recipients = ['nesoidesigns@gmail.com'];
       for (const to of recipients) {
         try {
           await base44.asServiceRole.integrations.Core.SendEmail({

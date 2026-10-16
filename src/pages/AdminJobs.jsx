@@ -136,6 +136,11 @@ function JobsTab({ partners }) {
     return inCity.length ? inCity : partners;
   };
 
+  const updateStatus = async (b, status) => {
+    await base44.entities.Booking.update(b.id, { status });
+    load(true);
+  };
+
   const badge = (a) => {
     const styles = {
       unassigned: "bg-slate-100 text-slate-600",
@@ -171,6 +176,16 @@ function JobsTab({ partners }) {
                     <a href={`tel:${b.phone}`} className="flex items-center gap-1 text-sm text-[#1d9e56] font-semibold"><Phone className="w-3.5 h-3.5" />{b.phone}</a>
                     <span className="flex items-center gap-1 text-xs font-semibold text-slate-500"><MapPin className="w-3.5 h-3.5" />{b.city || "—"}</span>
                     {badge(b.assignment_status || "unassigned")}
+                    <select
+                      value={b.status || "new"}
+                      onChange={(e) => updateStatus(b, e.target.value)}
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs font-bold text-[#0c3b24] capitalize"
+                      aria-label="Booking status"
+                    >
+                      {["new", "confirmed", "scheduled", "completed", "cancelled"].map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
                   </div>
                   <p className="text-sm text-slate-600 mt-2 max-w-xl">{b.address}</p>
                   <p className="text-sm text-slate-500 mt-1">{b.items_description}</p>
