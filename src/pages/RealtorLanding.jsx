@@ -1,7 +1,7 @@
 import { Home, Clock, DollarSign, Recycle, ShieldCheck, Building2, Phone, CalendarCheck, KeyRound } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
-import RealtorBookingForm from "@/components/sdr/RealtorBookingForm";
+import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import Footer from "@/components/sdr/Footer";
 import { Image } from "@/components/ui/image";
 
@@ -133,7 +133,7 @@ export default function RealtorLanding() {
       {/* Booking form */}
       <section id="book" className="bg-[#f4f7f5] py-16 md:py-24">
         <div className="max-w-2xl mx-auto px-4">
-          <RealtorBookingForm />
+          <RealtorLeadForm />
         </div>
       </section>
 

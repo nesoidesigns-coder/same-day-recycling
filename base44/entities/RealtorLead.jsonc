@@ -1,0 +1,69 @@
+{
+  "name": "RealtorLead",
+  "type": "object",
+  "properties": {
+    "agent_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "brokerage": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "property_address": {
+      "type": "string"
+    },
+    "items_description": {
+      "type": "string",
+      "default": ""
+    },
+    "preferred_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "quoted",
+        "booked",
+        "closed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "agent_name",
+    "email",
+    "phone",
+    "property_address"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
