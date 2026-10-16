@@ -111,6 +111,43 @@ export default function RealtorOnePager() {
               </div>
             </section>
 
+            {/* Bulk cleanout rates */}
+            <section>
+              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
+                <DollarSign className="w-5 h-5 text-[#1d9e56]" /> Bulk cleanout rates for listings
+              </h2>
+              <div className="rounded-2xl border border-slate-200 overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-[#0c3b24] text-white">
+                      <th className="text-left px-4 py-3 font-bold">Load size</th>
+                      <th className="text-left px-4 py-3 font-bold">What that looks like</th>
+                      <th className="text-right px-4 py-3 font-bold">Flat rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$129"],
+                      ["1/8 truck", "Single mattress, end tables, a few garbage bags", "$189"],
+                      ["1/4 truck", "One sofa or loveseat, small appliance, boxes from one room", "$269"],
+                      ["1/2 truck", "Living-room furniture set, fridge + stove, basement corner", "$419"],
+                      ["3/4 truck", "Full bedroom + living room set, garage cleanout", "$549"],
+                      ["Full truck", "Whole-house estate cleanout, hot tub, renovation debris", "$649"],
+                    ].map(([size, example, rate], i) => (
+                      <tr key={size} className={i % 2 ? "bg-[#f4f7f5]" : "bg-white"}>
+                        <td className="px-4 py-3 font-bold text-[#0c3b24]">{size}</td>
+                        <td className="px-4 py-3 text-slate-600">{example}</td>
+                        <td className="px-4 py-3 text-right font-bold text-[#1d9e56]">{rate}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">
+                Flat rates by truck space, confirmed before we lift anything. Scrap metal picked up free. Rates shown are Metro Vancouver pricing — Kamloops and Kelowna may differ slightly. Realtor referral credit applies to every completed job.
+              </p>
+            </section>
+
             {/* Referral + rates */}
             <section className="grid sm:grid-cols-2 gap-4">
               <div className="rounded-2xl border-2 border-[#1d9e56] p-5">
