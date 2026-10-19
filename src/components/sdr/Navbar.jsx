@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Recycle } from "lucide-react";
+import { Menu, X, Recycle, ChevronDown } from "lucide-react";
 
-const links = [
+const primaryLinks = [
   { label: "Services", href: "#services" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Service Area", href: "#service-area" },
   { label: "FAQ", href: "#faq" },
+];
+
+const moreLinks = [
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "Realtors", to: "/realtors" },
   { label: "Contractors", to: "/contractors" },
@@ -17,6 +20,8 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -27,17 +32,33 @@ export default function Navbar() {
           <span className="text-lg tracking-tight">Same Day Recycling</span>
         </a>
         <div className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            l.to ? (
-              <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
-                {l.label}
-              </Link>
-            ) : (
-              <a key={l.href} href={l.href} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
-                {l.label}
-              </a>
-            )
+          {primaryLinks.map((l) => (
+            <a key={l.href} href={l.href} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
+              {l.label}
+            </a>
           ))}
+          <div className="relative">
+            <button
+              onClick={() => setMoreOpen(!moreOpen)}
+              className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors"
+            >
+              More <ChevronDown className={`w-4 h-4 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+            </button>
+            {moreOpen && (
+              <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50">
+                {moreLinks.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    onClick={() => setMoreOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#f4f7f5] hover:text-[#1d9e56] transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors">
             Book a Pickup
           </a>
@@ -48,20 +69,24 @@ export default function Navbar() {
       </div>
       {open && (
         <div className="md:hidden border-t border-slate-100 bg-white px-4 py-4 flex flex-col gap-3">
-          {links.map((l) => (
-            l.to ? (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-700 py-1">
-                {l.label}
-              </Link>
-            ) : (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-700 py-1">
-                {l.label}
-              </a>
-            )
+          {primaryLinks.map((l) => (
+            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm font-bold text-[#0c3b24] py-1">
+              {l.label}
+            </a>
           ))}
           <a href="#book" onClick={() => setOpen(false)} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-3 text-sm text-center">
             Book a Pickup
           </a>
+          <div className="pt-2 border-t border-slate-100">
+            <div className="text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">More</div>
+            <div className="grid grid-cols-2 gap-2">
+              {moreLinks.map((l) => (
+                <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-600 py-1.5 rounded-lg px-2 hover:bg-[#f4f7f5]">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </nav>

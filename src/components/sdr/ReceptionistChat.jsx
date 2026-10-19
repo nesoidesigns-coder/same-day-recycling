@@ -39,8 +39,8 @@ export default function ReceptionistChat() {
     }
   };
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (preset) => {
+    const text = (typeof preset === "string" ? preset : input).trim();
     if (!text || !conversation || sending) return;
     setInput("");
     setSending(true);
@@ -75,17 +75,26 @@ export default function ReceptionistChat() {
           <div className="bg-[#0c3b24] text-white px-5 py-4 flex items-center gap-3">
             <AiMascot size={40} />
             <div>
-              <div className="font-bold">Same Day Recycling</div>
-              <div className="text-xs text-[#1d9e56] font-semibold">Ask anything · Book a pickup</div>
+              <div className="font-bold leading-tight">Rex · Same Day Recycling</div>
+              <div className="flex items-center gap-1.5 text-xs text-[#1d9e56] font-semibold"><span className="w-1.5 h-1.5 rounded-full bg-[#1d9e56]" />Online · instant quotes &amp; booking</div>
             </div>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {!messages.some((m) => m.role === "assistant") && (
               <div className="flex justify-start items-end gap-2">
-                <AiMascotFull height={72} className="rounded-2xl border border-[#1d9e56]/40 bg-[#f4f7f5] p-0.5" />
-                <div className="bg-[#f4f7f5] rounded-2xl px-4 py-2.5 text-sm text-slate-700 max-w-[75%]">
-                  Hi! I'm the Same Day Recycling assistant. Want to book a pickup? Tell me what you need gone and I'll give you an instant quote — or just ask me anything.
+                <AiMascotFull height={64} />
+                <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[75%]">
+                  Welcome to Same Day Recycling. I can give you an instant quote and book a same-day pickup. What do you need removed?
                 </div>
+              </div>
+            )}
+            {!messages.some((m) => m.role === "user") && !starting && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {["Get an instant quote", "Book a same-day pickup", "What can't you take?"].map((chip) => (
+                  <button key={chip} onClick={() => send(chip)} disabled={sending} className="rounded-full border border-[#1d9e56]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#0c3b24] hover:bg-[#1d9e56]/10 transition-colors">
+                    {chip}
+                  </button>
+                ))}
               </div>
             )}
             {messages.length === 0 && starting && (
@@ -94,8 +103,8 @@ export default function ReceptionistChat() {
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 {m.role === "user"
-                  ? <div className="bg-[#1d9e56] text-[#0c3b24] rounded-2xl px-4 py-2.5 text-sm max-w-[85%] whitespace-pre-wrap">{m.content}</div>
-                  : <div className="prose prose-sm max-w-[85%] text-slate-700"><ReactMarkdown>{m.content}</ReactMarkdown></div>}
+                  ? <div className="bg-[#0c3b24] text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm max-w-[85%] whitespace-pre-wrap">{m.content}</div>
+                  : <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[85%] prose prose-sm"><ReactMarkdown>{m.content}</ReactMarkdown></div>}
               </div>
             ))}
             {sending && <div className="flex justify-start text-xs text-slate-400">typing…</div>}
