@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Facebook } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import FacebookPostCard from "./FacebookPostCard";
+import FacebookLeaflet from "./FacebookLeaflet";
 
 const PAGE_URL = "https://www.facebook.com/p/SAME-DAY-Recycling-Vancouver-BC-61595167654524/";
 const PLUGIN_SRC = "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fp%2FSAME-DAY-Recycling-Vancouver-BC-61595167654524%2F&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true";
@@ -44,8 +44,8 @@ export default function FacebookFeed() {
         </div>
         {posts ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-            {posts.map((post) => (
-              <FacebookPostCard key={post.id} post={post} />
+            {posts.map((post, i) => (
+              <FacebookLeaflet key={post.id} post={post} tilt={i % 2 === 0 ? -1 : 1} />
             ))}
           </div>
         ) : (
