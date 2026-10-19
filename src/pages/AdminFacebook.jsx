@@ -27,9 +27,15 @@ export default function AdminFacebook() {
       setStatusError(e?.message || "Could not reach Facebook. Reconnect the Facebook integration.");
     }
     try {
+      await base44.functions.invoke("syncFacebookPage", {});
       const page = await base44.entities.FacebookSettings.filter({}, { limit: 1 });
       setSettings(page.items[0] || null);
-    } catch {}
+    } catch {
+      try {
+        const page = await base44.entities.FacebookSettings.filter({}, { limit: 1 });
+        setSettings(page.items[0] || null);
+      } catch {}
+    }
     try {
       const logPage = await base44.entities.FacebookMessageLog.filter(
         {},
