@@ -42,6 +42,7 @@ export default function Realtors() {
             <h2 className="text-xl font-bold text-[#0c3b24]">Realtor partner program</h2>
             <p className="mt-3 text-slate-600">Send us your listings and we prioritize your jobs — same-day slots held for partner agents, before/after photos in your inbox, and one invoice for repeat cleanouts.</p>
             <p className="mt-4 text-sm font-semibold text-[#0c3b24]">Book below or call/text <a href="tel:+16048491745" className="text-[#1d9e56]">(604) 849-1745</a> and ask for the partner rate.</p>
+            <p className="mt-3 text-sm font-semibold"><Link to="/realtor-dashboard" className="text-[#1d9e56] hover:underline">Track your cleanout requests →</Link></p>
           </div>
         </div>
       </section>
