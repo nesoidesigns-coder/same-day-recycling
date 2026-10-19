@@ -40,6 +40,24 @@
         "closed"
       ],
       "default": "new"
+    },
+    "load_label": {
+      "type": "string",
+      "default": ""
+    },
+    "quote_low": {
+      "type": "number"
+    },
+    "quote_high": {
+      "type": "number"
+    },
+    "ai_reply": {
+      "type": "string",
+      "default": ""
+    },
+    "ai_processed": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

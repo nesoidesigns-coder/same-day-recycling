@@ -35,25 +35,8 @@ export default async function(req) {
       ...(preferred_date ? { preferred_date } : {}),
     });
 
-    try {
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: OWNER_EMAIL,
-        from_name: 'Same Day Recycling Website',
-        subject: `New realtor lead: ${agent_name}${city ? ` — ${city}` : ''}`,
-        text: `New realtor lead from the landing page.\nAgent: ${agent_name}${brokerage ? ` (${brokerage})` : ''}\nPhone: ${phone}\nEmail: ${email}\nProperty: ${property_address}${city ? `, ${city}` : ''}\nItems: ${items_description || '—'}\nPreferred date: ${preferred_date || 'any'}`,
-        html: `<div style="font-family:sans-serif;max-width:560px">
-          <h2 style="color:#0c3b24">New realtor lead</h2>
-          <p style="margin:4px 0"><strong>Agent:</strong> ${agent_name}${brokerage ? ` (${brokerage})` : ''}</p>
-          <p style="margin:4px 0"><a href="tel:${phone}" style="color:#1d9e56;font-weight:bold">${phone}</a> · ${email}</p>
-          <p style="margin:4px 0"><strong>Property:</strong> ${property_address}${city ? `, ${city}` : ''}</p>
-          <p style="margin:4px 0"><strong>Items:</strong> ${items_description || '—'}</p>
-          <p style="margin:4px 0"><strong>Preferred date:</strong> ${preferred_date || 'any'}</p>
-          <p style="margin-top:16px;color:#64748b;font-size:13px">Manage leads in the admin dashboard → /admin/jobs (Leads tab)</p>
-        </div>`,
-      });
-    } catch (e) {
-      // non-fatal — the lead is saved either way
-    }
+    // The "Realtor Lead AI" workflow takes it from here: it prices the load,
+    // drafts the reply and emails the owner the full AI-processed alert.
 
     return Response.json({ ok: true, lead_id: lead?.id });
   } catch (error) {

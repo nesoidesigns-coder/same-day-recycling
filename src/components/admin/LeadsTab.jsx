@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Loader2, Phone, MapPin, Mail } from "lucide-react";
+import { Loader2, Phone, MapPin, Mail, Sparkles, Copy, Check } from "lucide-react";
 import { CITIES } from "@/lib/cities";
 
 const STATUSES = ["new", "contacted", "quoted", "booked", "closed"];
@@ -70,6 +70,9 @@ export default function LeadsTab() {
                   <p className="text-sm text-slate-600 mt-2 max-w-xl">{l.property_address}</p>
                   {l.items_description && <p className="text-sm text-slate-500 mt-1">{l.items_description}</p>}
                   <p className="text-xs text-slate-400 mt-1">Preferred date: {l.preferred_date || "any"}</p>
+                  {(l.ai_reply || l.quote_low) && (
+                    <AiBlock lead={l} />
+                  )}
                 </div>
               </div>
             </div>

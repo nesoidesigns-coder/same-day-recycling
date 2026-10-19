@@ -1,0 +1,66 @@
+<mjml>
+  <mj-head>
+    <mj-title>New realtor lead: {{agent_name}}</mj-title>
+    <mj-preview>{{agent_name}} requested a cleanout{{#if city}} in {{city}}{{/if}}. AI quote: {{quote_range}}</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Arial, Arial, sans-serif" />
+      <mj-section background-color="#ffffff" padding="0 32px" />
+      <mj-text color="#0c3b24" font-size="15px" line-height="1.6" padding="0" />
+      <mj-button background-color="#1d9e56" color="#000000" border-radius="16px" font-weight="700" inner-padding="14px 28px" align="left" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    <mj-section background-color="#1d9e56" padding="24px 32px">
+      <mj-column>
+        <mj-image src="https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02e81d056_logo.png" alt="Same Day Recycling" width="140px" align="left" />
+        <mj-text color="#000000" font-size="18px" font-weight="700" padding-top="8px">Same Day Recycling</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="32px 32px 8px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="700" line-height="1.2">New realtor lead: {{agent_name}}</mj-text>
+        <mj-text color="#475569" font-size="15px" padding-top="8px">A realtor partner submitted a property cleanout request. The AI priced the load and drafted your reply below.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="16px 32px">
+      <mj-column background-color="#f4f7f5" border-radius="16px" border="1px solid #e5e7eb" padding="20px 24px">
+        <mj-text font-size="14px" line-height="1.8">
+          <strong>Agent:</strong> {{agent_name}}{{#if brokerage}} ({{brokerage}}){{/if}}<br/>
+          <strong>Phone:</strong> <a href="tel:{{phone}}" style="color:#1d9e56;font-weight:700;">{{phone}}</a><br/>
+          <strong>Email:</strong> {{email}}<br/>
+          <strong>Property:</strong> {{property_address}}{{#if city}}, {{city}}{{/if}}<br/>
+          <strong>Items:</strong> {{items_description}}<br/>
+          <strong>Preferred date:</strong> {{preferred_date}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="8px 32px">
+      <mj-column background-color="#f4f7f5" border-radius="16px" border="1px solid #e5e7eb" padding="20px 24px">
+        <mj-text font-size="15px" font-weight="700">AI estimate: {{quote_range}}{{#if load_label}} ({{load_label}}){{/if}}</mj-text>
+        <mj-text font-size="14px" color="#475569" padding-top="6px">Confirm the final price on arrival before anything is lifted.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="8px 32px 0">
+      <mj-column>
+        <mj-text font-size="15px" font-weight="700" padding-bottom="4px">Drafted reply for {{agent_name}}:</mj-text>
+        <mj-text font-size="14px" line-height="1.7" background-color="#f4f7f5" border-radius="12px" padding="16px 20px">{{ai_reply}}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="24px 32px">
+      <mj-column>
+        <mj-button href="https://samedayrecycling.ca/admin/jobs" background-color="#0c3b24" color="#ffffff">Open the leads dashboard</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f4f7f5" padding="20px 32px">
+      <mj-column>
+        <mj-text color="#475569" font-size="12px">Same Day Recycling · (604) 849-1745 · samedayrecycling.ca<br/>You are receiving this because a new realtor lead arrived on your site.</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
