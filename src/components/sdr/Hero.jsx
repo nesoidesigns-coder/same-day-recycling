@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CalendarCheck, ShieldCheck, MapPin } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { CITIES } from "@/lib/cities";
 
-const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
+const HERO_IMAGES = [
+  "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg",
+  "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/a48cd7a97_generated_image.png",
+  "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/a8257e5b7_generated_image.png",
+];
 
 export default function Hero() {
   const [city, setCity] = useState("");
+  const [imgIndex, setImgIndex] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setImgIndex((i) => (i + 1) % HERO_IMAGES.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <section id="top" className="bg-white">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
@@ -61,8 +73,16 @@ export default function Hero() {
           </p>
         </div>
         <div className="relative">
-          <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-slate-100">
-            <Image src={heroImg} alt="Cleared, sunlit Vancouver loft" className="w-full h-full" fittingType="fill" />
+          <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-slate-100 relative">
+            {HERO_IMAGES.map((src, i) => (
+              <Image
+                key={src}
+                src={src}
+                alt="Same-day junk removal in Vancouver"
+                className={`w-full h-full absolute inset-0 transition-opacity duration-1000 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
+                fittingType="fill"
+              />
+            ))}
           </div>
           <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 flex items-center gap-3">
             <span className="w-10 h-10 rounded-full bg-[#1d9e56]/15 flex items-center justify-center">

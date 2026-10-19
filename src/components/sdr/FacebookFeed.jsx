@@ -11,14 +11,19 @@ export default function FacebookFeed() {
 
   useEffect(() => {
     let active = true;
-    base44.functions
-      .invoke("facebookHighlights", {})
-      .then((res) => {
-        if (active && res?.data?.posts?.length) setPosts(res.data.posts);
-      })
-      .catch(() => {});
+    const load = () => {
+      base44.functions
+        .invoke("facebookHighlights", {})
+        .then((res) => {
+          if (active && res?.data?.posts?.length) setPosts(res.data.posts);
+        })
+        .catch(() => {});
+    };
+    load();
+    const interval = setInterval(load, 5 * 60 * 1000);
     return () => {
       active = false;
+      clearInterval(interval);
     };
   }, []);
 
