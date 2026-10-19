@@ -17,7 +17,6 @@ import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
 import Footer from "@/components/sdr/Footer";
-import ReceptionistChat from "@/components/sdr/ReceptionistChat";
 
 export default function Home() {
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -45,7 +44,6 @@ export default function Home() {
       <FAQ />
       <FinalCTA />
       <Footer />
-      <ReceptionistChat />
     </div>
   );
 }

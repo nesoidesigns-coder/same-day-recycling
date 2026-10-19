@@ -14,7 +14,6 @@ import Booking from "@/components/sdr/Booking";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
-import ReceptionistChat from "@/components/sdr/ReceptionistChat";
 
 export default function CityPage() {
   const { slug } = useParams();
@@ -55,7 +54,6 @@ export default function CityPage() {
       <FAQ />
       <FinalCTA />
       <Footer />
-      <ReceptionistChat />
     </div>
   );
 }

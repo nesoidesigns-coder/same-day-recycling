@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import ReceptionistChat from '@/components/sdr/ReceptionistChat';
 // Add page imports here
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -101,6 +102,7 @@ function App() {
         <Router>
           <ScrollToTop />
           <GoogleAnalytics />
+          <ReceptionistChat />
           <AuthenticatedApp />
         </Router>
         <Toaster />
