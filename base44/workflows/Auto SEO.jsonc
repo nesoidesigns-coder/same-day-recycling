@@ -33,10 +33,24 @@
             "function_name": "autoSeo",
             "args": {}
           },
-          "then": "check_data",
+          "then": "apply_city_meta",
           "x-base44": {
             "title": "Run the weekly SEO audit",
             "description": "Search Console keywords + AI strategist"
+          }
+        }
+      },
+      {
+        "apply_city_meta": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "citySeoSync",
+            "args": {}
+          },
+          "then": "check_data",
+          "x-base44": {
+            "title": "Optimize every city page",
+            "description": "AI writes and applies fresh titles, descriptions and hero copy for each city landing page"
           }
         }
       },

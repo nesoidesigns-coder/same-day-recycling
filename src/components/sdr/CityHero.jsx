@@ -3,7 +3,7 @@ import { Image } from "@/components/ui/image";
 
 const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
 
-export default function CityHero({ city }) {
+export default function CityHero({ city, intro }) {
   return (
     <section id="top" className="bg-white">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
@@ -18,6 +18,7 @@ export default function CityHero({ city }) {
           <p className="mt-6 text-lg text-slate-600 max-w-md leading-relaxed">
             {city.blurb} Same-day junk and furniture removal — book in minutes, we haul it today, and recycle or donate everything we can.
           </p>
+          {intro && <p className="mt-3 text-slate-600 max-w-md leading-relaxed">{intro}</p>}
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#17a04c] transition-colors">
               Book a Pickup in {city.name}

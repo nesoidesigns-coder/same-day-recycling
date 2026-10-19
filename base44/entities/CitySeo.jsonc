@@ -1,0 +1,55 @@
+{
+  "name": "CitySeo",
+  "type": "object",
+  "properties": {
+    "city": {
+      "type": "string"
+    },
+    "seo_title": {
+      "type": "string",
+      "default": ""
+    },
+    "seo_description": {
+      "type": "string",
+      "default": ""
+    },
+    "hero_intro": {
+      "type": "string",
+      "default": ""
+    },
+    "keywords": {
+      "type": "string",
+      "default": ""
+    },
+    "updated_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "city"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
