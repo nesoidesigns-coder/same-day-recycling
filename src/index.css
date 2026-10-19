@@ -177,3 +177,14 @@ html {
 .mascot-ring {
   animation: mascot-ring 2.2s ease-out infinite;
 }
+
+@keyframes mascot-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(3deg); }
+}
+
+.mascot-wave {
+  animation: mascot-wave 2.4s ease-in-out infinite;
+  transform-origin: 70% 90%;
+}

@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
+import AiMascotFull from "./AiMascotFull";
 
 const AGENT_NAME = "receptionist";
 
@@ -80,8 +81,9 @@ export default function ReceptionistChat() {
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {!messages.some((m) => m.role === "assistant") && (
-              <div className="flex justify-start">
-                <div className="bg-[#f4f7f5] rounded-2xl px-4 py-2.5 text-sm text-slate-700 max-w-[85%]">
+              <div className="flex justify-start items-end gap-2">
+                <AiMascotFull height={72} className="rounded-2xl border border-[#1d9e56]/40 bg-[#f4f7f5] p-0.5" />
+                <div className="bg-[#f4f7f5] rounded-2xl px-4 py-2.5 text-sm text-slate-700 max-w-[75%]">
                   Hi! I'm the Same Day Recycling assistant. Want to book a pickup? Tell me what you need gone and I'll give you an instant quote — or just ask me anything.
                 </div>
               </div>
