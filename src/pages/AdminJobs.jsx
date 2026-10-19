@@ -107,6 +107,10 @@ function JobsTab({ partners }) {
   const [assignFor, setAssignFor] = useState(null);
   const [partnerSel, setPartnerSel] = useState("");
   const [value, setValue] = useState("");
+  const [smsFor, setSmsFor] = useState(null);
+  const [smsMsg, setSmsMsg] = useState("");
+  const [smsSending, setSmsSending] = useState(null);
+  const [smsResult, setSmsResult] = useState(null);
 
   const query = cityFilter ? { city: cityFilter } : {};
 
@@ -157,6 +161,19 @@ function JobsTab({ partners }) {
       }
     }
     load(true);
+  };
+
+  const sendSms = async (b) => {
+    setSmsSending(b.id);
+    setSmsResult(null);
+    try {
+      const res = await base44.functions.invoke("sendSmsAlert", { booking_id: b.id, message: smsMsg });
+      setSmsResult(res.data?.ok ? "sent" : "error: " + (res.data?.error || "unknown"));
+    } catch (e) {
+      setSmsResult("error: " + (e?.response?.data?.error || e.message || "failed"));
+    } finally {
+      setSmsSending(null);
+    }
   };
 
   const badge = (a) => {
@@ -246,6 +263,45 @@ function JobsTab({ partners }) {
                     {b.assignment_status === "declined" ? "Reassign job" : b.assignment_status === "assigned" ? "Change assignment" : "Assign to partner"}
                   </button>
                 )
+              )}
+              {smsFor === b.id ? (
+                <div className="mt-4 rounded-2xl bg-[#f4f7f5] p-4 space-y-3">
+                  <textarea
+                    value={smsMsg}
+                    onChange={(e) => setSmsMsg(e.target.value)}
+                    rows={3}
+                    maxLength={320}
+                    className="input text-sm"
+                    aria-label="Text message"
+                  />
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <button
+                      onClick={() => sendSms(b)}
+                      disabled={smsSending === b.id}
+                      className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors disabled:opacity-60"
+                    >
+                      {smsSending === b.id ? "Sending…" : "Send text"}
+                    </button>
+                    <button onClick={() => setSmsFor(null)} className="rounded-full bg-white border border-slate-200 text-slate-600 font-bold px-5 py-2.5 text-sm">
+                      Cancel
+                    </button>
+                    {smsResult && (
+                      <span className={`text-sm font-semibold ${smsResult === "sent" ? "text-[#1d9e56]" : "text-red-600"}`}>
+                        {smsResult === "sent" ? "Text sent" : smsResult}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setSmsFor(b.id);
+                    setSmsMsg("Same Day Recycling: your removal crew is on the way for today's pickup. Reply here or call (604) 849-1745.");
+                  }}
+                  className="mt-3 rounded-full bg-white border border-[#1d9e56] text-[#1d9e56] font-bold px-5 py-2.5 text-sm hover:bg-[#1d9e56]/10 transition-colors"
+                >
+                  Text customer
+                </button>
               )}
               {b.assignment_status === "completed" && (
                 <div className="mt-4 flex items-center gap-2 text-sm font-semibold">
