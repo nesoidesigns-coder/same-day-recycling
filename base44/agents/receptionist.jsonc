@@ -15,6 +15,18 @@
     {
       "function_name": "quoteEstimate",
       "description": "Instant price estimate for a junk load: pass {items} or {description}, returns a price range and truck-space label"
+    },
+    {
+      "function_name": "realtorLead",
+      "description": "Save a realtor's contact details and property info when they ask about the partner program or request a cleanout quote/callback."
+    },
+    {
+      "function_name": "submitReview",
+      "description": "Save a happy customer's rating and review text right in the chat."
+    },
+    {
+      "function_name": "contactForm",
+      "description": "Save a general question or message that isn't a booking, quote, realtor lead or review."
     }
   ],
   "context_files": [],
