@@ -48,15 +48,15 @@
     },
     {
       "function_name": "recyclingCenters",
-      "description": "AI-refresh of the live recycling-center map. Pass {action: 'refresh'} to re-research centers for every city (takes a minute or two). Admin only."
+      "description": "Refresh the live recycling-center map research when it's stale"
     },
     {
       "function_name": "contentGen",
-      "description": "Research the web with AI and write + publish a new blog article straight to the blog. Pass {} for a self-picked topic or {topic: '...'}. Admin only."
+      "description": "Research the web and publish a new blog article when the blog is empty or needs content"
     },
     {
       "function_name": "facebookAutoPost",
-      "description": "Write a fresh post with AI and publish it to the Facebook page. No arguments needed. Admin only."
+      "description": "Publish a fresh AI-written post to the Facebook page when the feed is stale"
     },
     {
       "entity_name": "ContentPost",
