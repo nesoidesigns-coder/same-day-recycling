@@ -23,6 +23,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import ReviewPage from './pages/ReviewPage';
 import RealtorLanding from './pages/RealtorLanding';
+import RealtorOnePager from './pages/RealtorOnePager';
 import Realtors from './pages/Realtors';
 import AdminFacebook from './pages/AdminFacebook';
 import Contractors from './pages/Contractors';
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
       <Route path="/realtors" element={<Realtors />} />
       <Route path="/contractors" element={<Contractors />} />
       <Route path="/real-estate" element={<RealtorLanding />} />
+      <Route path="/realtor-partners" element={<RealtorOnePager />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />

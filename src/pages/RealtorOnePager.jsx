@@ -1,4 +1,5 @@
 import { Printer, Recycle, CalendarCheck, Home, Building2, DollarSign, ShieldCheck, Clock, Phone } from "lucide-react";
+import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 
 const BENEFITS = [
   {
@@ -127,9 +128,9 @@ export default function RealtorOnePager() {
                   </thead>
                   <tbody>
                     {[
-                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$129"],
+                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$149"],
                       ["1/8 truck", "Single mattress, end tables, a few garbage bags", "$189"],
-                      ["1/4 truck", "One sofa or loveseat, small appliance, boxes from one room", "$269"],
+                      ["1/4 truck", "One sofa or loveseat, small appliance, boxes from one room", "$299"],
                       ["1/2 truck", "Living-room furniture set, fridge + stove, basement corner", "$419"],
                       ["3/4 truck", "Full bedroom + living room set, garage cleanout", "$549"],
                       ["Full truck", "Whole-house estate cleanout, hot tub, renovation debris", "$649"],
@@ -158,6 +159,14 @@ export default function RealtorOnePager() {
                 <h3 className="font-bold text-[#0c3b24] text-sm flex items-center gap-2"><Building2 className="w-4 h-4 text-[#1d9e56]" /> Property manager plan</h3>
                 <p className="text-sm text-slate-600 mt-1 leading-relaxed">For strata and rental portfolios: $299/month covers up to 4 pickups — ideal for ongoing turnover cleanouts.</p>
               </div>
+            </section>
+
+            {/* Lead form */}
+            <section className="print:hidden">
+              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
+                <CalendarCheck className="w-5 h-5 text-[#1d9e56]" /> Book a property cleanout
+              </h2>
+              <RealtorLeadForm />
             </section>
 
             {/* CTA / footer */}
