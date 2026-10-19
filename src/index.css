@@ -189,8 +189,15 @@ html {
   transform-origin: 70% 90%;
 }
 
+@keyframes mascot-idle {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
 .mascot-wave-once {
-  animation: mascot-wave 1.8s ease-in-out 2;
-  animation-delay: 0.8s;
+  animation:
+    mascot-wave 1.8s ease-in-out 2,
+    mascot-idle 4s ease-in-out infinite;
+  animation-delay: 0.8s, 4.6s;
   transform-origin: 70% 90%;
 }
