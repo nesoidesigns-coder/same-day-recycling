@@ -25,7 +25,7 @@ export default async function(req) {
       // fall back to placeholder rates
     }
 
-    const loadEighths = typeof body?.load_eighths === 'number' && body.load_eighths > 0
+    const loadEighths = typeof body?.load_eighths === 'number' && body.load_eighths >= 0
       ? Math.max(0, Math.min(8, body.load_eighths))
       : null;
 
