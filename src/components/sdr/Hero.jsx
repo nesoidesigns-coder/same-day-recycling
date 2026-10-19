@@ -61,7 +61,7 @@ export default function Hero() {
               </select>
             </div>
             <button
-              onClick={() => city && navigate(`/city/${city}`)}
+              onClick={() => city && navigate(`/junk-removal-${city}`)}
               disabled={!city}
               className="rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3.5 hover:bg-[#0a3020] transition-colors disabled:opacity-50"
             >

@@ -30,7 +30,7 @@ export default function CitySelector() {
           {results.map((city) => (
             <button
               key={city.slug}
-              onClick={() => navigate(`/city/${city.slug}`)}
+              onClick={() => navigate(`/junk-removal-${city.slug}`)}
               className="group flex items-center justify-between gap-2 rounded-2xl bg-white border border-slate-100 px-4 py-3.5 text-left hover:border-[#1d9e56] hover:shadow-sm transition-all"
             >
               <span className="flex items-center gap-2 min-w-0">

@@ -18,6 +18,8 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import AdminPricing from './pages/AdminPricing';
 import CityPage from './pages/CityPage';
+import CityRedirect from './pages/CityRedirect';
+import { CITIES } from '@/lib/cities';
 import AdminJobs from './pages/AdminJobs';
 import PartnersDashboard from './pages/PartnersDashboard';
 import Subscriptions from './pages/Subscriptions';
@@ -69,7 +71,10 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/city/:slug" element={<CityPage />} />
+      <Route path="/city/:slug" element={<CityRedirect />} />
+      {CITIES.map((c) => (
+        <Route key={c.slug} path={`/junk-removal-${c.slug}`} element={<CityPage slugParam={c.slug} />} />
+      ))}
       <Route path="/subscriptions" element={<Subscriptions />} />
       <Route path="/free-metal-pickup" element={<FreeMetalPickup />} />
       <Route path="/about" element={<About />} />
