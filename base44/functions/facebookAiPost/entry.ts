@@ -40,17 +40,29 @@ export default async function(req) {
     if (action === 'publish') {
       const message = String(body.message || '').slice(0, 3000);
       if (!message) return Response.json({ error: 'Post text is required' }, { status: 400 });
-      const res = await fetch(`${GRAPH}/${pageId}/feed`, {
+
+      // Attach an AI-generated picture so the post shows visuals on the homepage feed
+      let imageUrl = null;
+      try {
+        const img = await base44.asServiceRole.integrations.Core.GenerateImage({
+          prompt: `Realistic, bright, professional photo for a Facebook post by "Same Day Recycling", a junk removal and recycling company in Vancouver BC, matching this post: "${message.slice(0, 300)}". Show a tidy green-branded truck or crew loading furniture, appliances or scrap metal outdoors in a sunny BC neighbourhood, no text or words in the image.`,
+        });
+        imageUrl = (img && img.url) || null;
+      } catch {}
+
+      const endpoint = imageUrl ? `${GRAPH}/${pageId}/photos` : `${GRAPH}/${pageId}/feed`;
+      const payload = imageUrl ? { url: imageUrl, message } : { message };
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { Authorization: `Bearer ${pageToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
-        signal: AbortSignal.timeout(10000),
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(20000),
       });
       const data = await res.json();
       if (data.error) {
         return Response.json({ error: data.error.message || 'Facebook refused the post' }, { status: 502 });
       }
-      return Response.json({ ok: true, post_id: data.id });
+      return Response.json({ ok: true, post_id: data.post_id || data.id, image: imageUrl });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
