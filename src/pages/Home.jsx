@@ -13,6 +13,7 @@ import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import ServiceArea from "@/components/sdr/ServiceArea";
 import ActiveBookingsMap from "@/components/sdr/ActiveBookingsMap";
+import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
@@ -40,6 +41,7 @@ export default function Home() {
       <Booking prefill={quotePrefill} />
       <ServiceArea />
       <ActiveBookingsMap />
+      <RecyclingCentersMap showSelector />
       <Reviews />
       <SubTeaser />
       <FAQ />

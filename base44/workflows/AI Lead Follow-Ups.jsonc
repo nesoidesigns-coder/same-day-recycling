@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every morning 8am, the AI finds realtor leads and unconfirmed bookings that need a reply, drafts a follow-up message for each and emails the digest to the owner",
+  "name": "AI Lead Follow-Ups",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_lead_follow_ups",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sweep_leads": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "aiFollowUps",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Draft lead follow-ups",
+            "description": "AI chases open leads and emails the owner"
+          }
+        }
+      }
+    ]
+  }
+}

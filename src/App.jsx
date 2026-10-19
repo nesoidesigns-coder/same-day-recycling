@@ -26,6 +26,8 @@ import RealtorLanding from './pages/RealtorLanding';
 import RealtorOnePager from './pages/RealtorOnePager';
 import Realtors from './pages/Realtors';
 import AdminFacebook from './pages/AdminFacebook';
+import AdminMarketing from './pages/AdminMarketing';
+import RecyclingCenters from './pages/RecyclingCenters';
 import Contractors from './pages/Contractors';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -71,10 +73,12 @@ const AuthenticatedApp = () => {
       <Route path="/contractors" element={<Contractors />} />
       <Route path="/real-estate" element={<RealtorLanding />} />
       <Route path="/realtor-partners" element={<RealtorOnePager />} />
+      <Route path="/recycling-centers" element={<RecyclingCenters />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
         <Route path="/admin/facebook" element={<AdminFacebook />} />
+        <Route path="/admin/marketing" element={<AdminMarketing />} />
         <Route path="/partners" element={<PartnersDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

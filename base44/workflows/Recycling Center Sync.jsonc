@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday 6am, the AI researches recycling centers, depots and transfer stations across all 7 service cities from live web sources and refreshes the public map",
+  "name": "Recycling Center Sync",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "recycling_center_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "refresh_centers": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "recyclingCenters",
+            "args": {
+              "action": "refresh"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "AI researches recycling centers",
+            "description": "Worldwide web research, updates the live map"
+          }
+        }
+      }
+    ]
+  }
+}

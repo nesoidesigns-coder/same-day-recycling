@@ -8,6 +8,7 @@ const links = [
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
+  { label: "Recycling Centers", to: "/recycling-centers" },
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "Leave a Review", to: "/review" },
 ];
