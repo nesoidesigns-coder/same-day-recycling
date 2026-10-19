@@ -35,7 +35,7 @@ export default function FollowUpsTab() {
         <Users className="w-4 h-4 text-[#1d9e56]" /> Lead-chasing AI
       </h2>
       <p className="text-sm text-slate-500 mb-4">
-        Every morning at 8am, the AI finds realtor leads and bookings that still need a reply, drafts a follow-up message for each and emails them to you. You can also run a sweep right now.
+        Every morning at 8am, the AI emails closing follow-ups straight to open leads and unconfirmed bookings (up to 3 rounds: warm close, objection handling, final nudge), then escalates anyone still open to you for a personal call. Run a sweep right now to send the next round.
       </p>
       <button
         onClick={run}
@@ -58,6 +58,7 @@ export default function FollowUpsTab() {
                     {f.kind === "booking" ? "Booking" : "Realtor lead"}
                   </span>
                   {f.name}
+                  {f.round ? <span className="ml-2 text-[11px] font-bold text-slate-400">Round {f.round}</span> : null}
                 </p>
                 <button
                   onClick={() => copy(f.message, f.id || i)}

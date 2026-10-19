@@ -59,6 +59,14 @@
       "type": "boolean",
       "default": false
     },
+    "followup_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_followup_date": {
+      "type": "string",
+      "format": "date"
+    },
     "description": {
       "type": "string",
       "default": "",
