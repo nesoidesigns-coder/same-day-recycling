@@ -53,7 +53,7 @@ export default function HologramFeed() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-[#1d9e56] opacity-60 animate-ping"></span>
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#1d9e56]"></span>
               </span>
-              AI Receptionist
+              Dispatch Desk
             </span>
             <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#1d9e56] holo-glow-text">
               Live Feed
@@ -93,7 +93,7 @@ export default function HologramFeed() {
             </AnimatePresence>
             {events && shown.length === 0 && (
               <p className="text-sm text-[#1d9e56]/70 text-center py-10 holo-glow-text">
-                AI core online — awaiting the next visitor signal...
+                Online — awaiting the next visitor signal...
               </p>
             )}
             {!events && (
@@ -104,7 +104,7 @@ export default function HologramFeed() {
           </div>
         </div>
         <p className="mt-4 text-center text-xs text-slate-500">
-          Our AI receptionist answers visitors 24/7 — watch live questions and bookings stream in.
+          Bookings and questions stream in live — a real person confirms every pickup by phone.
         </p>
       </div>
     </section>

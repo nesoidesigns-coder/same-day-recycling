@@ -29,7 +29,6 @@ export default function Home() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
-      <FacebookFeed />
       <Hero />
       <TrustBar />
       <HologramFeed />
@@ -43,6 +42,7 @@ export default function Home() {
       <RecyclingCentersMap showSelector />
       <Reviews />
       <SubTeaser />
+      <FacebookFeed />
       <FAQ />
       <FinalCTA />
       <Footer />

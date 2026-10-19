@@ -28,7 +28,7 @@ export default function AdminPricing() {
         if (items[0]) {
           setRow(items[0]);
           setValues({
-            minimum_pickup: items[0].minimum_pickup ?? 129,
+            minimum_pickup: items[0].minimum_pickup ?? 139,
             eighth_truck: items[0].eighth_truck ?? 189,
             quarter_truck: items[0].quarter_truck ?? 269,
             half_truck: items[0].half_truck ?? 419,

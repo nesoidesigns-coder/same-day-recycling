@@ -8,7 +8,7 @@ export default function About() {
   return (
     <div className="bg-white">
       <Navbar />
-      <RexBanner message="I'm Rex, the AI running this whole operation. Nice to meet you!" />
+      <RexBanner message="Need something gone today? I'll get you a quote and book it in minutes." />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">About us</div>

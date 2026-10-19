@@ -132,7 +132,7 @@ export default function RealtorOnePager() {
                   </thead>
                   <tbody>
                     {[
-                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$149"],
+                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$139"],
                       ["1/8 truck", "Single mattress, end tables, a few garbage bags", "$189"],
                       ["1/4 truck", "One sofa or loveseat, small appliance, boxes from one room", "$299"],
                       ["1/2 truck", "Living-room furniture set, fridge + stove, basement corner", "$419"],

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 const ROTATE_MS = 6000;
 
@@ -79,10 +80,19 @@ export default function Reviews() {
             </p>
             <div className="mt-6 flex items-center justify-center gap-3 flex-wrap">
               <span className="font-bold text-[#0c3b24]">{r.customer_name}</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1d9e56]/15 text-[#1d9e56] font-bold px-4 py-1.5 text-sm">
+                <BadgeCheck className="w-4 h-4" />
+                Verified customer
+              </span>
               {r.city && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1d9e56]/15 text-[#1d9e56] font-bold px-4 py-1.5 text-sm">
                   <MapPin className="w-4 h-4" />
                   {r.city}
+                </span>
+              )}
+              {r.created_date && (
+                <span className="text-sm text-slate-400">
+                  {formatDistanceToNow(new Date(r.created_date), { addSuffix: true })}
                 </span>
               )}
             </div>
@@ -117,6 +127,16 @@ export default function Reviews() {
               ))}
             </div>
           )}
+          <div className="mt-8 text-center">
+            <a
+              href="https://www.google.com/search?q=Same+Day+Recycling+Vancouver+reviews"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1d9e56] hover:underline"
+            >
+              Read more of our reviews on Google
+            </a>
+          </div>
         </div>
       </div>
     </section>

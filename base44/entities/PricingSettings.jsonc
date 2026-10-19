@@ -8,7 +8,7 @@
     },
     "minimum_pickup": {
       "type": "number",
-      "default": 129
+      "default": 139
     },
     "eighth_truck": {
       "type": "number",

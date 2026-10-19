@@ -61,10 +61,10 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             {activeCity ? `Recycling centers in ${activeCity}` : "Recycling centers in every city we serve"}
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            Our AI researches real drop-off depots, transfer stations and recycling facilities across BC and keeps this map updated.
+            Real drop-off depots, transfer stations and recycling facilities across BC — researched and kept up to date for you.
           </p>
           {lastResearched && (
-            <p className="mt-1 text-xs text-slate-400">Last AI research: {lastResearched}</p>
+            <p className="mt-1 text-xs text-slate-400">Last updated: {lastResearched}</p>
           )}
         </div>
 
@@ -170,7 +170,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             )}
             {shown.length === 0 && (
               <p className="text-center text-sm text-slate-500 mt-4">
-                No centers researched for this city yet — the AI updates the map automatically every week.
+                No centers listed for this city yet — the map updates automatically every week.
               </p>
             )}
           </>
@@ -184,7 +184,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
               className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3 text-sm hover:bg-[#0a3020] transition-colors disabled:opacity-60"
             >
               {refreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-              {refreshing ? "AI is researching…" : "Update map with AI research"}
+              {refreshing ? "Checking for updates…" : "Update map"}
             </button>
           </div>
         )}
