@@ -14,6 +14,7 @@ import Booking from "@/components/sdr/Booking";
 import ServiceArea from "@/components/sdr/ServiceArea";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
+import FacebookFeed from "@/components/sdr/FacebookFeed";
 import Footer from "@/components/sdr/Footer";
 import ReceptionistChat from "@/components/sdr/ReceptionistChat";
 
@@ -40,6 +41,7 @@ export default function Home() {
       <SubTeaser />
       <FAQ />
       <FinalCTA />
+      <FacebookFeed />
       <Footer />
       <ReceptionistChat />
     </div>
