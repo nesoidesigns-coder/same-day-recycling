@@ -7,8 +7,10 @@ import FollowUpsTab from "@/components/admin/FollowUpsTab";
 import SeoInsightsTab from "@/components/admin/SeoInsightsTab";
 import ResearchTab from "@/components/admin/ResearchTab";
 import AnalyticsTab from "@/components/admin/AnalyticsTab";
+import LiveTrackerTab from "@/components/admin/LiveTrackerTab";
 
 const TABS = [
+  { key: "live", label: "Live Tracker" },
   { key: "followups", label: "AI Follow-ups" },
   { key: "seo", label: "SEO Insights" },
   { key: "research", label: "AI Research" },
@@ -16,7 +18,7 @@ const TABS = [
 ];
 
 export default function AdminMarketing() {
-  const [tab, setTab] = useState("followups");
+  const [tab, setTab] = useState("live");
 
   return (
     <div className="min-h-screen bg-white">
@@ -55,7 +57,7 @@ export default function AdminMarketing() {
           </a>
         </div>
 
-        {tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : <ResearchTab />}
+        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : <ResearchTab />}
       </div>
       <Footer />
     </div>
