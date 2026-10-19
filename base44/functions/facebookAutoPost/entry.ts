@@ -10,6 +10,7 @@ const ANGLES = [
   'the stress of clutter at home and the relief of clearing it',
   'the $299/month subscription for property managers and turnovers',
   'honest upfront pricing with no surprises on arrival',
+  'a practical recycling tip for common household items (what can and cannot go in curbside bins, where batteries, electronics and paint really belong), keeping the tip accurate and generic',
 ];
 
 // Called daily by the "Facebook AI Auto Post" workflow: writes one post with AI
