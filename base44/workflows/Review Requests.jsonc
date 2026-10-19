@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "31 10 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every day at 10:31am Vancouver time, emails customers via Gmail a review request three days after their pickup",
+  "name": "Review Requests",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "review_requests",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_review_requests": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "reviewRequests",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send review requests",
+            "description": "Email customers 3 days after pickup"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -72,6 +72,10 @@
       "type": "boolean",
       "default": false
     },
+    "review_requested": {
+      "type": "boolean",
+      "default": false
+    },
     "calendar_event_id": {
       "type": "string",
       "default": ""
