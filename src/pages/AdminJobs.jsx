@@ -6,6 +6,7 @@ import CitySummaryTab from "@/components/admin/CitySummaryTab";
 import SeoTab from "@/components/admin/SeoTab";
 import AssignTab from "@/components/admin/AssignTab";
 import LeadsTab from "@/components/admin/LeadsTab";
+import SystemsTab from "@/components/admin/SystemsTab";
 import { Loader2, Lock, CheckCircle2, Users, DollarSign, MapPin, Phone, PackageCheck, Plus, Star } from "lucide-react";
 
 const PARTNER_SHARE = 0.75;
@@ -18,7 +19,7 @@ const RATE_FIELDS = [
   ["full_truck", "Full truck"],
 ];
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
-const TABS = ["Overview", "Jobs", "Leads", "Assign", "Partners", "Payouts", "City pricing", "Reviews", "Search keywords"];
+const TABS = ["Overview", "Jobs", "Leads", "Assign", "Partners", "Payouts", "City pricing", "Reviews", "Search keywords", "Systems"];
 
 export default function AdminJobs() {
   const [role, setRole] = useState("loading");
@@ -92,6 +93,7 @@ export default function AdminJobs() {
         {tab === "City pricing" && <CityPricingTab />}
         {tab === "Reviews" && <ReviewsTab />}
         {tab === "Search keywords" && <SeoTab />}
+        {tab === "Systems" && <SystemsTab />}
       </div>
     </div>
   );
