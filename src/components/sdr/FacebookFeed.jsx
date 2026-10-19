@@ -1,7 +1,7 @@
 import { Facebook } from "lucide-react";
 
 const PAGE_URL = "https://www.facebook.com/p/SAME-DAY-Recycling-Vancouver-BC-61595167654524/";
-const PLUGIN_SRC = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(PAGE_URL)}&tabs=timeline&width=500&height=700&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&locale=en_CA`;
+const PLUGIN_SRC = "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fp%2FSAME-DAY-Recycling-Vancouver-BC-61595167654524%2F&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true";
 
 export default function FacebookFeed() {
   return (
@@ -25,10 +25,12 @@ export default function FacebookFeed() {
               src={PLUGIN_SRC}
               title="Same Day Recycling Facebook feed"
               width="500"
-              height="700"
-              style={{ border: "none", width: "100%" }}
+              height="600"
+              style={{ border: "none", overflow: "hidden", maxWidth: "100%" }}
               scrolling="no"
-              allow="encrypted-media"
+              frameBorder="0"
+              allowFullScreen
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
               loading="lazy"
               className="block w-full max-w-full"
             ></iframe>
