@@ -21,15 +21,20 @@ export default async function(req) {
       return out;
     };
 
-    const [weekRows, monthRows, bookingsWeek, cityRows] = await Promise.all([
+    const dayAgo = new Date(now - 86400000).toISOString();
+    const [weekRows, monthRows, bookingsWeek, cityRows, todayRows, pathRows] = await Promise.all([
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: weekAgo } }, groupBy: 'source' }),
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo } }, groupBy: 'source' }),
       base44.asServiceRole.entities.Booking.count({ created_date: { $gte: weekAgo }, status: { $ne: 'cancelled' } }),
       base44.asServiceRole.entities.Booking.aggregate({ query: { created_date: { $gte: monthAgo }, status: { $ne: 'cancelled' } }, groupBy: 'city', sort: '-count', limit: 5 }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo } }, groupBy: 'source' }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo } }, groupBy: 'path', sort: '-count', limit: 5 }),
     ]);
 
     const cityRow = (cityRows?.rows || []).find((r) => String(r.city || '').trim());
     return Response.json({
+      visits_24h: bySource(todayRows?.rows),
+      top_paths_24h: (pathRows?.rows || []).map((r) => ({ path: r.path || '/', count: r.count || 0 })),
       visits_7d: bySource(weekRows?.rows),
       visits_30d: bySource(monthRows?.rows),
       bookings_7d: bookingsWeek,

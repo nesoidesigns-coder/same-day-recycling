@@ -87,7 +87,7 @@ async function runEngagement(base44: any) {
   const headers = { Authorization: `Bearer ${pageToken}` };
 
   const postsRes = await fetch(
-    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_media_view){values}&limit=10`,
+    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_media_view,post_clicks){values}&limit=10`,
     { headers, signal: AbortSignal.timeout(15000) }
   );
   const postsData = await postsRes.json();
@@ -97,13 +97,18 @@ async function runEngagement(base44: any) {
 
   const today = new Date().toISOString().slice(0, 10);
   const records = (postsData.data || []).map((p: any) => {
-    const ins = p.insights && p.insights.data && p.insights.data[0];
-    const views = ins && ins.values && ins.values[0] ? Number(ins.values[0].value) || 0 : 0;
+    const insRows = (p.insights && p.insights.data) || [];
+    const metric = (name: string) => {
+      const row = insRows.find((r: any) => r.name === name);
+      const v = row && row.values && row.values[0];
+      return v ? Number(v.value) || 0 : 0;
+    };
     return {
       post_id: String(p.id),
       post_excerpt: String(p.message || '(no text)').slice(0, 120),
       posted_date: String(p.created_time || '').slice(0, 10),
-      views,
+      views: metric('post_media_view'),
+      clicks: metric('post_clicks'),
       insights_date: today,
     };
   });

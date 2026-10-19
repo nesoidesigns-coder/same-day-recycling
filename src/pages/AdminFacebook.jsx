@@ -37,6 +37,10 @@ export default function AdminFacebook() {
       );
       setLog(logPage.items || []);
     } catch {}
+    loadVisits();
+  };
+
+  const loadVisits = async () => {
     try {
       const res = await base44.functions.invoke("visitStats");
       setVisits(res.data || null);
@@ -45,6 +49,8 @@ export default function AdminFacebook() {
 
   useEffect(() => {
     load();
+    const t = setInterval(loadVisits, 60000);
+    return () => clearInterval(t);
   }, []);
 
   const toggleAutoReply = async () => {
@@ -210,6 +216,22 @@ export default function AdminFacebook() {
             </div>
           ) : (
             <p className="text-sm text-slate-500">Loading traffic data…</p>
+          )}
+          {visits?.visits_24h && (
+            <div className="mt-4 pt-4 border-t border-slate-100">
+              <p className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Live · last 24 hours</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <Stat label="Site clicks" value={visits.visits_24h.total} />
+                <Stat label="From Facebook" value={visits.visits_24h.facebook} />
+                <Stat label="From search" value={visits.visits_24h.search} />
+                <Stat label="Direct / typed" value={visits.visits_24h.direct} />
+              </div>
+              {(visits.top_paths_24h || []).length > 0 && (
+                <p className="mt-3 text-xs text-slate-500">
+                  Top pages: {(visits.top_paths_24h || []).map((r) => `${r.path} (${r.count})`).join(" · ")}
+                </p>
+              )}
+            </div>
           )}
         </div>
 

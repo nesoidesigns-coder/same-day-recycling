@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Loader2, ThumbsUp, RefreshCw, Eye } from "lucide-react";
+import { Loader2, ThumbsUp, RefreshCw, Eye, MousePointerClick } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 
@@ -56,8 +56,13 @@ export default function EngagementSection() {
           {posts.map((p) => (
             <div key={p.id} className="rounded-xl bg-[#f4f7f5] px-4 py-3 flex items-center justify-between gap-3">
               <p className="text-sm text-slate-700 truncate">{p.post_excerpt}</p>
-              <span className="flex items-center gap-1.5 text-sm font-bold text-[#0c3b24] shrink-0">
-                <Eye className="w-4 h-4 text-[#1d9e56]" /> {Number(p.views || 0).toLocaleString()}
+              <span className="flex items-center gap-3 shrink-0">
+                <span className="flex items-center gap-1.5 text-sm font-bold text-[#0c3b24]">
+                  <Eye className="w-4 h-4 text-[#1d9e56]" /> {Number(p.views || 0).toLocaleString()}
+                </span>
+                <span className="flex items-center gap-1.5 text-sm font-bold text-[#0c3b24]">
+                  <MousePointerClick className="w-4 h-4 text-[#1d9e56]" /> {Number(p.clicks || 0).toLocaleString()}
+                </span>
               </span>
             </div>
           ))}
