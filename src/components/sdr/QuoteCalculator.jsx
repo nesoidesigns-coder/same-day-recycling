@@ -2,6 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calculator, Loader2, Plus, Minus, ArrowRight } from "lucide-react";
 import { CITIES } from "@/lib/cities";
+import QuoteLeadCapture from "@/components/sdr/QuoteLeadCapture";
 
 const CATALOG = [
   "Sofa", "Loveseat", "Mattress", "Box spring", "Dining table", "Dresser",
@@ -114,6 +115,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                 >
                   Book this pickup <ArrowRight className="w-5 h-5" />
                 </button>
+                <QuoteLeadCapture itemsText={itemsText} estimate={`${quote.range} (${quote.label})`} city={city} />
               </div>
             )}
           </div>

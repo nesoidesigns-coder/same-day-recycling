@@ -18,6 +18,8 @@ import FinalCTA from "@/components/sdr/FinalCTA";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
 import HologramFeed from "@/components/sdr/HologramFeed";
 import Footer from "@/components/sdr/Footer";
+import StickyCTA from "@/components/sdr/StickyCTA";
+import ExitIntentOffer from "@/components/sdr/ExitIntentOffer";
 
 export default function Home() {
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -26,7 +28,7 @@ export default function Home() {
     document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <div className="bg-white">
+    <div className="bg-white pb-20 md:pb-0">
       <TopBar />
       <Navbar />
       <Hero />
@@ -46,6 +48,8 @@ export default function Home() {
       <FAQ />
       <FinalCTA />
       <Footer />
+      <StickyCTA />
+      <ExitIntentOffer />
     </div>
   );
 }
