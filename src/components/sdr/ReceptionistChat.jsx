@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { Image } from "@/components/ui/image";
 
 const AGENT_NAME = "receptionist";
+const MASCOT_URL = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/13c8f66bd_generated_image.png";
 
 export default function ReceptionistChat() {
   const [open, setOpen] = useState(false);
@@ -58,15 +60,18 @@ export default function ReceptionistChat() {
     <>
       <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-3">
         <span className="hidden sm:inline-block rounded-full bg-white shadow-lg border border-slate-100 px-4 py-2 text-sm font-bold text-[#0c3b24]">Chat with us</span>
-        <button onClick={handleOpen} aria-label="Chat with us" className="w-14 h-14 rounded-full bg-[#1d9e56] text-[#0c3b24] shadow-lg hover:bg-[#17a04c] transition-colors flex items-center justify-center">
-          {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        <button onClick={handleOpen} aria-label="Chat with us" className="w-14 h-14 rounded-full bg-[#1d9e56] text-[#0c3b24] shadow-lg hover:bg-[#17a04c] transition-colors flex items-center justify-center overflow-hidden">
+          {open ? <X className="w-6 h-6" /> : <Image src={MASCOT_URL} alt="Same Day Recycling AI mascot" className="w-14 h-14" fittingType="fill" />}
         </button>
       </div>
       {open && (
         <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm h-[28rem] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
-          <div className="bg-[#0c3b24] text-white px-5 py-4">
-            <div className="font-bold">Same Day Recycling</div>
-            <div className="text-xs text-[#1d9e56] font-semibold">Ask anything · Book a pickup</div>
+          <div className="bg-[#0c3b24] text-white px-5 py-4 flex items-center gap-3">
+            <Image src={MASCOT_URL} alt="Same Day Recycling AI mascot" className="w-10 h-10 rounded-full border-2 border-[#1d9e56]" fittingType="fill" />
+            <div>
+              <div className="font-bold">Same Day Recycling</div>
+              <div className="text-xs text-[#1d9e56] font-semibold">Ask anything · Book a pickup</div>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {!messages.some((m) => m.role === "assistant") && (
