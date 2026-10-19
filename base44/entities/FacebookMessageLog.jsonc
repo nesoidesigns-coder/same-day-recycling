@@ -1,0 +1,54 @@
+{
+  "name": "FacebookMessageLog",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string"
+    },
+    "message_id": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string",
+      "default": ""
+    },
+    "message_text": {
+      "type": "string",
+      "default": ""
+    },
+    "reply_text": {
+      "type": "string",
+      "default": ""
+    },
+    "error": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "conversation_id",
+    "message_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

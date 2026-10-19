@@ -40,6 +40,11 @@ export default function Footer() {
               <Lock className="w-3.5 h-3.5" /> Admin
             </Link>
           )}
+          {isAdmin && (
+            <Link to="/admin/facebook" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
+              <Lock className="w-3.5 h-3.5" /> FB AI
+            </Link>
+          )}
           {links.map((l) => (
             <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-600 hover:text-[#1d9e56] transition-colors">
               {l.label}

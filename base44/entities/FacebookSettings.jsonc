@@ -1,0 +1,46 @@
+{
+  "name": "FacebookSettings",
+  "type": "object",
+  "properties": {
+    "auto_reply_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "page_id": {
+      "type": "string",
+      "default": ""
+    },
+    "page_name": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

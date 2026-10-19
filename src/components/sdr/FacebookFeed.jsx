@@ -1,4 +1,5 @@
 import { Facebook } from "lucide-react";
+import FacebookHighlights from "./FacebookHighlights";
 
 const PAGE_URL = "https://www.facebook.com/p/SAME-DAY-Recycling-Vancouver-BC-61595167654524/";
 const PLUGIN_SRC = "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fp%2FSAME-DAY-Recycling-Vancouver-BC-61595167654524%2F&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true";
@@ -19,7 +20,8 @@ export default function FacebookFeed() {
             Real cleanouts, hauls and rescues — straight from our Facebook feed, updated automatically.
           </p>
         </div>
-        <div className="flex justify-center">
+        <div className="grid gap-6 md:grid-cols-[340px_500px] justify-center items-start">
+          <FacebookHighlights />
           <div className="w-full max-w-md overflow-hidden rounded-3xl border border-slate-100 shadow-sm">
             <iframe
               src={PLUGIN_SRC}

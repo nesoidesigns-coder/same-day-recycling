@@ -24,6 +24,7 @@ import Contact from './pages/Contact';
 import ReviewPage from './pages/ReviewPage';
 import RealtorLanding from './pages/RealtorLanding';
 import Realtors from './pages/Realtors';
+import AdminFacebook from './pages/AdminFacebook';
 import Contractors from './pages/Contractors';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
+        <Route path="/admin/facebook" element={<AdminFacebook />} />
         <Route path="/partners" element={<PartnersDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
