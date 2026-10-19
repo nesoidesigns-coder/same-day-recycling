@@ -33,7 +33,7 @@ export default function HologramFeed() {
     <section className="bg-white py-16 md:py-20 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="relative z-10 flex justify-center">
-          <AiMascotFull height={110} className="-mb-7 rounded-2xl border-2 border-[#1d9e56]/60 bg-[#f4f7f5] shadow-[0_0_24px_rgba(29,158,86,0.5)] p-1" />
+          <AiMascotFull height={110} waveOnce className="-mb-7 rounded-2xl border-2 border-[#1d9e56]/60 bg-[#f4f7f5] shadow-[0_0_24px_rgba(29,158,86,0.5)] p-1" />
         </div>
         <div className="holo-flicker holo-panel relative rounded-2xl border border-[#1d9e56]/50 bg-[#041a10] shadow-[0_0_50px_rgba(29,158,86,0.35)] overflow-hidden">
           {/* sweeping light bar */}
