@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
 
 const SECTIONS = [
@@ -49,6 +50,7 @@ export default function Privacy() {
   return (
     <div className="bg-white">
       <Navbar />
+      <RexBanner message="I recycle junk, not your data." />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Legal</div>

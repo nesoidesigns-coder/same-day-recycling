@@ -1,6 +1,7 @@
 import { Home, Clock, DollarSign, Recycle, ShieldCheck, Building2, Phone, CalendarCheck, KeyRound } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import Footer from "@/components/sdr/Footer";
 import { Image } from "@/components/ui/image";
@@ -26,6 +27,7 @@ export default function RealtorLanding() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
+      <RexBanner message="Listings photo-ready by dinner — that's my promise." />
       {/* Hero */}
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">

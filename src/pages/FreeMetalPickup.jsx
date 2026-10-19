@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import RexBanner from "@/components/sdr/RexBanner";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
 
 export default function FreeMetalPickup() {
@@ -37,6 +38,7 @@ export default function FreeMetalPickup() {
 
   return (
     <div className="bg-white">
+      <RexBanner message="Scrap metal? I'll haul it away for free — really." />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Free Metal Pickup</div>

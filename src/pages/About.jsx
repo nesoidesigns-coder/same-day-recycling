@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { Recycle, Leaf, Truck, Users } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
 
 export default function About() {
   return (
     <div className="bg-white">
       <Navbar />
+      <RexBanner message="I'm Rex, the AI running this whole operation. Nice to meet you!" />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">About us</div>

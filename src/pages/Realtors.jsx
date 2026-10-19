@@ -2,6 +2,7 @@ import { Home, Clock, DollarSign, Camera, Recycle, KeyRound, Phone } from "lucid
 import { Link } from "react-router-dom";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import TradeLeadForm from "@/components/sdr/TradeLeadForm";
 import Footer from "@/components/sdr/Footer";
 
@@ -23,6 +24,7 @@ export default function Realtors() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
+      <RexBanner message="Realtors: I make listings photo-ready by dinner." />
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 grid md:grid-cols-2 gap-12 items-center">
           <div>

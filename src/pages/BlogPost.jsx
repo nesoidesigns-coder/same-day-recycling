@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { base44 } from "@/api/base44Client";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
 
 export default function BlogPost() {
@@ -32,6 +33,7 @@ export default function BlogPost() {
     <div className="bg-white min-h-screen">
       <TopBar />
       <Navbar />
+      <RexBanner message="Fresh recycling wisdom, hot off my circuits." />
 
       <section className="bg-white">
         <div className="max-w-3xl mx-auto px-4 py-10 md:py-14">

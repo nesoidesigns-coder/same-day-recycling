@@ -1,6 +1,7 @@
 import { Hammer, Clock, DollarSign, Repeat, ShieldCheck, Phone } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import TradeLeadForm from "@/components/sdr/TradeLeadForm";
 import Footer from "@/components/sdr/Footer";
 
@@ -18,6 +19,7 @@ export default function Contractors() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
+      <RexBanner message="Contractors: I keep your sites clear on schedule." />
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 grid md:grid-cols-2 gap-12 items-center">
           <div>

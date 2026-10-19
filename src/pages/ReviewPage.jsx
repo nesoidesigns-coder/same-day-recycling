@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import RexBanner from "@/components/sdr/RexBanner";
 import { CITIES } from "@/lib/cities";
 import { Star, Loader2, CheckCircle2 } from "lucide-react";
 
@@ -40,6 +41,7 @@ export default function ReviewPage() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f5] py-12 px-4">
+      <RexBanner message="How did we do? I read every single review." />
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto rounded-3xl bg-white p-6 md:p-8 border border-slate-100 shadow-sm">
         <div className="flex gap-1 mb-2">
           {[1, 2, 3, 4, 5].map((n) => (

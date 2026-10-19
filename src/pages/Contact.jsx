@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Phone, Mail, Clock, Send, Loader2, CheckCircle2, MapPin } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
 import { CITIES } from "@/lib/cities";
 
@@ -31,6 +32,7 @@ export default function Contact() {
   return (
     <div className="bg-white">
       <Navbar />
+      <RexBanner message="Need a hand? Send a message and I'll route it straight to the crew." />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Contact</div>

@@ -1,5 +1,6 @@
 import { Printer, Recycle, CalendarCheck, Home, Building2, DollarSign, ShieldCheck, Clock, Phone } from "lucide-react";
 import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
+import RexBanner from "@/components/sdr/RexBanner";
 
 const BENEFITS = [
   {
@@ -34,6 +35,9 @@ const SCENARIOS = [
 export default function RealtorOnePager() {
   return (
     <div className="min-h-screen bg-[#f4f7f5] print:bg-white">
+      <div className="print:hidden">
+        <RexBanner message="Print this or send it — I do the cleanouts, you do the selling." />
+      </div>
       <div className="max-w-3xl mx-auto px-4 py-10 print:p-0">
         <div className="flex justify-end mb-4 print:hidden">
           <button

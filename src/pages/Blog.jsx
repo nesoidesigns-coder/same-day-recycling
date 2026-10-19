@@ -4,6 +4,7 @@ import { BookOpen, ArrowRight, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
 
@@ -25,6 +26,7 @@ export default function Blog() {
     <div className="bg-white min-h-screen">
       <TopBar />
       <Navbar />
+      <RexBanner message="Fresh recycling wisdom, hot off my circuits." />
 
       <section className="bg-[#f4f7f5]">
         <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">

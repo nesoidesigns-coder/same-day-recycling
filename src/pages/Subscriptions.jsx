@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SubSignup from "@/components/sdr/SubSignup";
+import RexBanner from "@/components/sdr/RexBanner";
 import { CalendarCheck, Zap, ShieldCheck, Recycle } from "lucide-react";
 
 const PERKS = [
@@ -12,6 +13,7 @@ const PERKS = [
 export default function Subscriptions() {
   return (
     <div className="bg-white">
+      <RexBanner message="Property managers: your recurring cleanouts, handled." />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">For property managers</div>

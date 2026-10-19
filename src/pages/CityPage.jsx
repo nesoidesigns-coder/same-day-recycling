@@ -3,6 +3,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { cityFromSlug } from "@/lib/cities";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import RexBanner from "@/components/sdr/RexBanner";
 import CityHero from "@/components/sdr/CityHero";
 import TrustBar from "@/components/sdr/TrustBar";
 import Services from "@/components/sdr/Services";
@@ -43,6 +44,7 @@ export default function CityPage() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
+      <RexBanner message="I've got this city's pricing and pickup rules memorized — just ask!" />
       <CityHero city={city} />
       <TrustBar />
       <Services />
