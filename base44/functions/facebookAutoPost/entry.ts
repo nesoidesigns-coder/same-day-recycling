@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
-import { getFacebookPage } from '../../shared/facebook.ts';
+import { getFacebookPage, FB_MARKETING_PLAYBOOK } from '../../shared/facebook.ts';
 
 const GRAPH = "https://graph.facebook.com/v25.0";
 
@@ -41,7 +41,7 @@ export default async function(req) {
     const angle = ANGLES[Math.floor(Math.random() * ANGLES.length)];
 
     const llm = await svc.integrations.Core.InvokeLLM({
-      prompt: `You write Facebook posts for "Same Day Recycling", a junk removal and same-day recycling service in Metro Vancouver, BC (Vancouver, Burnaby, Surrey, Richmond, Coquitlam, Kamloops, Kelowna). Tone: friendly, local, energetic, no hype, no em-dashes.\n\nWrite ONE short Facebook post (2-4 sentences, max 80 words) about: ${angle}.${jobs.length ? ` Use these recent real jobs for color, but NEVER mention customer names, phone numbers or street addresses: ${JSON.stringify(jobs)}.` : ''} End with a light call to action to call or text (604) 849-1745 or book online at samedayrecycling.ca, plus 2-4 hashtags.`,
+      prompt: `You write Facebook posts for "Same Day Recycling", a junk removal and same-day recycling service in Metro Vancouver, BC (Vancouver, Burnaby, Surrey, Richmond, Coquitlam, Kamloops, Kelowna). Tone: friendly, local, energetic.\n\n${FB_MARKETING_PLAYBOOK}\n\nWrite ONE short Facebook post about: ${angle}.${jobs.length ? ` Use these recent real jobs for color, but NEVER mention customer names, phone numbers or street addresses: ${JSON.stringify(jobs)}.` : ''}`,
       response_json_schema: {
         type: 'object',
         properties: { post: { type: 'string' } },
