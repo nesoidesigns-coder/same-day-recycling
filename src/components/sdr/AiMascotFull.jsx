@@ -11,8 +11,8 @@ export default function AiMascotFull({ height, waveOnce = false, className = "" 
       <Image
         src={MASCOT_FULL_URL}
         alt="Rex, the Same Day Recycling human mascot"
-        originWidth={1024}
-        originHeight={1024}
+        originWidth={402}
+        originHeight={664}
         className={`${waveOnce ? "mascot-wave-once" : "mascot-wave"} h-full w-auto drop-shadow-[0_0_14px_rgba(29,158,86,0.55)]`}
         fittingType="fit"
       />
