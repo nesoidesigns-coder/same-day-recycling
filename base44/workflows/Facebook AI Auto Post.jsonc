@@ -10,7 +10,7 @@
       "timezone": "America/Vancouver",
       "interval_value": 1,
       "interval_unit": "days",
-      "interval_anchor": "2026-10-20T17:00:00Z",
+      "interval_anchor": "2026-10-19T18:30:00Z",
       "ends_type": "never",
       "ends_on_date": null,
       "ends_after_count": null
@@ -40,6 +40,6 @@
       }
     ]
   },
-  "description": "Once a day (10am Vancouver time): AI writes one Facebook post (seeded by recent jobs, no customer details) and publishes it to the page",
+  "description": "Once a day (11:30am Vancouver time): AI writes one Facebook post (seeded by recent jobs, no customer details) and publishes it to the page",
   "name": "Facebook AI Auto Post"
 }
