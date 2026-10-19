@@ -1,0 +1,87 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday 9am: auto SEO pulls the latest Google Search Console keywords, runs the AI SEO strategist, saves the analysis, and emails the owner the top quick wins and page actions",
+  "name": "Auto SEO",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "auto_seo",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_seo": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "autoSeo",
+            "args": {}
+          },
+          "then": "check_data",
+          "x-base44": {
+            "title": "Run the weekly SEO audit",
+            "description": "Search Console keywords + AI strategist"
+          }
+        }
+      },
+      {
+        "check_data": {
+          "switch": [
+            {
+              "when": "${ (.run_seo.quick_wins // []) | length > 0 }",
+              "then": "send_report"
+            },
+            {
+              "when": "${ true }",
+              "then": "end"
+            }
+          ],
+          "x-base44": {
+            "title": "Only email when there are quick wins",
+            "description": "Skip the email if the audit found no data"
+          }
+        }
+      },
+      {
+        "send_report": {
+          "call": "send_email",
+          "with": {
+            "template_name": "AutoSeoReport",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Weekly automated SEO report to the owner",
+            "variables": {
+              "summary": "${ .run_seo.summary }",
+              "win_1": "${ .run_seo.quick_wins[0] }",
+              "win_2": "${ .run_seo.quick_wins[1] }",
+              "win_3": "${ .run_seo.quick_wins[2] }",
+              "action_1": "${ .run_seo.actions[0] }",
+              "action_2": "${ .run_seo.actions[1] }",
+              "action_3": "${ .run_seo.actions[2] }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the SEO report",
+            "description": "Weekly quick wins to the owner"
+          }
+        }
+      }
+    ]
+  }
+}
