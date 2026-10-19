@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
+import FacebookFeed from "@/components/sdr/FacebookFeed";
 
 export default function Blog() {
   const [posts, setPosts] = useState(null);
@@ -73,6 +74,8 @@ export default function Blog() {
           )}
         </div>
       </section>
+
+      <FacebookFeed />
 
       <Footer />
     </div>

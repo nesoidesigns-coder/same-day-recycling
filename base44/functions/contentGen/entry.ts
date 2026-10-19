@@ -48,7 +48,7 @@ export default async function(req) {
       topic: topic || '',
       excerpt: String(ai.excerpt || '').slice(0, 200),
       body: String(ai.body),
-      status: 'draft',
+      status: 'published',
       generated_date: new Date().toISOString().slice(0, 10),
     });
 
