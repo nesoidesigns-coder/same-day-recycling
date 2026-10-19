@@ -26,7 +26,7 @@ export default async function(req) {
       return Response.json({ error: `Google Search Console sites request failed (${sitesRes.status})` }, { status: 502 });
     }
     const sitesData = await sitesRes.json();
-    const sites = (sitesData.sitesEntry || []).map((s) => s.siteEntry.siteUrl);
+    const sites = (sitesData.siteEntry || []).map((s) => s.siteUrl);
     if (!sites.length) {
       return Response.json({ error: 'No verified properties in this Search Console account' }, { status: 404 });
     }
