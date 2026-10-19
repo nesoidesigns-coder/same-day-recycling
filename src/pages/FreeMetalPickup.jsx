@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
 
 export default function FreeMetalPickup() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", metal: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "Vancouver", metal: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -21,7 +21,7 @@ export default function FreeMetalPickup() {
         phone: form.phone,
         address: form.address,
         items_description: `FREE METAL PICKUP — ${form.metal}`,
-        quote_estimate: "Free",
+        quote_estimate: form.city === "Vancouver" ? "Free" : "Minimum charge applies",
       });
       base44.analytics.track({ eventName: 'booking_submitted' });
       if (typeof window.gtag === "function") {
@@ -45,7 +45,7 @@ export default function FreeMetalPickup() {
             <span className="text-[#1d9e56]">We haul it, you pay $0</span>
           </h1>
           <p className="mt-6 text-lg text-slate-300 max-w-xl leading-relaxed">
-            Old or broken appliances, car parts, bikes — anything metal. Free same-day pickup across Vancouver and the Lower Mainland. We recycle every load.
+            Old or broken appliances, car parts, bikes — anything metal. Free same-day pickup within Vancouver. Elsewhere in the Lower Mainland our minimum pickup charge applies. We recycle every load.
           </p>
           <a
             href="tel:+16048491745"
@@ -65,7 +65,7 @@ export default function FreeMetalPickup() {
             <CheckCircle2 className="w-12 h-12 text-[#1d9e56] mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-[#0c3b24]">You're booked!</h3>
             <p className="mt-3 text-slate-600">
-              We'll text or call you shortly to confirm your free same-day pickup.
+              We'll text or call you shortly to confirm your pickup{form.city === "Vancouver" ? " — free of charge" : " and the minimum charge"}.
             </p>
           </div>
         ) : (
@@ -81,6 +81,17 @@ export default function FreeMetalPickup() {
             <label className="block">
               <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Phone</span>
               <input required type="tel" value={form.phone} onChange={set("phone")} className="input" placeholder="(604) 555-1234" />
+            </label>
+            <label className="block">
+              <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">City</span>
+              <select value={form.city} onChange={set("city")} className="input">
+                {["Vancouver", "Burnaby", "Richmond", "Surrey", "Coquitlam", "Port Coquitlam", "Port Moody", "Kamloops", "Kelowna", "Other Lower Mainland"].map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              {form.city !== "Vancouver" && (
+                <span className="block mt-1.5 text-xs text-slate-500">Metal pickup in {form.city} isn't free — our minimum pickup charge applies and we'll confirm the price before lifting anything.</span>
+              )}
             </label>
             <label className="block">
               <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Pickup address</span>
@@ -103,7 +114,7 @@ export default function FreeMetalPickup() {
               className="w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wrench className="w-5 h-5" />}
-              {saving ? "Booking…" : "Book my free pickup"}
+              {saving ? "Booking…" : form.city === "Vancouver" ? "Book my free pickup" : "Book pickup (minimum charge applies)"}
             </button>
             {error && <p className="text-sm text-red-600">{error}</p>}
           </form>

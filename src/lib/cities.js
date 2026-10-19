@@ -35,7 +35,7 @@ export const CITIES = [
     lat: 49.1913,
     lng: -122.849,
     radius: 12000,
-    blurb: "Junk disposal in Surrey with same-day furniture removal for Surrey, White Rock, Cloverdale, Guildford, Newton, Fleetwood and South Surrey — sofa removal, appliance pickup, mattress disposal, garage cleanouts, estate cleanouts, renovation debris and yard waste, hauled the same day you call. Free metal and appliance pickup available.",
+    blurb: "Junk disposal in Surrey with same-day furniture removal for Surrey, White Rock, Cloverdale, Guildford, Newton, Fleetwood and South Surrey — sofa removal, appliance pickup, mattress disposal, garage cleanouts, estate cleanouts, renovation debris and yard waste, hauled the same day you call. Metal and appliance pickup available (free in Vancouver; minimum charge applies elsewhere).",
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Surrey BC",
     seo_description: "Same-day junk removal in Surrey BC — junk disposal today with furniture, appliance, mattress and yard waste removal plus garage, estate and renovation cleanouts in White Rock, Cloverdale, Guildford, Newton and Fleetwood. Upfront pricing, insured crews, eco-friendly disposal.",
   },
