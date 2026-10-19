@@ -1,0 +1,64 @@
+{
+  "name": "Service Query Tracker",
+  "description": "Every day at 8am, the AI hunts the live web (Reddit, Kijiji, Facebook groups, forums) and Google Search Console for people asking about the services we offer, saves every new query, and emails the owner a digest",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "service_query_tracker",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "hunt_queries": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "queryHunter",
+            "args": {}
+          },
+          "then": "send_digest",
+          "x-base44": {
+            "title": "AI hunts service queries",
+            "description": "Live web + Google search terms, saved and deduped"
+          }
+        }
+      },
+      {
+        "send_digest": {
+          "call": "send_email",
+          "with": {
+            "template_name": "ServiceQueryDigest",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Daily digest of new service queries found on the web",
+            "variables": {
+              "new_count": "${ .hunt_queries.saved_new }",
+              "query_list": "${ .hunt_queries.query_list }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the digest",
+            "description": "New queries to the owner"
+          }
+        }
+      }
+    ]
+  }
+}

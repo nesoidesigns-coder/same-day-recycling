@@ -1,0 +1,78 @@
+{
+  "name": "ServiceQuery",
+  "type": "object",
+  "properties": {
+    "query_text": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "web_hunt",
+        "receptionist",
+        "search_console"
+      ],
+      "default": "web_hunt"
+    },
+    "platform": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "service": {
+      "type": "string",
+      "default": ""
+    },
+    "asker_or_url": {
+      "type": "string",
+      "default": ""
+    },
+    "intent": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "reviewed",
+        "acted",
+        "dismissed"
+      ],
+      "default": "new"
+    },
+    "captured_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "query_text"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import ResearchTab from "@/components/admin/ResearchTab";
 import AnalyticsTab from "@/components/admin/AnalyticsTab";
 import LiveTrackerTab from "@/components/admin/LiveTrackerTab";
 import SystemsTab from "@/components/admin/SystemsTab";
+import QueryTrackerTab from "@/components/admin/QueryTrackerTab";
 
 const TABS = [
   { key: "live", label: "Live Tracker" },
@@ -17,6 +18,7 @@ const TABS = [
   { key: "research", label: "AI Research" },
   { key: "analytics", label: "Analytics" },
   { key: "systems", label: "Systems" },
+  { key: "queries", label: "Query Tracker" },
 ];
 
 export default function AdminMarketing() {
@@ -59,7 +61,7 @@ export default function AdminMarketing() {
           </a>
         </div>
 
-        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : <ResearchTab />}
+        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : <ResearchTab />}
       </div>
       <Footer />
     </div>
