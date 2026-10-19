@@ -14,6 +14,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 import AdminPricing from './pages/AdminPricing';
 import CityPage from './pages/CityPage';
 import AdminJobs from './pages/AdminJobs';
@@ -72,6 +74,8 @@ const AuthenticatedApp = () => {
       <Route path="/free-metal-pickup" element={<FreeMetalPickup />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
       <Route path="/review" element={<ReviewPage />} />
       <Route path="/realtors" element={<Realtors />} />
       <Route path="/contractors" element={<Contractors />} />

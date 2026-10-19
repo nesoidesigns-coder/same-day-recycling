@@ -12,6 +12,8 @@ const links = [
   { label: "Blog", to: "/blog" },
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "Leave a Review", to: "/review" },
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Terms of Service", to: "/terms" },
 ];
 
 export default function Footer() {
