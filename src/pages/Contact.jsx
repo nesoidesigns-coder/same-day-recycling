@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Phone, Send, Loader2, CheckCircle2, MapPin } from "lucide-react";
+import { Phone, Mail, Clock, Send, Loader2, CheckCircle2, MapPin } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { CITIES } from "@/lib/cities";
@@ -52,6 +52,24 @@ export default function Contact() {
               <div className="text-slate-600">(604) 849-1745</div>
             </div>
           </a>
+          <a href="mailto:samedayrecycling@gmail.com" className="flex items-center gap-4 rounded-2xl bg-[#f4f7f5] p-6 hover:bg-[#e8f2ec] transition-colors">
+            <span className="w-12 h-12 rounded-2xl bg-[#1d9e56]/15 flex items-center justify-center shrink-0">
+              <Mail className="w-5 h-5 text-[#1d9e56]" />
+            </span>
+            <div>
+              <div className="font-bold text-[#0c3b24]">Email us</div>
+              <div className="text-slate-600">samedayrecycling@gmail.com</div>
+            </div>
+          </a>
+          <div className="rounded-2xl bg-[#f4f7f5] p-6 flex items-center gap-4">
+            <span className="w-12 h-12 rounded-2xl bg-[#1d9e56]/15 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5 text-[#1d9e56]" />
+            </span>
+            <div>
+              <div className="font-bold text-[#0c3b24]">Hours</div>
+              <div className="text-slate-600">Open 24 hours — book any time, day or night.</div>
+            </div>
+          </div>
           <div className="rounded-2xl bg-[#f4f7f5] p-6">
             <div className="flex items-center gap-3 font-bold text-[#0c3b24] mb-3">
               <MapPin className="w-5 h-5 text-[#1d9e56]" /> Service area

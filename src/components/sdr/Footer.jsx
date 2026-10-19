@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Recycle, Phone, Lock } from "lucide-react";
+import { Recycle, Phone, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import VisitTracker from "./VisitTracker";
@@ -56,10 +56,17 @@ export default function Footer() {
             </Link>
           ))}
         </nav>
-        <a href="tel:+16048491745" className="flex items-center gap-2 text-slate-700 font-medium hover:text-[#1d9e56] transition-colors">
-          <Phone className="w-4 h-4 text-[#1d9e56]" />
-          (604) 849-1745 · Eco-friendly disposal
-        </a>
+        <div className="flex flex-col items-start md:items-end gap-1.5 text-sm">
+          <a href="tel:+16048491745" className="flex items-center gap-2 text-slate-700 font-medium hover:text-[#1d9e56] transition-colors">
+            <Phone className="w-4 h-4 text-[#1d9e56]" />
+            (604) 849-1745
+          </a>
+          <a href="mailto:samedayrecycling@gmail.com" className="flex items-center gap-2 text-slate-700 font-medium hover:text-[#1d9e56] transition-colors">
+            <Mail className="w-4 h-4 text-[#1d9e56]" />
+            samedayrecycling@gmail.com
+          </a>
+          <div className="text-slate-600">Open 24 hours · Vancouver, BC</div>
+        </div>
       </div>
       <VisitTracker />
     </footer>
