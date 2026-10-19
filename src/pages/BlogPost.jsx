@@ -33,7 +33,7 @@ export default function BlogPost() {
     <div className="bg-white min-h-screen">
       <TopBar />
       <Navbar />
-      <RexBanner message="Fresh recycling wisdom, hot off my circuits." />
+      <RexBanner message="Fresh recycling tips, straight from the crew." />
 
       <section className="bg-white">
         <div className="max-w-3xl mx-auto px-4 py-10 md:py-14">

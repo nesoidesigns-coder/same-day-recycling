@@ -7,7 +7,7 @@ const SECTIONS = [
   {
     h: "Our services",
     p: [
-      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup across Vancouver, the Lower Mainland and other BC cities we serve. Booking by phone, text, website form or through our AI receptionist creates a service request.",
+      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup across Vancouver, the Lower Mainland and other BC cities we serve. Booking by phone, text, website form or through our online booking assistant creates a service request.",
     ],
   },
   {

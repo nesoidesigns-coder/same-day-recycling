@@ -26,7 +26,7 @@ export default function Blog() {
     <div className="bg-white min-h-screen">
       <TopBar />
       <Navbar />
-      <RexBanner message="Fresh recycling wisdom, hot off my circuits." />
+      <RexBanner message="Fresh recycling tips, straight from the crew." />
 
       <section className="bg-[#f4f7f5]">
         <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">

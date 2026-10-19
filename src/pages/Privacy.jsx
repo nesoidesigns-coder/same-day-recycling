@@ -8,7 +8,7 @@ const SECTIONS = [
     h: "Information we collect",
     p: [
       "When you book a pickup, request a quote, or contact us, we collect the details you give us: your name, phone number, email address, pickup address, the description of your items and any photos you attach.",
-      "If you chat with our AI receptionist, we keep a record of the conversation so we can follow up on your request. If you leave a review, we keep the name, rating and text you submit.",
+      "If you chat with our online booking assistant, we keep a record of the conversation so we can follow up on your request. If you leave a review, we keep the name, rating and text you submit.",
       "We also collect basic website analytics (pages visited, how you found us) to improve the site. This data is not used to identify you personally.",
     ],
   },
