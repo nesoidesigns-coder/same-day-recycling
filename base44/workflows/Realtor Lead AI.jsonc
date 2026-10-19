@@ -28,38 +28,10 @@
               "lead_id": "${ .trigger.entity_id }"
             }
           },
-          "then": "notify_owner",
-          "x-base44": {
-            "title": "AI prices and drafts reply",
-            "description": "Estimates load size, quotes it, drafts response"
-          }
-        }
-      },
-      {
-        "notify_owner": {
-          "call": "send_email",
-          "with": {
-            "template_name": "RealtorLeadAlert",
-            "to": "nesoidesigns@gmail.com",
-            "description": "Lead details with the AI quote and drafted reply",
-            "variables": {
-              "agent_name": "${ .trigger.data.agent_name }",
-              "brokerage": "${ .trigger.data.brokerage }",
-              "phone": "${ .trigger.data.phone }",
-              "email": "${ .trigger.data.email }",
-              "city": "${ .trigger.data.city }",
-              "property_address": "${ .trigger.data.property_address }",
-              "items_description": "${ .trigger.data.items_description }",
-              "preferred_date": "${ .trigger.data.preferred_date }",
-              "quote_range": "${ .process_lead.quote_range }",
-              "load_label": "${ .process_lead.load_label }",
-              "ai_reply": "${ .process_lead.ai_reply }"
-            }
-          },
           "then": "end",
           "x-base44": {
-            "title": "Email the owner",
-            "description": "Lead alert with AI-drafted reply"
+            "title": "AI prices, drafts reply, emails owner",
+            "description": "Estimates the load, quotes it, drafts the response and emails the owner"
           }
         }
       }

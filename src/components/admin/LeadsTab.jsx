@@ -87,3 +87,34 @@ export default function LeadsTab() {
     </div>
   );
 }
+
+function AiBlock({ lead }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(lead.ai_reply || "");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+  return (
+    <div className="mt-3 rounded-2xl bg-[#f4f7f5] p-4">
+      <div className="flex items-center gap-2 flex-wrap">
+        <Sparkles className="w-4 h-4 text-[#1d9e56]" />
+        <span className="text-xs font-bold text-[#0c3b24]">AI processed</span>
+        {lead.quote_low ? (
+          <span className="rounded-full bg-[#1d9e56]/15 px-3 py-1 text-xs font-bold text-[#0c3b24]">
+            ${Number(lead.quote_low).toLocaleString()} – ${Number(lead.quote_high).toLocaleString()} · {lead.load_label || "estimate"}
+          </span>
+        ) : null}
+        {lead.ai_reply && (
+          <button onClick={copy} className="ml-auto flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-[#0c3b24] hover:border-[#1d9e56] transition-colors">
+            {copied ? <Check className="w-3.5 h-3.5 text-[#1d9e56]" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? "Copied" : "Copy reply"}
+          </button>
+        )}
+      </div>
+      {lead.ai_reply && <p className="text-sm text-slate-600 mt-2 leading-relaxed">{lead.ai_reply}</p>}
+    </div>
+  );
+}

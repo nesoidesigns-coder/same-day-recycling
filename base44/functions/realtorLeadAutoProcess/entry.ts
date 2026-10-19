@@ -62,13 +62,7 @@ export default async function(req) {
     } catch {}
 
     // 3. Save the AI results on the lead
-    await svc.entities.RealtorLead.update(leadId, {
-      ...(quote ? { load_label: quote.label, quote_low: quote.low, quote_high: quote.high } : {}),
-      ...(aiReply ? { ai_reply: String(aiReply).slice(0, 2000) } : {}),
-      ai_processed: true,
-    });
-
-    return Response.json({
+    const payload = {
       ok: true,
       lead_id: leadId,
       agent_name: lead.agent_name,
@@ -83,7 +77,35 @@ export default async function(req) {
       load_label: quote ? quote.label : '',
       ai_reply: String(aiReply || '').slice(0, 2000),
       owner_email: OWNER_EMAIL,
+    };
+    await svc.entities.RealtorLead.update(leadId, {
+      ...(quote ? { load_label: quote.label, quote_low: quote.low, quote_high: quote.high } : {}),
+      ...(aiReply ? { ai_reply: payload.ai_reply } : {}),
+      ai_processed: true,
     });
+
+    // 4. Email the owner the AI-processed alert
+    try {
+      await svc.integrations.Core.SendEmail({
+        to: OWNER_EMAIL,
+        template_name: 'RealtorLeadAlert',
+        variables: {
+          agent_name: payload.agent_name,
+          brokerage: payload.brokerage,
+          phone: payload.phone,
+          email: payload.email,
+          city: payload.city,
+          property_address: payload.property_address,
+          items_description: payload.items_description,
+          preferred_date: payload.preferred_date,
+          quote_range: payload.quote_range,
+          load_label: payload.load_label,
+          ai_reply: payload.ai_reply,
+        },
+      });
+    } catch {}
+
+    return Response.json(payload);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
