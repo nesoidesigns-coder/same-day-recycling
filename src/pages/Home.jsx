@@ -16,6 +16,7 @@ import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
+import HologramFeed from "@/components/sdr/HologramFeed";
 import Footer from "@/components/sdr/Footer";
 
 export default function Home() {
@@ -31,6 +32,7 @@ export default function Home() {
       <FacebookFeed />
       <Hero />
       <TrustBar />
+      <HologramFeed />
       <Services />
       <HowItWorks />
       <CitySelector />
