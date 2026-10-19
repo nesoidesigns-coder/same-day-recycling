@@ -5,10 +5,12 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import FollowUpsTab from "@/components/admin/FollowUpsTab";
 import SeoInsightsTab from "@/components/admin/SeoInsightsTab";
+import ResearchTab from "@/components/admin/ResearchTab";
 
 const TABS = [
   { key: "followups", label: "AI Follow-ups" },
   { key: "seo", label: "SEO Insights" },
+  { key: "research", label: "AI Research" },
 ];
 
 export default function AdminMarketing() {
@@ -51,7 +53,7 @@ export default function AdminMarketing() {
           </a>
         </div>
 
-        {tab === "followups" ? <FollowUpsTab /> : <SeoInsightsTab />}
+        {tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : <ResearchTab />}
       </div>
       <Footer />
     </div>

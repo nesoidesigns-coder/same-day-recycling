@@ -1,0 +1,68 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * 2",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Tuesday 8am, the AI analyzes the week's traffic, bookings, leads and Google search rankings, adds live market research, and emails the owner 3 concrete actions to grow bookings",
+  "name": "AI Insights Report",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_insights_report",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "gather_insights": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "aiInsightsReport",
+            "args": {}
+          },
+          "then": "send_report",
+          "x-base44": {
+            "title": "AI analyzes the week",
+            "description": "Traffic, search data and live market research"
+          }
+        }
+      },
+      {
+        "send_report": {
+          "call": "send_email",
+          "with": {
+            "template_name": "AiInsightsReport",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Weekly AI growth insights with 3 concrete actions",
+            "variables": {
+              "summary": "${ .gather_insights.summary }",
+              "top_takeaway": "${ .gather_insights.top_takeaway }",
+              "action_1": "${ .gather_insights.actions[0] }",
+              "action_2": "${ .gather_insights.actions[1] }",
+              "action_3": "${ .gather_insights.actions[2] }",
+              "marketing_move": "${ .gather_insights.marketing_move }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the insights",
+            "description": "Weekly AI report to the owner"
+          }
+        }
+      }
+    ]
+  }
+}

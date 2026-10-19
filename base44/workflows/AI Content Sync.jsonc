@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday 7am, the AI researches live web sources and writes a fresh, genuinely useful blog article for the site, saved as a draft for owner review",
+  "name": "AI Content Sync",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_content_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "write_article": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "contentGen",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "AI writes a blog article",
+            "description": "Live web research, saved as a draft"
+          }
+        }
+      }
+    ]
+  }
+}
