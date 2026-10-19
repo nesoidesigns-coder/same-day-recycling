@@ -1,0 +1,40 @@
+{
+  "name": "Booking to Calendar",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "booking_to_calendar",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "create_calendar_event": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "addBookingToCalendar",
+            "args": {
+              "booking_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Create calendar event",
+            "description": "Adds the pickup to Google Calendar"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "Booking"
+    }
+  },
+  "description": "Creates a Google Calendar event automatically whenever a new pickup is booked through the site"
+}
