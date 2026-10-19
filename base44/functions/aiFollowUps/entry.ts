@@ -12,6 +12,10 @@ const ROUND_PLAYBOOK = {
 
 const esc = (s) => String(s || '').replace(/</g, '&lt;');
 
+// All dates the business reasons about are Vancouver local dates, never UTC
+const vancouverToday = () =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver' }).format(new Date());
+
 const wrapEmail = (message) =>
   `<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px">` +
   `<p style="color:#0c3b24;font-size:15px;line-height:1.6">${esc(message)}</p>` +
@@ -103,7 +107,7 @@ export default async function(req) {
     });
 
     const drafts = ai.followups || [];
-    const today = new Date().toISOString().slice(0, 10);
+    const today = vancouverToday();
     const leadById = new Map(activeLeads.map((l) => [l.id, l]));
     const bookingById = new Map(activeBookings.map((b) => [b.id, b]));
 
