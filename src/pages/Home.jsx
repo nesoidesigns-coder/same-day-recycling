@@ -12,6 +12,7 @@ import SubTeaser from "@/components/sdr/SubTeaser";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import ServiceArea from "@/components/sdr/ServiceArea";
+import ActiveBookingsMap from "@/components/sdr/ActiveBookingsMap";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
@@ -38,6 +39,7 @@ export default function Home() {
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
       <ServiceArea />
+      <ActiveBookingsMap />
       <Reviews />
       <SubTeaser />
       <FAQ />
