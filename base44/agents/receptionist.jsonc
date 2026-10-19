@@ -104,6 +104,10 @@
       "description": "Pull live Facebook numbers: pass {action: 'engagement'} to refresh per-post views, link clicks and page engagement from the page"
     },
     {
+      "function_name": "tiktokInsights",
+      "description": "Pull live TikTok insights for @samedayrecycling: profile stats (followers, likes, video count), totals and top videos by views. Pass {}. Read-only - publishing happens in the TikTok app."
+    },
+    {
       "entity_name": "Review",
       "allowed_operations": [
         "read",
