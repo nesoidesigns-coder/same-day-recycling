@@ -1,6 +1,6 @@
 import { Facebook } from "lucide-react";
 
-const PAGE_URL = "https://www.facebook.com/p/SAME-DAY-Recycling-Vancouver-BC-61595167654524/";
+const PAGE_URL = "https://www.facebook.com/profile.php?id=61595167654524";
 const PLUGIN_SRC = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(PAGE_URL)}&tabs=timeline&width=500&height=700&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&locale=en_CA`;
 
 export default function FacebookFeed() {
