@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Paperclip } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
 import AiMascotFull from "./AiMascotFull";
@@ -16,6 +16,9 @@ export default function ReceptionistChat() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [starting, setStarting] = useState(false);
+  const [attached, setAttached] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -50,13 +53,38 @@ export default function ReceptionistChat() {
     }
   };
 
+  const pickFiles = () => fileInputRef.current?.click();
+
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith("image/")).slice(0, 3);
+    if (!files.length) return;
+    setUploading(true);
+    try {
+      const urls = [];
+      for (const file of files) {
+        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+        if (file_url) urls.push(file_url);
+      }
+      setAttached((a) => [...a, ...urls].slice(0, 3));
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const send = async (preset) => {
     const text = (typeof preset === "string" ? preset : input).trim();
-    if (!text || !conversation || sending) return;
+    if ((!text && !attached.length) || !conversation || sending || uploading) return;
+    const file_urls = attached;
+    setAttached([]);
     setInput("");
     setSending(true);
     try {
-      await base44.agents.addMessage(conversation, { role: "user", content: text });
+      await base44.agents.addMessage(conversation, {
+        role: "user",
+        content: text || "Here are photos of the junk.",
+        ...(file_urls.length ? { file_urls } : {}),
+      });
     } finally {
       setSending(false);
     }
@@ -138,14 +166,37 @@ export default function ReceptionistChat() {
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 {m.role === "user"
-                  ? <div className="bg-[#0c3b24] text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm max-w-[85%] whitespace-pre-wrap">{m.content}</div>
+                  ? <div className="bg-[#0c3b24] text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm max-w-[85%]">
+                      {m.file_urls?.length ? (
+                        <div className="flex flex-wrap gap-1.5 mb-1.5">
+                          {m.file_urls.map((u, j) => (
+                            <img key={j} src={u} alt="Junk photo" className="w-24 h-24 object-cover rounded-lg border border-white/20" />
+                          ))}
+                        </div>
+                      ) : null}
+                      {m.content && <div className="whitespace-pre-wrap">{m.content}</div>}
+                    </div>
                   : <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[85%] prose prose-sm"><ReactMarkdown>{m.content}</ReactMarkdown></div>}
               </div>
             ))}
             {sending && <div className="flex justify-start text-xs text-slate-400">typing…</div>}
             <div ref={bottomRef} />
           </div>
-          <div className="border-t border-slate-100 p-3 flex gap-2">
+          {attached.length > 0 && (
+            <div className="px-3 pt-2 flex gap-1.5">
+              {attached.map((u, i) => (
+                <button key={i} onClick={() => setAttached((a) => a.filter((_, j) => j !== i))} aria-label="Remove photo" className="relative">
+                  <img src={u} alt="Attached" className="w-10 h-10 rounded-lg object-cover border border-slate-200" />
+                  <X className="w-3.5 h-3.5 absolute -top-1 -right-1 bg-white rounded-full border border-slate-200 text-slate-500" />
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="border-t border-slate-100 p-3 flex gap-2 items-center">
+            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFiles} />
+            <button onClick={pickFiles} disabled={uploading || attached.length >= 3} aria-label="Attach photos" className="w-10 h-10 rounded-full border border-slate-200 text-[#0c3b24] flex items-center justify-center hover:border-[#1d9e56] transition-colors disabled:opacity-50 shrink-0">
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
+            </button>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -153,7 +204,7 @@ export default function ReceptionistChat() {
               placeholder="Type a message…"
               className="flex-1 rounded-full border border-slate-200 px-4 py-2.5 text-sm focus:border-[#1d9e56] focus:outline-none"
             />
-            <button onClick={send} disabled={!input.trim() || sending} aria-label="Send" className="w-10 h-10 rounded-full bg-[#1d9e56] text-[#0c3b24] flex items-center justify-center disabled:opacity-50 shrink-0">
+            <button onClick={send} disabled={(!input.trim() && !attached.length) || sending || uploading} aria-label="Send" className="w-10 h-10 rounded-full bg-[#1d9e56] text-[#0c3b24] flex items-center justify-center disabled:opacity-50 shrink-0">
               <Send className="w-4 h-4" />
             </button>
           </div>

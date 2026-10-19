@@ -7,6 +7,9 @@ export default async function(req) {
     const body = await req.json();
     const items = Array.isArray(body?.items) ? body.items.slice(0, 50) : null;
     const description = typeof body?.description === 'string' ? body.description.slice(0, 1000) : '';
+    const image_urls = Array.isArray(body?.image_urls)
+      ? body.image_urls.filter((u) => typeof u === 'string' && /^https:\/\//i.test(u)).slice(0, 4)
+      : [];
 
     const city = typeof body?.city === 'string' ? body.city.slice(0, 60) : '';
     const readRows = (page) => (Array.isArray(page) ? page : page?.items) || [];
@@ -40,9 +43,13 @@ export default async function(req) {
         quantity: Math.max(0, Math.min(50, Number(i.quantity) || 1)),
       }));
       eighths = itemsToEighths(estimateItems);
-    } else if (description) {
+    } else if (description || image_urls.length) {
       const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
-        prompt: 'A customer describes junk they need removed: "' + description + '". Estimate how much space this load takes in a standard junk-removal truck, measured in EIGHTHS of a full truck (0 to 8). Rough guide: one sofa = 1.2, loveseat = 0.8, mattress or box spring = 0.8, dining table = 0.7, dresser = 0.7, fridge = 1.0, washer = 0.8, dryer, stove or dishwasher = 0.5-0.7, treadmill = 0.8, TV = 0.3, one bag or box of junk = 0.15, a small renovation debris pile (drywall, lumber, flooring) = 2-4, a full garage = 8. List the recognized items with quantities. Be conservative, do not overestimate.',
+        ...(image_urls.length ? { file_urls: image_urls } : {}),
+        prompt: (image_urls.length
+          ? 'A customer sends photo(s) of junk they need removed' + (description ? ' and describes it: "' + description + '"' : '')
+          : 'A customer describes junk they need removed: "' + description + '"') +
+          '. Use the customer photo(s) to identify the items and their volume. Estimate how much space this load takes in a standard junk-removal truck, measured in EIGHTHS of a full truck (0 to 8). Rough guide: one sofa = 1.2, loveseat = 0.8, mattress or box spring = 0.8, dining table = 0.7, dresser = 0.7, fridge = 1.0, washer = 0.8, dryer, stove or dishwasher = 0.5-0.7, treadmill = 0.8, TV = 0.3, one bag or box of junk = 0.15, a small renovation debris pile (drywall, lumber, flooring) = 2-4, a full garage = 8. List the recognized items with quantities. Be conservative, do not overestimate.',
         response_json_schema: {
           type: 'object',
           properties: {
@@ -65,7 +72,7 @@ export default async function(req) {
         quantity: Number(i.quantity) || 1,
       }));
     } else {
-      return Response.json({ error: 'Provide items or a description.' }, { status: 400 });
+      return Response.json({ error: 'Provide items, a description, or photos.' }, { status: 400 });
     }
 
     const quote = computeQuote(eighths, prices);
