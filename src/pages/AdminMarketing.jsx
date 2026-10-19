@@ -12,12 +12,14 @@ import SystemsTab from "@/components/admin/SystemsTab";
 import QueryTrackerTab from "@/components/admin/QueryTrackerTab";
 import CoCreatorTab from "@/components/admin/CoCreatorTab";
 import CompetitorsTab from "@/components/admin/CompetitorsTab";
+import SearchConsoleTab from "@/components/admin/SearchConsoleTab";
 
 const TABS = [
   { key: "live", label: "Live Tracker" },
   { key: "competitors", label: "Competitors" },
   { key: "followups", label: "AI Follow-ups" },
   { key: "seo", label: "SEO Insights" },
+  { key: "keywords", label: "Keywords" },
   { key: "research", label: "AI Research" },
   { key: "analytics", label: "Analytics" },
   { key: "systems", label: "Systems" },
@@ -65,7 +67,7 @@ export default function AdminMarketing() {
           </a>
         </div>
 
-        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : tab === "cocreator" ? <CoCreatorTab /> : tab === "competitors" ? <CompetitorsTab /> : <ResearchTab />}
+        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "keywords" ? <SearchConsoleTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : tab === "cocreator" ? <CoCreatorTab /> : tab === "competitors" ? <CompetitorsTab /> : <ResearchTab />}
       </div>
       <Footer />
     </div>
