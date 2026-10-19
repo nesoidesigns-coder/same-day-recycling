@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Loader2, Search, Lightbulb, BookOpen, CheckCircle2, Eye, EyeOff, ExternalLink, Sparkles } from "lucide-react";
+import { Loader2, Search, Lightbulb, BookOpen, CheckCircle2, Eye, EyeOff, ExternalLink, Sparkles, History, Trash2, ChevronDown, MessageCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 
@@ -10,6 +10,22 @@ export default function ResearchTab() {
   const [error, setError] = useState("");
   const [posts, setPosts] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [history, setHistory] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+
+  const loadHistory = async () => {
+    try {
+      const { items } = await base44.entities.ResearchResult.filter({}, { sort: "-created_date", limit: 30 });
+      setHistory(items);
+    } catch {
+      setHistory([]);
+    }
+  };
+
+  const deleteResearch = async (id) => {
+    await base44.entities.ResearchResult.delete(id);
+    loadHistory();
+  };
 
   const loadPosts = async () => {
     try {
@@ -20,7 +36,7 @@ export default function ResearchTab() {
     }
   };
 
-  useEffect(() => { loadPosts(); }, []);
+  useEffect(() => { loadPosts(); loadHistory(); }, []);
 
   const research = async () => {
     if (!topic.trim()) { setError("Type a topic first"); return; }
@@ -30,6 +46,7 @@ export default function ResearchTab() {
     try {
       const res = await base44.functions.invoke("aiResearch", { topic });
       setResult(res.data);
+      loadHistory();
     } catch (e) {
       setError(e?.message || "Research failed");
     }
@@ -112,6 +129,90 @@ export default function ResearchTab() {
                 </ul>
               </div>
             )}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-slate-100 p-5">
+        <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-2">
+          <History className="w-4 h-4 text-[#1d9e56]" /> Research history
+        </h2>
+        <p className="text-sm text-slate-500 mb-4">
+          Every research report is saved here — from the tool above and from web lookups the AI receptionist does while chatting with visitors.
+        </p>
+
+        {history === null && (
+          <div className="flex items-center justify-center py-6">
+            <div className="w-6 h-6 border-4 border-slate-200 border-t-[#1d9e56] rounded-full animate-spin"></div>
+          </div>
+        )}
+        {history !== null && history.length === 0 && (
+          <p className="text-sm text-slate-500">No saved research yet.</p>
+        )}
+        {history !== null && history.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {history.map((r) => {
+              const open = expandedId === r.id;
+              return (
+                <div key={r.id} className="rounded-xl bg-[#f4f7f5] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <button onClick={() => setExpandedId(open ? null : r.id)} className="min-w-0 text-left flex-1">
+                      <p className="font-semibold text-[#0c3b24] text-sm truncate">{r.topic}</p>
+                      <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                        {r.origin === "receptionist" && <MessageCircle className="w-3 h-3" />}
+                        {r.origin === "receptionist" ? "From AI receptionist" : "From research tool"}
+                        &nbsp;· {new Date(r.created_date).toLocaleString()}
+                      </p>
+                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => setExpandedId(open ? null : r.id)}
+                        className="p-2 text-slate-500 hover:text-[#1d9e56] transition-colors"
+                        aria-label="Toggle details"
+                      >
+                        <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
+                      </button>
+                      <button
+                        onClick={() => deleteResearch(r.id)}
+                        className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                        aria-label="Delete research"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  {open && (
+                    <div className="mt-3 pt-3 border-t border-slate-200 flex flex-col gap-3 text-sm">
+                      <p className="text-slate-700">{r.summary}</p>
+                      {r.key_takeaways?.length > 0 && (
+                        <div>
+                          <h4 className="font-bold text-[#0c3b24] text-xs mb-1">Key takeaways</h4>
+                          <ul className="list-disc pl-5 text-slate-600 flex flex-col gap-1">
+                            {r.key_takeaways.map((t, i) => <li key={i}>{t}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {r.opportunities?.length > 0 && (
+                        <div>
+                          <h4 className="font-bold text-[#0c3b24] text-xs mb-1">Opportunities</h4>
+                          <ul className="list-disc pl-5 text-slate-600 flex flex-col gap-1">
+                            {r.opportunities.map((o, i) => <li key={i}>{o}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {r.sources?.length > 0 && (
+                        <div>
+                          <h4 className="font-bold text-[#0c3b24] text-xs mb-1">Sources</h4>
+                          <ul className="list-disc pl-5 text-xs text-slate-500 flex flex-col gap-1">
+                            {r.sources.map((s, i) => <li key={i}>{s}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
+import { waitUntil } from 'base44:runtime';
 
 export default async function(req) {
   try {
@@ -17,7 +18,17 @@ export default async function(req) {
       add_context_from_internet: true,
     });
 
-    return Response.json({ ok: true, answer: String(ai).slice(0, 1200) });
+    const answer = String(ai).slice(0, 1200);
+
+    waitUntil(
+      base44.asServiceRole.entities.ResearchResult.create({
+        topic: question,
+        summary: answer,
+        origin: 'receptionist',
+      }).catch((saveErr) => console.error('Failed to save research:', saveErr))
+    );
+
+    return Response.json({ ok: true, answer });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

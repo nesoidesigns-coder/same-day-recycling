@@ -1,0 +1,72 @@
+{
+  "name": "ResearchResult",
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "default": ""
+    },
+    "key_takeaways": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "origin": {
+      "type": "string",
+      "enum": [
+        "admin_tool",
+        "receptionist"
+      ],
+      "default": "admin_tool"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "topic"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

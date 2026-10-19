@@ -32,6 +32,19 @@ export default async function(req) {
       },
     });
 
+    try {
+      await base44.entities.ResearchResult.create({
+        topic,
+        summary: ai.summary || '',
+        key_takeaways: ai.key_takeaways || [],
+        opportunities: ai.opportunities || [],
+        sources: ai.sources || [],
+        origin: 'admin_tool',
+      });
+    } catch (saveErr) {
+      console.error('Failed to save research result:', saveErr);
+    }
+
     return Response.json({
       ok: true,
       summary: ai.summary || '',
