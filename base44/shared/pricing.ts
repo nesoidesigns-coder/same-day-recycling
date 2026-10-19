@@ -1,7 +1,10 @@
+// Benchmarked against Vancouver competitors (Oct 2026): local minimums ~$200
+// (1-800-GOT-JUNK), small loads (min-1/4 truck) $107-$396, full trucks $590-$1,099.
+// We stay clearly under market on the low tiers to win same-day searches.
 export const DEFAULT_PRICES = {
-  minimum_pickup: 129,
+  minimum_pickup: 149,
   eighth_truck: 189,
-  quarter_truck: 269,
+  quarter_truck: 299,
   half_truck: 419,
   three_quarter_truck: 549,
   full_truck: 649,
