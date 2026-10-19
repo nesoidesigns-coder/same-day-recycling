@@ -120,7 +120,7 @@ async function runEngagement(base44: any) {
     );
     const insightsRaw = await insightsRes.text();
     if (!insightsData_ok(insightsRes.status) || !insightsRaw.includes('"data"') || insightsRaw.includes('"error"')) {
-      return Response.json({ ok: true, posts_tracked: records.length, engagement_line: `debug: ${insightsRaw.slice(0, 500)}`, top });
+      return Response.json({ ok: true, posts_tracked: records.length, engagement_line: '', top });
     }
     const insightsData = JSON.parse(insightsRaw);
     const lines: string[] = [];
@@ -132,9 +132,7 @@ async function runEngagement(base44: any) {
       if (row.name === 'page_follows') lines.push(`${last7.toLocaleString()} new followers`);
     }
     engagementLine = lines.join(', ');
-  } catch (e: any) {
-    return Response.json({ ok: true, posts_tracked: records.length, engagement_line: `debug-ex: ${e.message}`, top });
-  }
+  } catch {}
 
   const top = [...records].sort((a: any, b: any) => b.views - a.views).slice(0, 3);
   return Response.json({ ok: true, posts_tracked: records.length, engagement_line: engagementLine, top });
