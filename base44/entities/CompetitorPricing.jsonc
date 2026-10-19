@@ -1,0 +1,64 @@
+{
+  "name": "CompetitorPricing",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string",
+      "default": "Metro Vancouver"
+    },
+    "price_range": {
+      "type": "string",
+      "default": ""
+    },
+    "minimum": {
+      "type": "string",
+      "default": ""
+    },
+    "services": {
+      "type": "string",
+      "default": ""
+    },
+    "source_url": {
+      "type": "string",
+      "default": ""
+    },
+    "market_summary": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

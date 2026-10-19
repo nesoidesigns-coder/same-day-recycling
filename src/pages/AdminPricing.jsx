@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, Lock } from "lucide-react";
 import AnalysisDisplayer from "@/components/admin/AnalysisDisplayer";
+import CompetitorPricing from "@/components/admin/CompetitorPricing";
 
 const FIELDS = [
   ["minimum_pickup", "Minimum pickup"],
@@ -111,6 +112,9 @@ export default function AdminPricing() {
           </div>
         )}
 
+        <div className="mt-10">
+          <CompetitorPricing />
+        </div>
         <div className="mt-10">
           <AnalysisDisplayer />
         </div>
