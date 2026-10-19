@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { motion } from "framer-motion";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
@@ -9,6 +10,7 @@ const AGENT_NAME = "receptionist";
 
 export default function ReceptionistChat() {
   const [open, setOpen] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -27,6 +29,15 @@ export default function ReceptionistChat() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("rex_greeted")) return;
+    const timer = setTimeout(() => {
+      setShowGreeting(true);
+      sessionStorage.setItem("rex_greeted", "1");
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const start = async () => {
     setStarting(true);
@@ -53,12 +64,36 @@ export default function ReceptionistChat() {
 
   const handleOpen = () => {
     setOpen(!open);
+    setShowGreeting(false);
     if (!open && !conversation) start();
   };
 
   return (
     <>
       <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-3">
+        {showGreeting && !open && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="absolute bottom-full right-0 mb-4 w-64"
+          >
+            <button
+              onClick={handleOpen}
+              className="block w-full text-left rounded-2xl rounded-br-md bg-white border border-[#1d9e56]/40 shadow-xl px-4 py-3 text-sm font-semibold text-[#0c3b24] leading-snug hover:border-[#1d9e56] transition-colors"
+            >
+              Hi, I'm Rex! Need something gone today? I can quote and book your pickup in under a minute.
+              <span className="mt-1 block text-xs font-black uppercase tracking-wider text-[#1d9e56]">Tap to chat →</span>
+            </button>
+            <button
+              onClick={() => setShowGreeting(false)}
+              aria-label="Dismiss greeting"
+              className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-white border border-slate-200 shadow flex items-center justify-center text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </motion.div>
+        )}
         <span className="hidden sm:inline-block rounded-full bg-white shadow-lg border border-slate-100 px-4 py-2 text-sm font-bold text-[#0c3b24]">Chat with us</span>
         <button onClick={handleOpen} aria-label="Chat with us" className="rounded-full shadow-lg transition-transform hover:scale-105">
           {open ? (
