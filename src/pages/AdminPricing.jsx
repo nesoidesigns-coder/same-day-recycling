@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, Lock } from "lucide-react";
+import AnalysisDisplayer from "@/components/admin/AnalysisDisplayer";
 
 const FIELDS = [
   ["minimum_pickup", "Minimum pickup"],
@@ -109,6 +110,10 @@ export default function AdminPricing() {
             </button>
           </div>
         )}
+
+        <div className="mt-10">
+          <AnalysisDisplayer />
+        </div>
       </div>
     </div>
   );
