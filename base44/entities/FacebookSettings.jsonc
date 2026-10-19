@@ -6,6 +6,10 @@
       "type": "boolean",
       "default": true
     },
+    "auto_post_enabled": {
+      "type": "boolean",
+      "default": true
+    },
     "page_id": {
       "type": "string",
       "default": ""

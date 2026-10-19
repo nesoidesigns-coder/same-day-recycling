@@ -20,6 +20,10 @@
       "type": "string",
       "default": ""
     },
+    "lead_captured": {
+      "type": "boolean",
+      "default": false
+    },
     "error": {
       "type": "string",
       "default": ""

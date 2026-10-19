@@ -55,6 +55,16 @@ export default function AdminFacebook() {
     setSettings(settings ? { ...settings, auto_reply_enabled: newValue } : { auto_reply_enabled: newValue });
   };
 
+  const toggleAutoPost = async () => {
+    const newValue = !(settings?.auto_post_enabled !== false);
+    if (settings) {
+      await base44.entities.FacebookSettings.update(settings.id, { auto_post_enabled: newValue });
+    } else {
+      await base44.entities.FacebookSettings.create({ auto_post_enabled: newValue });
+    }
+    setSettings(settings ? { ...settings, auto_post_enabled: newValue } : { auto_post_enabled: newValue });
+  };
+
   const generate = async () => {
     if (!topic.trim()) return;
     setBusy("draft");
@@ -113,16 +123,29 @@ export default function AdminFacebook() {
                 {status.followers > 0 ? `${Number(status.followers).toLocaleString()} followers` : "Connected"}
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-slate-600">Messenger auto-reply</span>
-              <Button
-                size="sm"
-                onClick={toggleAutoReply}
-                className={settings?.auto_reply_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#1d9e56] text-white hover:bg-[#17a04c]"}
-              >
-                <Power className="w-4 h-4 mr-1" />
-                {settings?.auto_reply_enabled === false ? "Off" : "On"}
-              </Button>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-slate-600">Messenger auto-reply</span>
+                <Button
+                  size="sm"
+                  onClick={toggleAutoReply}
+                  className={settings?.auto_reply_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#1d9e56] text-white hover:bg-[#17a04c]"}
+                >
+                  <Power className="w-4 h-4 mr-1" />
+                  {settings?.auto_reply_enabled === false ? "Off" : "On"}
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-slate-600">AI daily auto-post</span>
+                <Button
+                  size="sm"
+                  onClick={toggleAutoPost}
+                  className={settings?.auto_post_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#1d9e56] text-white hover:bg-[#17a04c]"}
+                >
+                  <Power className="w-4 h-4 mr-1" />
+                  {settings?.auto_post_enabled === false ? "Off" : "On"}
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -200,7 +223,12 @@ export default function AdminFacebook() {
             <div className="flex flex-col gap-3">
               {log.map((entry) => (
                 <div key={entry.id} className="rounded-xl bg-[#f4f7f5] p-4">
-                  <p className="text-sm font-semibold text-[#0c3b24]">{entry.sender_name}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-semibold text-[#0c3b24]">{entry.sender_name}</p>
+                    {entry.lead_captured && (
+                      <span className="rounded-full bg-[#1d9e56]/15 px-2 py-0.5 text-[11px] font-bold text-[#0c3b24]">Booking captured</span>
+                    )}
+                  </div>
                   <p className="text-sm text-slate-600 mt-1">{entry.message_text}</p>
                   {entry.reply_text ? (
                     <p className="text-sm text-slate-700 mt-2 pl-3 border-l-2 border-[#1d9e56]">{entry.reply_text}</p>

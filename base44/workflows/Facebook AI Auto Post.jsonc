@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": 1,
+      "interval_unit": "days",
+      "interval_anchor": "2026-10-20T17:00:00Z",
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "facebook_ai_auto_post",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "auto_post": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "facebookAutoPost",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "AI posts to Facebook",
+            "description": "Writes and publishes one daily post"
+          }
+        }
+      }
+    ]
+  },
+  "description": "Once a day (10am Vancouver time): AI writes one Facebook post (seeded by recent jobs, no customer details) and publishes it to the page",
+  "name": "Facebook AI Auto Post"
+}
