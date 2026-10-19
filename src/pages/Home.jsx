@@ -28,6 +28,7 @@ export default function Home() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
+      <FacebookFeed />
       <Hero />
       <TrustBar />
       <Services />
@@ -41,7 +42,6 @@ export default function Home() {
       <SubTeaser />
       <FAQ />
       <FinalCTA />
-      <FacebookFeed />
       <Footer />
       <ReceptionistChat />
     </div>
