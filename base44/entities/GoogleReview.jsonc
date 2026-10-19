@@ -1,0 +1,54 @@
+{
+  "name": "GoogleReview",
+  "type": "object",
+  "properties": {
+    "review_id": {
+      "type": "string"
+    },
+    "place_id": {
+      "type": "string",
+      "default": ""
+    },
+    "author_name": {
+      "type": "string",
+      "default": ""
+    },
+    "rating": {
+      "type": "number",
+      "default": 5
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "relative_time": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "review_id"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

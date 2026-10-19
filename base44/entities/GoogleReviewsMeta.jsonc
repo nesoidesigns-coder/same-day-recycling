@@ -1,0 +1,44 @@
+{
+  "name": "GoogleReviewsMeta",
+  "type": "object",
+  "properties": {
+    "place_id": {
+      "type": "string"
+    },
+    "business_name": {
+      "type": "string",
+      "default": ""
+    },
+    "rating": {
+      "type": "number"
+    },
+    "user_rating_count": {
+      "type": "number"
+    },
+    "synced_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "place_id"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
