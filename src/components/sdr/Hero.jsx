@@ -85,11 +85,11 @@ export default function Hero() {
               />
             ))}
           </div>
-          <div className="absolute -bottom-7 right-1 z-10 flex items-end gap-1.5">
-            <div className="mb-8 rounded-2xl bg-white border border-[#1d9e56]/30 shadow-lg px-4 py-2.5 text-sm font-semibold text-[#0c3b24] max-w-[170px] leading-snug">
+          <div className="absolute bottom-0 right-2 z-10 flex flex-col items-center">
+            <div className="mb-3 rounded-2xl bg-white border border-[#1d9e56]/30 shadow-lg px-4 py-2.5 text-sm font-semibold text-[#0c3b24] max-w-[190px] leading-snug">
               Hi, I'm Rex! I can book your pickup in under a minute.
             </div>
-            <AiMascotFull height={150} waveOnce className="rounded-2xl border-2 border-[#1d9e56]/40 bg-[#f4f7f5] p-0.5 shadow-[0_0_24px_rgba(29,158,86,0.35)]" />
+            <AiMascotFull waveOnce className="h-[280px] sm:h-[400px] md:h-[560px] rounded-t-2xl border-2 border-[#1d9e56]/40 bg-[#f4f7f5] p-0.5 shadow-[0_0_24px_rgba(29,158,86,0.35)]" />
           </div>
           <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 flex items-center gap-3">
             <span className="w-10 h-10 rounded-full bg-[#1d9e56]/15 flex items-center justify-center">

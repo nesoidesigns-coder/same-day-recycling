@@ -2,11 +2,11 @@ import { Image } from "@/components/ui/image";
 
 const MASCOT_FULL_URL = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/320d03a5e_generated_image.png";
 
-export default function AiMascotFull({ height = 110, waveOnce = false, className = "" }) {
+export default function AiMascotFull({ height, waveOnce = false, className = "" }) {
   return (
     <span
       className={`relative inline-block shrink-0 mascot-float ${className}`}
-      style={{ height }}
+      style={height ? { height } : undefined}
     >
       <Image
         src={MASCOT_FULL_URL}
