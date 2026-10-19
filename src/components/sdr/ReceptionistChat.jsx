@@ -66,7 +66,7 @@ export default function ReceptionistChat() {
               <X className="w-6 h-6" />
             </span>
           ) : (
-            <AiMascotFull height={76} className="drop-shadow-[0_0_16px_rgba(29,158,86,0.6)]" />
+            <AiMascotFull height={76} />
           )}
         </button>
       </div>

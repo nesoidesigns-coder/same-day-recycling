@@ -1,6 +1,6 @@
 import { Image } from "@/components/ui/image";
 
-const MASCOT_URL = "/rex-mascot.png";
+const MASCOT_URL = "https://base44.app/api/apps/6ac93990cde830898b8dbc65/files/mp/public/6ac93990cde830898b8dbc65/75031ef67_rex-avatar-transparent.png";
 
 export default function AiMascot({ size = 44, className = "" }) {
   return (
@@ -12,11 +12,10 @@ export default function AiMascot({ size = 44, className = "" }) {
       <span className="relative block w-full h-full overflow-hidden rounded-full border-2 border-[#1d9e56]">
         <Image
           src={MASCOT_URL}
-          originWidth={402}
-          originHeight={664}
+          originWidth={480}
+          originHeight={480}
           alt="Rex, the Same Day Recycling human mascot"
           className="w-full h-full"
-          style={{ transform: "translateY(26%) scale(2.5)", transformOrigin: "50% 24%" }}
           fittingType="fit"
         />
       </span>
