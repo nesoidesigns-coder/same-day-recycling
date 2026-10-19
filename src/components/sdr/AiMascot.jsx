@@ -1,6 +1,6 @@
 import { Image } from "@/components/ui/image";
 
-const MASCOT_URL = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/34a71fb6d_generated_image.png";
+const MASCOT_URL = "/rex-mascot.png";
 
 export default function AiMascot({ size = 44, className = "" }) {
   return (
