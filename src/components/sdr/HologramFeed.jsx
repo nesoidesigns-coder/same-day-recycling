@@ -3,9 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircleQuestion, Truck } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { base44 } from "@/api/base44Client";
-import { Image } from "@/components/ui/image";
-
-const MASCOT_URL = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/13c8f66bd_generated_image.png";
+import AiMascot from "./AiMascot";
 
 export default function HologramFeed() {
   const [events, setEvents] = useState(null);
@@ -46,10 +44,7 @@ export default function HologramFeed() {
           {/* header */}
           <div className="relative flex items-center justify-between px-5 py-4 border-b border-[#1d9e56]/30">
             <span className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-[#1d9e56] holo-glow-text">
-              <span className="relative shrink-0">
-                <span className="absolute -inset-1 rounded-full bg-[#1d9e56]/50 blur-[6px] animate-pulse"></span>
-                <Image src={MASCOT_URL} alt="Same Day Recycling AI mascot" className="relative w-11 h-11 rounded-full border-2 border-[#1d9e56] shadow-[0_0_16px_rgba(29,158,86,0.6)]" fittingType="fill" />
-              </span>
+              <AiMascot size={44} />
               <span className="relative flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-[#1d9e56] opacity-60 animate-ping"></span>
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#1d9e56]"></span>

@@ -150,3 +150,30 @@ html {
 .holo-scan {
   animation: holo-scan 5s linear infinite;
 }
+
+@keyframes mascot-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.mascot-float {
+  animation: mascot-float 3s ease-in-out infinite;
+}
+
+@keyframes mascot-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.85; }
+}
+
+.mascot-glow {
+  animation: mascot-glow 3s ease-in-out infinite;
+}
+
+@keyframes mascot-ring {
+  from { box-shadow: 0 0 0 0 rgba(29, 158, 86, 0.5); }
+  to { box-shadow: 0 0 0 12px rgba(29, 158, 86, 0); }
+}
+
+.mascot-ring {
+  animation: mascot-ring 2.2s ease-out infinite;
+}
