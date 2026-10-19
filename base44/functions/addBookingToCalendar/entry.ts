@@ -19,6 +19,12 @@ export default async function(req) {
       return Response.json({ ok: true, already_synced: true, event_id: booking.calendar_event_id });
     }
 
+    // Only confirmed or scheduled pickups get synced to the calendar
+    const syncStatuses = ['confirmed', 'scheduled'];
+    if (!syncStatuses.includes(booking.status)) {
+      return Response.json({ ok: true, skipped: true, reason: `Status is '${booking.status || 'new'}' — only confirmed or scheduled pickups are synced` });
+    }
+
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
 
     // Pick event date: preferred date, or today as fallback

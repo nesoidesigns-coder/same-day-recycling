@@ -31,7 +31,8 @@
     "config": {
       "trigger_type": "entity",
       "events": [
-        "create"
+        "create",
+        "update"
       ],
       "entity_name": "Booking"
     }
