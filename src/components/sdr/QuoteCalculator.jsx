@@ -28,6 +28,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
       if (city) payload.city = city;
       const res = await base44.functions.invoke("quoteEstimate", payload);
       setQuote(res.data);
+      base44.analytics.track("quote_calculated", { city: city || "", items: items.length });
     } catch {
       setError("Couldn't calculate right now — please try again or call (604) 849-1745.");
     } finally {
