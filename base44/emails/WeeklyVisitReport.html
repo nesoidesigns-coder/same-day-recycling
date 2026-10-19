@@ -1,0 +1,66 @@
+<mjml>
+  <mj-head>
+    <mj-title>Your week: {{visits_total}} visits, {{bookings_week}} bookings</mj-title>
+    <mj-preview>Same Day Recycling weekly visitor and booking report</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Arial, Helvetica, sans-serif" />
+      <mj-section background-color="#ffffff" padding="0 36px" />
+      <mj-text color="#0c3b24" font-size="15px" line-height="1.6" padding="0" />
+      <mj-button background-color="#1d9e56" color="#000000" border-radius="16px" font-weight="700" inner-padding="14px 28px" align="left" />
+      <mj-class name="h" font-weight="700" color="#0c3b24" />
+      <mj-class name="muted" color="#475569" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    <mj-section background-color="#1d9e56" padding="20px 36px">
+      <mj-column width="auto">
+        <mj-image src="https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02e81d056_logo.png" alt="Same Day Recycling" width="120" align="left" />
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="40px 36px 8px">
+      <mj-column>
+        <mj-text mj-class="h" font-size="30px" line-height="1.15">Here's your week at a glance</mj-text>
+        <mj-text mj-class="muted" padding-top="10px">Site visits by source and new bookings for the last 7 days, from your live site and Facebook.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="24px 36px">
+      <mj-group>
+        <mj-column background-color="#f4f7f5" border-radius="16px" padding="20px">
+          <mj-text mj-class="muted" font-size="13px" padding="0">Total visits</mj-text>
+          <mj-text mj-class="h" font-size="32px" line-height="1.1" padding-top="4px">{{visits_total}}</mj-text>
+        </mj-column>
+        <mj-column background-color="#f4f7f5" border-radius="16px" padding="20px">
+          <mj-text mj-class="muted" font-size="13px" padding="0">Bookings</mj-text>
+          <mj-text mj-class="h" font-size="32px" line-height="1.1" padding-top="4px">{{bookings_week}}</mj-text>
+        </mj-column>
+      </mj-group>
+    </mj-section>
+
+    <mj-section padding="8px 36px 8px">
+      <mj-column>
+        <mj-text mj-class="h" font-size="18px">Where visits came from</mj-text>
+        <mj-table cellpadding="8px">
+          <tr style="border-bottom:1px solid #e5e7eb"><td style="color:#475569;padding:8px 0">From Facebook</td><td style="color:#0c3b24;font-weight:700;text-align:right;padding:8px 0">{{facebook_visits}}</td></tr>
+          <tr style="border-bottom:1px solid #e5e7eb"><td style="color:#475569;padding:8px 0">From search (Google, Bing)</td><td style="color:#0c3b24;font-weight:700;text-align:right;padding:8px 0">{{search_visits}}</td></tr>
+          <tr style="border-bottom:1px solid #e5e7eb"><td style="color:#475569;padding:8px 0">Direct (typed or bookmarked)</td><td style="color:#0c3b24;font-weight:700;text-align:right;padding:8px 0">{{direct_visits}}</td></tr>
+          <tr><td style="color:#475569;padding:8px 0">Other referrals</td><td style="color:#0c3b24;font-weight:700;text-align:right;padding:8px 0">{{other_visits}}</td></tr>
+        </mj-table>
+        {{top_city}}
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="24px 36px 40px">
+      <mj-column>
+        <mj-button href="https://samedayrecycling.ca/admin/jobs" border-radius="16px">Open the admin dashboard</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f4f7f5" padding="20px 36px">
+      <mj-column>
+        <mj-text mj-class="muted" font-size="13px">Same Day Recycling · samedayrecycling.ca · (604) 849-1745</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

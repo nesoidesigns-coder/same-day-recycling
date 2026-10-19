@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Facebook, Sparkles, Send, Loader2, MessageCircle, Power } from "lucide-react";
+import { Facebook, Sparkles, Send, Loader2, MessageCircle, Power, BarChart3 } from "lucide-react";
 
 export default function AdminFacebook() {
   const [status, setStatus] = useState(null);
@@ -14,6 +14,7 @@ export default function AdminFacebook() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [log, setLog] = useState([]);
+  const [visits, setVisits] = useState(null);
 
   const load = async () => {
     try {
@@ -33,6 +34,10 @@ export default function AdminFacebook() {
         { sort: "-created_date", limit: 10 }
       );
       setLog(logPage.items || []);
+    } catch {}
+    try {
+      const res = await base44.functions.invoke("visitStats");
+      setVisits(res.data || null);
     } catch {}
   };
 
@@ -165,6 +170,24 @@ export default function AdminFacebook() {
           </div>
         </div>
 
+        <div className="rounded-2xl border border-slate-100 p-5 mb-6">
+          <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
+            <BarChart3 className="w-4 h-4 text-[#1d9e56]" /> Traffic insights (last 7 days)
+          </h2>
+          {visits?.visits_7d ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <Stat label="Total visits" value={visits.visits_7d.total} />
+              <Stat label="From Facebook" value={visits.visits_7d.facebook} />
+              <Stat label="From search" value={visits.visits_7d.search} />
+              <Stat label="Direct / typed" value={visits.visits_7d.direct} />
+              <Stat label="Other referrals" value={visits.visits_7d.other} />
+              <Stat label="Bookings" value={visits.bookings_7d} />
+            </div>
+          ) : (
+            <p className="text-sm text-slate-500">Loading traffic data…</p>
+          )}
+        </div>
+
         <div className="rounded-2xl border border-slate-100 p-5">
           <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
             <MessageCircle className="w-4 h-4 text-[#1d9e56]" /> Recent AI Messenger replies
@@ -190,6 +213,15 @@ export default function AdminFacebook() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div className="rounded-xl bg-[#f4f7f5] px-4 py-3">
+      <p className="text-xs font-semibold text-slate-500">{label}</p>
+      <p className="text-xl font-bold text-[#0c3b24]">{Number(value || 0).toLocaleString()}</p>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Recycle, Phone, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import VisitTracker from "./VisitTracker";
 
 const links = [
   { label: "About", to: "/about" },
@@ -56,6 +57,7 @@ export default function Footer() {
           (604) 849-1745 · Eco-friendly disposal
         </a>
       </div>
+      <VisitTracker />
     </footer>
   );
 }

@@ -1,0 +1,69 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday 9am, emails the owner a weekly summary of site visits by source (Facebook, search, direct) and new bookings",
+  "name": "Weekly Visitor Report",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_visitor_report",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "fetch_stats": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "visitStats",
+            "args": {}
+          },
+          "then": "send_report",
+          "x-base44": {
+            "title": "Gather weekly stats",
+            "description": "Visits by source and bookings"
+          }
+        }
+      },
+      {
+        "send_report": {
+          "call": "send_email",
+          "with": {
+            "template_name": "WeeklyVisitReport",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Weekly visitor and booking summary",
+            "variables": {
+              "visits_total": "${ .fetch_stats.visits_7d.total }",
+              "facebook_visits": "${ .fetch_stats.visits_7d.facebook }",
+              "search_visits": "${ .fetch_stats.visits_7d.search }",
+              "direct_visits": "${ .fetch_stats.visits_7d.direct }",
+              "other_visits": "${ .fetch_stats.visits_7d.other }",
+              "bookings_week": "${ .fetch_stats.bookings_7d }",
+              "top_city": "Busiest service area this month: ${ .fetch_stats.top_city }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the report",
+            "description": "Weekly summary to the owner"
+          }
+        }
+      }
+    ]
+  }
+}
