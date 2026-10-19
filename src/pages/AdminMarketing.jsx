@@ -10,6 +10,7 @@ import AnalyticsTab from "@/components/admin/AnalyticsTab";
 import LiveTrackerTab from "@/components/admin/LiveTrackerTab";
 import SystemsTab from "@/components/admin/SystemsTab";
 import QueryTrackerTab from "@/components/admin/QueryTrackerTab";
+import CoCreatorTab from "@/components/admin/CoCreatorTab";
 
 const TABS = [
   { key: "live", label: "Live Tracker" },
@@ -19,6 +20,7 @@ const TABS = [
   { key: "analytics", label: "Analytics" },
   { key: "systems", label: "Systems" },
   { key: "queries", label: "Query Tracker" },
+  { key: "cocreator", label: "AI Co-Creator" },
 ];
 
 export default function AdminMarketing() {
@@ -61,7 +63,7 @@ export default function AdminMarketing() {
           </a>
         </div>
 
-        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : <ResearchTab />}
+        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : tab === "cocreator" ? <CoCreatorTab /> : <ResearchTab />}
       </div>
       <Footer />
     </div>

@@ -1,0 +1,83 @@
+{
+  "name": "CoCreatorDraft",
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string"
+    },
+    "idea": {
+      "type": "string",
+      "default": ""
+    },
+    "blog_title": {
+      "type": "string",
+      "default": ""
+    },
+    "blog_post_id": {
+      "type": "string",
+      "default": ""
+    },
+    "blog_slug": {
+      "type": "string",
+      "default": ""
+    },
+    "blog_body": {
+      "type": "string",
+      "default": ""
+    },
+    "social_caption": {
+      "type": "string",
+      "default": ""
+    },
+    "site_headline": {
+      "type": "string",
+      "default": ""
+    },
+    "site_body": {
+      "type": "string",
+      "default": ""
+    },
+    "site_cta": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "topic"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
