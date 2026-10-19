@@ -1,0 +1,86 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every day at 9am, AI tracks Facebook post engagement, analyzes Messenger conversations for hot leads and unanswered messages, and emails the owner a daily digest",
+  "name": "Facebook Chat Digest",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "facebook_chat_digest",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "track_engagement": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "facebookInsights",
+            "args": {
+              "action": "engagement"
+            }
+          },
+          "then": "analyze_chats",
+          "x-base44": {
+            "title": "Track post engagement",
+            "description": "Pulls views, engagement and followers from Facebook"
+          }
+        }
+      },
+      {
+        "analyze_chats": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "facebookInsights",
+            "args": {
+              "action": "digest"
+            }
+          },
+          "then": "send_digest",
+          "x-base44": {
+            "title": "AI analyzes Messenger chats",
+            "description": "Finds hot leads and unanswered messages"
+          }
+        }
+      },
+      {
+        "send_digest": {
+          "call": "send_email",
+          "with": {
+            "template_name": "FacebookChatDigest",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Daily Facebook chats, hot leads and engagement digest",
+            "variables": {
+              "summary": "${ .analyze_chats.summary }",
+              "lead_1": "${ .analyze_chats.lead_1 }",
+              "lead_2": "${ .analyze_chats.lead_2 }",
+              "lead_3": "${ .analyze_chats.lead_3 }",
+              "followups_text": "${ .analyze_chats.followups_text }",
+              "engagement_line": "${ .track_engagement.engagement_line }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the digest",
+            "description": "Daily Facebook summary to the owner"
+          }
+        }
+      }
+    ]
+  }
+}

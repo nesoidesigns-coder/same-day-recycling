@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Facebook, Sparkles, Send, Loader2, MessageCircle, Power, BarChart3 } from "lucide-react";
+import ChatDigestSection from "@/components/admin/ChatDigestSection";
+import EngagementSection from "@/components/admin/EngagementSection";
 
 export default function AdminFacebook() {
   const [status, setStatus] = useState(null);
@@ -210,6 +212,9 @@ export default function AdminFacebook() {
             <p className="text-sm text-slate-500">Loading traffic data…</p>
           )}
         </div>
+
+        <ChatDigestSection />
+        <EngagementSection />
 
         <div className="rounded-2xl border border-slate-100 p-5">
           <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-3">

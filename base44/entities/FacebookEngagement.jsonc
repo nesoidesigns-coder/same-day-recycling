@@ -1,0 +1,50 @@
+{
+  "name": "FacebookEngagement",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "post_excerpt": {
+      "type": "string",
+      "default": ""
+    },
+    "posted_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "views": {
+      "type": "number",
+      "default": 0
+    },
+    "insights_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "post_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
