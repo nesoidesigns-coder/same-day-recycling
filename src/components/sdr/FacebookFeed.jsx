@@ -1,10 +1,27 @@
+import { useEffect, useState } from "react";
 import { Facebook } from "lucide-react";
-import FacebookHighlights from "./FacebookHighlights";
+import { base44 } from "@/api/base44Client";
+import FacebookPostCard from "./FacebookPostCard";
 
 const PAGE_URL = "https://www.facebook.com/p/SAME-DAY-Recycling-Vancouver-BC-61595167654524/";
 const PLUGIN_SRC = "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fp%2FSAME-DAY-Recycling-Vancouver-BC-61595167654524%2F&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true";
 
 export default function FacebookFeed() {
+  const [posts, setPosts] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    base44.functions
+      .invoke("facebookHighlights", {})
+      .then((res) => {
+        if (active && res?.data?.posts?.length) setPosts(res.data.posts);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
@@ -20,9 +37,14 @@ export default function FacebookFeed() {
             Real cleanouts, hauls and rescues — straight from our Facebook feed, updated automatically.
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-[340px_500px] justify-center items-start">
-          <FacebookHighlights />
-          <div className="w-full max-w-md overflow-hidden rounded-3xl border border-slate-100 shadow-sm">
+        {posts ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+            {posts.map((post) => (
+              <FacebookPostCard key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="w-full max-w-md mx-auto overflow-hidden rounded-3xl border border-slate-100 shadow-sm">
             <iframe
               src={PLUGIN_SRC}
               title="Same Day Recycling Facebook feed"
@@ -37,8 +59,8 @@ export default function FacebookFeed() {
               className="block w-full max-w-full"
             ></iframe>
           </div>
-        </div>
-        <div className="text-center mt-6">
+        )}
+        <div className="text-center mt-8">
           <a
             href={PAGE_URL}
             target="_blank"
