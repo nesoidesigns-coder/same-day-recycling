@@ -27,6 +27,11 @@
     "error": {
       "type": "string",
       "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
     }
   },
   "required": [
