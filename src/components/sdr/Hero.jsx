@@ -4,7 +4,7 @@ import { CalendarCheck, Rocket } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
 const HERO_IMAGES = [
-  "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg",
+  "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png",
   "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/a48cd7a97_generated_image.png",
   "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/a8257e5b7_generated_image.png",
 ];

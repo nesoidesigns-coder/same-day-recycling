@@ -20,7 +20,7 @@ import FoundingPartnerOffer from "@/components/sdr/FoundingPartnerOffer";
 import PartnerAgreement from "@/components/sdr/PartnerAgreement";
 import Footer from "@/components/sdr/Footer";
 
-const TRUCK_IMG = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
+const TRUCK_IMG = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png";
 const SHOT_LIVE = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/8aa416e4a_generated_image.png";
 const SHOT_FOLLOWUPS = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02dad690b_generated_image.png";
 const SHOT_SEO = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/0b275c5af_generated_image.png";

@@ -6,7 +6,7 @@ import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import Footer from "@/components/sdr/Footer";
 import { Image } from "@/components/ui/image";
 
-const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
+const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png";
 
 const BENEFITS = [
   { icon: Home, title: "Same-day cleanouts", text: "Book before noon and the clutter is gone that afternoon — listings photograph and show clean, without delaying your timeline." },

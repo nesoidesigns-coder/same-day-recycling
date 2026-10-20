@@ -1,7 +1,7 @@
 import { CalendarCheck, ShieldCheck } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
-const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
+const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png";
 
 export default function CityHero({ city, intro }) {
   return (
