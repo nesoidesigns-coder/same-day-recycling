@@ -100,8 +100,8 @@ export default function Contractors() {
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-5">
-              <span className="w-8 h-px bg-[#1d9e56]" />
+            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-gold uppercase mb-5">
+              <span className="w-8 h-px bg-gold" />
               The Partner Network
             </div>
             <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">

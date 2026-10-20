@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Recycle, Phone, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -32,46 +32,46 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-white border-t border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 font-bold text-[#0c3b24]">
-          <span className="w-8 h-8 rounded-lg bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
+    <footer className="bg-[#0c3b24] text-emerald-100/70">
+      <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-2 font-bold text-white">
+          <span className="w-8 h-8 rounded-lg bg-gold text-[#0c3b24] flex items-center justify-center">
             <Recycle className="w-4 h-4" />
           </span>
           <span>© 2026 Same Day Recycling — samedayrecycling.ca</span>
         </div>
-        <nav className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           {isAdmin && (
-            <Link to="/admin/jobs" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
+            <Link to="/admin/jobs" className="flex items-center gap-1 text-sm font-bold text-gold hover:underline">
               <Lock className="w-3.5 h-3.5" /> Admin
             </Link>
           )}
           {isAdmin && (
-            <Link to="/admin/marketing" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
+            <Link to="/admin/marketing" className="flex items-center gap-1 text-sm font-bold text-gold hover:underline">
               <Lock className="w-3.5 h-3.5" /> Marketing
             </Link>
           )}
           {isAdmin && (
-            <Link to="/admin/facebook" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
+            <Link to="/admin/facebook" className="flex items-center gap-1 text-sm font-bold text-gold hover:underline">
               <Lock className="w-3.5 h-3.5" /> FB AI
             </Link>
           )}
           {links.map((l) => (
-            <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-600 hover:text-[#1d9e56] transition-colors">
+            <Link key={l.to} to={l.to} className="text-sm font-medium text-emerald-100/70 hover:text-gold transition-colors">
               {l.label}
             </Link>
           ))}
         </nav>
         <div className="flex flex-col items-start md:items-end gap-1.5 text-sm">
-          <a href="tel:+16048491745" className="flex items-center gap-2 text-slate-700 font-medium hover:text-[#1d9e56] transition-colors">
-            <Phone className="w-4 h-4 text-[#1d9e56]" />
+          <a href="tel:+16048491745" className="flex items-center gap-2 text-white font-medium hover:text-gold transition-colors">
+            <Phone className="w-4 h-4 text-gold" />
             (604) 849-1745
           </a>
-          <a href="mailto:samedayrecycling@gmail.com" className="flex items-center gap-2 text-slate-700 font-medium hover:text-[#1d9e56] transition-colors">
-            <Mail className="w-4 h-4 text-[#1d9e56]" />
+          <a href="mailto:samedayrecycling@gmail.com" className="flex items-center gap-2 text-emerald-100/70 font-medium hover:text-gold transition-colors">
+            <Mail className="w-4 h-4 text-gold" />
             samedayrecycling@gmail.com
           </a>
-          <div className="text-slate-600">Open 24 hours · Vancouver, BC</div>
+          <div className="text-emerald-200/50">Open 24 hours · Vancouver, BC</div>
         </div>
       </div>
       <VisitTracker />

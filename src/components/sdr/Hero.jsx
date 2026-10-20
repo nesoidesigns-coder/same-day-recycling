@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, Rocket } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
 const HERO_IMAGES = [
@@ -20,30 +20,36 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="top" className="bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+    <section id="top" className="relative bg-[#0c3b24] text-white overflow-hidden">
+      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#1d9e56]/20 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-16 w-80 h-80 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-5">
-            <span className="w-8 h-px bg-[#1d9e56]" />
-            Now serving British Columbia
+          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-gold uppercase mb-5">
+            <span className="w-8 h-px bg-gold" />
+            Nationwide Network · 9 Cities Live
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight text-[#0c3b24]">
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.02] tracking-tight text-white">
             Canada's Same-Day<br />Recycling Network
           </h1>
-          <p className="mt-6 text-lg text-slate-600 max-w-md leading-relaxed">
+          <p className="mt-6 text-lg text-emerald-100/80 max-w-md leading-relaxed">
             Book a pickup today — or plug your truck into the machine that books them.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#17a04c] transition-colors">
               Book a Pickup
             </a>
-            <Link to="/contractors" className="rounded-full border-2 border-[#0c3b24] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#0c3b24] hover:text-white transition-colors">
+            <Link to="/contractors" className="rounded-full border-2 border-white/30 text-white font-bold px-7 py-4 text-center hover:bg-white/10 transition-colors">
               Contractors — Join the Network
             </Link>
           </div>
+          <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-gold">
+            <Rocket className="w-4 h-4" />
+            Now recruiting partners in Alberta
+          </div>
         </div>
         <div className="relative">
-          <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-slate-100 relative">
+          <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-[#0a3020] relative ring-1 ring-white/10">
             {HERO_IMAGES.map((src, i) => (
               <Image
                 key={src}

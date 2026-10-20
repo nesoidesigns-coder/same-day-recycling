@@ -13,7 +13,7 @@ export default function Coverage() {
 
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-5xl mx-auto px-4 py-16 md:py-20">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Coverage</div>
+          <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">Where we pick up</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
             Live territories across British Columbia — and new partner territories opening across Alberta.
