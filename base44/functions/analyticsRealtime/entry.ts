@@ -79,6 +79,30 @@ export default async function(req) {
       limit: 10,
     });
 
+    // Active pages: which URLs visitors are on right now.
+    let pages = null;
+    let pagesError = '';
+    try {
+      pages = await runRealtimeReport(accessToken, propertyId, {
+        dimensions: [{ name: 'unifiedPagePathScreen' }],
+        metrics: [{ name: 'activeUsers' }],
+        orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+        limit: 8,
+      });
+    } catch {
+      // Some GA4 properties only expose the screen-name realtime dimension.
+      try {
+        pages = await runRealtimeReport(accessToken, propertyId, {
+          dimensions: [{ name: 'unifiedScreenName' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 8,
+        });
+      } catch (e) {
+        pagesError = e.message;
+      }
+    }
+
     // Build a full 30-minute series (minutesAgo 29 -> 0), filling gaps with 0.
     const byMinute = new Map(fmt(perMinute).map((r) => [Number(r.dim[0]), r.values[0]]));
     const series = [];
@@ -94,6 +118,8 @@ export default async function(req) {
       per_minute: series,
       devices: fmt(devices).map((r) => ({ device: r.dim[0], users: r.values[0] })),
       countries: fmt(countries).map((r) => ({ country: r.dim[0], users: r.values[0] })),
+      pages: pages ? fmt(pages).map((r) => ({ path: r.dim[0] || '(not set)', viewers: r.values[0] })) : [],
+      pages_error: pagesError,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

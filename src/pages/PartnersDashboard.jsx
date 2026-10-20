@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Truck, CheckCircle2, XCircle, DollarSign, LogOut, MapPin, Phone, PackageCheck } from "lucide-react";
+import TerritoryCard from "@/components/partner/TerritoryCard";
 
 const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
@@ -99,6 +100,10 @@ export default function PartnersDashboard() {
             <div className="text-3xl font-bold text-[#0c3b24] flex items-center gap-2"><CheckCircle2 className="w-6 h-6" />{money(paid)}</div>
             <p className="text-xs text-slate-500 mt-1">Payouts already marked paid</p>
           </div>
+        </div>
+
+        <div className="mb-10">
+          <TerritoryCard />
         </div>
 
         <h2 className="text-xl font-bold text-[#0c3b24] mb-4">Your jobs</h2>

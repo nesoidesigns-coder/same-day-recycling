@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RefreshCw, Users, Clock, Monitor, Globe2 } from "lucide-react";
+import { RefreshCw, Users, Clock, Monitor, Globe2, FileText } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import {
   ResponsiveContainer,
@@ -54,6 +54,8 @@ export default function RealtimeTab() {
   }));
 
   const totalDevices = (data?.devices || []).reduce((s, d) => s + d.users, 0);
+  const maxCountry = Math.max(...(data?.countries || []).map((c) => c.users), 1);
+  const maxPage = Math.max(...(data?.pages || []).map((p) => p.viewers), 1);
   const deviceRows = (data?.devices || []).map((d) => ({
     ...d,
     label: DEVICE_LABELS[d.device] || d.device,
@@ -172,14 +174,19 @@ export default function RealtimeTab() {
                 <Globe2 className="w-4 h-4 text-[#1d9e56]" /> Active users by country
               </p>
               {data.countries.length ? (
-                <ul className="divide-y divide-slate-100">
+                <ul className="space-y-3">
                   {data.countries.map((c, i) => (
-                    <li key={c.country} className="flex items-center justify-between py-2 text-sm">
-                      <span className="flex items-center gap-3 text-slate-700">
-                        <span className="w-5 text-xs font-bold text-slate-400">{i + 1}</span>
-                        {c.country}
-                      </span>
-                      <span className="font-semibold text-[#0c3b24]">{c.users}</span>
+                    <li key={c.country} className="text-sm">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="flex items-center gap-1 text-slate-700">
+                          <span className="w-5 text-xs font-bold text-slate-400">{i + 1}</span>
+                          {c.country}
+                        </span>
+                        <span className="font-semibold text-[#0c3b24]">{c.users}</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full rounded-full bg-[#1d9e56]" style={{ width: `${Math.round((c.users / maxCountry) * 100)}%` }} />
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -187,6 +194,31 @@ export default function RealtimeTab() {
                 <p className="text-sm text-slate-500">No country data yet.</p>
               )}
             </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 p-4">
+            <p className="text-sm font-bold text-[#0c3b24] mb-3 inline-flex items-center gap-2">
+              <FileText className="w-4 h-4 text-[#1d9e56]" /> Active pages (last 30 min)
+            </p>
+            {data.pages?.length ? (
+              <ul className="space-y-3">
+                {data.pages.map((p) => (
+                  <li key={p.path} className="text-sm">
+                    <div className="flex items-center justify-between gap-3 mb-1">
+                      <span className="truncate text-slate-700">{p.path}</span>
+                      <span className="font-semibold text-[#0c3b24] whitespace-nowrap">
+                        {p.viewers} viewer{p.viewers === 1 ? "" : "s"}
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-full rounded-full bg-[#0c3b24]" style={{ width: `${Math.round((p.viewers / maxPage) * 100)}%` }} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-slate-500">No active page data yet.</p>
+            )}
           </div>
         </div>
       ) : null}

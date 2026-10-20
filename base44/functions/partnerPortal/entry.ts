@@ -34,6 +34,23 @@ export default async function(req) {
       return Response.json({ partner: publicPartner, jobs, history });
     }
 
+    // Territory overview: bookings, quotes and estimated revenue for this partner's city.
+    if (action === 'territory') {
+      const city = String(partner.city || '').trim();
+      const [{ items: cityBookings }, quotes] = await Promise.all([
+        base44.asServiceRole.entities.Booking.filter({ city }, { sort: '-created_date', limit: 500 }),
+        base44.asServiceRole.entities.QuoteLead.count({ city }),
+      ]);
+      const estimatedRevenue = cityBookings.reduce((s, b) => s + (Number(b.job_value) || 0), 0);
+      return Response.json({
+        city,
+        bookings: cityBookings.length,
+        completed_bookings: cityBookings.filter((b) => b.assignment_status === 'completed').length,
+        quotes,
+        estimated_revenue: Math.round(estimatedRevenue * 100) / 100,
+      });
+    }
+
     // Scoped mutation: only a booking assigned to THIS partner may change state.
     const allowed = { accept: 'accepted', decline: 'declined', complete: 'completed' };
     const next = allowed[action];
