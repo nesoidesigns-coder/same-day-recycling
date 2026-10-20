@@ -43,6 +43,7 @@ module.exports = {
   			},
   			gold: 'hsl(var(--brand-gold))',
   			'gold-dark': 'hsl(var(--brand-gold-dark))',
+  			'brand-cyan': 'hsl(var(--brand-cyan))',
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',

@@ -4,21 +4,22 @@ import { Menu, X, Recycle, ChevronDown } from "lucide-react";
 
 const primaryLinks = [
   { label: "Services", to: "/#services" },
+  { label: "Pricing", to: "/#transparent-pricing" },
   { label: "How It Works", to: "/#how-it-works" },
   { label: "Service Area", to: "/#service-area" },
-  { label: "FAQ", to: "/#faq" },
+  { label: "Business Solutions", to: "/subscriptions" },
+  { label: "Contact", to: "/contact" },
 ];
 
 const moreLinks = [
-  { label: "Subscriptions", to: "/subscriptions" },
   { label: "Realtors", to: "/realtors" },
   { label: "Contractors", to: "/contractors" },
   { label: "Coverage", to: "/coverage" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
   { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
   { label: "White Label", to: "/white-label" },
   { label: "Gallery", to: "/gallery" },
+  { label: "FAQ", to: "/#faq" },
 ];
 
 export default function Navbar() {

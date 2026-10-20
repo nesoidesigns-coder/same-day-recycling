@@ -43,27 +43,27 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
-      <CoverageStrip />
-      <LocallyOwned />
-      <HologramFeed />
+      <LoadEstimator onBook={bookFromQuote} />
       <Services />
-      <CondoStrata />
-      <MetalPickupBand />
       <HowItWorks />
       <CurbsideDiscount />
       <TransparentPricing />
       <WeightCalculator onBook={bookFromQuote} />
-      <CitySelector />
-      <LoadEstimator onBook={bookFromQuote} />
       <TextPhotoQuote />
       <PhotoQuote onBook={bookFromQuote} />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
       <ServiceArea />
+      <CoverageStrip />
+      <CitySelector />
       <RecyclingCentersMap showSelector />
+      <SubTeaser />
+      <CondoStrata />
+      <MetalPickupBand />
       <EcoReceipt />
       <Reviews />
-      <SubTeaser />
+      <LocallyOwned />
+      <HologramFeed />
       <FacebookFeed />
       <FAQ />
       <FinalCTA />

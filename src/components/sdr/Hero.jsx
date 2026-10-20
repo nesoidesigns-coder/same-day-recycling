@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { CalendarCheck, Rocket } from "lucide-react";
+import { CalendarCheck } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
 const HERO_IMAGES = [
@@ -22,30 +21,33 @@ export default function Hero() {
   return (
     <section id="top" className="relative bg-[#0c3b24] text-white overflow-hidden">
       <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#1d9e56]/20 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-16 w-80 h-80 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-16 w-80 h-80 rounded-full bg-[#22d3ee]/10 blur-3xl pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-gold uppercase mb-5">
-            <span className="w-8 h-px bg-gold" />
-            Nationwide Network · 9 Cities Live
+          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#22d3ee] uppercase mb-5">
+            <span className="w-8 h-px bg-[#22d3ee]" />
+            Smart Removal · Responsible Recycling · Reliable Service
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.02] tracking-tight text-white">
-            Canada's Same-Day<br />Recycling Network
+            Your Space.<br />Reclaimed.
           </h1>
-          <p className="mt-6 text-lg text-emerald-100/80 max-w-md leading-relaxed">
-            Book a pickup today — or plug your truck into the machine that books them.
+          <p className="mt-4 text-xl md:text-2xl font-bold text-emerald-100 tracking-tight">
+            Junk Removal, Without the Guesswork.
+          </p>
+          <p className="mt-4 text-lg text-emerald-100/80 max-w-md leading-relaxed">
+            Book a pickup, understand your costs, and discover responsible options for your unwanted items. SameDay makes clearing your space straightforward, transparent, and convenient.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#17a04c] transition-colors">
+            <a href="#estimator" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#25b96b] transition-colors">
+              Get My Estimate
+            </a>
+            <a href="#book" className="rounded-full border-2 border-white/30 text-white font-bold px-7 py-4 text-center hover:bg-white/10 transition-colors">
               Book a Pickup
             </a>
-            <Link to="/contractors" className="rounded-full border-2 border-white/30 text-white font-bold px-7 py-4 text-center hover:bg-white/10 transition-colors">
-              Contractors — Join the Network
-            </Link>
           </div>
-          <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-gold">
-            <Rocket className="w-4 h-4" />
-            Now recruiting partners in Alberta
+          <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-100/70">
+            <CalendarCheck className="w-4 h-4 text-[#22d3ee]" />
+            Same-day pickups when booked before noon
           </div>
         </div>
         <div className="relative">
@@ -54,7 +56,7 @@ export default function Hero() {
               <Image
                 key={src}
                 src={src}
-                alt="Same-day junk removal in Vancouver"
+                alt="Same Day Recycling crew loading unwanted items onto a recycling truck"
                 className={`w-full h-full absolute inset-0 transition-opacity duration-1000 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
                 fittingType="fill"
               />
@@ -65,8 +67,8 @@ export default function Hero() {
               <CalendarCheck className="w-5 h-5 text-[#1d9e56]" />
             </span>
             <div className="leading-tight">
-              <div className="text-xs text-slate-500 font-medium">Today</div>
-              <div className="font-bold text-[#0c3b24]">Same-day dispatch</div>
+              <div className="text-xs text-slate-500 font-medium">Same-day</div>
+              <div className="font-bold text-[#0c3b24]">When booked before noon</div>
             </div>
           </div>
         </div>

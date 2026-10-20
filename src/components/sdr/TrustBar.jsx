@@ -1,5 +1,5 @@
 const items = [
-  "Same-day pickups",
+  "Same-day slots when booked before noon",
   "Upfront pricing from $139",
   "Service in English, French, Spanish, Mandarin, Tagalog",
   "(604) 849-1745",
