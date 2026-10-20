@@ -18,6 +18,7 @@ const moreLinks = [
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
   { label: "White Label", to: "/white-label" },
+  { label: "Gallery", to: "/gallery" },
 ];
 
 export default function Navbar() {

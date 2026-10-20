@@ -11,6 +11,7 @@ const links = [
   { label: "Coverage", to: "/coverage" },
   { label: "Recycling Centers", to: "/recycling-centers" },
   { label: "Blog", to: "/blog" },
+  { label: "Fleet Gallery", to: "/gallery" },
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "White Label", to: "/white-label" },
   { label: "Leave a Review", to: "/review" },

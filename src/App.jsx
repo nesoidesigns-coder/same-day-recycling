@@ -42,6 +42,8 @@ import Coverage from './pages/Coverage';
 import PropertyManagers from './pages/PropertyManagers';
 import WhiteLabel from './pages/WhiteLabel';
 import AdminWhiteLabel from './pages/AdminWhiteLabel';
+import Gallery from './pages/Gallery';
+import AdminGallery from './pages/AdminGallery';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -92,6 +94,7 @@ const AuthenticatedApp = () => {
       <Route path="/coverage" element={<Coverage />} />
       <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/white-label" element={<WhiteLabel />} />
+      <Route path="/gallery" element={<Gallery />} />
       <Route path="/real-estate" element={<RealtorLanding />} />
       <Route path="/realtor-partners" element={<RealtorOnePager />} />
       <Route path="/recycling-centers" element={<RecyclingCenters />} />
@@ -103,6 +106,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/jobs" element={<AdminJobs />} />
         <Route path="/admin/facebook" element={<AdminFacebook />} />
         <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
+        <Route path="/admin/gallery" element={<AdminGallery />} />
         <Route path="/admin/marketing" element={<AdminMarketing />} />
         <Route path="/partners" element={<PartnersDashboard />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />
