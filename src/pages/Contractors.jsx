@@ -16,6 +16,8 @@ import { Image } from "@/components/ui/image";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import PartnerApplicationForm from "@/components/sdr/PartnerApplicationForm";
+import FoundingPartnerOffer from "@/components/sdr/FoundingPartnerOffer";
+import PartnerAgreement from "@/components/sdr/PartnerAgreement";
 import Footer from "@/components/sdr/Footer";
 
 const TRUCK_IMG = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b9a321aaa_generated_7ecc31ed.jpg";
@@ -128,6 +130,8 @@ export default function Contractors() {
         </div>
       </section>
 
+      <FoundingPartnerOffer />
+
       {/* THE ADMIN */}
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
@@ -214,7 +218,7 @@ export default function Contractors() {
           <div className="mt-8 max-w-2xl mx-auto text-center space-y-3">
             <p className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3 text-sm">
               <BadgeCheck className="w-4 h-4 text-[#1d9e56]" />
-              Exclusive territory — one partner per city. When your city is taken, it's taken.
+              Licensed territory — one partner per metro market. When your market is taken, it's taken.
             </p>
             <p className="text-slate-600 font-semibold">You spend $0 on ads, $0 on a website, $0 on an office.</p>
           </div>
@@ -235,6 +239,8 @@ export default function Contractors() {
           </div>
         </div>
       </section>
+
+      <PartnerAgreement />
 
       {/* APPLICATION FORM */}
       <section id="apply" className="bg-[#f4f7f5]">
@@ -266,7 +272,7 @@ export default function Contractors() {
       <section className="bg-[#1d9e56] text-[#0c3b24]">
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Your city is open — for now.</h2>
-          <p className="mt-3 font-semibold">One partner per city, in order of application.</p>
+          <p className="mt-3 font-semibold">One partner per metro market, in order of application.</p>
           <a href="#apply" className="mt-8 inline-block rounded-full bg-[#0c3b24] text-white font-bold px-8 py-4 hover:bg-[#0a3020] transition-colors">
             Apply for Your Territory
           </a>

@@ -12,17 +12,12 @@ export default function PartnersDashboard() {
   const [jobs, setJobs] = useState([]);
   const [history, setHistory] = useState([]);
 
-  const reload = useCallback(async (p) => {
-    const { items } = await base44.entities.Booking.filter(
-      { partner_id: p.id, assignment_status: { $in: ["assigned", "accepted"] } },
-      { sort: "-created_date", limit: 50 }
-    );
-    setJobs(items);
-    const { items: done } = await base44.entities.Booking.filter(
-      { partner_id: p.id, assignment_status: "completed" },
-      { sort: "-created_date", limit: 50 }
-    );
-    setHistory(done);
+  const load = useCallback(async () => {
+    const res = await base44.functions.invoke("partnerPortal", { action: "data" });
+    const d = res.data;
+    setPartner(d.partner);
+    setJobs(d.jobs || []);
+    setHistory(d.history || []);
   }, []);
 
   useEffect(() => {
@@ -30,23 +25,25 @@ export default function PartnersDashboard() {
       try {
         const me = await base44.auth.me();
         setMe(me);
-        const { items } = await base44.entities.Partner.filter({ email: me.email });
-        if (!items[0]) {
-          setStage("denied");
-          return;
-        }
-        setPartner(items[0]);
-        await reload(items[0]);
+        await load();
         setStage("ready");
       } catch {
         setStage("denied");
       }
     })();
-  }, [reload]);
+  }, [load]);
 
-  const act = async (id, assignment_status) => {
-    await base44.entities.Booking.update(id, { assignment_status });
-    await reload(partner);
+  const act = async (bookingId, action) => {
+    try {
+      const res = await base44.functions.invoke("partnerPortal", { action, booking_id: bookingId });
+      const d = res.data;
+      setJobs(d.jobs || []);
+      setHistory(d.history || []);
+    } catch {
+      // Non-2xx responses come back as thrown errors — the server already
+      // validated ownership, so a failure here just means the state moved.
+      await load().catch(() => {});
+    }
   };
 
   if (stage === "loading") {
@@ -64,7 +61,7 @@ export default function PartnersDashboard() {
         <h1 className="text-2xl font-bold text-[#0c3b24]">Partner access</h1>
         <p className="text-slate-600 max-w-sm">
           {me
-            ? `No partner account is linked to ${me.email}. Ask the Same Day Recycling admin to add you as a partner.`
+            ? `No active partner account is linked to ${me.email}. Ask the Same Day Recycling admin to add you as a partner.`
             : "Please log in with your partner account."}
         </p>
         <button onClick={() => base44.auth.logout("/login")} className="rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3 text-sm">
@@ -131,16 +128,16 @@ export default function PartnersDashboard() {
                 <div className="mt-4 flex gap-2 flex-wrap">
                   {b.assignment_status === "assigned" && (
                     <>
-                      <button onClick={() => act(b.id, "accepted")} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors flex items-center gap-2">
+                      <button onClick={() => act(b.id, "accept")} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4" /> Accept job
                       </button>
-                      <button onClick={() => act(b.id, "declined")} className="rounded-full bg-white border border-slate-200 text-slate-600 font-bold px-5 py-2.5 text-sm hover:border-red-300 transition-colors flex items-center gap-2">
+                      <button onClick={() => act(b.id, "decline")} className="rounded-full bg-white border border-slate-200 text-slate-600 font-bold px-5 py-2.5 text-sm hover:border-red-300 transition-colors flex items-center gap-2">
                         <XCircle className="w-4 h-4" /> Decline
                       </button>
                     </>
                   )}
                   {b.assignment_status === "accepted" && (
-                    <button onClick={() => act(b.id, "completed")} className="rounded-full bg-[#0c3b24] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#0a3020] transition-colors flex items-center gap-2">
+                    <button onClick={() => act(b.id, "complete")} className="rounded-full bg-[#0c3b24] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#0a3020] transition-colors flex items-center gap-2">
                       <PackageCheck className="w-4 h-4" /> Mark complete
                     </button>
                   )}

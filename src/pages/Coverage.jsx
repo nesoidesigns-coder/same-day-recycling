@@ -17,7 +17,7 @@ export default function Coverage() {
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">Where we pick up</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
             Live territories across British Columbia — and new partner territories opening across Alberta.
-            One partner per city, in order of application.
+            One licensed partner per metro market, in order of application.
           </p>
         </div>
       </section>
