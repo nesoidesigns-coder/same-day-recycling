@@ -1,0 +1,95 @@
+{
+  "name": "WhiteLabelClient",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "custom_branding",
+        "full_app",
+        "lead_gen"
+      ],
+      "default": "custom_branding"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "network"
+      ],
+      "default": "starter"
+    },
+    "setup_fee": {
+      "type": "number",
+      "default": 2500
+    },
+    "monthly_fee": {
+      "type": "number",
+      "default": 199
+    },
+    "brand_name": {
+      "type": "string",
+      "default": ""
+    },
+    "primary_color": {
+      "type": "string",
+      "default": ""
+    },
+    "live_url": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "onboarding",
+        "active",
+        "paused",
+        "churned"
+      ],
+      "default": "onboarding"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "company",
+    "contact_name",
+    "email"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

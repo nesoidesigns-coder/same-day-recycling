@@ -39,6 +39,8 @@ import BlogPost from './pages/BlogPost';
 import Contractors from './pages/Contractors';
 import Coverage from './pages/Coverage';
 import PropertyManagers from './pages/PropertyManagers';
+import WhiteLabel from './pages/WhiteLabel';
+import AdminWhiteLabel from './pages/AdminWhiteLabel';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -88,6 +90,7 @@ const AuthenticatedApp = () => {
       <Route path="/contractors" element={<Contractors />} />
       <Route path="/coverage" element={<Coverage />} />
       <Route path="/property-managers" element={<PropertyManagers />} />
+      <Route path="/white-label" element={<WhiteLabel />} />
       <Route path="/real-estate" element={<RealtorLanding />} />
       <Route path="/realtor-partners" element={<RealtorOnePager />} />
       <Route path="/recycling-centers" element={<RecyclingCenters />} />
@@ -97,6 +100,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminPricing />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
         <Route path="/admin/facebook" element={<AdminFacebook />} />
+        <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
         <Route path="/admin/marketing" element={<AdminMarketing />} />
         <Route path="/partners" element={<PartnersDashboard />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />

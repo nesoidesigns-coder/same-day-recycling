@@ -17,6 +17,7 @@ const moreLinks = [
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
+  { label: "White Label", to: "/white-label" },
 ];
 
 export default function Navbar() {
