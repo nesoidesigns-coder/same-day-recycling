@@ -1,0 +1,48 @@
+{
+  "name": "MetricTargets",
+  "type": "object",
+  "properties": {
+    "metric": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "target": {
+      "type": "number"
+    },
+    "warning": {
+      "type": "number"
+    },
+    "unit": {
+      "type": "string",
+      "default": "%"
+    }
+  },
+  "required": [
+    "metric"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
