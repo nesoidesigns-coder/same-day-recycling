@@ -6,6 +6,7 @@ const ROTATE_MS = 6000;
 
 export default function Reviews() {
   const [reviews, setReviews] = useState(null);
+  const [placeId, setPlaceId] = useState(null);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -14,6 +15,8 @@ export default function Reviews() {
         { approved: true },
         { sort: "-created_date", limit: 50 }
       );
+      const meta = await base44.entities.GoogleReviewsMeta.filter({}, { limit: 1 });
+      setPlaceId(meta?.items?.[0]?.place_id || null);
       setReviews(items);
     })();
   }, []);
@@ -124,7 +127,9 @@ export default function Reviews() {
           )}
           <div className="mt-8 text-center">
             <a
-              href="https://www.google.com/search?q=Same+Day+Recycling+Vancouver+reviews"
+              href={placeId
+                ? `https://search.google.com/local/reviews?placeid=${placeId}`
+                : "https://www.google.com/search?q=Same+Day+Recycling+Vancouver+reviews"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1d9e56] hover:underline"
