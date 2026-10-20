@@ -1,0 +1,54 @@
+<mjml>
+  <mj-head>
+    <mj-title>Last check-in on your Same Day Recycling quote</mj-title>
+    <mj-preview>This is our last email about your quote. One click and the crew is on the way.</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Arial, Arial, sans-serif" />
+      <mj-section background-color="#ffffff" padding="0 32px" />
+      <mj-text color="#0c3b24" font-size="15px" line-height="1.6" padding="0" />
+      <mj-button background-color="#1d9e56" color="#000000" border-radius="16px" font-weight="700" inner-padding="14px 28px" align="left" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    <mj-section background-color="#1d9e56" padding="24px 32px">
+      <mj-column>
+        <mj-image src="https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02e81d056_logo.png" alt="Same Day Recycling" width="140px" align="left" />
+        <mj-text color="#000000" font-size="18px" font-weight="700" padding-top="8px">Same Day Recycling</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="32px 32px 8px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="700" line-height="1.2">Last check-in</mj-text>
+        <mj-text color="#475569" font-size="15px" padding-top="8px">This is the last email we'll send about your quote. After this, we'll leave you in peace.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="16px 32px">
+      <mj-column background-color="#f4f7f5" border-radius="16px" border="1px solid #e5e7eb" padding="20px 24px">
+        <mj-text font-size="15px" font-weight="700">Your quote: {{estimate}}</mj-text>
+        <mj-text font-size="14px" color="#475569" padding-top="6px">Items: {{items_text}}{{#if city}} · {{city}}{{/if}}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="8px 32px">
+      <mj-column>
+        <mj-text font-size="15px">Same-day slots are filling up, so this is the last hold on your estimate. If the junk is still sitting there, one click gets the crew moving, and you approve the final price on arrival before we lift a thing.</mj-text>
+        <mj-text font-size="15px" padding-top="8px">And if you're all sorted already, no hard feelings. Thanks for considering us.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="24px 32px">
+      <mj-column>
+        <mj-button href="https://samedayrecycling.ca/#book">Book my pickup</mj-button>
+        <mj-text font-size="13px" color="#475569" padding-top="12px">Call or text (604) 849-1745 any time.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f4f7f5" padding="20px 32px">
+      <mj-column>
+        <mj-text color="#475569" font-size="12px">Same Day Recycling · (604) 849-1745 · samedayrecycling.ca<br/>You're receiving this because you requested a quote on our site.</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

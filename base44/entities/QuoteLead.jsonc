@@ -26,6 +26,14 @@
       "type": "string",
       "default": ""
     },
+    "followup_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_followup_date": {
+      "type": "string",
+      "format": "date"
+    },
     "status": {
       "type": "string",
       "enum": [

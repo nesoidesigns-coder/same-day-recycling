@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 9 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every morning 9:30am, quote leads that haven't booked get the next round of the 3-round email sequence (warm close, objection handling, final nudge); finished leads are escalated to the owner",
+  "name": "Quote Lead Follow-Ups",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "quote_lead_follow_ups",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_follow_ups": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "quoteFollowUps",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send quote lead follow-ups",
+            "description": "Emails the next round to quote leads that haven't booked"
+          }
+        }
+      }
+    ]
+  }
+}
