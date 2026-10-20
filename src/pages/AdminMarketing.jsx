@@ -13,6 +13,7 @@ import QueryTrackerTab from "@/components/admin/QueryTrackerTab";
 import CoCreatorTab from "@/components/admin/CoCreatorTab";
 import CompetitorsTab from "@/components/admin/CompetitorsTab";
 import SearchConsoleTab from "@/components/admin/SearchConsoleTab";
+import RealtimeTab from "@/components/admin/RealtimeTab";
 
 const TABS = [
   { key: "live", label: "Live Tracker" },
@@ -22,6 +23,7 @@ const TABS = [
   { key: "keywords", label: "Keywords" },
   { key: "research", label: "AI Research" },
   { key: "analytics", label: "Analytics" },
+  { key: "realtime", label: "Realtime" },
   { key: "systems", label: "Systems" },
   { key: "queries", label: "Query Tracker" },
   { key: "cocreator", label: "AI Co-Creator" },
@@ -67,7 +69,7 @@ export default function AdminMarketing() {
           </a>
         </div>
 
-        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "keywords" ? <SearchConsoleTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : tab === "cocreator" ? <CoCreatorTab /> : tab === "competitors" ? <CompetitorsTab /> : <ResearchTab />}
+        {tab === "live" ? <LiveTrackerTab /> : tab === "followups" ? <FollowUpsTab /> : tab === "seo" ? <SeoInsightsTab /> : tab === "keywords" ? <SearchConsoleTab /> : tab === "analytics" ? <AnalyticsTab /> : tab === "realtime" ? <RealtimeTab /> : tab === "systems" ? <SystemsTab /> : tab === "queries" ? <QueryTrackerTab /> : tab === "cocreator" ? <CoCreatorTab /> : tab === "competitors" ? <CompetitorsTab /> : <ResearchTab />}
       </div>
       <Footer />
     </div>
