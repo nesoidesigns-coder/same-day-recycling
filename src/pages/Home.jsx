@@ -3,6 +3,7 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Hero from "@/components/sdr/Hero";
 import TrustBar from "@/components/sdr/TrustBar";
+import LocallyOwned from "@/components/sdr/LocallyOwned";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
 import CitySelector from "@/components/sdr/CitySelector";
@@ -40,6 +41,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
+      <LocallyOwned />
       <HologramFeed />
       <Services />
       <CondoStrata />
