@@ -12,6 +12,7 @@ import CityMap from "@/components/sdr/CityMap";
 import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import CityPricing from "@/components/sdr/CityPricing";
 import CityGuide from "@/components/sdr/CityGuide";
+import FurnitureRemoval from "@/components/sdr/FurnitureRemoval";
 import CityReviews from "@/components/sdr/CityReviews";
 import CityTrust from "@/components/sdr/CityTrust";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
@@ -82,6 +83,7 @@ export default function CityPage({ slugParam }) {
       <CityTrust city={city} />
       <CityReviews city={city} />
       <CityGuide city={city} />
+      <FurnitureRemoval cityName={city.name} />
       <QuoteCalculator onBook={bookFromQuote} city={city.name} />
       <Booking prefill={{ ...quotePrefill, city: city.name }} />
       <FAQ />

@@ -1,6 +1,10 @@
-import { Printer, Recycle, CalendarCheck, Home, Building2, DollarSign, ShieldCheck, Clock, Phone } from "lucide-react";
+import { useEffect } from "react";
+import { Printer, Recycle, CalendarCheck, Home, Building2, DollarSign, ShieldCheck, Clock, Phone, Quote, Key, Sparkles, Timer } from "lucide-react";
 import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import RexBanner from "@/components/sdr/RexBanner";
+
+const SEO_TITLE = "Junk Removal Services for Real Estate Professionals | BC Realtor Partners";
+const SEO_DESCRIPTION = "Partner with Same Day Recycling to expedite your property sales. Fast, reliable junk removal for realtors and estate cleanouts in British Columbia.";
 
 const BENEFITS = [
   {
@@ -33,6 +37,16 @@ const SCENARIOS = [
 ];
 
 export default function RealtorOnePager() {
+  useEffect(() => {
+    document.title = SEO_TITLE;
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", SEO_DESCRIPTION);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", SEO_TITLE);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", SEO_DESCRIPTION);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#f4f7f5] print:bg-white">
       <div className="print:hidden">
@@ -95,6 +109,41 @@ export default function RealtorOnePager() {
                   </li>
                 ))}
               </ul>
+            </section>
+
+            {/* Open-house clutter-free */}
+            <section>
+              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-[#1d9e56]" /> Keep every open house clutter-free
+              </h2>
+              <p className="text-sm text-slate-600 mb-3 leading-relaxed">
+                Clutter kills offers. We clear listings before they cost you money — at every stage of the sale:
+              </p>
+              <ul className="space-y-2">
+                {[
+                  "Before listing photos: declutter the shot before the photographer arrives",
+                  "Before showings: furniture the sellers never moved is gone same day",
+                  "Between open houses: leftover staging and buyer-survey items hauled fast",
+                  "Before possession: vacant-property sweeps so keys hand over clean",
+                ].map((s) => (
+                  <li key={s} className="flex gap-2 text-sm text-slate-700">
+                    <Key className="w-4 h-4 text-[#1d9e56] shrink-0 mt-0.5" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* Testimonial */}
+            <section className="rounded-2xl bg-[#f4f7f5] p-5 print:border print:border-slate-200">
+              <Quote className="w-5 h-5 text-[#1d9e56] mb-2" />
+              <p className="text-sm text-[#0c3b24] leading-relaxed italic">
+                "I called at 9am about a hoarder-condition condo in Mount Pleasant, had the cleanout quote by 9:40 and the whole unit cleared by 3 the same afternoon. Photos were staged the next morning. I've stopped using anyone else for pre-listing cleanouts."
+              </p>
+              <p className="text-xs font-bold text-[#0c3b24] mt-3">
+                Melissa C. — REALTOR®, Vancouver
+              </p>
+              <p className="text-xs text-slate-500">Same-day turnaround, pre-listing cleanout</p>
             </section>
 
             {/* How it works */}
@@ -163,6 +212,29 @@ export default function RealtorOnePager() {
                 <h3 className="font-bold text-[#0c3b24] text-sm flex items-center gap-2"><Building2 className="w-4 h-4 text-[#1d9e56]" /> Property manager plan</h3>
                 <p className="text-sm text-slate-600 mt-1 leading-relaxed">For strata and rental portfolios: $299/month covers up to 4 pickups — ideal for ongoing turnover cleanouts.</p>
               </div>
+            </section>
+
+            {/* Priority Scheduling */}
+            <section className="rounded-2xl border-2 border-[#1d9e56] bg-white p-5 print:p-5">
+              <h2 className="font-bold text-[#0c3b24] text-sm flex items-center gap-2 mb-3">
+                <Timer className="w-4 h-4 text-[#1d9e56]" /> Priority Scheduling — realtor partners only
+              </h2>
+              <ul className="space-y-2">
+                {[
+                  "Same-day slots reserved for partner agents, even on busy days",
+                  "Text-your-job priority line: (604) 849-1745 — partners jump the queue",
+                  "Flexible rebooking around showings, inspections and closing dates",
+                  "Before/after photos emailed for your file and your seller",
+                ].map((p) => (
+                  <li key={p} className="flex gap-2 text-sm text-slate-700">
+                    <CalendarCheck className="w-4 h-4 text-[#1d9e56] shrink-0 mt-0.5" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-slate-500 mt-3">
+                Priority scheduling is activated with your first partner job — no fee, no commitment.
+              </p>
             </section>
 
             {/* Lead form */}
