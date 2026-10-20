@@ -49,17 +49,19 @@ export default function AdminControlCenter() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#051511]">
+      <div className="min-h-screen flex items-center justify-center admin-console">
         <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
       </div>
     );
   }
 
+
+
   return (
-    <div className="min-h-screen bg-[#051511]">
+    <div className="min-h-screen admin-console">
       <TopBar />
       <Navbar />
-      <div className="max-w-5xl mx-auto px-4 py-10 text-emerald-50">
+      <div className="max-w-5xl mx-auto px-4 py-12 text-emerald-50">
         <div className="flex items-center gap-3 mb-8">
           <span className="relative overflow-hidden w-11 h-11 rounded-2xl border border-[#1d9e56]/40 bg-[#0c3b24]/60 flex items-center justify-center">
             <Gauge className="w-5 h-5 text-[#1d9e56]" />
@@ -68,7 +70,7 @@ export default function AdminControlCenter() {
             <div className={`${label} flex items-center gap-2 mb-1`}>
               <Radio className="w-3.5 h-3.5 text-[#1d9e56] holo-flicker" /> Agency network
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Agency Control Center</h1>
+            <h1 className="text-3xl md:text-4xl font-bold admin-headline tracking-tight">Agency Control Center</h1>
             <p className="text-sm text-emerald-100/50">Bookings, contractors and regions at a glance</p>
           </div>
         </div>
@@ -83,18 +85,18 @@ export default function AdminControlCenter() {
         <div className="grid md:grid-cols-2 gap-6 mb-10">
           <RegionalPerformance bookings={data.bookings} />
           <div>
-            <h2 className="text-lg font-bold text-white tracking-tight mb-3">Contractor status</h2>
+            <h2 className="text-xl font-bold text-white tracking-tight mb-4">Contractor status</h2>
             <ContractorStatus partners={data.partners} bookings={data.bookings} />
           </div>
         </div>
 
-        <h2 className="text-lg font-bold text-white tracking-tight mb-3">Open a tool</h2>
+        <h2 className="text-xl font-bold text-white tracking-tight mb-4">Open a tool</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
           {HUBS.map((h) => (
             <Link
               key={h.to}
               to={h.to}
-              className="relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-5 hover:border-[#1d9e56] hover:bg-[#0c3b24]/80 transition-colors group"
+              className="relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-5 hover:border-[#1d9e56]/70 transition-colors group"
             >
               <div className="flex items-center gap-2">
                 <h.icon className="w-4 h-4 text-[#1d9e56]" />

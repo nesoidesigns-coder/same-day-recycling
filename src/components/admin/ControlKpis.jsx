@@ -3,8 +3,8 @@ import { Gauge, DollarSign, BellRing, MapPinned, CalendarClock, Quote } from "lu
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-5";
-const label = "text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-100/50";
+const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-5";
+const label = "text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-100/60";
 
 export default function ControlKpis({ bookings, quoteNew, clients }) {
   const todayKey = new Date().toLocaleDateString("en-CA");
@@ -35,8 +35,8 @@ export default function ControlKpis({ bookings, quoteNew, clients }) {
             <g.icon className="w-4 h-4 text-[#1d9e56]" />
             <div className={label}>{g.label}</div>
           </div>
-          <div className={`text-2xl font-bold mt-2 tabular-nums ${g.glow ? "text-[#1d9e56] holo-glow-text" : "text-white"}`}>{g.value}</div>
-          <div className="text-xs text-emerald-100/40 mt-1">{g.sub}</div>
+          <div className={`text-3xl font-bold tracking-tight mt-3 tabular-nums ${g.glow ? "text-[#1d9e56] holo-glow-text" : "text-white"}`}>{g.value}</div>
+          <div className="text-xs text-emerald-100/50 mt-1.5">{g.sub}</div>
         </div>
       ))}
       {quoteNew === null && <p className="col-span-full text-xs text-emerald-100/40">Live counters could not be refreshed — showing the latest available numbers.</p>}

@@ -1,6 +1,6 @@
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-4";
+const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-4";
 const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
 
 export default function BookingsTrendChart({ bookings }) {

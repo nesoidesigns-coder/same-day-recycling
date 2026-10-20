@@ -3,7 +3,7 @@ import { Truck, MapPin, CheckCircle2, Clock } from "lucide-react";
 const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + Math.round((Number(n) || 0) * PARTNER_SHARE).toLocaleString("en-CA");
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-5";
+const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-5";
 
 export default function ContractorStatus({ partners, bookings }) {
   if (!partners.length) {
