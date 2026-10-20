@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Info, Maximize2, Clock, X } from "lucide-react";
 
-const STATUS_COLOR = { ok: "text-emerald-600", warn: "text-amber-600", bad: "text-red-600" };
+const STATUS_COLOR = { ok: "text-emerald-600", warn: "text-amber-600", bad: "text-red-600", Verified: "text-emerald-600" };
 
 export default function GaugeCard({ title, tooltip, updated, onOpen, status, children, wide }) {
   const [tipOpen, setTipOpen] = useState(false);

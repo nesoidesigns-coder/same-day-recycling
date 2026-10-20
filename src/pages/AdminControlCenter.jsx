@@ -12,6 +12,7 @@ import RegionalPerformance from "@/components/admin/RegionalPerformance";
 import ContractorStatus from "@/components/admin/ContractorStatus";
 
 const HUBS = [
+  { icon: Gauge, label: "Analytics", to: "/admin/analytics", desc: "Gauge dashboard & targets" },
   { icon: Briefcase, label: "Dispatch & Payouts", to: "/admin/jobs", desc: "Assign jobs, confirm partners" },
   { icon: Megaphone, label: "Marketing Hub", to: "/admin/marketing", desc: "Live tracker, SEO, research" },
   { icon: Share2, label: "FB AI Hub", to: "/admin/facebook", desc: "Auto posts & replies" },

@@ -18,6 +18,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import AdminPricing from './pages/AdminPricing';
 import AdminControlCenter from './pages/AdminControlCenter';
+import AdminAnalytics from './pages/AdminAnalytics';
 import CityPage from './pages/CityPage';
 import CityRedirect from './pages/CityRedirect';
 import { CITIES } from '@/lib/cities';
@@ -103,6 +104,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/admin" element={<AdminControlCenter />} />
         <Route path="/admin/pricing" element={<AdminPricing />} />
+        <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
         <Route path="/admin/facebook" element={<AdminFacebook />} />
         <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
