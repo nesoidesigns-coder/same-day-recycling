@@ -86,6 +86,30 @@ export const CITY_CONTENT = {
       ["What happens to my old furniture?", "Anything usable is donated locally first; the rest is recycled or disposed of through proper facilities."],
     ],
   },
+  "maple-ridge": {
+    guide: [
+      "Maple Ridge is where big lots meet big jobs: acreage cleanouts, garage and barn clearances, hot tubs, above-ground pools and renovation debris from Haney, Albion, Silver Valley, Cottonwood and Thornhill. Most haulers treat the Ridge as a next-day afterthought — we run it as its own same-day route, so a booking before noon usually gets picked up that afternoon.",
+      "Loads are sorted for donation and recycling before disposal, and pricing is quoted by truck space upfront, approved before we lift a thing. Long driveways and rural access? Tell us when you book and we'll send the right truck the first time.",
+    ],
+    faqs: [
+      ["Is same-day pickup really available in Maple Ridge?", "Yes — book before noon and our Maple Ridge route usually reaches you the same day, Haney to Silver Valley."],
+      ["Do you serve farms and properties with long driveways?", "Yes — acreage and rural cleanouts are regular work here. Mention gate codes or long drives when booking so we come prepared."],
+      ["Can you take a hot tub or renovation debris?", "Yes — hot tubs, drywall, lumber and flooring all go out in one visit; recyclable material is separated before disposal."],
+      ["What does junk removal cost in Maple Ridge?", "Prices follow truck space, from a single-item minimum to a full truck for a packed garage — you'll see the range upfront, approved before we start."],
+    ],
+  },
+  "pitt-meadows": {
+    guide: [
+      "Pitt Meadows gets full same-day service, not the next-day window most city haulers offer out here. From the town core and Osprey Village to South Bonson and the farms along Harris Road and Dewdney Trunk, we clear furniture, appliances, mattresses, garage and estate cleanouts, yard waste and farm debris with one truck and one upfront price.",
+      "Every load is sorted for donation and recycling first, and disposal runs through Metro Vancouver facilities. Because Pitt Meadows sits on our Maple Ridge route, trucks are in the area daily — book before noon and we're usually there the same afternoon.",
+    ],
+    faqs: [
+      ["Do you actually offer same-day service in Pitt Meadows?", "Yes — we run Pitt Meadows on the same route as Maple Ridge, so a booking before noon is usually picked up the same day."],
+      ["Can you clear out a farm or rural property?", "Yes — barn and outbuilding cleanouts, old equipment and debris piles are all regular jobs. Tell us about access when you book."],
+      ["Do you take appliances and mattresses?", "Yes — fridges, washers, stoves, mattresses and box springs all go out with the crew; metal is recycled and refrigerants handled properly."],
+      ["What happens to my items after pickup?", "Usable furniture and household goods are donated first, metal goes to recyclers, and the rest is disposed of through proper facilities — we can email you a receipt showing where it all went."],
+    ],
+  },
 };
 
 export const cityContentFor = (slug) => CITY_CONTENT[slug] || null;

@@ -69,6 +69,26 @@ export const CITIES = [
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Kelowna BC",
     seo_description: "Same-day junk removal and junk disposal in Kelowna BC — furniture, appliance, mattress and hot tub removal plus garage, estate and moving cleanouts in West Kelowna, Rutland, Mission and Glenmore. Upfront pricing, eco-friendly disposal, book before noon for same-day pickup.",
   },
+  {
+    name: "Maple Ridge",
+    slug: "maple-ridge",
+    lat: 49.2193,
+    lng: -122.6016,
+    radius: 9000,
+    blurb: "Junk disposal in Maple Ridge with same-day furniture removal for Albion, Haney, Silver Valley, Cottonwood and Thornhill — sofa removal, appliance pickup, mattress disposal, hot tub removal, garage and estate cleanouts, renovation debris and yard waste. One truck, one trip, one upfront price — book before noon for same-day pickup in the Ridge.",
+    seo_title: "Same-Day Junk Removal & Furniture Disposal in Maple Ridge BC",
+    seo_description: "Same-day junk removal in Maple Ridge BC — junk disposal today with furniture, appliance, mattress and hot tub removal plus garage, estate and renovation cleanouts in Haney, Albion, Silver Valley and Thornhill. Upfront pricing, insured crews, eco-friendly disposal.",
+  },
+  {
+    name: "Pitt Meadows",
+    slug: "pitt-meadows",
+    lat: 49.2214,
+    lng: -122.6956,
+    radius: 6000,
+    blurb: "Junk disposal in Pitt Meadows with same-day furniture removal for the town core, Osprey Village, South Bonson and the rural farms along Harris Road and Dewdney Trunk — furniture removal, appliance pickup, mattress disposal, garage and estate cleanouts and yard waste. Same-day pickup when you book before noon.",
+    seo_title: "Same-Day Junk Removal & Furniture Disposal in Pitt Meadows BC",
+    seo_description: "Junk disposal in Pitt Meadows BC the same day you call — same-day furniture removal, appliance pickup, mattress disposal and farm, garage and estate cleanouts across the town core, Osprey Village and South Bonson. Upfront pricing, eco-friendly disposal.",
+  },
 ];
 
 export const cityFromSlug = (slug) => CITIES.find((c) => c.slug === slug) || null;

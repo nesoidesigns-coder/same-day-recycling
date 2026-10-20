@@ -44,6 +44,18 @@ export const CITY_CREDENTIALS = {
     "Hauls through Central Okanagan facilities",
     "Serving West Kelowna, Rutland and Mission",
   ],
+  "maple-ridge": [
+    "Dedicated same-day route for Maple Ridge",
+    "Acreage and hot tub removal specialists",
+    "Hauls through Metro Vancouver facilities",
+    "Serving Haney, Albion, Silver Valley and Thornhill",
+  ],
+  "pitt-meadows": [
+    "Same-day service, not next-day, in Pitt Meadows",
+    "On the daily Maple Ridge route",
+    "Farm and rural property cleanouts",
+    "Serving Osprey Village, South Bonson and the town core",
+  ],
 };
 
 export const cityCredentialsFor = (slug) => CITY_CREDENTIALS[slug] || null;
