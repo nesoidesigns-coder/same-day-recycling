@@ -8,7 +8,8 @@ const faqs = [
   { q: "What junk items do you take?", a: "Almost everything — furniture removal and sofa or mattress disposal, appliance pickup, electronics, hot tubs, yard waste, construction and renovation debris, garage and estate cleanout contents. We also pick up scrap metal for free within Vancouver (our minimum charge applies in other cities). If you're unsure, just ask." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, and fuel. Anything else, just ask." },
   { q: "What happens to my stuff?", a: "We sort every load: reusable furniture and household items go to donation partners, metal is recycled, and the rest is disposed of responsibly. Most loads avoid the landfill entirely." },
-  { q: "Do I need to be home?", a: "Not for curbside pickup. Leave the items outside, pay less, and we handle the rest." },
+  { q: "Do I need to be home?", a: "Not for curbside pickup. Stage items in your driveway, lane or garage front and take $25 off with our Curbside Discount — no need to be home, and we text you the arrival window." },
+  { q: "Can I get a quote from a photo?", a: "Yes — snap one photo of your junk and we'll send back a firm, no-obligation price. Use the photo quote tool above, or text your photo to (604) 849-1745." },
 ];
 
 export default function FAQ() {

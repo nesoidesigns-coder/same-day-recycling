@@ -20,6 +20,10 @@ import HologramFeed from "@/components/sdr/HologramFeed";
 import Footer from "@/components/sdr/Footer";
 import StickyCTA from "@/components/sdr/StickyCTA";
 import ExitIntentOffer from "@/components/sdr/ExitIntentOffer";
+import PhotoQuote from "@/components/sdr/PhotoQuote";
+import CurbsideDiscount from "@/components/sdr/CurbsideDiscount";
+import CondoStrata from "@/components/sdr/CondoStrata";
+import EcoReceipt from "@/components/sdr/EcoReceipt";
 
 export default function Home() {
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -35,13 +39,17 @@ export default function Home() {
       <TrustBar />
       <HologramFeed />
       <Services />
+      <CondoStrata />
       <HowItWorks />
+      <CurbsideDiscount />
       <CitySelector />
       <LoadEstimator onBook={bookFromQuote} />
+      <PhotoQuote onBook={bookFromQuote} />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
       <ServiceArea />
       <RecyclingCentersMap showSelector />
+      <EcoReceipt />
       <Reviews />
       <SubTeaser />
       <FacebookFeed />
