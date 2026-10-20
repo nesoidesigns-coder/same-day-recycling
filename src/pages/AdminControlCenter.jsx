@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, Gauge, Briefcase, Megaphone, Share2, Tag, DollarSign } from "lucide-react";
+import { Loader2, Gauge, Briefcase, Megaphone, Share2, Tag, DollarSign, Radio } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -18,6 +18,8 @@ const HUBS = [
   { icon: Tag, label: "White Label", to: "/admin/white-label", desc: "Applications & licensees" },
   { icon: DollarSign, label: "Pricing", to: "/admin/pricing", desc: "City pricing ladders" },
 ];
+
+const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
 
 export default function AdminControlCenter() {
   const [data, setData] = useState(null);
@@ -47,24 +49,27 @@ export default function AdminControlCenter() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#051511]">
         <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#051511]">
       <TopBar />
       <Navbar />
-      <div className="max-w-5xl mx-auto px-4 py-10">
+      <div className="max-w-5xl mx-auto px-4 py-10 text-emerald-50">
         <div className="flex items-center gap-3 mb-8">
-          <span className="w-11 h-11 rounded-2xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
-            <Gauge className="w-5 h-5" />
+          <span className="relative overflow-hidden w-11 h-11 rounded-2xl border border-[#1d9e56]/40 bg-[#0c3b24]/60 flex items-center justify-center">
+            <Gauge className="w-5 h-5 text-[#1d9e56]" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-[#0c3b24] tracking-tight">Agency Control Center</h1>
-            <p className="text-sm text-slate-500">Bookings, contractors and regions at a glance</p>
+            <div className={`${label} flex items-center gap-2 mb-1`}>
+              <Radio className="w-3.5 h-3.5 text-[#1d9e56] holo-flicker" /> Agency network
+            </div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Agency Control Center</h1>
+            <p className="text-sm text-emerald-100/50">Bookings, contractors and regions at a glance</p>
           </div>
         </div>
 
@@ -78,20 +83,24 @@ export default function AdminControlCenter() {
         <div className="grid md:grid-cols-2 gap-6 mb-10">
           <RegionalPerformance bookings={data.bookings} />
           <div>
-            <h2 className="text-lg font-bold text-[#0c3b24] mb-3">Contractor status</h2>
+            <h2 className="text-lg font-bold text-white tracking-tight mb-3">Contractor status</h2>
             <ContractorStatus partners={data.partners} bookings={data.bookings} />
           </div>
         </div>
 
-        <h2 className="text-lg font-bold text-[#0c3b24] mb-3">Open a tool</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <h2 className="text-lg font-bold text-white tracking-tight mb-3">Open a tool</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
           {HUBS.map((h) => (
-            <Link key={h.to} to={h.to} className="rounded-2xl bg-[#f4f7f5] border border-slate-100 p-5 hover:border-[#1d9e56] transition-colors">
+            <Link
+              key={h.to}
+              to={h.to}
+              className="relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-5 hover:border-[#1d9e56] hover:bg-[#0c3b24]/80 transition-colors group"
+            >
               <div className="flex items-center gap-2">
                 <h.icon className="w-4 h-4 text-[#1d9e56]" />
-                <span className="font-bold text-[#0c3b24]">{h.label}</span>
+                <span className="font-bold text-white">{h.label}</span>
               </div>
-              <p className="text-xs text-slate-500 mt-1">{h.desc}</p>
+              <p className="text-xs text-emerald-100/50 mt-1">{h.desc}</p>
             </Link>
           ))}
         </div>

@@ -2,6 +2,9 @@ import { MapPin } from "lucide-react";
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
+const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-4";
+const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
+
 export default function RegionalPerformance({ bookings }) {
   const byCity = new Map();
   bookings.forEach((b) => {
@@ -18,8 +21,8 @@ export default function RegionalPerformance({ bookings }) {
   const maxBookings = Math.max(...rows.map((r) => r.bookings), 1);
 
   return (
-    <div className="rounded-2xl border border-slate-200 p-4">
-      <p className="text-sm font-bold text-[#0c3b24] mb-3 inline-flex items-center gap-2">
+    <div className={panel}>
+      <p className={`${label} mb-3 inline-flex items-center gap-2`}>
         <MapPin className="w-4 h-4 text-[#1d9e56]" /> Regional performance (recent bookings)
       </p>
       {rows.length ? (
@@ -27,19 +30,19 @@ export default function RegionalPerformance({ bookings }) {
           {rows.map((r) => (
             <li key={r.city} className="text-sm">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-[#0c3b24]">{r.city}</span>
-                <span className="text-slate-500">
+                <span className="font-semibold text-white">{r.city}</span>
+                <span className="text-emerald-100/50 tabular-nums">
                   {r.bookings} booking{r.bookings === 1 ? "" : "s"} · {money(r.revenue)}
                 </span>
               </div>
-              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full rounded-full bg-[#1d9e56]" style={{ width: `${Math.round((r.bookings / maxBookings) * 100)}%` }} />
+              <div className="h-2 rounded-full bg-[#0c3b24] overflow-hidden">
+                <div className="h-full rounded-full bg-[#1d9e56] shadow-[0_0_10px_rgba(29,158,86,0.7)]" style={{ width: `${Math.round((r.bookings / maxBookings) * 100)}%` }} />
               </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-slate-500">No bookings yet.</p>
+        <p className="text-sm text-emerald-100/50">No bookings yet.</p>
       )}
     </div>
   );
