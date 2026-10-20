@@ -35,8 +35,8 @@ export default function About() {
         <div>
           <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Built with local partners</h2>
           <p>
-            Founded in Vancouver, expanding province by province through local contractor partners who own
-            their territories. Each partner runs their own trucks and crews; the network supplies the pages,
+            Founded in Vancouver, expanding city by city across Canada through local contractor partners who
+            own their territories. Each partner runs their own trucks and crews; the network supplies the pages,
             the ads, a 24/7 receptionist that answers in five languages, and the booking machine that keeps
             every city filled.
           </p>
@@ -45,7 +45,7 @@ export default function About() {
         <div className="rounded-3xl bg-[#f4f7f5] border-l-4 border-[#1d9e56] p-8">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Our mission</div>
           <p className="text-xl md:text-2xl font-bold text-[#0c3b24] leading-snug">
-            "To clear Vancouver's junk the same day, at one honest upfront price, and actually recycle what
+            "To clear Canada's junk the same day, at one honest upfront price, and actually recycle what
             we haul — not just wear the badge."
           </p>
         </div>
