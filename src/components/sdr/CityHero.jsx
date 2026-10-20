@@ -10,7 +10,7 @@ export default function CityHero({ city, intro }) {
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-5">
             <span className="w-8 h-px bg-[#1d9e56]" />
-            {city.name} &amp; area
+            {city.name} &amp; area · Part of Canada's national partner network
           </div>
           <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight text-[#0c3b24]">
             Same-Day Junk Removal &amp; Furniture Disposal<br />in {city.name}, BC

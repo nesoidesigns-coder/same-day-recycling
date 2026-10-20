@@ -15,10 +15,10 @@ export default function CityMap({ city }) {
             Service area
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#0c3b24] tracking-tight">
-            We cover {city.name} — and the whole Lower Mainland
+            We cover {city.name} — and our partner cities across Canada
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            {city.blurb} Our trucks run same-day routes across the region, so a pickup is never far away.
+            {city.blurb} Our trucks run same-day routes across the region, and our national partner network keeps adding cities across Canada — so a pickup is never far away.
           </p>
         </div>
 

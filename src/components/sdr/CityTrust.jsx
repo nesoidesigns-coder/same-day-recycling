@@ -96,7 +96,7 @@ export default function CityTrust({ city }) {
             Why {city.name} trusts Same Day Recycling
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            Local track record, local facilities, and a promise we keep on every load.
+            Local track record, local facilities, and a promise we keep on every load — backed by a Canada-wide partner network.
           </p>
         </div>
 
