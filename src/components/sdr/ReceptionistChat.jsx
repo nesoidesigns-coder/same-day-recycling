@@ -5,6 +5,7 @@ import { MessageCircle, X, Send, Loader2, Paperclip } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
 import AiMascotFull from "./AiMascotFull";
+import ChatMedia from "./ChatMedia";
 
 const AGENT_NAME = "receptionist";
 
@@ -176,7 +177,10 @@ export default function ReceptionistChat() {
                       ) : null}
                       {m.content && <div className="whitespace-pre-wrap">{m.content}</div>}
                     </div>
-                  : <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[85%] prose prose-sm"><ReactMarkdown>{m.content}</ReactMarkdown></div>}
+                  : <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[85%] prose prose-sm">
+                      <ChatMedia content={m.content} />
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                    </div>}
               </div>
             ))}
             {sending && <div className="flex justify-start text-xs text-slate-400">typing…</div>}
