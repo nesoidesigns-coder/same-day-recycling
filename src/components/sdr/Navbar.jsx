@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { Menu, X, Recycle, ChevronDown } from "lucide-react";
 
 const primaryLinks = [
-  { label: "Services", href: "#services" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Service Area", href: "#service-area" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Services", to: "/#services" },
+  { label: "How It Works", to: "/#how-it-works" },
+  { label: "Service Area", to: "/#service-area" },
+  { label: "FAQ", to: "/#faq" },
 ];
 
 const moreLinks = [
@@ -27,17 +27,17 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-2 font-bold text-[#0c3b24]">
+        <Link to="/#top" className="flex items-center gap-2 font-bold text-[#0c3b24]">
           <span className="w-9 h-9 rounded-xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
             <Recycle className="w-5 h-5" />
           </span>
           <span className="text-lg tracking-tight">Same Day Recycling</span>
-        </a>
+        </Link>
         <div className="hidden md:flex items-center gap-8">
           {primaryLinks.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
+            <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-700 hover:text-[#1d9e56] transition-colors">
               {l.label}
-            </a>
+            </Link>
           ))}
           <div className="relative">
             <button
@@ -61,9 +61,9 @@ export default function Navbar() {
               </div>
             )}
           </div>
-          <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors">
+          <Link to="/#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-2.5 text-sm hover:bg-[#17a04c] transition-colors">
             Book a Pickup
-          </a>
+          </Link>
         </div>
         <button className="md:hidden p-2 text-[#0c3b24]" onClick={() => setOpen(!open)} aria-label="Menu">
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -72,13 +72,13 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-slate-100 bg-white px-4 py-4 flex flex-col gap-3">
           {primaryLinks.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm font-bold text-[#0c3b24] py-1">
+            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-bold text-[#0c3b24] py-1">
               {l.label}
-            </a>
+            </Link>
           ))}
-          <a href="#book" onClick={() => setOpen(false)} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-3 text-sm text-center">
+          <Link to="/#book" onClick={() => setOpen(false)} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-3 text-sm text-center">
             Book a Pickup
-          </a>
+          </Link>
           <div className="pt-2 border-t border-slate-100">
             <div className="text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">More</div>
             <div className="grid grid-cols-2 gap-2">
