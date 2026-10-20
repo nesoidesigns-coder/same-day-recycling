@@ -1,7 +1,7 @@
 import { BadgeCheck, ArrowRight } from "lucide-react";
 
 const LOCKED_TIERS = [
-  { name: "Small markets", price: "$299/mo", note: "Towns and smaller regional cities" },
+  { name: "Small markets", price: "$349/mo", note: "Towns and smaller regional cities" },
   { name: "Standard cities", price: "$499/mo", note: "Mid-size cities with solid search volume" },
   { name: "Metro territories", price: "$999/mo", note: "Major metros — full network push" },
 ];

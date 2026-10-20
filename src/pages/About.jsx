@@ -37,7 +37,7 @@ export default function About() {
           <p>
             Founded in Vancouver, expanding province by province through local contractor partners who own
             their territories. Each partner runs their own trucks and crews; the network supplies the pages,
-            the ads, a 24/7 receptionist that answers in six languages, and the booking machine that keeps
+            the ads, a 24/7 receptionist that answers in five languages, and the booking machine that keeps
             every city filled.
           </p>
         </div>

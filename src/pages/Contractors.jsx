@@ -49,7 +49,7 @@ const adminItems = [
 const tiers = [
   {
     name: "Small markets",
-    price: "$299",
+    price: "$349",
     note: "Towns and smaller regional cities",
   },
   {
@@ -112,7 +112,7 @@ export default function Contractors() {
             <p className="mt-6 text-lg text-slate-300 max-w-lg leading-relaxed">
               You didn't get into hauling to answer phones, chase quotes, and beg Google for attention.
               That's our job. Same Day Recycling is Canada's booking engine for junk and recycling
-              contractors — we build the pages, run the ads, answer every call and message 24/7 in six
+              contractors — we build the pages, run the ads, answer every call and message 24/7 in five
               languages, and drop booked jobs into your hands. You show up, haul, and get paid.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">

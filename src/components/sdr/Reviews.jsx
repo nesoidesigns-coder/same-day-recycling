@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { BadgeCheck, ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 
 const ROTATE_MS = 6000;
 
@@ -90,11 +89,7 @@ export default function Reviews() {
                   {r.city}
                 </span>
               )}
-              {r.created_date && (
-                <span className="text-sm text-slate-400">
-                  {formatDistanceToNow(new Date(r.created_date), { addSuffix: true })}
-                </span>
-              )}
+
             </div>
             {reviews.length > 1 && (
               <>

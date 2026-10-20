@@ -17,7 +17,6 @@ import CityReviews from "@/components/sdr/CityReviews";
 import CityTrust from "@/components/sdr/CityTrust";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
-import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
 
@@ -86,7 +85,6 @@ export default function CityPage({ slugParam }) {
       <FurnitureRemoval cityName={city.name} />
       <QuoteCalculator onBook={bookFromQuote} city={city.name} />
       <Booking prefill={{ ...quotePrefill, city: city.name }} />
-      <FAQ />
       <FinalCTA />
       <Footer />
     </div>

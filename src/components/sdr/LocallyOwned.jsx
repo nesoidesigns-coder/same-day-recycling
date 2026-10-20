@@ -9,10 +9,10 @@ export default function LocallyOwned() {
         </span>
         <div>
           <h2 className="font-bold text-[#0c3b24] text-base md:text-lg">
-            Proudly BC-owned &amp; operated — not a franchise
+            Built in BC — run with local partners
           </h2>
           <p className="text-sm text-slate-600 mt-1 max-w-2xl">
-            No call centers, no head-office handoffs, no franchise markup. When you call or text (604) 849-1745, you deal with local Vancouver crews and dispatchers who know your city — and the price stays local too.
+            No call centers, no head-office handoffs. When you call or text (604) 849-1745, you reach our dispatch and the local crew serving your city — and the price stays local too.
           </p>
         </div>
       </div>

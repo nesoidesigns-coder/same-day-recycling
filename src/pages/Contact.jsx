@@ -77,7 +77,7 @@ export default function Contact() {
               <MapPin className="w-5 h-5 text-[#1d9e56]" /> Service area
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Vancouver and the Lower Mainland, including {CITIES.slice(0, 6).map((c) => c.name).join(", ")} and more.
+              Vancouver and cities across British Columbia, including {CITIES.map((c) => c.name).join(", ")}.
             </p>
           </div>
           <div className="rounded-2xl bg-[#0c3b24] p-6 text-white">

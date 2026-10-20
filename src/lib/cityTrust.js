@@ -3,7 +3,7 @@
 // neighbours both look for.
 export const CITY_CREDENTIALS = {
   vancouver: [
-    "1,000+ pickups completed in Vancouver",
+    "Same-day crews based in Metro Vancouver",
     "Hauls through Metro Vancouver transfer stations",
     "Donation partners across East Van and Downtown",
     "Condo & strata move-out experience in Yaletown and Downtown",

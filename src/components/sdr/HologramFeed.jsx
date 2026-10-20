@@ -98,7 +98,7 @@ export default function HologramFeed() {
             )}
             {!events && (
               <p className="text-sm text-[#1d9e56]/70 text-center py-10 holo-glow-text">
-                Calibrating holographic display...
+                Connecting to the live network feed...
               </p>
             )}
           </div>

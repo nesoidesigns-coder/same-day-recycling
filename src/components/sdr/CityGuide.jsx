@@ -22,7 +22,7 @@ export default function CityGuide({ city }) {
         <h3 className="mt-10 text-xl font-bold text-[#0c3b24]">
           {city.name} junk removal FAQ
         </h3>
-        <div className="mt-4 divide-y divide-slate-100 rounded-3xl border border-slate-100 bg-[#f4f7f5]">
+        <div id="faq" className="mt-4 divide-y divide-slate-100 rounded-3xl border border-slate-100 bg-[#f4f7f5]">
           {content.faqs.map(([q, a], i) => (
             <details key={i} className="group px-5 py-4">
               <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-semibold text-[#0c3b24]">
