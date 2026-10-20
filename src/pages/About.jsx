@@ -1,56 +1,60 @@
 import { Link } from "react-router-dom";
-import { Recycle, Leaf, Truck, Users } from "lucide-react";
+import { Recycle, Leaf, Phone, Network } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
-import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
 
 export default function About() {
   return (
     <div className="bg-white">
       <Navbar />
-      <RexBanner message="Need something gone today? I'll get you a quote and book it in minutes." />
       <section className="bg-[#0c3b24] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">About us</div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">Junk gone today. Landfills lighter tomorrow.</h1>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">The name is the promise.</h1>
         </div>
       </section>
 
       <section className="max-w-3xl mx-auto px-4 py-16 md:py-20 space-y-10 text-lg text-slate-700 leading-relaxed">
         <div>
-          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">What we do</h2>
+          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">One belief</h2>
           <p>
-            Same Day Recycling is a same-day junk and furniture removal service serving Vancouver and the Lower Mainland.
-            You book online or by phone, we quote upfront, and our crews arrive the same day to haul away sofas, mattresses,
-            appliances, construction debris and general clutter. Every load is sorted by hand: metal, electronics, furniture
-            and usable goods are recycled or donated first, so the smallest possible amount ends up in the landfill. We also
-            run a free metal pickup service — old appliances, car parts and bikes hauled away at no cost — and a scheduled
-            subscription plan for property managers who need recurring cleanups across their buildings.
+            Same Day Recycling is a Canadian network built on one belief — the name is the promise. Same day.
+            And actually recycled, not just hauled to landfill: metals go to real scrap buyers, gypsum to real
+            recyclers, and furniture and usable goods to donation partners before anything else is considered.
           </p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Who it's for</h2>
+          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">How it works for customers</h2>
           <p>
-            Homeowners clearing out a basement, tenants moving out on short notice, realtors prepping a listing,
-            landlords and property managers keeping buildings tidy, and small businesses with one-off cleanouts.
-            If you need something gone today with upfront pricing and no hidden fees, we built this service for you.
+            You book online or by phone, the price is quoted upfront, and a truck arrives the same day to haul
+            away sofas, mattresses, appliances, renovation debris and general clutter. Every load is sorted by
+            hand so the smallest possible amount ends up in the landfill. We also run a free metal pickup
+            service and a scheduled subscription plan for property managers who need recurring cleanups.
           </p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Who builds it</h2>
+          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Built with local partners</h2>
           <p>
-            Same Day Recycling is built and operated by a local team based in Metro Vancouver. We dispatch our own crews
-            and work with a vetted partner network of haulers across the Lower Mainland, all held to the same standard:
-            upfront pricing, careful sorting, and recycling or donation before disposal. Every booking is confirmed by a
-            real person before we lift a thing.
+            Founded in Vancouver, expanding province by province through local contractor partners who own
+            their territories. Each partner runs their own trucks and crews; the network supplies the pages,
+            the ads, a 24/7 receptionist that answers in six languages, and the booking machine that keeps
+            every city filled.
+          </p>
+        </div>
+
+        <div className="rounded-3xl bg-[#f4f7f5] border-l-4 border-[#1d9e56] p-8">
+          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Our mission</div>
+          <p className="text-xl md:text-2xl font-bold text-[#0c3b24] leading-snug">
+            "To clear Vancouver's junk the same day, at one honest upfront price, and actually recycle what
+            we haul — not just wear the badge."
           </p>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4 pt-2">
           {[
-            { icon: Recycle, t: "Recycle-first" },
+            { icon: Recycle, t: "Actually recycled" },
             { icon: Leaf, t: "Donate what's usable" },
-            { icon: Truck, t: "Same-day dispatch" },
+            { icon: Network, t: "Local partner territories" },
           ].map((b) => (
             <div key={b.t} className="rounded-2xl bg-[#f4f7f5] p-5 flex items-center gap-3">
               <b.icon className="w-5 h-5 text-[#1d9e56] shrink-0" />
@@ -64,9 +68,9 @@ export default function About() {
             <div className="text-2xl font-bold text-[#0c3b24]">Need something gone today?</div>
             <div className="text-slate-600 mt-1">Book in minutes — we'll call you back within 30 minutes.</div>
           </div>
-          <div className="flex gap-3">
-            <Link to="/free-metal-pickup" className="rounded-full border-2 border-[#0c3b24] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#0c3b24] hover:text-white transition-colors">Free Metal Pickup</Link>
-            <a href="tel:+16048491745" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors">Call (604) 849-1745</a>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link to="/contractors" className="rounded-full border-2 border-[#0c3b24] text-[#0c3b24] font-bold px-6 py-3 text-center hover:bg-[#0c3b24] hover:text-white transition-colors">Join the Network</Link>
+            <a href="tel:+16048491745" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 text-center hover:bg-[#17a04c] transition-colors">Call (604) 849-1745</a>
           </div>
         </div>
       </section>

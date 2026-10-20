@@ -28,6 +28,8 @@ import CondoStrata from "@/components/sdr/CondoStrata";
 import EcoReceipt from "@/components/sdr/EcoReceipt";
 import TransparentPricing from "@/components/sdr/TransparentPricing";
 import WeightCalculator from "@/components/sdr/WeightCalculator";
+import CoverageStrip from "@/components/sdr/CoverageStrip";
+import MetalPickupBand from "@/components/sdr/MetalPickupBand";
 
 export default function Home() {
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -41,10 +43,12 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
+      <CoverageStrip />
       <LocallyOwned />
       <HologramFeed />
       <Services />
       <CondoStrata />
+      <MetalPickupBand />
       <HowItWorks />
       <CurbsideDiscount />
       <TransparentPricing />

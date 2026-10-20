@@ -248,7 +248,7 @@ export default function RealtorOnePager() {
             {/* CTA / footer */}
             <section className="rounded-2xl bg-[#0c3b24] text-white px-6 py-6 text-center">
               <p className="font-bold text-lg">Book before noon — we haul the same day.</p>
-              <p className="text-white/80 text-sm mt-1">Upfront pricing approved before we lift a thing. Licensed &amp; insured.</p>
+              <p className="text-white/80 text-sm mt-1">Upfront pricing approved before we lift a thing. Eco receipts on every job.</p>
               <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a href="tel:+16048491745" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 text-sm flex items-center gap-2">
                   <Phone className="w-4 h-4" /> (604) 849-1745

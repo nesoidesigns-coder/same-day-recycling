@@ -21,6 +21,7 @@
   <url><loc>https://samedayrecycling.ca/contractors</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://samedayrecycling.ca/realtor-partners</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://samedayrecycling.ca/property-managers</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://samedayrecycling.ca/coverage</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://samedayrecycling.ca/review</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://samedayrecycling.ca/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://samedayrecycling.ca/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>

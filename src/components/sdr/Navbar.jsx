@@ -13,6 +13,7 @@ const moreLinks = [
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "Realtors", to: "/realtors" },
   { label: "Contractors", to: "/contractors" },
+  { label: "Coverage", to: "/coverage" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },

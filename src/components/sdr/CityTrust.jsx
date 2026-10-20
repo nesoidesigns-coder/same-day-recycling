@@ -5,7 +5,7 @@ import { ShieldCheck, Leaf, Star, BadgeCheck, RefreshCw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const BASE_CREDENTIALS = [
-  { icon: ShieldCheck, label: "Licensed, insured & WCB-covered crews" },
+  { icon: ShieldCheck, label: "Upfront pricing on every job, no hidden fees" },
   { icon: Leaf, label: "Recycling & donation first — never straight to landfill" },
   { icon: BadgeCheck, label: "Upfront pricing, approved before we lift a thing" },
 ];

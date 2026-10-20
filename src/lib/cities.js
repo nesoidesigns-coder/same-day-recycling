@@ -5,7 +5,7 @@ export const CITIES = [
     lat: 49.2827,
     lng: -123.1207,
     radius: 12000,
-    blurb: "Need junk disposal in Vancouver? Our same-day furniture removal crew hauls sofas, appliances, mattresses, hot tubs and renovation debris out of Kitsilano, East Van, Mount Pleasant, Commercial Drive, Downtown, Point Grey, Yaletown and Fairview — often within hours of booking. Licensed, insured junk haulers who sweep up after every job and recycle or donate everything salvageable.",
+    blurb: "Need junk disposal in Vancouver? Our same-day furniture removal crew hauls sofas, appliances, mattresses, hot tubs and renovation debris out of Kitsilano, East Van, Mount Pleasant, Commercial Drive, Downtown, Point Grey, Yaletown and Fairview — often within hours of booking. Local junk haulers who sweep up after every job and recycle or donate everything salvageable.",
     seo_title: "Same Day Sofa & Junk Removal Vancouver | Same Day Recycling",
     seo_description: "Need fast sofa removal in Vancouver? We provide reliable, eco-friendly same day junk removal services. Book your pickup today for quick service.",
   },
@@ -17,7 +17,7 @@ export const CITIES = [
     radius: 9000,
     blurb: "Junk disposal in Burnaby with true same-day furniture removal — sofas, mattresses, appliances, office furniture, hot tubs and construction waste cleared from homes, condos and strata buildings in Metrotown, Brentwood, the Heights, Big Bend, Edmonds and Capitol Hill. Same-day junk removal with donation drop-offs and recycling for everything salvageable.",
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Burnaby BC",
-    seo_description: "Junk disposal in Burnaby the same day you call — same-day furniture removal, appliance pickup, mattress disposal and condo or estate cleanouts in Metrotown, Brentwood, the Heights and Big Bend. Upfront pricing, insured crews, eco-friendly disposal. Book before noon for same-day service.",
+    seo_description: "Junk disposal in Burnaby the same day you call — same-day furniture removal, appliance pickup, mattress disposal and condo or estate cleanouts in Metrotown, Brentwood, the Heights and Big Bend. Upfront pricing, eco-friendly disposal. Book before noon for same-day service.",
   },
   {
     name: "Richmond",
@@ -27,7 +27,7 @@ export const CITIES = [
     radius: 9000,
     blurb: "Same-day junk removal and junk disposal in Richmond, BC — furniture removal, appliance pickup, mattress and box spring disposal, garage cleanouts, yard waste and moving-out debris from Steveston, Broadmoor, Bridgeport, Sea Island and West Cambie. Same-day furniture removal priced upfront, perfect for townhouse and condo cleanouts.",
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Richmond BC",
-    seo_description: "Junk disposal in Richmond BC the same day you book — same-day furniture removal, appliance pickup, mattress and yard waste removal plus garage and moving cleanouts in Steveston, Broadmoor, Bridgeport and Sea Island. Upfront pricing, eco-friendly disposal, licensed local crews.",
+    seo_description: "Junk disposal in Richmond BC the same day you book — same-day furniture removal, appliance pickup, mattress and yard waste removal plus garage and moving cleanouts in Steveston, Broadmoor, Bridgeport and Sea Island. Upfront pricing, eco-friendly disposal, local crews.",
   },
   {
     name: "Surrey",
@@ -37,7 +37,7 @@ export const CITIES = [
     radius: 12000,
     blurb: "Junk disposal in Surrey with same-day furniture removal for Surrey, White Rock, Cloverdale, Guildford, Newton, Fleetwood and South Surrey — sofa removal, appliance pickup, mattress disposal, garage cleanouts, estate cleanouts, renovation debris and yard waste, hauled the same day you call. Metal and appliance pickup available (free in Vancouver; minimum charge applies elsewhere).",
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Surrey BC",
-    seo_description: "Same-day junk removal in Surrey BC — junk disposal today with furniture, appliance, mattress and yard waste removal plus garage, estate and renovation cleanouts in White Rock, Cloverdale, Guildford, Newton and Fleetwood. Upfront pricing, insured crews, eco-friendly disposal.",
+    seo_description: "Same-day junk removal in Surrey BC — junk disposal today with furniture, appliance, mattress and yard waste removal plus garage, estate and renovation cleanouts in White Rock, Cloverdale, Guildford, Newton and Fleetwood. Upfront pricing, eco-friendly disposal.",
   },
   {
     name: "Coquitlam",
@@ -57,7 +57,7 @@ export const CITIES = [
     radius: 12000,
     blurb: "Junk disposal in Kamloops with same-day furniture removal for Sahali, Aberdeen, Valleyview, Dallas and downtown Kamloops — furniture removal, appliance pickup, mattress disposal, hot tub removal, garage cleanouts, estate cleanouts and yard waste. One truck, one trip, one upfront price — book before noon for same-day service.",
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Kamloops BC",
-    seo_description: "Same-day junk removal and junk disposal in Kamloops BC — furniture, appliance, mattress and yard waste removal plus garage and estate cleanouts in Sahali, Aberdeen, Valleyview and downtown. Upfront pricing, eco-friendly disposal, licensed local crews.",
+    seo_description: "Same-day junk removal and junk disposal in Kamloops BC — furniture, appliance, mattress and yard waste removal plus garage and estate cleanouts in Sahali, Aberdeen, Valleyview and downtown. Upfront pricing, eco-friendly disposal, local crews.",
   },
   {
     name: "Kelowna",
@@ -77,7 +77,7 @@ export const CITIES = [
     radius: 9000,
     blurb: "Junk disposal in Maple Ridge with same-day furniture removal for Albion, Haney, Silver Valley, Cottonwood and Thornhill — sofa removal, appliance pickup, mattress disposal, hot tub removal, garage and estate cleanouts, renovation debris and yard waste. One truck, one trip, one upfront price — book before noon for same-day pickup in the Ridge.",
     seo_title: "Same-Day Junk Removal & Furniture Disposal in Maple Ridge BC",
-    seo_description: "Same-day junk removal in Maple Ridge BC — junk disposal today with furniture, appliance, mattress and hot tub removal plus garage, estate and renovation cleanouts in Haney, Albion, Silver Valley and Thornhill. Upfront pricing, insured crews, eco-friendly disposal.",
+    seo_description: "Same-day junk removal in Maple Ridge BC — junk disposal today with furniture, appliance, mattress and hot tub removal plus garage, estate and renovation cleanouts in Haney, Albion, Silver Valley and Thornhill. Upfront pricing, eco-friendly disposal.",
   },
   {
     name: "Pitt Meadows",
