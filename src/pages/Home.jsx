@@ -21,6 +21,7 @@ import Footer from "@/components/sdr/Footer";
 import StickyCTA from "@/components/sdr/StickyCTA";
 import ExitIntentOffer from "@/components/sdr/ExitIntentOffer";
 import PhotoQuote from "@/components/sdr/PhotoQuote";
+import TextPhotoQuote from "@/components/sdr/TextPhotoQuote";
 import CurbsideDiscount from "@/components/sdr/CurbsideDiscount";
 import CondoStrata from "@/components/sdr/CondoStrata";
 import EcoReceipt from "@/components/sdr/EcoReceipt";
@@ -46,6 +47,7 @@ export default function Home() {
       <TransparentPricing />
       <CitySelector />
       <LoadEstimator onBook={bookFromQuote} />
+      <TextPhotoQuote />
       <PhotoQuote onBook={bookFromQuote} />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
