@@ -37,6 +37,7 @@ import RecyclingCenters from './pages/RecyclingCenters';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Contractors from './pages/Contractors';
+import PropertyManagers from './pages/PropertyManagers';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const AuthenticatedApp = () => {
@@ -84,6 +85,7 @@ const AuthenticatedApp = () => {
       <Route path="/review" element={<ReviewPage />} />
       <Route path="/realtors" element={<Realtors />} />
       <Route path="/contractors" element={<Contractors />} />
+      <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/real-estate" element={<RealtorLanding />} />
       <Route path="/realtor-partners" element={<RealtorOnePager />} />
       <Route path="/recycling-centers" element={<RecyclingCenters />} />

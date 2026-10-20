@@ -6,8 +6,8 @@ export const CITIES = [
     lng: -123.1207,
     radius: 12000,
     blurb: "Need junk disposal in Vancouver? Our same-day furniture removal crew hauls sofas, appliances, mattresses, hot tubs and renovation debris out of Kitsilano, East Van, Mount Pleasant, Commercial Drive, Downtown, Point Grey, Yaletown and Fairview — often within hours of booking. Licensed, insured junk haulers who sweep up after every job and recycle or donate everything salvageable.",
-    seo_title: "Same Day Sofa & Furniture Removal Vancouver | Fast & Eco-Friendly",
-    seo_description: "Need a sofa removed today? Same Day Recycling provides fast, professional couch and furniture removal services across Vancouver. Get a free quote now!",
+    seo_title: "Same Day Sofa & Junk Removal Vancouver | Same Day Recycling",
+    seo_description: "Need fast sofa removal in Vancouver? We provide reliable, eco-friendly same day junk removal services. Book your pickup today for quick service.",
   },
   {
     name: "Burnaby",

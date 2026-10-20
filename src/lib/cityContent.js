@@ -12,6 +12,8 @@ export const CITY_CONTENT = {
       ["Can you handle condo and apartment removals?", "Absolutely. Strata buildings in Yaletown and Downtown are routine for us — we book elevators, protect hallways and follow building move-out rules."],
       ["What about parking downtown?", "Our trucks are city-legal and our crews handle loading zones and permit requirements; we just ask you to mention underground parking or tight lanes when booking."],
       ["Do you take my old mattress and appliance?", "Yes. Mattresses, fridges, washers and stoves all go out with the crew — appliances are recycled as scrap metal."],
+      ["What can't go in Vancouver's regular garbage?", "Metro Vancouver bans mattresses, appliances, drywall, tires and paint from regular garbage — they need special drop-offs. We handle all banned items properly: appliances as scrap metal, mattresses through BC recycling facilities, and drywall via approved processors, so you don't have to make a single transfer-station run."],
+      ["Do I need to sort my junk for disposal rules?", "No — that's our job. Every Vancouver load is sorted after pickup: donation first, then metal and recycling, with the remainder routed through Metro Vancouver facilities under the region's disposal rules. You get a receipt showing where everything went."],
     ],
   },
   burnaby: {

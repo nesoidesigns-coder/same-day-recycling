@@ -35,6 +35,7 @@ const ITEMS = [
   "Dining tables & chairs", "Dressers & wardrobes", "Bed frames & headboards",
   "Desks & office chairs", "Bookshelves & media units", "Coffee & end tables",
   "Futons & daybeds", "Patio & outdoor furniture", "Hot tubs & pool tables",
+  "Fridges, washers & dryers", "Stoves & dishwashers", "TVs & electronics",
 ];
 
 const ECO = [
