@@ -17,8 +17,8 @@ export default function EcoReceipt() {
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Know exactly where your stuff goes</h2>
           <p className="mt-4 text-slate-600">
             Every load is sorted for donation and recycling first — most never see the landfill. After your pickup
-            we email you a Recycling Receipt showing how your load was handled, and donation receipts are available
-            on request.
+            we email you a PDF Impact Report showing exactly what from your haul was recycled or donated, and
+            donation receipts are available on request.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-3.5 hover:bg-[#17a04c] transition-colors text-center">
