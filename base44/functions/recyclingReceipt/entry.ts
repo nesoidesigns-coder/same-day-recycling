@@ -57,8 +57,10 @@ async function categorizeLoad(base44, itemsText) {
   }
 }
 
+const COMMERCIAL_RE = /\b(commercial|office|contractor|renovation|strata|construction|business|store)\b/i;
+
 function buildImpactPdf(opts) {
-  const { customerName, city, pickupDate, items, categories, bookingId } = opts;
+  const { customerName, city, pickupDate, items, categories, bookingId, commercial } = opts;
   const doc = new jsPDF({ unit: 'mm', format: 'letter' });
   const pageW = doc.internal.pageSize.getWidth();
   const margin = 16;
@@ -80,12 +82,15 @@ function buildImpactPdf(opts) {
   doc.setTextColor(DARK[0], DARK[1], DARK[2]);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(20);
-  doc.text('Recycling Impact Report', margin, y);
+  doc.text(commercial ? 'Commercial Diversion Certificate' : 'Recycling Impact Report', margin, y);
   y += 7;
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(GRAY[0], GRAY[1], GRAY[2]);
-  doc.text(clean('Prepared for ' + (customerName || 'our customer') + ' - every load sorted for donation and recycling first'), margin, y);
+  doc.text(clean(
+    'Prepared for ' + (customerName || 'our customer') + ' - every load sorted for donation and recycling first' +
+    (commercial ? ' - certified diversion rates for your sustainability records' : '')
+  ), margin, y);
 
   // Pickup details card
   y += 9;
@@ -190,6 +195,7 @@ export default async function (req) {
     const items = (booking.items_description || '').slice(0, 400) || 'Your load';
 
     const categories = await categorizeLoad(base44, booking.items_description || '');
+    const commercial = COMMERCIAL_RE.test((booking.items_description || '') + ' ' + (booking.description || ''));
     const pdfBase64 = buildImpactPdf({
       customerName: booking.name,
       city,
@@ -197,6 +203,7 @@ export default async function (req) {
       items,
       categories,
       bookingId: booking.id,
+      commercial,
     });
 
     await base44.asServiceRole.integrations.Core.SendEmail({

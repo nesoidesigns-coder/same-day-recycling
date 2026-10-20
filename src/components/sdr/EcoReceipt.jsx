@@ -18,7 +18,8 @@ export default function EcoReceipt() {
           <p className="mt-4 text-slate-600">
             Every load is sorted for donation and recycling first — most never see the landfill. After your pickup
             we email you a PDF Impact Report showing exactly what from your haul was recycled or donated, and
-            donation receipts are available on request.
+            donation receipts are available on request. Commercial and office clients get a formal
+            diversion-rate certificate with every job for their sustainability reporting.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-3.5 hover:bg-[#17a04c] transition-colors text-center">

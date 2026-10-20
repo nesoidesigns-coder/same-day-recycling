@@ -24,6 +24,7 @@ import PhotoQuote from "@/components/sdr/PhotoQuote";
 import CurbsideDiscount from "@/components/sdr/CurbsideDiscount";
 import CondoStrata from "@/components/sdr/CondoStrata";
 import EcoReceipt from "@/components/sdr/EcoReceipt";
+import TransparentPricing from "@/components/sdr/TransparentPricing";
 
 export default function Home() {
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -42,6 +43,7 @@ export default function Home() {
       <CondoStrata />
       <HowItWorks />
       <CurbsideDiscount />
+      <TransparentPricing />
       <CitySelector />
       <LoadEstimator onBook={bookFromQuote} />
       <PhotoQuote onBook={bookFromQuote} />
