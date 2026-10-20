@@ -46,6 +46,11 @@ export default function Footer() {
             </Link>
           )}
           {isAdmin && (
+            <Link to="/admin/marketing" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
+              <Lock className="w-3.5 h-3.5" /> Marketing
+            </Link>
+          )}
+          {isAdmin && (
             <Link to="/admin/facebook" className="flex items-center gap-1 text-sm font-bold text-[#1d9e56] hover:underline">
               <Lock className="w-3.5 h-3.5" /> FB AI
             </Link>
