@@ -33,7 +33,7 @@ export default function About() {
           </p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Built with local partners</h2>
+          <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Built with local partners across Canada</h2>
           <p>
             Founded in Vancouver, expanding city by city across Canada through local contractor partners who
             own their territories. Each partner runs their own trucks and crews; the network supplies the pages,

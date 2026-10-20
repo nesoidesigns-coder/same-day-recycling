@@ -218,7 +218,7 @@ export default function Contractors() {
           <div className="mt-8 max-w-2xl mx-auto text-center space-y-3">
             <p className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3 text-sm">
               <BadgeCheck className="w-4 h-4 text-[#1d9e56]" />
-              Licensed territory — one partner per metro market. When your market is taken, it's taken.
+              Exclusive territory — one partner per metro market. When your market is taken, it's taken.
             </p>
             <p className="text-slate-600 font-semibold">You spend $0 on ads, $0 on a website, $0 on an office.</p>
           </div>
