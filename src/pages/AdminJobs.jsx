@@ -71,7 +71,7 @@ export default function AdminJobs() {
             <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Admin</div>
             <h1 className="text-3xl font-bold text-[#0c3b24]">Dispatch &amp; payouts</h1>
           </div>
-          <Link to="/admin" className="text-sm font-semibold text-[#1d9e56] hover:underline">Default pricing →</Link>
+          <Link to="/admin/pricing" className="text-sm font-semibold text-[#1d9e56] hover:underline">Default pricing →</Link>
         </div>
         <div className="flex gap-2 mb-8 flex-wrap">
           {TABS.map((t) => (
