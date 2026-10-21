@@ -6,6 +6,8 @@ import VisitTracker from "./VisitTracker";
 
 const links = [
   { label: "Recycling Directory", to: "/recycling" },
+  { label: "Explore Services", to: "/services" },
+  { label: "Service Finder", to: "/service-finder" },
   { label: "Recycling Assistant", to: "/recycling-assistant" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },

@@ -5,13 +5,13 @@ import { activeCitiesByProvince, onboardingCitiesByProvince, comingSoonCitiesByP
 
 const FSA_RE = /^[A-Z]\d[A-Z](?:\d[A-Z]\d)?$/;
 
-const LETTER_PROVINCE = {
+export const LETTER_PROVINCE = {
   A: "NL", B: "NS", C: "PE", E: "NB", G: "QC", H: "QC", J: "QC",
   K: "ON", L: "ON", M: "ON", N: "ON", P: "ON",
   R: "MB", S: "SK", T: "AB", V: "BC", X: "NT", Y: "YT",
 };
 
-const PROVINCE_NAMES = {
+export const PROVINCE_NAMES = {
   ON: "Ontario", QC: "Quebec", AB: "Alberta", MB: "Manitoba", NS: "Nova Scotia",
   SK: "Saskatchewan", BC: "British Columbia", NL: "Newfoundland and Labrador",
   NB: "New Brunswick", PE: "Prince Edward Island", NT: "Northwest Territories",

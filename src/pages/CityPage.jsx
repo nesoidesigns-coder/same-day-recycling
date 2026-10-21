@@ -55,7 +55,7 @@ export default function CityPage() {
     title: city ? (isActive ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : `${city.name} Recycling Coverage: ${city.status === "partner_onboarding" ? "Partner Onboarding" : "Planned Expansion"} | Same Day Recycling`) : "Page Not Found | Same Day Recycling",
     description: city ? (isActive ? `Request furniture, appliance and junk removal in ${city.name}, ${city.province}. Check local pickup availability and get an upfront estimate before booking.` : `Pickup service is not live in ${city.name}, ${city.province}. ${city.status === "partner_onboarding" ? "Partner recruitment or verification is underway." : "Expansion is planned."} Check confirmed areas or apply as a provider.`) : "This page was not found. Browse recycling services, software or confirmed coverage.",
     path: pageSlug ? `/${pageSlug}` : "/",
-    robots: city ? "index, follow" : "noindex, follow",
+    robots: city && isActive ? "index, follow" : "noindex, follow",
   });
 
   useStructuredData("city-breadcrumb", city ? {
