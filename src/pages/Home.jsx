@@ -23,8 +23,8 @@ import Footer from "@/components/sdr/Footer";
 
 export default function Home() {
   useSEO({
-    title: "Same Day Recycling | Recycling Services & Software in Canada",
-    description: "Find recycling and removal services, request pickups, and explore intelligent recycling management software with Same Day Recycling.",
+    title: "Same Day Recycling Canada | Recycling & Junk Removal Services",
+    description: "Discover recycling, metal pickup, and junk removal services with Same Day Recycling. Explore service options, check availability, and request assistance.",
     path: "/",
   });
   useStructuredData("home-faq", {

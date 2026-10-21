@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, RefreshCw, Lightbulb, AlertTriangle, Search, Globe, Clock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import TechSeoPanel from "@/components/admin/TechSeoPanel";
 
 function StatusPill({ status, label }) {
   const tones = {
@@ -169,6 +170,8 @@ export default function AdminSearchIntelligence() {
             <PendingCard label="Pages awaiting indexing" note="Discovered but not yet crawled pages appear in the same Search Console indexing report. We surface it as soon as the report finishes processing." status="pending" />
             <PendingCard label="Core Web Vitals" note="Field CWV data requires the PageSpeed Insights API with a key, which is not configured for this app. Lab metrics can be checked manually in PageSpeed Insights meanwhile." status="off" />
           </div>
+
+          <TechSeoPanel />
 
           <div className="mt-8 holo-panel-deep rounded-2xl border border-[#54D9AE]/15 p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
