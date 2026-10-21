@@ -43,9 +43,12 @@ export async function paypal(path, method = 'GET', body = undefined) {
 }
 
 export function paypalAppOrigin(req) {
-  const host = req.headers.get('x-base44-app-url');
-  if (host) return ('https://' + host).replace(/\/$/, '');
-  return new URL(req.url).origin;
+  // Header may carry a protocol (or a mangled one) — normalize to exactly one https://.
+  let host = (req.headers.get('x-base44-app-url') || '').replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+  if (!host) {
+    try { host = new URL(req.url).origin.replace(/^https?:\/\//i, ''); } catch { host = ''; }
+  }
+  return host ? 'https://' + host : '';
 }
 
 // Apply a subscription lifecycle state to the owning license or white-label record.
