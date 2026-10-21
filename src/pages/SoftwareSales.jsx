@@ -1,15 +1,12 @@
-import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
 import {
-  Loader2, Recycle, Users, CalendarDays, Truck, Receipt, BarChart3,
+  Users, CalendarDays, Truck, Receipt, BarChart3,
   ShieldCheck, Globe2, CheckCircle2, Database, RefreshCcw, CreditCard, Lock,
 } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import HoloGauge from "@/components/software/HoloGauge";
 import PreviewImg from "@/components/software/PreviewImg";
-
-const PROVINCES = ["ON", "QC", "BC", "AB", "MB", "SK", "NS", "NB", "NL", "PE", "NT", "YT", "NU"];
 
 const FEATURES = [
   { icon: Users, title: "Customer CRM", desc: "Every commercial and residential customer, notes, contact history and service preferences in one clean record." },
@@ -36,30 +33,6 @@ const TIERS = [
 ];
 
 export default function SoftwareSales() {
-  const [buying, setBuying] = useState(null);
-  const [form, setForm] = useState({ company: "", contact_name: "", email: "", city: "", province: "ON" });
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-
-  const openBuy = (tier) => {
-    setForm((f) => ({ ...f }));
-    setBuying(tier);
-    setError("");
-  };
-
-  const submitBuy = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSubmitting(true);
-    try {
-      const { data } = await base44.functions.invoke("paypalCheckout", { action: "create_license", ...form, plan: buying });
-      window.location.href = `/software-pay?pay=${data.pay_token}`;
-    } catch (err) {
-      setError(err?.response?.data?.error || "Something went wrong. Please try again.");
-      setSubmitting(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -176,9 +149,9 @@ export default function SoftwareSales() {
                     </li>
                   ))}
                 </ul>
-                <button onClick={() => openBuy(t.key)} className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors">
+                <Link to={`/software/start?plan=${t.key}`} className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors text-center block">
                   License the OS
-                </button>
+                </Link>
               </div>
             ))}
           </div>
@@ -202,33 +175,6 @@ export default function SoftwareSales() {
         </div>
       </div>
 
-      {/* Purchase modal */}
-      {buying && (
-        <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => !submitting && setBuying(null)}>
-          <form onSubmit={submitBuy} onClick={(e) => e.stopPropagation()} className="bg-white rounded-3xl p-7 w-full max-w-md">
-            <div className="flex items-center gap-2 mb-1">
-              <Recycle className="w-5 h-5 text-[#1d9e56]" />
-              <h3 className="text-xl font-bold text-[#0c3b24]">License the {buying} plan</h3>
-            </div>
-            <p className="text-sm text-slate-500 mb-5">You'll complete setup and monthly payments on the secure PayPal page.</p>
-            <div className="space-y-3">
-              <input required value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="input" placeholder="Company name" />
-              <input required value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} className="input" placeholder="Your name" />
-              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input" placeholder="Business email (your login)" />
-              <div className="grid grid-cols-2 gap-3">
-                <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="input" placeholder="City" />
-                <select value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} className="input">
-                  {PROVINCES.map((p) => <option key={p} value={p}>{p}</option>)}
-                </select>
-              </div>
-            </div>
-            {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-            <button disabled={submitting} className="mt-5 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
-              {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing checkout…</> : <>Continue to PayPal</>}
-            </button>
-          </form>
-        </div>
-      )}
       <Footer />
     </div>
   );

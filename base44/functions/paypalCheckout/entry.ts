@@ -113,6 +113,7 @@ export default async function(req) {
       const email = s(body.email, 120).toLowerCase();
       const city = s(body.city, 60);
       const province = s(body.province, 40);
+      const phone = s(body.phone, 40);
       const plan = ['starter', 'growth', 'network'].includes(body.plan) ? body.plan : 'starter';
       if (!company || !contactName || !email || !email.includes('@')) {
         return Response.json({ error: 'Company, contact name and a valid email are required.' }, { status: 400 });
@@ -126,6 +127,7 @@ export default async function(req) {
         company,
         contact_name: contactName,
         email,
+        phone,
         city,
         province,
         plan,
