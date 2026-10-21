@@ -211,6 +211,7 @@ export default async function(req) {
             frequency: { interval_unit: annual ? 'YEAR' : 'MONTH', interval_count: 1 },
             tenure_type: 'REGULAR',
             sequence: 1,
+            total_cycles: 0,
             pricing_scheme: { fixed_price: { value: billAmount.toFixed(2), currency_code: CURRENCY } },
           }],
           payment_preferences: { auto_bill_outstanding: true },
