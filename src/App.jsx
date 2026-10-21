@@ -65,6 +65,7 @@ import SoftwarePay from './pages/SoftwarePay';
 import CompanyDashboard from './pages/CompanyDashboard';
 import AdminSoftware from './pages/AdminSoftware';
 import SoftwareOnboarding from './pages/SoftwareOnboarding';
+import LicenseAgreement from './pages/LicenseAgreement';
 import Gallery from './pages/Gallery';
 import FurnitureRemoval from './pages/FurnitureRemoval';
 import ApplianceRemoval from './pages/ApplianceRemoval';
@@ -118,6 +119,7 @@ const AuthenticatedApp = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/license-agreement" element={<LicenseAgreement />} />
       <Route path="/review" element={<ReviewPage />} />
       <Route path="/realtors" element={<Realtors />} />
       <Route path="/contractors" element={<Contractors />} />

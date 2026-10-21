@@ -28,6 +28,7 @@ const links = [
   { label: "Leave a Review", to: "/review" },
   { label: "Privacy Policy", to: "/privacy" },
   { label: "Terms of Service", to: "/terms" },
+  { label: "Software License Agreement", to: "/license-agreement" },
 ];
 
 export default function Footer() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Loader2, Users, CalendarDays, Truck, Receipt, BarChart3, BarChart as BarIcon } from "lucide-react";
+import { Loader2, Users, CalendarDays, Truck, Receipt, BarChart3, BarChart as BarIcon, Settings } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -12,6 +12,7 @@ import CustomersTab from "@/components/license/CustomersTab";
 import SchedulingTab from "@/components/license/SchedulingTab";
 import DispatchTab from "@/components/license/DispatchTab";
 import InvoicingTab from "@/components/license/InvoicingTab";
+import BrandingTab from "@/components/license/BrandingTab";
 
 const money = (n) => "$" + (Number(n) || 0).toLocaleString("en-CA");
 const TABS = [
@@ -20,6 +21,7 @@ const TABS = [
   { key: "schedule", label: "Schedule", icon: CalendarDays },
   { key: "dispatch", label: "Dispatch", icon: Truck },
   { key: "invoices", label: "Invoicing", icon: Receipt },
+  { key: "settings", label: "Settings", icon: Settings },
 ];
 
 function monthKey(d) { return String(d || "").slice(0, 7); }
@@ -31,6 +33,7 @@ export default function CompanyDashboard() {
   const [customers, setCustomers] = useState([]);
   const [pickups, setPickups] = useState([]);
   const [invoices, setInvoices] = useState([]);
+  const [logoUrl, setLogoUrl] = useState(null);
 
   const load = async () => {
     const me = await base44.auth.me();
@@ -54,6 +57,16 @@ export default function CompanyDashboard() {
   };
 
   useEffect(() => { load().catch(() => setLoading(false)); }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (!license?.logo_uri) { setLogoUrl(null); return; }
+      try {
+        const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: license.logo_uri });
+        setLogoUrl(signed_url);
+      } catch { setLogoUrl(null); }
+    })();
+  }, [license?.logo_uri]);
 
   if (loading) {
     return (
@@ -117,11 +130,19 @@ export default function CompanyDashboard() {
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight">{license.company} · Recycling OS</h1>
-            <p className="text-sm text-slate-500">{license.plan} plan · {license.city || "Canada"}{license.province ? `, ${license.province}` : ""}</p>
+          <div className="flex items-center gap-3">
+            {logoUrl && (
+              <img src={logoUrl} alt={`${license.brand_name || license.company} logo`} className="w-11 h-11 rounded-xl object-contain bg-white border border-slate-200 p-1" />
+            )}
+            <div>
+              <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight">{license.brand_name || license.company} · Recycling OS</h1>
+              <p className="text-sm text-slate-500">{license.plan} plan · {license.city || "Canada"}{license.province ? `, ${license.province}` : ""}</p>
+            </div>
           </div>
-          <span className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${license.status === "active" ? "bg-[#187B65]/15 text-[#187B65]" : "bg-amber-100 text-amber-700"}`}>
+          <span
+            className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${license.status === "active" ? "bg-[#187B65]/15 text-[#187B65]" : "bg-amber-100 text-amber-700"}`}
+            style={license.status === "active" && license.brand_color ? { backgroundColor: license.brand_color + "22", color: license.brand_color } : undefined}
+          >
             {license.status === "active" ? "License active" : "Setup paid — subscription pending"}
           </span>
         </div>
@@ -176,6 +197,7 @@ export default function CompanyDashboard() {
         {tab === "schedule" && <SchedulingTab license={license} customers={customers} pickups={pickups} onChanged={load} />}
         {tab === "dispatch" && <DispatchTab pickups={pickups} onChanged={load} />}
         {tab === "invoices" && <InvoicingTab license={license} pickups={pickups} invoices={invoices} onChanged={load} />}
+        {tab === "settings" && <BrandingTab license={license} onChanged={load} />}
       </div>
       <Footer />
     </div>

@@ -75,6 +75,26 @@
       "type": "string",
       "default": ""
     },
+    "brand_name": {
+      "type": "string",
+      "default": ""
+    },
+    "brand_color": {
+      "type": "string",
+      "default": ""
+    },
+    "logo_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "support_email": {
+      "type": "string",
+      "default": ""
+    },
+    "support_phone": {
+      "type": "string",
+      "default": ""
+    },
     "started_date": {
       "type": "string",
       "format": "date"
