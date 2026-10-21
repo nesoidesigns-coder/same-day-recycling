@@ -5,6 +5,8 @@ import { base44 } from "@/api/base44Client";
 import VisitTracker from "./VisitTracker";
 
 const links = [
+  { label: "Recycling Directory", to: "/recycling" },
+  { label: "Recycling Assistant", to: "/recycling-assistant" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },

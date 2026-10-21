@@ -5,6 +5,10 @@
     "booking_id": {
       "type": "string"
     },
+    "provider_id": {
+      "type": "string",
+      "default": ""
+    },
     "customer_name": {
       "type": "string"
     },

@@ -1,0 +1,136 @@
+{
+  "name": "Provider",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "provider_type": {
+      "type": "string",
+      "enum": [
+        "municipal",
+        "public_facility",
+        "private_business",
+        "independent"
+      ],
+      "default": "private_business"
+    },
+    "province": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "postal_code": {
+      "type": "string",
+      "default": ""
+    },
+    "address": {
+      "type": "string",
+      "default": ""
+    },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
+    "website": {
+      "type": "string",
+      "default": ""
+    },
+    "booking_url": {
+      "type": "string",
+      "default": ""
+    },
+    "hours": {
+      "type": "string",
+      "default": ""
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "drop_off",
+        "collection",
+        "both"
+      ],
+      "default": "drop_off"
+    },
+    "accepted_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "materials_note": {
+      "type": "string",
+      "default": ""
+    },
+    "fees": {
+      "type": "string",
+      "default": ""
+    },
+    "service_area": {
+      "type": "string",
+      "default": ""
+    },
+    "verification": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "unverified",
+        "reported"
+      ],
+      "default": "unverified"
+    },
+    "source_name": {
+      "type": "string",
+      "default": ""
+    },
+    "source_url": {
+      "type": "string",
+      "default": ""
+    },
+    "last_confirmed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "sponsored": {
+      "type": "boolean",
+      "default": false
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

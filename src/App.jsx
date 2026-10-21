@@ -19,6 +19,10 @@ import Terms from './pages/Terms';
 import AdminPricing from './pages/AdminPricing';
 import AdminControlCenter from './pages/AdminControlCenter';
 import AdminAnalytics from './pages/AdminAnalytics';
+import RecyclingDirectory from './pages/RecyclingDirectory';
+import ProviderDetail from './pages/ProviderDetail';
+import RecyclingAssistant from './pages/RecyclingAssistant';
+import AdminDirectory from './pages/AdminDirectory';
 import CityPage from './pages/CityPage';
 import CityRedirect from './pages/CityRedirect';
 import { CITIES } from '@/lib/cities';
@@ -96,6 +100,9 @@ const AuthenticatedApp = () => {
       <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/white-label" element={<WhiteLabel />} />
       <Route path="/gallery" element={<Gallery />} />
+      <Route path="/recycling" element={<RecyclingDirectory />} />
+      <Route path="/recycling-assistant" element={<RecyclingAssistant />} />
+      <Route path="/provider/:id" element={<ProviderDetail />} />
       <Route path="/real-estate" element={<RealtorLanding />} />
       <Route path="/realtor-partners" element={<RealtorOnePager />} />
       <Route path="/recycling-centers" element={<RecyclingCenters />} />
@@ -105,6 +112,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminControlCenter />} />
         <Route path="/admin/pricing" element={<AdminPricing />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/directory" element={<AdminDirectory />} />
         <Route path="/admin/jobs" element={<AdminJobs />} />
         <Route path="/admin/facebook" element={<AdminFacebook />} />
         <Route path="/admin/white-label" element={<AdminWhiteLabel />} />

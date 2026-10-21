@@ -12,6 +12,8 @@ const primaryLinks = [
 ];
 
 const moreLinks = [
+  { label: "Recycling Directory", to: "/recycling" },
+  { label: "Recycling Assistant", to: "/recycling-assistant" },
   { label: "Realtors", to: "/realtors" },
   { label: "Contractors", to: "/contractors" },
   { label: "Coverage", to: "/coverage" },

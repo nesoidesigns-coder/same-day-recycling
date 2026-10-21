@@ -29,6 +29,7 @@ import EcoReceipt from "@/components/sdr/EcoReceipt";
 import TransparentPricing from "@/components/sdr/TransparentPricing";
 import WeightCalculator from "@/components/sdr/WeightCalculator";
 import CoverageStrip from "@/components/sdr/CoverageStrip";
+import NationalSearchBand from "@/components/sdr/NationalSearchBand";
 import MetalPickupBand from "@/components/sdr/MetalPickupBand";
 
 export default function Home() {
@@ -43,6 +44,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
+      <NationalSearchBand />
       <LoadEstimator onBook={bookFromQuote} />
       <Services />
       <HowItWorks />

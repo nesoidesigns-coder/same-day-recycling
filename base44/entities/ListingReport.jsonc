@@ -1,0 +1,66 @@
+{
+  "name": "ListingReport",
+  "type": "object",
+  "properties": {
+    "provider_id": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string",
+      "default": ""
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "closed",
+        "wrong_info",
+        "wrong_materials",
+        "wrong_contact",
+        "duplicate",
+        "other"
+      ],
+      "default": "other"
+    },
+    "details": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "reporter_email": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "reviewed",
+        "fixed",
+        "dismissed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "provider_id",
+    "reason"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
