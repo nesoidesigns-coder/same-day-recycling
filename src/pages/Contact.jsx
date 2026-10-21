@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Phone, Mail, Clock, Send, Loader2, CheckCircle2, MapPin } from "lucide-react";
@@ -8,6 +9,11 @@ import Footer from "@/components/sdr/Footer";
 import { CITIES } from "@/lib/cities";
 
 export default function Contact() {
+  useSEO({
+    title: "Contact Same Day Recycling — Book a Pickup or Ask a Question",
+    description: "Reach Same Day Recycling for same-day pickup requests, business solutions or partnership questions. Call or text (604) 849-1745.",
+    path: "/contact",
+  });
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);

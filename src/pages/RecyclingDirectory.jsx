@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, MapPin, Building2, ShieldCheck, ShieldAlert, Flag, X, Clock, Globe, Truck, HandCoins } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -11,6 +12,11 @@ const TYPE_LABELS = { municipal: "Municipal service", public_facility: "Public f
 const SERVICE_LABELS = { drop_off: "Drop-off", collection: "Collection", both: "Drop-off & collection" };
 
 export default function RecyclingDirectory() {
+  useSEO({
+    title: "Recycling Directory — Verified Services Across Canada",
+    description: "Search a national directory of verified recycling providers — electronics, furniture, appliances, paint, metal and more, across Canada.",
+    path: "/recycling",
+  });
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const [query, setQuery] = useState(urlParams.get("q") || "");

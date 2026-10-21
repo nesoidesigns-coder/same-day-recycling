@@ -1,4 +1,5 @@
 import { Home, Clock, DollarSign, Camera, Recycle, KeyRound, Phone } from "lucide-react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -20,6 +21,11 @@ const whyItems = [
 ];
 
 export default function Realtors() {
+  useSEO({
+    title: "Junk Removal for Realtors — Listing Cleanouts | Same Day Recycling",
+    description: "Pre-listing and closing cleanouts for realtors — fast junk removal, staging debris hauling and scrap metal pickup with partner rates.",
+    path: "/realtors",
+  });
   return (
     <div className="bg-white">
       <TopBar />

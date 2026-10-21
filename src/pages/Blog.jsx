@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import { BookOpen, ArrowRight, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -9,6 +10,11 @@ import Footer from "@/components/sdr/Footer";
 import FacebookFeed from "@/components/sdr/FacebookFeed";
 
 export default function Blog() {
+  useSEO({
+    title: "Recycling & Junk Removal Guides | Same Day Recycling",
+    description: "Practical Canadian guides on recycling, junk removal, cleanouts and eco-friendly disposal from the Same Day Recycling network.",
+    path: "/blog",
+  });
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {

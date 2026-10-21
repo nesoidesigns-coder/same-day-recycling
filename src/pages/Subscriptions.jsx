@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import SubSignup from "@/components/sdr/SubSignup";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CalendarCheck, Zap, ShieldCheck, Recycle } from "lucide-react";
@@ -11,6 +12,11 @@ const PERKS = [
 ];
 
 export default function Subscriptions() {
+  useSEO({
+    title: "Recurring Cleanout Subscriptions | Same Day Recycling",
+    description: "Scheduled junk removal and cleanout subscriptions for property managers, stratas and businesses. Predictable pricing and priority scheduling.",
+    path: "/subscriptions",
+  });
   return (
     <div className="bg-white">
       <RexBanner message="Property managers: your recurring cleanouts, handled." />

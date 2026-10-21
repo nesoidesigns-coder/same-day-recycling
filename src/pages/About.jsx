@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import { Recycle, Leaf, Phone, Network } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 
 export default function About() {
+  useSEO({
+    title: "About Same Day Recycling — Canada's Recycling Network",
+    description: "Same Day Recycling coordinates recycling, junk removal and commercial cleanouts through one intelligent Canadian service network.",
+    path: "/about",
+  });
   return (
     <div className="bg-white">
       <Navbar />

@@ -15,7 +15,9 @@
       "enum": [
         "booking_quote",
         "white_label_setup",
-        "white_label_subscription"
+        "white_label_subscription",
+        "license_setup",
+        "license_subscription"
       ],
       "default": "white_label_setup"
     },

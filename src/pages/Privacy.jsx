@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import Navbar from "@/components/sdr/Navbar";
 import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
@@ -47,6 +48,11 @@ const SECTIONS = [
 ];
 
 export default function Privacy() {
+  useSEO({
+    title: "Privacy Policy | Same Day Recycling",
+    description: "How Same Day Recycling collects, uses, retains and protects your personal information.",
+    path: "/privacy",
+  });
   return (
     <div className="bg-white">
       <Navbar />

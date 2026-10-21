@@ -31,7 +31,9 @@ export default async function(req) {
       return Response.json({ error: 'No verified properties in this Search Console account' }, { status: 404 });
     }
 
-    const target = siteUrl && sites.includes(siteUrl) ? siteUrl : sites[0];
+    // Default to this app's own property, never an unrelated domain in the same account.
+    const ownSite = sites.find((s) => s.includes('samedayrecycling.ca')) || sites[0];
+    const target = siteUrl && sites.includes(siteUrl) ? siteUrl : ownSite;
 
     // Default window: last 28 days (GSC reporting lags ~2 days)
     const fmt = (d) => d.toISOString().slice(0, 10);

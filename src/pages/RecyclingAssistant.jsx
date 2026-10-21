@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import { Send, Loader2, Link2, AlertTriangle, Sparkles, MapPin } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -10,6 +11,11 @@ import { CATEGORY_LABELS } from "@/lib/recyclingTaxonomy";
 const GREETING = "Hi! I'm the Same Day Recycling Assistant. Tell me what you need to recycle and where you are (city, province, or postal code), and I'll find the right rules and local options. I cite sources and tell you when I'm not sure.";
 
 export default function RecyclingAssistant() {
+  useSEO({
+    title: "AI Recycling Assistant — Ask How to Recycle Any Item",
+    description: "Ask our AI recycling assistant what to do with any item — furniture, electronics, mattresses, paint and more. Free guidance, available 24/7.",
+    path: "/recycling-assistant",
+  });
   const [messages, setMessages] = useState([{ role: "assistant", content: GREETING, sources: [], uncertainty: "", providers: [] }]);
   const [input, setInput] = useState("");
   const [location, setLocation] = useState("");

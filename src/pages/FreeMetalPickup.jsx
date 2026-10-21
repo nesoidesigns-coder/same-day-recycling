@@ -1,9 +1,15 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
 
 export default function FreeMetalPickup() {
+  useSEO({
+    title: "Free Scrap Metal Pickup | Same Day Recycling",
+    description: "Free scrap metal pickup — appliances, bikes, electronics and metal debris hauled at no cost where service is active. Book online in minutes.",
+    path: "/free-metal-pickup",
+  });
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "Toronto", metal: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);

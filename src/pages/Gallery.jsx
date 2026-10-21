@@ -1,10 +1,16 @@
 import { Truck, Recycle } from "lucide-react";
+import { useSEO } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import PhotoGallery from "@/components/sdr/PhotoGallery";
 
 export default function Gallery() {
+  useSEO({
+    title: "Fleet Gallery — Trucks, Crews & Job Sites | Same Day Recycling",
+    description: "See the Same Day Recycling network in action — trucks, crews and recycling job sites across Canada.",
+    path: "/gallery",
+  });
   return (
     <div className="bg-white">
       <TopBar />

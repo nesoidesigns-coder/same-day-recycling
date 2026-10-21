@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
@@ -24,6 +25,12 @@ const STEPS = [
 const money = (n) => "$" + Number(n).toLocaleString("en-CA");
 
 export default function SoftwareOnboarding() {
+  useSEO({
+    title: "Set Up Your Recycling OS License | Same Day Recycling",
+    description: "Provision your Same Day Recycling OS license — company details, branding and team setup.",
+    path: "/software/start",
+    robots: "noindex, nofollow",
+  });
   const params = new URLSearchParams(window.location.search);
   const saved = (() => {
     try { return JSON.parse(sessionStorage.getItem(STORE_KEY)) || null; } catch { return null; }

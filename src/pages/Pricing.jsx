@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import { Truck, Scale, ShieldCheck, HandCoins, Phone, Recycle, XCircle } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -28,6 +29,11 @@ const FAQS = [
 ];
 
 export default function Pricing() {
+  useSEO({
+    title: "Junk Removal Pricing — Upfront Rates | Same Day Recycling",
+    description: "Transparent junk removal pricing in Canadian dollars — single-item, half-load and full-load rates with recycling-first disposal. Get an instant quote online.",
+    path: "/pricing",
+  });
   return (
     <div className="min-h-screen bg-white">
       <TopBar />

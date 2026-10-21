@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CITIES } from "@/lib/cities";
 import { Star, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function ReviewPage() {
+  useSEO({
+    title: "Leave a Review | Same Day Recycling",
+    description: "Share your experience with a Same Day Recycling pickup — your feedback helps verify partners and improve service.",
+    path: "/review",
+  });
   const [form, setForm] = useState({ customer_name: "", phone: "", city: "", text: "" });
   const [rating, setRating] = useState(5);
   const [submitting, setSubmitting] = useState(false);

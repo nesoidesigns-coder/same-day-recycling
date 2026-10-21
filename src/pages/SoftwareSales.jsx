@@ -61,7 +61,7 @@ export default function SoftwareSales() {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
             {[
               { k: "99.9%", v: "Platform uptime target" },
-              { k: "13", v: "Provinces & territories ready" },
+              { k: "13", v: "Provinces & territories in the network plan" },
               { k: "24/7", v: "Always-on operations" },
               { k: "CAD", v: "Priced in Canadian dollars" },
             ].map((s) => (
@@ -124,10 +124,10 @@ export default function SoftwareSales() {
               <h2 className="text-3xl font-extrabold tracking-tight admin-headline mt-2">Engineered for trust</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <HoloGauge value={99} label="Uptime" sub="Platform target" />
-              <HoloGauge value={100} label="Data isolation" sub="Company-level RLS" />
-              <HoloGauge value={100} label="Automation" sub="Quote to dispatch to invoice" />
-              <HoloGauge value={100} label="Same-day dispatch" sub="Book before noon nationwide" />
+              <HoloGauge value={99.9} label="Uptime target" sub="Design commitment" />
+              <HoloGauge value={100} label="Data isolation" sub="Company-level RLS by design" />
+              <HoloGauge value={100} label="Automated workflows" sub="Quote, dispatch and invoicing tools" />
+              <HoloGauge value={100} label="Same-day dispatch" sub="Book before noon, where service is live" />
             </div>
           </div>
         </div>

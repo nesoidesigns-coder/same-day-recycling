@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import {
   Phone,
   MonitorSmartphone,
@@ -93,6 +94,11 @@ const faqs = [
 ];
 
 export default function Contractors() {
+  useSEO({
+    title: "Recycling Partner Network — Contractor Applications",
+    description: "Join the Same Day Recycling partner network — operate your territory with our booking, dispatch and customer platform.",
+    path: "/contractors",
+  });
   return (
     <div className="bg-white">
       <TopBar />

@@ -33,6 +33,8 @@
   <url><loc>https://samedayrecycling.ca/region/NT</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
   <url><loc>https://samedayrecycling.ca/region/NU</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
   <url><loc>https://samedayrecycling.ca/review</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://samedayrecycling.ca/contractor-onboarding</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://samedayrecycling.ca/software/start</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://samedayrecycling.ca/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://samedayrecycling.ca/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

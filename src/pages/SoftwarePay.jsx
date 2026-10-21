@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, Recycle, CreditCard, Repeat } from "lucide-react";
 import PayPalButtons from "@/components/pay/PayPalButtons";
@@ -6,6 +7,12 @@ import PayPalButtons from "@/components/pay/PayPalButtons";
 const money = (n) => "$" + (Number(n) || 0).toLocaleString("en-CA");
 
 export default function SoftwarePay() {
+  useSEO({
+    title: "Complete Your Payment | Same Day Recycling",
+    description: "Secure checkout for your Same Day Recycling OS license.",
+    path: "/software-pay",
+    robots: "noindex, nofollow",
+  });
   const params = new URLSearchParams(window.location.search);
   const payToken = params.get("pay") || "";
   const subReturn = params.get("token") || "";

@@ -32,13 +32,13 @@ export default function HomeHero({ onCity }) {
       <div className="relative max-w-5xl mx-auto px-4 py-12 md:py-20 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-xs font-bold tracking-[0.14em] uppercase text-emerald-100/90">
           <Network className="w-3.5 h-3.5 text-[#187B65]" />
-          Canada's Recycling Service Network
+          Canada's Intelligent Recycling &amp; Removal Network
         </div>
         <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
-          Recycling Services, Connected Across Canada.
+          Canada's Intelligent Recycling &amp; Removal Network.
         </h1>
         <p className="mt-4 text-base md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-          Find trusted recycling and removal services, request pickups, and manage your recycling needs through one intelligent platform.
+          One connected platform for recycling, junk removal, commercial cleanouts, and intelligent service coordination across Canada.
         </p>
 
         {/* Primary: postal-code service discovery */}

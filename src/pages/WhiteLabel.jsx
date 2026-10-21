@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import {
   Recycle, Calculator, CalendarCheck, Receipt, Globe2,
@@ -66,6 +67,11 @@ const PLANS = [
 ];
 
 export default function WhiteLabel() {
+  useSEO({
+    title: "White-Label Recycling Apps for Your Brand | Same Day Recycling",
+    description: "Launch a branded recycling service app — white-label booking, dispatch and customer management powered by Same Day Recycling.",
+    path: "/white-label",
+  });
   const [mode, setMode] = useState("custom_branding");
 
   return (

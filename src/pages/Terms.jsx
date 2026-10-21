@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import Navbar from "@/components/sdr/Navbar";
 import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
@@ -67,6 +68,11 @@ const SECTIONS = [
 ];
 
 export default function Terms() {
+  useSEO({
+    title: "Terms of Service | Same Day Recycling",
+    description: "Terms of service for booking pickups and using the Same Day Recycling platform.",
+    path: "/terms",
+  });
   return (
     <div className="bg-white">
       <Navbar />
