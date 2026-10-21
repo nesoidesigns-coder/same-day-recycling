@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Paperclip, FileText } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Paperclip, FileText, Minus } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
 import AiMascotFull from "./AiMascotFull";
@@ -125,7 +125,7 @@ export default function ReceptionistChat() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-full right-0 mb-3 w-56"
+            className="hidden sm:block absolute bottom-full right-0 mb-3 w-56"
           >
             <div className="relative rounded-2xl rounded-br-md bg-white border border-[#187B65]/40 shadow-lg px-3.5 py-2.5 text-xs font-semibold text-[#102B2A] leading-snug">
               Hi, I'm Rex — instant quotes across Canada, recycling answers worldwide.
@@ -157,13 +157,16 @@ export default function ReceptionistChat() {
         </button>
       </div>
       {open && (
-        <div className="fixed bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] right-4 z-[60] w-[min(24rem,calc(100vw-2rem))] h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
-          <div className="bg-[#102B2A] text-white px-5 py-4 flex items-center gap-3">
+        <div className="fixed z-[60] inset-x-2 bottom-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] sm:w-[min(24rem,calc(100vw-2rem))] h-[min(32rem,calc(100dvh-4.5rem-env(safe-area-inset-bottom)))] sm:h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-3xl sm:rounded-3xl rounded-t-2xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+          <div className="bg-[#102B2A] text-white px-5 py-3.5 flex items-center gap-3">
             <AiMascot size={40} />
             <div>
               <div className="font-bold leading-tight">Rex · Same Day Recycling</div>
               <div className="flex items-center gap-1.5 text-xs text-[#187B65] font-semibold"><span className="w-1.5 h-1.5 rounded-full bg-[#187B65]" />Online · 24/7 booking assistant</div>
             </div>
+            <button onClick={() => setOpen(false)} aria-label="Minimize chat" className="ml-auto w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors shrink-0">
+              <Minus className="w-4 h-4" />
+            </button>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {!messages.some((m) => m.role === "assistant") && (
