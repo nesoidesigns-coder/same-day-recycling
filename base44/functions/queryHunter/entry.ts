@@ -9,6 +9,9 @@ export default async function(req) {
 
     const today = new Date().toISOString().slice(0, 10);
 
+    const body = await req.json().catch(() => ({}));
+    const sendDigest = body.send_digest === true;
+
     const [aiRes, kwRes] = await Promise.allSettled([
       base44.asServiceRole.integrations.Core.InvokeLLM({
         prompt:
@@ -101,12 +104,25 @@ export default async function(req) {
       (q.platform ? ' via ' + q.platform : ''),
     );
 
+    const queryList = list.length ? list.join(' \u2022 ') : 'No new queries this run. Your service coverage already matches what people are asking.';
+
+    let email_sent = false;
+    if (sendDigest) {
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: 'nesoidesigns@gmail.com',
+        template_name: 'ServiceQueryDigest',
+        variables: { new_count: String(saved), query_list: queryList },
+      });
+      email_sent = true;
+    }
+
     return Response.json({
       ok: true,
       saved_new: saved,
       web_found: webQueries.length,
       keywords_found: keywords.length,
-      query_list: list.length ? list.join(' \u2022 ') : 'No new queries this run. Your service coverage already matches what people are asking.',
+      query_list: queryList,
+      email_sent,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

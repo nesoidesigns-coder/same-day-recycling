@@ -22,7 +22,7 @@
     "document": {
       "dsl": "1.0.0",
       "name": "service_query_tracker",
-      "version": "1.0",
+      "version": "1.1",
       "namespace": "base44"
     },
     "do": [
@@ -31,31 +31,14 @@
           "call": "invoke_backend_function",
           "with": {
             "function_name": "queryHunter",
-            "args": {}
-          },
-          "then": "send_digest",
-          "x-base44": {
-            "title": "AI hunts service queries",
-            "description": "Live web + Google search terms, saved and deduped"
-          }
-        }
-      },
-      {
-        "send_digest": {
-          "call": "send_email",
-          "with": {
-            "template_name": "ServiceQueryDigest",
-            "to": "nesoidesigns@gmail.com",
-            "description": "Daily digest of new service queries found on the web",
-            "variables": {
-              "new_count": "${ .hunt_queries.saved_new }",
-              "query_list": "${ .hunt_queries.query_list }"
+            "args": {
+              "send_digest": true
             }
           },
           "then": "end",
           "x-base44": {
-            "title": "Email the digest",
-            "description": "New queries to the owner"
+            "title": "AI hunts service queries",
+            "description": "Live web + Google search terms, saved, deduped and emailed"
           }
         }
       }
