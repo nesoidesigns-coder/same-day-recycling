@@ -50,7 +50,9 @@ export function paypalAppOrigin(req) {
 
 // Apply a subscription lifecycle state to the owning license or white-label record.
 // state: 'active' | 'paused' | 'cancelled'. Idempotent — no-ops when already in the target state.
-export async function applySubscriptionState(srole, purpose, refId, state) {
+// client: optional full client (from createClientFromRequest) used for account invites,
+// since the service-role client does not expose the users module.
+export async function applySubscriptionState(srole, purpose, refId, state, client = null) {
   if (!refId) return;
   const today = new Date().toISOString().slice(0, 10);
   if (purpose === 'license_subscription') {
@@ -76,7 +78,9 @@ export async function applySubscriptionState(srole, purpose, refId, state) {
     });
     if (!lic.provisioned_date) {
       try {
-        await srole.users.inviteUser(lic.email, 'user');
+        const inviter = (client && client.users) || srole.users;
+        if (!inviter) throw new Error('No users module available.');
+        await inviter.inviteUser(lic.email, 'user');
       } catch (e) {
         await srole.entities.SoftwareLicense.update(lic.id, { notes: ('Account invite: ' + (e.message || 'failed')).slice(0, 1000) });
       }
@@ -85,6 +89,17 @@ export async function applySubscriptionState(srole, purpose, refId, state) {
     const map = { active: 'active', paused: 'paused', cancelled: 'churned' };
     await srole.entities.WhiteLabelClient.update(refId, { status: map[state] }).catch(() => {});
   }
+}
+
+// Retry a failed account invite for an already-active license subscription.
+// Returns the license's post-invite state for callers to report.
+export async function ensureLicenseInvite(srole, client, tx) {
+  if (!tx || tx.purpose !== 'license_subscription' || !tx.ref_id) return null;
+  const lic = await srole.entities.SoftwareLicense.get(tx.ref_id).catch(() => null);
+  if (!lic || !lic.id || lic.provisioned_date) return null;
+  await applySubscriptionState(srole, tx.purpose, tx.ref_id, 'active', client);
+  const after = await srole.entities.SoftwareLicense.get(tx.ref_id).catch(() => null);
+  return after && after.id ? { provisioned: !!after.provisioned_date, notes: after.notes } : null;
 }
 
 export function parseQuoteAmount(text) {

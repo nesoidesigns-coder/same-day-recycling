@@ -56,7 +56,7 @@ export default async function(req) {
               paypal_payer_email: (resource.subscriber && resource.subscriber.email_address) || tx.paypal_payer_email || '',
             });
           }
-          await applySubscriptionState(srole, tx.purpose, tx.ref_id, 'active');
+          await applySubscriptionState(srole, tx.purpose, tx.ref_id, 'active', base44);
           action = 'activated';
           break;
         case 'BILLING.SUBSCRIPTION.CANCELLED':

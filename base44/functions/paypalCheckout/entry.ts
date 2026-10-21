@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
-import { paypal, paypalAppOrigin as appOrigin, parseQuoteAmount, CURRENCY } from '../../shared/paypal.ts';
+import { paypal, paypalAppOrigin as appOrigin, parseQuoteAmount, CURRENCY, ensureLicenseInvite } from '../../shared/paypal.ts';
 
 export default async function(req) {
   try {
@@ -256,13 +256,17 @@ export default async function(req) {
       const status = (sub.status || '').toUpperCase();
       const { items } = await srole.entities.PaypalTransaction.filter({ paypal_subscription_id: subId }, { limit: 1 });
       if (status === 'ACTIVE' && items && items.length) {
-        // Idempotent: skip entirely when this subscription is already marked active
-        if (items[0].status === 'active') return Response.json({ status: 'active', already_active: true });
+        // Idempotent: skip state changes when already active, but still retry a
+        // failed account invite so the buyer eventually gets their login email.
+        if (items[0].status === 'active') {
+          const invite = await ensureLicenseInvite(srole, base44, items[0]);
+          return Response.json({ status: 'active', already_active: true, invite });
+        }
         await srole.entities.PaypalTransaction.update(items[0].id, {
           status: 'active',
           paypal_payer_email: (sub.subscriber && sub.subscriber.email_address) || '',
         });
-        await applySubscriptionState(srole, items[0].purpose, items[0].ref_id, 'active');
+        await applySubscriptionState(srole, items[0].purpose, items[0].ref_id, 'active', base44);
         return Response.json({ status: 'active' });
       }
       return Response.json({ status: status.toLowerCase() });
