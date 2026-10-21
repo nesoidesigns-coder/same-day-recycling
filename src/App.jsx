@@ -28,6 +28,7 @@ import CityRedirect from './pages/CityRedirect';
 import { CITIES } from '@/lib/cities';
 import AdminJobs from './pages/AdminJobs';
 import PartnersDashboard from './pages/PartnersDashboard';
+import PartnerRegister from './pages/PartnerRegister';
 import Subscriptions from './pages/Subscriptions';
 import FreeMetalPickup from './pages/FreeMetalPickup';
 import About from './pages/About';
@@ -119,6 +120,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/gallery" element={<AdminGallery />} />
         <Route path="/admin/marketing" element={<AdminMarketing />} />
         <Route path="/partners" element={<PartnersDashboard />} />
+        <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

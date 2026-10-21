@@ -11,6 +11,13 @@
     "city": {
       "type": "string"
     },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
     "active": {
       "type": "boolean",
       "default": true

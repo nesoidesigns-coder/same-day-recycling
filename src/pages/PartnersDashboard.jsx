@@ -70,6 +70,9 @@ export default function PartnersDashboard() {
             ? `No active partner account is linked to ${me.email}. Ask the Same Day Recycling admin to add you as a partner.`
             : "Please log in with your partner account."}
         </p>
+        <button onClick={() => window.location.assign("/partner-register")} className="rounded-full border border-[#1d9e56]/40 bg-transparent text-emerald-50 font-bold px-6 py-3 text-sm hover:border-[#1d9e56] transition-colors">
+          Register as a partner
+        </button>
         <button onClick={() => base44.auth.logout("/login")} className="rounded-full bg-[#1d9e56] text-[#032015] font-bold px-6 py-3 text-sm hover:bg-[#25b96b] transition-colors">
           Log in with another account
         </button>

@@ -11,6 +11,31 @@ export default async function(req) {
     const body = await req.json().catch(() => ({}));
     const action = body?.action || 'data';
 
+    // Self-service signup: creates a partner record linked to the signed-in email.
+    if (action === 'register') {
+      const companyName = String(body?.company || '').trim();
+      const city = String(body?.city || '').trim();
+      const equipment = Array.isArray(body?.equipment)
+        ? body.equipment.map((e) => String(e).trim().slice(0, 60)).filter(Boolean).slice(0, 12)
+        : [];
+      if (!companyName || !city) {
+        return Response.json({ error: 'Company name and service city are required.' }, { status: 400 });
+      }
+      const existing = await base44.asServiceRole.entities.Partner.filter({ email: user.email });
+      const existingList = Array.isArray(existing) ? existing : (existing.items || []);
+      if (existingList.length) {
+        return Response.json({ error: 'A partner account already exists for this email.' }, { status: 409 });
+      }
+      await base44.asServiceRole.entities.Partner.create({
+        name: companyName.slice(0, 120),
+        email: user.email,
+        city: city.slice(0, 60),
+        equipment,
+        active: true,
+      });
+      return Response.json({ ok: true });
+    }
+
     // Resolve the partner record for this exact signed-in email.
     const rawPartners = await base44.asServiceRole.entities.Partner.filter({ email: user.email });
     const partners = Array.isArray(rawPartners) ? rawPartners : (rawPartners.items || []);
