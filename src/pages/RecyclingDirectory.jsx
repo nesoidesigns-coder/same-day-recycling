@@ -65,7 +65,7 @@ export default function RecyclingDirectory() {
         <div className="max-w-5xl mx-auto px-4 py-10">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Recycling directory — verified listings in British Columbia</h1>
           <p className="text-emerald-100/70 mt-2 max-w-2xl text-sm leading-relaxed">
-            Verified listings currently cover British Columbia, expanding nationally as partners are confirmed. Search by material, product, or service — then by postal code, city, or province. Accepted materials are set by each facility or program; always confirm restrictions before you go.
+            Verified listings of independent drop-off facilities currently cover British Columbia, expanding nationally. These facilities are not affiliated Same Day Recycling pickup partners. Search by material, product, or service — then by postal code, city, or province; accepted materials are set by each facility, so always confirm restrictions before you go.
           </p>
           <form
             className="mt-6 flex flex-col sm:flex-row gap-3"

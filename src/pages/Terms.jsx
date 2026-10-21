@@ -8,7 +8,7 @@ const SECTIONS = [
   {
     h: "Our services",
     p: [
-      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup in major Canadian cities and partner territories across Canada. Booking by phone, text, website form or through our online booking assistant creates a service request.",
+      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup in our active service areas (currently BC's Lower Mainland), with additional cities served as verified partners go live. Booking by phone, text, website form or through our online booking assistant creates a service request; it becomes a confirmed booking only once service availability for your city is verified by our booking system.",
     ],
   },
   {
@@ -63,6 +63,7 @@ const SECTIONS = [
     h: "Governing law",
     p: [
       "These terms are governed by the laws of Canada and the applicable province or territory. Questions about these terms? Call us at (604) 849-1745 or use our <contact>contact form</contact>.",
+      "These terms are provided for general information and are not legal advice; wording that carries legal or financial consequence should be reviewed by a qualified professional before being relied on.",
     ],
   },
 ];

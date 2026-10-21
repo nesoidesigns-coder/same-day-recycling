@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { MapPin, ArrowRight, Phone, BadgeCheck, Building2 } from "lucide-react";
+import { MapPin, ArrowRight, Phone, BadgeCheck, Building2, Rocket, CheckCircle2, Hourglass } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { REGIONS, regionByCode } from "@/lib/regions";
+import { COVERAGE, STATUS_LABELS } from "@/lib/coverage";
+import { CITIES } from "@/lib/cities";
 import { base44 } from "@/api/base44Client";
 import { useSEO, useStructuredData } from "@/lib/seo";
 
-const CITIES_BY_PROVINCE = {
-  AB: ["Calgary", "Edmonton"],
-  MB: ["Winnipeg"],
-  ON: ["Toronto", "Ottawa", "Hamilton", "Mississauga"],
-  QC: ["Montreal", "Quebec City"],
-  NS: ["Halifax"],
-};
-
+// Counters and city lists are derived from the coverage source of truth
+// (src/lib/coverage.js) and actual directory records — never hardcoded.
+// Directory facilities are independent drop-off sites, never shown as
+// Same Day Recycling pickup partners.
 export default function ProvincePage() {
   const { code } = useParams();
   const region = regionByCode((code || "").toUpperCase());
@@ -39,7 +37,10 @@ export default function ProvincePage() {
   useEffect(() => {
     if (!region) return;
     (async () => {
-      const { items } = await base44.entities.Provider.filter({ province: region.name }, { limit: 200 });
+      const { items } = await base44.entities.Provider.filter(
+        { $or: [{ province: region.code }, { province: region.name }] },
+        { limit: 200 }
+      );
       setProviders(items);
     })();
   }, [region?.code]);
@@ -62,7 +63,11 @@ export default function ProvincePage() {
 
   const verified = (providers || []).filter((p) => p.verification === "verified");
   const featured = verified.slice(0, 6);
-  const cities = CITIES_BY_PROVINCE[region.code] || [];
+  const cities = COVERAGE.filter((c) => c.province === region.code);
+  const activeCities = cities.filter((c) => c.status === "active");
+  const onboardingCities = cities.filter((c) => c.status === "partner_onboarding");
+  const comingCities = cities.filter((c) => c.status === "coming_soon");
+  const slugFor = (name) => CITIES.find((c) => c.name === name)?.slug || "";
 
   return (
     <div className="bg-white min-h-screen">
@@ -77,15 +82,20 @@ export default function ProvincePage() {
             Recycling Services in {region.name}
           </h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Verified recycling providers, same-day removal partners and booking tools across {region.name}.
-            {cities.length ? ` Same-day pickup is booking live in ${cities.join(", ")}.` : " Partner applications are open across the region."}
+            {activeCities.length ? (
+              <>Same-day pickup is live today in <span className="text-white font-semibold">{activeCities.map((c) => c.name).join(", ")}</span>. Independent drop-off facilities are listed below.</>
+            ) : onboardingCities.length ? (
+              <>Same-day pickup is not live in {region.name} yet. A verified partner is being onboarded in {onboardingCities.map((c) => c.name).join(", ")} — booking opens once that partner is verified.</>
+            ) : (
+              <>Same-day pickup is not live in {region.name} yet. Coverage status for every market is listed below, and partner applications are open across the region.</>
+            )}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="tel:+16048491745" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors flex items-center gap-2">
               <Phone className="w-4 h-4" /> Call (604) 849-1745
             </a>
-            <Link to="/#book" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
-              Book a pickup
+            <Link to="/coverage" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
+              See full coverage
             </Link>
           </div>
         </div>
@@ -96,16 +106,16 @@ export default function ProvincePage() {
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5">
             <Building2 className="w-4 h-4 text-[#187B65]" />
             <div className="text-2xl font-bold text-[#102B2A] mt-2">{providers === null ? "…" : providers.length}</div>
-            <div className="text-xs text-slate-500 mt-1">Listed providers</div>
+            <div className="text-xs text-slate-500 mt-1">Listed facilities</div>
           </div>
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5">
             <BadgeCheck className="w-4 h-4 text-[#187B65]" />
             <div className="text-2xl font-bold text-[#102B2A] mt-2">{providers === null ? "…" : verified.length}</div>
-            <div className="text-xs text-slate-500 mt-1">Verified locations</div>
+            <div className="text-xs text-slate-500 mt-1">Verified facilities</div>
           </div>
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5">
-            <MapPin className="w-4 h-4 text-[#187B65]" />
-            <div className="text-2xl font-bold text-[#102B2A] mt-2">{cities.length}</div>
+            <CheckCircle2 className="w-4 h-4 text-[#187B65]" />
+            <div className="text-2xl font-bold text-[#102B2A] mt-2">{activeCities.length}</div>
             <div className="text-xs text-slate-500 mt-1">Same-day booking cities</div>
           </div>
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5">
@@ -116,32 +126,43 @@ export default function ProvincePage() {
 
         {cities.length > 0 && (
           <div className="mb-14">
-            <h2 className="text-2xl font-bold text-[#102B2A]">Same-day service in {region.name}</h2>
+            <h2 className="text-2xl font-bold text-[#102B2A]">Service status by city in {region.name}</h2>
+            <p className="mt-2 text-slate-600 text-sm">
+              {activeCities.length} active · {onboardingCities.length} in partner onboarding · {comingCities.length} planned. Each card links to that city's real status page.
+            </p>
             <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cities.map((city) => (
-                <Link
-                  key={city}
-                  to="/#book"
-                  className="group rounded-2xl border border-slate-100 bg-white shadow-sm p-6 flex items-center justify-between hover:border-[#187B65] transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-[#187B65]" />
-                    <div className="font-bold text-[#102B2A]">{city}</div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#187B65] transition-colors" />
-                </Link>
-              ))}
+              {cities.map((city) => {
+                const Icon = city.status === "active" ? CheckCircle2 : city.status === "partner_onboarding" ? Rocket : Hourglass;
+                return (
+                  <Link
+                    key={city.name}
+                    to={`/junk-removal-${slugFor(city.name)}`}
+                    className="group rounded-2xl border border-slate-100 bg-white shadow-sm p-6 flex items-center justify-between hover:border-[#187B65] transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className={`w-5 h-5 ${city.status === "active" ? "text-[#187B65]" : city.status === "partner_onboarding" ? "text-[#102B2A]" : "text-slate-400"}`} />
+                      <div>
+                        <div className="font-bold text-[#102B2A]">{city.name}</div>
+                        <div className="text-xs text-slate-500">{STATUS_LABELS[city.status]}</div>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#187B65] transition-colors" />
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
 
-        <h2 className="text-2xl font-bold text-[#102B2A]">Verified recycling providers in {region.name}</h2>
-        <p className="mt-2 text-slate-600">Details confirmed from official sources. Always confirm materials and fees with the facility before visiting.</p>
+        <h2 className="text-2xl font-bold text-[#102B2A]">Independent recycling facilities in {region.name}</h2>
+        <p className="mt-2 text-slate-600">
+          These are independent drop-off facilities listed for your convenience — they are not Same Day Recycling pickup partners. Details confirmed from official sources; always confirm materials and fees with the facility before visiting.
+        </p>
         {providers === null ? (
-          <p className="text-slate-500 mt-8">Loading providers…</p>
+          <p className="text-slate-500 mt-8">Loading facilities…</p>
         ) : featured.length === 0 ? (
           <div className="mt-8 rounded-2xl bg-[#f4f7f5] border border-slate-100 p-8 text-slate-600">
-            No verified providers listed in {region.name} yet. Our team is confirming locations — call us and we'll point you to the right facility.
+            No verified facilities listed in {region.name} yet. Our team is confirming locations — call us and we'll point you to the right facility.
           </div>
         ) : (
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -166,7 +187,7 @@ export default function ProvincePage() {
 
         <div className="mt-14 text-center">
           <Link to="/recycling" className="inline-flex items-center gap-2 rounded-full bg-[#102B2A] text-white font-bold px-7 py-3 hover:bg-[#0a3020] transition-colors">
-            Browse the national directory <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
+            Browse the facility directory <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
           </Link>
         </div>
       </section>

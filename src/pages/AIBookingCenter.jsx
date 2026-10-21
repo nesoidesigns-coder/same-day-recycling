@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Bot, Send, CheckCircle2, Circle, Sparkles, Phone, Loader2 } from "lucide-react";
 
 const OPENING =
-  "Hi, I'm Rex — the Same Day Recycling booking engine. Tell me what you need picked up and I'll book it for you automatically. What are we clearing out today?";
+  "Hi, I'm Rex — the Same Day Recycling booking engine. Same-day pickup is live in Vancouver, Burnaby, Surrey, Richmond and Coquitlam. Tell me what you need picked up and where — I'll book it, or add you to the waitlist if we're not there yet. What are we clearing out today?";
 
 const FIELD_ROWS = [
   ["name", "Name", true],
@@ -12,7 +12,7 @@ const FIELD_ROWS = [
   ["address", "Pickup address", true],
   ["items_description", "Items", true],
   ["email", "Email (optional)", false],
-  ["city", "City (optional)", false],
+  ["city", "City", true],
   ["preferred_date", "Preferred date (optional)", false],
   ["time_window", "Time window (optional)", false],
 ];
@@ -27,6 +27,7 @@ export default function AIBookingCenter() {
   const [messages, setMessages] = useState([{ role: "assistant", content: OPENING }]);
   const [collected, setCollected] = useState({});
   const [booked, setBooked] = useState(null);
+  const [waitlisted, setWaitlisted] = useState(false);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef(null);
@@ -37,7 +38,7 @@ export default function AIBookingCenter() {
 
   const send = async (text) => {
     const msg = (typeof text === "string" ? text : input).trim();
-    if (!msg || sending || booked) return;
+    if (!msg || sending || booked || waitlisted) return;
     setInput("");
     const nextMessages = [...messages, { role: "user", content: msg }];
     setMessages(nextMessages);
@@ -52,6 +53,7 @@ export default function AIBookingCenter() {
       if (data.collected) setCollected(data.collected);
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply || "Sorry, say that once more?" }]);
       if (data.booked) setBooked(data.booked);
+      if (data.waitlisted) setWaitlisted(true);
     } catch (e) {
       setMessages((prev) => [
         ...prev,
@@ -62,7 +64,10 @@ export default function AIBookingCenter() {
     }
   };
 
-  const done = FIELD_ROWS.filter(([, key, required]) => (required ? collected[key] : true)).length;
+  // Progress reflects booking-eligible readiness only — 100% means every
+  // required field (including city) is collected, not merely half the form.
+  const REQUIRED_ROWS = FIELD_ROWS.filter(([, , required]) => required);
+  const done = REQUIRED_ROWS.filter(([, key]) => collected[key]).length;
 
   return (
     <div className="min-h-screen bg-white">
@@ -73,8 +78,9 @@ export default function AIBookingCenter() {
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#102B2A] tracking-tight">AI Booking Center</h1>
           <p className="mt-2 text-slate-600 max-w-xl mx-auto">
-            Book your pickup in one conversation. Rex collects the details, confirms your job on the spot and
-            schedules it — no forms, no waiting.
+            Book your pickup in one conversation. Rex collects the details, confirms availability for your city and
+            schedules the job — no forms, no waiting. Same-day booking is live in our five active BC cities; other
+            cities join the waitlist until a verified partner launches.
           </p>
         </div>
 
@@ -114,15 +120,18 @@ export default function AIBookingCenter() {
               )}
             </div>
 
-            {booked ? (
+            {booked || waitlisted ? (
               <div className="border-t border-slate-100 p-4 sm:p-6 bg-[#f4f7f5]">
                 <div className="flex items-start gap-3 rounded-2xl bg-white border border-[#187B65]/30 p-4">
                   <CheckCircle2 className="w-6 h-6 text-[#187B65] shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-bold text-[#102B2A]">Pickup booked — status: Confirmed</div>
+                    <div className="font-bold text-[#102B2A]">{booked ? "Pickup booked — status: Confirmed" : "You're on the waitlist"}</div>
                     <p className="text-sm text-slate-600 mt-1">
-                      Dispatch locks in the exact arrival window and updates you at every step.
-                      {!collected.email && " Add an email next time to get instant confirmations."}
+                      {booked ? (
+                        <>Dispatch locks in the exact arrival window and updates you at every step.{!collected.email && " Add an email next time to get instant confirmations."}</>
+                      ) : (
+                        <>Confirmed pickup isn't available in {collected.city} yet — we've saved your request and will contact you when a verified partner launches there.</>
+                      )}
                     </p>
                     <Link to="/" className="inline-block mt-2 text-sm font-bold text-[#187B65] hover:underline">
                       Back to home
@@ -150,13 +159,13 @@ export default function AIBookingCenter() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && send()}
-                    placeholder={booked ? "This booking is confirmed" : "Type your reply…"}
-                    disabled={!!booked}
+                    placeholder={booked ? "This booking is confirmed" : waitlisted ? "You're on the waitlist" : "Type your reply…"}
+                    disabled={!!booked || waitlisted}
                     className="input flex-1"
                   />
                   <button
                     onClick={() => send()}
-                    disabled={sending || !input.trim() || booked}
+                    disabled={sending || !input.trim() || booked || waitlisted}
                     className="rounded-xl bg-[#187B65] text-white px-4 flex items-center justify-center hover:bg-[#125C4E] transition-colors disabled:opacity-50"
                     aria-label="Send"
                   >
@@ -171,7 +180,7 @@ export default function AIBookingCenter() {
           <div className="rounded-3xl border border-slate-100 shadow-sm bg-white p-5 sm:p-6 h-fit">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-[#102B2A]">Your booking</h2>
-              <span className="text-xs font-bold text-[#187B65]">{Math.round((done / FIELD_ROWS.length) * 100)}% ready</span>
+              <span className="text-xs font-bold text-[#187B65]">{Math.round((done / REQUIRED_ROWS.length) * 100)}% ready to book</span>
             </div>
             <ul className="space-y-3">
               {FIELD_ROWS.map(([key, label, required]) => (

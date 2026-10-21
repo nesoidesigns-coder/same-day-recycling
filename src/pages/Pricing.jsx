@@ -26,6 +26,8 @@ const FAQS = [
   { q: "Are there extra fees like fuel or dumping charges?", a: "No. Labor, loading, transport, sorting and disposal are all included in the tier price. No hidden fees, no scale surprises." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Everything else that fits in a truck, we can usually take." },
   { q: "Which cities do you serve?", a: "Same-day service is live today across BC's Lower Mainland — Vancouver, Burnaby, Surrey, Richmond and Coquitlam — with partner territories onboarding nationwide (Toronto, Calgary, Montreal and more). The recycling directory covers every province, and exact city pricing varies slightly; every quote shows your rate." },
+  { q: "Are prices in CAD? Is tax included?", a: "All prices are in Canadian dollars (CAD). GST and/or PST — depending on the pickup address — are added when you approve the final price, and the full amount is shown before you pay." },
+  { q: "Can I combine discounts?", a: "One discount per job: the Self-Load Discount (10%), the curbside staging discount ($25) and subscription member rates don't stack — we apply whichever saves you the most." },
 ];
 
 export default function Pricing() {
@@ -97,6 +99,36 @@ export default function Pricing() {
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed">{g.text}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-4 py-14">
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#102B2A] text-center">Pricing facts, clearly stated</h2>
+        <div className="mt-8 grid md:grid-cols-2 gap-4">
+          <div className="rounded-2xl bg-white border border-slate-200 p-6">
+            <Scale className="w-7 h-7 text-[#187B65]" />
+            <h3 className="mt-3 font-bold text-[#102B2A]">All prices in Canadian dollars (CAD)</h3>
+            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Every rate on this page and in every quote is CAD. Applicable taxes (GST and/or PST, based on the pickup address) are added when you approve the final price and shown before you pay anything.</p>
+          </div>
+          <div className="rounded-2xl bg-white border border-slate-200 p-6">
+            <ShieldCheck className="w-7 h-7 text-[#187B65]" />
+            <h3 className="mt-3 font-bold text-[#102B2A]">Fixed vs estimated — when each applies</h3>
+            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Online, photo and phone quotes are estimates. The price becomes fixed only once you approve it on arrival, after the crew confirms volume and weight. Once approved, it doesn't change.</p>
+          </div>
+          <div className="rounded-2xl bg-white border border-slate-200 p-6">
+            <HandCoins className="w-7 h-7 text-[#187B65]" />
+            <h3 className="mt-3 font-bold text-[#102B2A]">Discount stacking rules</h3>
+            <p className="mt-2 text-sm text-slate-600 leading-relaxed">One discount per job, whichever saves you the most: the Self-Load Discount (10%), the curbside staging discount ($25) and subscription member rates never combine.</p>
+          </div>
+          <div className="rounded-2xl bg-white border border-slate-200 p-6">
+            <Truck className="w-7 h-7 text-[#187B65]" />
+            <h3 className="mt-3 font-bold text-[#102B2A]">Load limits &amp; extra items</h3>
+            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Each tier covers its published weight band. Loads over the band, or items needing special disposal, are quoted to you as additions before anything is loaded — never added silently.</p>
+          </div>
+          <div className="rounded-2xl bg-[#f4f7f5] border border-slate-200 p-6 md:col-span-2">
+            <h3 className="font-bold text-[#102B2A]">Software OS and White Label are separate products</h3>
+            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Junk-removal pricing above is for household and commercial pickups. <Link to="/software" className="font-semibold text-[#187B65] hover:underline">Software OS</Link> licenses our operating platform to independent haulers (setup fee + monthly or annual subscription). <Link to="/white-label" className="font-semibold text-[#187B65] hover:underline">White Label</Link> runs the same platform under your own brand with different setup terms. Realtor and property-manager partner rates are set separately — see <Link to="/realtors" className="font-semibold text-[#187B65] hover:underline">Realtors</Link> and <Link to="/subscriptions" className="font-semibold text-[#187B65] hover:underline">Subscriptions</Link>.</p>
           </div>
         </div>
       </section>

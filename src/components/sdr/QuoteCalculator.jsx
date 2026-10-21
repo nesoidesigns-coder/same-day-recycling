@@ -2,6 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calculator, Loader2, Plus, Minus, ArrowRight } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
+import { isCityActive } from "@/lib/coverage";
 import QuoteLeadCapture from "@/components/sdr/QuoteLeadCapture";
 
 const CATALOG = [
@@ -63,7 +64,15 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                   <option value="">Standard rates (active cities)</option>
                   {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
                 </select>
+                {city && !isCityActive(city) && (
+                  <span className="mt-2 block text-xs font-semibold text-amber-700">Not live in {city} yet — this is a standard-rate estimate, and booking joins the {city} waitlist.</span>
+                )}
               </label>
+            )}
+            {fixedCity && !isCityActive(fixedCity) && (
+              <div className="mb-6 rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
+                Service isn't live in {fixedCity} yet — this estimate uses standard rates. Pickup launches when a verified partner is confirmed; booking joins the {fixedCity} waitlist.
+              </div>
             )}
             <div className="grid sm:grid-cols-2 gap-2 mb-6">
               {CATALOG.map((name) => (

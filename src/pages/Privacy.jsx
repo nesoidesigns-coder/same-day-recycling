@@ -9,7 +9,8 @@ const SECTIONS = [
     h: "Information we collect",
     p: [
       "When you book a pickup, request a quote, or contact us, we collect the details you give us: your name, phone number, email address, pickup address, the description of your items and any photos you attach.",
-      "If you chat with our online booking assistant, we keep a record of the conversation so we can follow up on your request. If you leave a review, we keep the name, rating and text you submit.",
+      "If you chat with our online booking assistant, we keep a record of the conversation so we can follow up on your request. If you leave a review, we keep the name, phone number you booked with, city, rating and text you submit, and we verify the review against your booking record before publishing it.",
+      "If you apply as a pickup partner or contractor, we collect your business contact details and the compliance documents you upload (business licence, insurance, WCB coverage, vehicle registration) to verify your application.",
       "We also collect basic website analytics (pages visited, how you found us) to improve the site. This data is not used to identify you personally.",
     ],
   },
@@ -25,6 +26,24 @@ const SECTIONS = [
     p: [
       "We share booking details only with the crew member or partner dispatcher handling your job. We use service providers (such as our hosting, messaging and analytics platforms) that process data on our behalf and are bound to protect it.",
       "We may disclose information if required by law or to protect our rights and safety.",
+    ],
+  },
+  {
+    h: "AI assistant",
+    p: [
+      "Some conversations on this site are handled by an AI assistant. It can make mistakes — availability, pricing and booking confirmation always come from our booking system, not from the chat itself. We keep chat records so we can follow up on your request.",
+    ],
+  },
+  {
+    h: "Payments",
+    p: [
+      "Payments are processed by PayPal. We never see or store your full card or PayPal credentials on our servers; we receive only the payment status and reference needed to reconcile your booking.",
+    ],
+  },
+  {
+    h: "Service limitations",
+    p: [
+      "Confirmed same-day pickup is offered only in our active service areas (currently BC's Lower Mainland). Elsewhere you can join the waitlist, and we will only contact you about service as it launches.",
     ],
   },
   {
@@ -65,7 +84,7 @@ export default function Privacy() {
         </div>
       </section>
       <section className="max-w-3xl mx-auto px-4 py-12 md:py-16 space-y-8">
-        <p className="text-slate-600">Same Day Recycling provides same-day junk removal, furniture removal and recycling services across Canada. This policy explains what personal information we collect, why, and how you can control it. Questions? Call us at (604) 849-1745 or use our <Link to="/contact" className="font-semibold text-[#187B65] hover:underline">contact form</Link>.</p>
+        <p className="text-slate-600">Same Day Recycling provides same-day junk removal, furniture removal and recycling services in our active service areas (currently BC's Lower Mainland), expanding across Canada through verified partners. This policy explains what personal information we collect, why, and how you can control it. Questions? Call us at (604) 849-1745 or use our <Link to="/contact" className="font-semibold text-[#187B65] hover:underline">contact form</Link>.</p>
         {SECTIONS.map((s) => (
           <div key={s.h}>
             <h2 className="text-xl font-bold text-[#102B2A] mb-2">{s.h}</h2>

@@ -8,11 +8,13 @@
 
 export const COVERAGE = [
   // Operator-run service (Lower Mainland, BC) — confirmed by the company's own service terms.
-  { name: "Vancouver", province: "BC", status: "active" },
-  { name: "Burnaby", province: "BC", status: "active" },
-  { name: "Surrey", province: "BC", status: "active" },
-  { name: "Richmond", province: "BC", status: "active" },
-  { name: "Coquitlam", province: "BC", status: "active" },
+  // capabilities = verified service capabilities; last_verified = last operational verification date.
+  // Partner assignment lives in the Partner entity — never inferred from directory listings.
+  { name: "Vancouver", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
+  { name: "Burnaby", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
+  { name: "Surrey", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
+  { name: "Richmond", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
+  { name: "Coquitlam", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
 
   // Partner onboarding — recruitment or verification underway.
   { name: "Victoria", province: "BC", status: "partner_onboarding" },
@@ -66,3 +68,17 @@ export const cityByName = (name) => COVERAGE.find((c) => c.name === name) || nul
 // availability rule every booking, subscription, quote and metal-pickup
 // form must use — non-active cities get the waitlist flow instead.
 export const isCityActive = (name) => cityByName(name)?.status === "active";
+
+// Full service profile for a city: status, verified capabilities, booking
+// eligibility and last verification date — the shape every surface
+// (region pages, AI assistants, city cards) should consume.
+export const cityServiceProfile = (name) => {
+  const c = cityByName(name);
+  if (!c) return null;
+  return {
+    ...c,
+    bookingEligible: c.status === "active",
+    capabilities: c.capabilities || [],
+    last_verified: c.last_verified || null,
+  };
+};
