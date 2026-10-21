@@ -1,9 +1,29 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { ACTIVE_CITIES } from '../../shared/coverageStatus.ts';
 
-// Sync every city the national coverage model lists — kept in one place so
-// the recycling center map never drifts from the coverage source of truth.
+// Authoritative facility dataset: the Provider entity. Every surface (map,
+// directory, region and city pages) reads from here — the legacy
+// RecyclingCenter cache is no longer read anywhere.
 const CITIES = ACTIVE_CITIES;
+
+// Map a Provider record to the public listing shape (no internal fields).
+const toPublic = (p) => ({
+  id: p.id,
+  name: p.name,
+  city: p.city,
+  province: p.province || '',
+  address: p.address || '',
+  lat: p.lat,
+  lng: p.lng,
+  phone: p.phone || '',
+  website: p.website || '',
+  accepts: p.materials_note || (p.accepted_categories || []).join(', '),
+  note: p.notes || '',
+  verification: p.verification || 'researched',
+  provider_type: p.provider_type || '',
+  researched_date: p.last_confirmed_date || '',
+  source_url: p.source_url || '',
+});
 
 export default async function(req) {
   try {
@@ -13,27 +33,20 @@ export default async function(req) {
     const action = payload.action || 'list';
     const svc = base44.asServiceRole;
 
-    // Public lookup of the AI-researched recycling centers (cached, no PII)
+    // Public lookup of listed facilities (cached shape, no PII). "Verified"
+    // means details were confirmed against the official operator or
+    // municipal source recorded on the listing; "researched" listings come
+    // from dated research and are not yet independently confirmed.
     if (action === 'list') {
       const filter = payload.city ? { city: payload.city } : {};
-      const page = await svc.entities.RecyclingCenter.filter(filter, { sort: 'city', limit: 500 });
-      const centers = (page.items || []).map((c) => ({
-        id: c.id,
-        name: c.name,
-        city: c.city,
-        address: c.address || '',
-        lat: c.lat,
-        lng: c.lng,
-        phone: c.phone || '',
-        website: c.website || '',
-        accepts: c.accepts || '',
-        note: c.note || '',
-        researched_date: c.researched_date || '',
-      }));
+      const page = await svc.entities.Provider.filter(filter, { sort: 'city', limit: 500 });
+      const centers = (page.items || []).map(toPublic);
       return Response.json({ centers, count: centers.length });
     }
 
-    // Admin only: AI re-researches every city from live web sources and replaces the cache
+    // Admin only: AI re-researches every city from live web sources and
+    // replaces only that city's RESEARCHED listings. "Verified" listings are
+    // never touched by the refresh.
     if (action === 'refresh') {
       const user = await base44.auth.me();
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
@@ -52,7 +65,7 @@ export default async function(req) {
           batch.map((city) =>
             svc.integrations.Core.InvokeLLM({
               prompt:
-                `Research real recycling centers, depots, transfer stations and public drop-off facilities in ${city}, Canada, Canada. ` +
+                `Research real recycling centres, depots, transfer stations and public drop-off facilities in ${city}, Canada. ` +
                 'Use current web sources (municipal websites, provincial recycling programs, Google Maps listings). ' +
                 'Return up to 8 real, verifiable facilities. For each give: exact name, full street address, latitude, longitude, ' +
                 'phone number if known, website if known, main materials accepted (comma separated, e.g. cardboard, scrap metal, appliances, electronics, yard waste, paint), ' +
@@ -95,20 +108,30 @@ export default async function(req) {
             .slice(0, 8)
             .map((c) => ({
               name: String(c.name).slice(0, 120),
+              provider_type: 'private_business',
+              province: '',
               city: r.value.city,
               address: String(c.address || '').slice(0, 200),
               lat: c.lat,
               lng: c.lng,
               phone: String(c.phone || '').slice(0, 40),
               website: String(c.website || '').slice(0, 200),
-              accepts: String(c.accepts || '').slice(0, 300),
-              note: String(c.note || '').slice(0, 200),
-              researched_date: today,
+              service_type: 'drop_off',
+              accepted_categories: [],
+              materials_note: String(c.accepts || '').slice(0, 300),
+              // AI-refreshed listings are always "researched", never auto-verified.
+              verification: 'researched',
+              source_name: 'Same Day Recycling facility research',
+              source_url: String(c.website || '').slice(0, 200),
+              last_confirmed_date: today,
+              sponsored: false,
+              notes: String(c.note || '').slice(0, 200),
             }));
           if (!rows.length) continue;
-          // Replace this city's cache so the map always reflects the latest research
-          await svc.entities.RecyclingCenter.deleteMany({ city: r.value.city });
-          await svc.entities.RecyclingCenter.bulkCreate(rows);
+          // Replace only this city's researched listings so refreshed data
+          // never duplicates and never downgrades verified records.
+          await svc.entities.Provider.deleteMany({ city: r.value.city, verification: 'researched' });
+          await svc.entities.Provider.bulkCreate(rows);
           researched += rows.length;
         }
       }
