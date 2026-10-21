@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { paypal, applySubscriptionState } from '../../shared/paypal.ts';
+import { paypal, applySubscriptionState, CURRENCY } from '../../shared/paypal.ts';
 
 // PayPal webhook receiver. Authenticity: every inbound event is re-fetched from
 // PayPal's own API by event id — anything PayPal doesn't acknowledge is rejected.
@@ -44,8 +44,54 @@ export default async function(req) {
       tx = items && items.length ? items[0] : null;
     }
 
-    // 4) Act on lifecycle events.
+    // 3b) Reconciliation: a subscription event may arrive with no transaction
+    // on file (e.g. records created before transaction logging existed). Backfill
+    // one from the subscription's custom_id (the license / white-label client
+    // id stored at creation) so the money trail stays complete.
     let action = 'logged';
+    if (!tx && subId) {
+      const customId = String(resource.custom_id || '').trim();
+      if (customId) {
+        const backfillStatus = /ACTIVATED|REACTIVATED/.test(eventType) ? 'active'
+          : (/CANCELLED|EXPIRED/.test(eventType) ? 'cancelled' : 'created');
+        const payerEmail = (resource.subscriber && resource.subscriber.email_address) || '';
+        const lic = await srole.entities.SoftwareLicense.get(customId).catch(() => null);
+        if (lic && lic.id) {
+          tx = await srole.entities.PaypalTransaction.create({
+            kind: 'subscription',
+            purpose: 'license_subscription',
+            ref_id: lic.id,
+            ref_label: lic.company,
+            customer_email: lic.email || '',
+            amount: Number(lic.monthly_fee) || 0,
+            currency: CURRENCY,
+            paypal_subscription_id: subId,
+            paypal_payer_email: payerEmail,
+            status: backfillStatus,
+          });
+          action = 'backfilled';
+        } else {
+          const wl = await srole.entities.WhiteLabelClient.get(customId).catch(() => null);
+          if (wl && wl.id) {
+            tx = await srole.entities.PaypalTransaction.create({
+              kind: 'subscription',
+              purpose: 'white_label_subscription',
+              ref_id: wl.id,
+              ref_label: wl.company,
+              customer_email: wl.email || '',
+              amount: Number(wl.monthly_fee) || 0,
+              currency: CURRENCY,
+              paypal_subscription_id: subId,
+              paypal_payer_email: payerEmail,
+              status: backfillStatus,
+            });
+            action = 'backfilled';
+          }
+        }
+      }
+    }
+
+    // 4) Act on lifecycle events.
     if (tx && tx.ref_id) {
       switch (eventType) {
         case 'BILLING.SUBSCRIPTION.ACTIVATED':
@@ -81,10 +127,10 @@ export default async function(req) {
     }
 
     await srole.entities.PaypalWebhookEvent.update(rec.id, {
-      handled: true,
+      handled: !!tx,
       target: tx ? tx.purpose : '',
       license_ref: tx ? tx.ref_id : '',
-      detail: ((verified.summary || '') + ' | action: ' + action).slice(0, 1000),
+      detail: ((verified.summary || '') + ' | action: ' + action + (tx ? '' : ' | no matching transaction - needs admin review')).slice(0, 1000),
     });
     return Response.json({ ok: true, action });
   } catch (error) {
