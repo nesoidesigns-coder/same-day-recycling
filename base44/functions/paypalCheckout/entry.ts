@@ -94,6 +94,11 @@ export default async function(req) {
         if (!bookingId) return Response.json({ error: 'Missing booking.' }, { status: 400 });
         const b = await srole.entities.Booking.get(bookingId);
         if (!b || !b.id) return Response.json({ error: 'Booking not found.' }, { status: 404 });
+        // A cancelled service booking can never be paid or re-opened for
+        // payment. Internal payment tests are the only exception.
+        if (b.status === 'cancelled' && (b.record_type || 'service') !== 'internal_test') {
+          return Response.json({ error: 'This booking was cancelled and can no longer be paid.' }, { status: 422 });
+        }
         amount = parseQuoteAmount(b.quote_estimate) || Number(b.job_value) || 0;
         if (!amount) {
           return Response.json({ error: "The final price is confirmed by the crew on arrival, so there's nothing to pay yet. Call (604) 849-1745 to pay after your pickup." }, { status: 422 });
@@ -175,6 +180,13 @@ export default async function(req) {
     if (action === 'capture') {
       const orderId = String(body.order_id || '').trim();
       if (!orderId) return Response.json({ error: 'Missing order.' }, { status: 400 });
+      // Idempotency: an order with a stored capture is already money in the
+      // bank — return the recorded result without touching PayPal again, so a
+      // retry can never double-capture or double-notify.
+      const pre = await srole.entities.PaypalTransaction.filter({ paypal_order_id: orderId }, { limit: 1 });
+      if (pre.items && pre.items.length && pre.items[0].status === 'paid' && pre.items[0].capture_id) {
+        return Response.json({ status: 'COMPLETED', payerEmail: pre.items[0].paypal_payer_email || '', already_captured: true });
+      }
       // Capture the approved order; on a retry after the payment already went
       // through, fall back to a read of the order so the records still update.
       let cap;
@@ -186,6 +198,8 @@ export default async function(req) {
         if (ord.status !== 'COMPLETED') return Response.json({ error: 'Payment not completed.' }, { status: 422 });
         cap = ord;
       }
+      // Financial state changes only on a PayPal-confirmed COMPLETED capture.
+      if (cap.status !== 'COMPLETED') return Response.json({ error: 'Payment not completed.', paypal_status: cap.status }, { status: 422 });
       const payerEmail = (cap.payer && cap.payer.email_address) || '';
       const captureId = ((cap.purchase_units || [])[0] && (cap.purchase_units[0].payments || {}).captures
         && cap.purchase_units[0].payments.captures[0] && cap.purchase_units[0].payments.captures[0].id) || '';
@@ -204,7 +218,16 @@ export default async function(req) {
         // and only on the first successful capture (idempotent on retries).
         if (!wasPaid && items[0].purpose === 'booking_quote' && items[0].ref_id) {
           const b = await srole.entities.Booking.get(items[0].ref_id).catch(() => null);
-          if (b && b.id) {
+          if (b && b.id && (b.record_type || 'service') === 'internal_test') {
+            // Internal payment test: audit trail only — the service booking is
+            // never flipped to a customer-facing paid state and nothing emails.
+          } else if (b && b.id && b.status === 'cancelled') {
+            // Guard: a cancelled service booking is never marked paid. The
+            // capture stays on the transaction for admin reconciliation.
+            await srole.entities.PaypalTransaction.update(items[0].id, {
+              note: ('Capture ' + orderId + ' succeeded while the booking was cancelled - booking NOT marked paid, needs admin review.').slice(0, 1000),
+            });
+          } else if (b && b.id) {
             await srole.entities.Booking.update(b.id, { payment_status: 'paid' }).catch(() => {});
             if (b.email) {
               const tx = items[0];

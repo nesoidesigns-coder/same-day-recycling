@@ -48,6 +48,14 @@
       "type": "number",
       "default": 0
     },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "service",
+        "internal_test"
+      ],
+      "default": "service"
+    },
     "payment_status": {
       "type": "string",
       "enum": [

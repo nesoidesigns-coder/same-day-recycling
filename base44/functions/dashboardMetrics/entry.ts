@@ -40,7 +40,9 @@ export default async function (req) {
       base44.entities.Review.filter({ approved: true }),
       base44.entities.MetricTargets.filter({}),
     ]);
-    const bookings = bookingsPage.items || [];
+    // Internal payment-test bookings are audit records, not operations —
+    // excluded from every booking-derived metric.
+    const bookings = (bookingsPage.items || []).filter((b) => (b.record_type || 'service') !== 'internal_test');
     const quotes = quotesPage.items || [];
     const targets = {};
     for (const t of targetsRaw) {
