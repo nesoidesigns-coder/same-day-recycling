@@ -44,7 +44,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
 
   const shown = (centers || []).filter((c) => !activeCity || c.city === activeCity);
   const cityInfo = CITIES.find((c) => c.name === activeCity);
-  const mapCenter = cityInfo ? [cityInfo.lat, cityInfo.lng] : [49.2, -122.9];
+  const mapCenter = cityInfo ? [cityInfo.lat, cityInfo.lng] : [58, -97];
   const lastResearched = shown.length
     ? shown.map((c) => c.researched_date).filter(Boolean).sort().pop()
     : null;
@@ -103,7 +103,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
         ) : (
           <>
             <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm h-[380px] md:h-[480px] relative z-0">
-              <MapContainer center={mapCenter} zoom={activeCity ? 10 : 8} scrollWheelZoom={false} className="w-full h-full">
+              <MapContainer center={mapCenter} zoom={activeCity ? 10 : 4} scrollWheelZoom={false} className="w-full h-full">
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
