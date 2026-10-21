@@ -5,6 +5,11 @@
     "plan_date": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
     "stop_count": {
       "type": "number",
       "default": 0
