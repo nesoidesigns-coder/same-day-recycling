@@ -10,6 +10,8 @@ import HoloGauge from "@/components/software/HoloGauge";
 import PreviewImg from "@/components/software/PreviewImg";
 import EnterpriseInquiryForm from "@/components/software/EnterpriseInquiryForm";
 import RoiCalculator from "@/components/software/RoiCalculator";
+import IndustryIntelligence from "@/components/software/IndustryIntelligence";
+import RevenueCalculator from "@/components/software/RevenueCalculator";
 import PlatformChat from "@/components/software/PlatformChat";
 
 const FEATURES = [
@@ -84,6 +86,8 @@ export default function SoftwareSales() {
           </div>
         </div>
 
+        <IndustryIntelligence />
+
         {/* Dashboard preview */}
         <div id="preview" className="max-w-6xl mx-auto px-4 pb-16">
           <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-6 md:p-10">
@@ -142,6 +146,8 @@ export default function SoftwareSales() {
             </div>
           </div>
         </div>
+
+        <RevenueCalculator />
 
         {/* ROI calculator */}
         <div id="roi-calculator">
