@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Recycle, ChevronDown } from "lucide-react";
+import { Menu, X, Recycle, ChevronDown, MapPin } from "lucide-react";
+import { REGIONS } from "@/lib/regions";
 
 const primaryLinks = [
   { label: "Services", to: "/#services" },
@@ -56,7 +57,7 @@ export default function Navbar() {
               More <ChevronDown className={`w-4 h-4 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
             </button>
             {moreOpen && (
-              <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50">
+              <div className="absolute right-0 top-full mt-2 w-72 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50">
                 {moreLinks.map((l) => (
                   <Link
                     key={l.to}
@@ -67,6 +68,23 @@ export default function Navbar() {
                     {l.label}
                   </Link>
                 ))}
+                <div className="mt-2 pt-3 border-t border-slate-100 px-4 pb-1">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">
+                    <MapPin className="w-3 h-3 text-[#187B65]" /> Service coverage
+                  </div>
+                  <div className="grid grid-cols-2 gap-1">
+                    {REGIONS.map((r) => (
+                      <Link
+                        key={r.code}
+                        to={`/region/${r.code}`}
+                        onClick={() => setMoreOpen(false)}
+                        className="rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-600 hover:bg-[#f4f7f5] hover:text-[#187B65] transition-colors"
+                      >
+                        {r.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -96,6 +114,23 @@ export default function Navbar() {
                   {l.label}
                 </Link>
               ))}
+            </div>
+            <div className="mt-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">
+                <MapPin className="w-3 h-3 text-[#187B65]" /> Service Coverage
+              </div>
+              <div className="grid grid-cols-2 gap-1">
+                {REGIONS.map((r) => (
+                  <Link
+                    key={r.code}
+                    to={`/region/${r.code}`}
+                    onClick={() => setOpen(false)}
+                    className="text-xs font-semibold text-slate-600 py-1.5 rounded-lg px-2 hover:bg-[#f4f7f5] hover:text-[#187B65] transition-colors"
+                  >
+                    {r.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
