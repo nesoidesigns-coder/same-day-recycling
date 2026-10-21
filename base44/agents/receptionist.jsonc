@@ -182,6 +182,107 @@
     {
       "function_name": "rexGenerateMedia",
       "description": "Generate media on demand: {kind:'audio', text, voice?} renders a spoken MP3 (voices: river, honey, sunny, storm, spark); {kind:'video', prompt} renders a short 6-second AI video (site owner/admin only). Returns {url}."
+    },
+    {
+      "entity_name": "RecyclingFact",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "CitySeo",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "GalleryPhoto",
+      "allowed_operations": [
+        "read",
+        "create",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "MetricTargets",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "CompetitorPricing",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "GoogleReviewsMeta",
+      "allowed_operations": [
+        "read"
+      ]
+    },
+    {
+      "entity_name": "CoCreatorDraft",
+      "allowed_operations": [
+        "read"
+      ]
+    },
+    {
+      "entity_name": "QuoteLead",
+      "allowed_operations": [
+        "read"
+      ]
+    },
+    {
+      "entity_name": "Provider",
+      "allowed_operations": [
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ListingReport",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "SoftwareLicense",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "WhiteLabelClient",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "SoftwareInquiry",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "ContractorApplication",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "RoutePlan",
+      "allowed_operations": [
+        "read"
+      ]
     }
   ],
   "context_files": [],
