@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /company
+Disallow: /partners
+Disallow: /software-pay
+Disallow: /white-label-pay
+Disallow: /reset-password
+
+Sitemap: https://samedayrecycling.ca/sitemap.xml
