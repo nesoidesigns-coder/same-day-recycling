@@ -195,6 +195,28 @@ export default async function(req) {
       const c = items[0];
       const monthly = Number(c.monthly_fee) || 0;
       if (!monthly) return Response.json({ error: 'No monthly fee is configured.' }, { status: 422 });
+      // Duplicate prevention: refuse when a subscription is already active, and
+      // reuse a still-pending PayPal agreement instead of creating a new one per attempt.
+      const { items: subs } = await srole.entities.PaypalTransaction.filter({ purpose, ref_id: c.id }, { limit: 20 });
+      const subList = subs || [];
+      if (subList.some((t) => t.status === 'active')) {
+        return Response.json({ error: 'A subscription is already active for this account.', already_active: true }, { status: 409 });
+      }
+      const pending = subList.find((t) => t.status === 'created' && t.paypal_subscription_id);
+      if (pending) {
+        const existing = await paypal('/v1/billing/subscriptions/' + pending.paypal_subscription_id).catch(() => null);
+        const exStatus = ((existing && existing.status) || '').toUpperCase();
+        if (exStatus === 'ACTIVE') {
+          await srole.entities.PaypalTransaction.update(pending.id, { status: 'active' });
+          await applySubscriptionState(srole, purpose, c.id, 'active', base44);
+          return Response.json({ error: 'A subscription is already active for this account.', already_active: true }, { status: 409 });
+        }
+        if (exStatus === 'APPROVED') {
+          const ap = ((existing && existing.links) || []).find((l) => l.rel === 'approve');
+          return Response.json({ approve_url: ap ? ap.href : null, subscription_id: pending.paypal_subscription_id, reused: true });
+        }
+        if (exStatus) await srole.entities.PaypalTransaction.update(pending.id, { status: 'cancelled' });
+      }
       // Annual = 10x the monthly rate (2 months free), billed once per year
       const billAmount = annual ? Math.round(monthly * 10 * 100) / 100 : monthly;
       let planId = annual ? (c.paypal_annual_plan_id || '') : (c.paypal_plan_id || '');
@@ -267,6 +289,9 @@ export default async function(req) {
           paypal_payer_email: (sub.subscriber && sub.subscriber.email_address) || '',
         });
         await applySubscriptionState(srole, items[0].purpose, items[0].ref_id, 'active', base44);
+        if (items[0].purpose === 'license_subscription' && items[0].ref_id) {
+          await srole.entities.SoftwareLicense.update(items[0].ref_id, { paypal_subscription_id: subId }).catch(() => {});
+        }
         return Response.json({ status: 'active' });
       }
       return Response.json({ status: status.toLowerCase() });
