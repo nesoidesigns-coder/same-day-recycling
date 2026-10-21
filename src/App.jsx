@@ -65,6 +65,7 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import AdminSoftware from './pages/AdminSoftware';
 import SoftwareOnboarding from './pages/SoftwareOnboarding';
 import Gallery from './pages/Gallery';
+import CityPage from './pages/CityPage';
 import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -157,6 +158,7 @@ const AuthenticatedApp = () => {
         <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />
       </Route>
+      <Route path="/:pageSlug" element={<CityPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

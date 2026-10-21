@@ -3,8 +3,12 @@ Allow: /
 Disallow: /admin
 Disallow: /company
 Disallow: /partners
+Disallow: /realtor-dashboard
 Disallow: /software-pay
 Disallow: /white-label-pay
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
 Disallow: /reset-password
 
 # AI search assistants — full access so answers cite this site

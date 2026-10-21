@@ -33,6 +33,10 @@ export const COVERAGE = [
   { name: "St. John's", province: "NL", status: "partner_onboarding" },
 
   // Coming soon — planned expansion, no service yet.
+  { name: "Kamloops", province: "BC", status: "coming_soon" },
+  { name: "Kelowna", province: "BC", status: "coming_soon" },
+  { name: "Maple Ridge", province: "BC", status: "coming_soon" },
+  { name: "Pitt Meadows", province: "BC", status: "coming_soon" },
   { name: "Charlottetown", province: "PE", status: "coming_soon" },
   { name: "Whitehorse", province: "YT", status: "coming_soon" },
   { name: "Yellowknife", province: "NT", status: "coming_soon" },
