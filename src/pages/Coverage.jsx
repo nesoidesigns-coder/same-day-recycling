@@ -1,44 +1,76 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSEO } from "@/lib/seo";
-import { MapPin, CheckCircle2, Rocket, Clock, ArrowRight, Phone, Hourglass } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { MapPin, CheckCircle2, Rocket, ArrowRight, Phone, Hourglass } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
-import { COVERAGE, STATUS_LABELS } from "@/lib/coverage";
+import { COVERAGE } from "@/lib/coverage";
 import { REGIONS } from "@/lib/regions";
 
-const SECTIONS = [
-  {
-    status: "active",
-    icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
-    dot: "bg-[#187B65]",
-    intro: "Operating nationwide — inquiries are open in every Canadian city. Our dispatch team confirms pricing, pickup availability and your arrival window with you before anything is scheduled or charged.",
-    cardLabel: "Active dispatch territory — nationwide",
-    linkFor: () => "/#book",
-  },
-  {
-    status: "partner_onboarding",
-    icon: <Rocket className="w-5 h-5 text-[#187B65]" />,
-    dot: "bg-[#102B2A]",
-    intro: "Inquiries are open in these cities today. A local provider is being matched or verified — service availability and scheduling are confirmed after your request.",
-    cardLabel: "Inquiries open — matching provider",
-    linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
-  },
-  {
-    status: "coming_soon",
-    icon: <Hourglass className="w-5 h-5 text-slate-400" />,
-    dot: "bg-slate-300",
-    intro: "These markets are active for inquiries — customer demand here drives contractor recruitment. Local availability is confirmed after your request, and no same-day service is promised.",
-    cardLabel: "Inquiries open — recruiting provider",
-    linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
-  },
-];
-
+// Three honest availability states, per the national dispatch model:
+//   Same-Day Confirmed  — a verified contractor is active in the city (live data)
+//   Matching Contractor — request is open, the system is locating a contractor
+//   Recruiting Provider — no verified contractor yet; requests still accepted
 export default function Coverage() {
   useSEO({
     title: "Pickup Coverage & Network Expansion | Same Day Recycling",
     description: "Recycling and junk removal requests accepted in every Canadian city. Nationwide contractor network, upfront pricing and arrival windows confirmed before each appointment.",
     path: "/coverage",
   });
+
+  // Same-day capacity is proven by verified contractor records, never assumed
+  // from request acceptance. Cities qualify only when an active partner exists.
+  const [confirmed, setConfirmed] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const { items } = await base44.entities.Partner.filter({ active: true }, { limit: 200 });
+      const names = (items || [])
+        .filter((p) => String(p.name || "").toLowerCase() !== "test simulation contractor")
+        .map((p) => String(p.city || "").trim().toLowerCase())
+        .filter(Boolean);
+      setConfirmed(new Set(names));
+    })().catch(() => setConfirmed(new Set()));
+  }, []);
+
+  const isConfirmed = (c) => confirmed !== null && confirmed.has(c.name.toLowerCase());
+  const confirmedCities = COVERAGE.filter(isConfirmed);
+  const matchingCities = COVERAGE.filter((c) => !isConfirmed(c));
+  const recruitingCities = []; // registry cities fall under matching; nationwide inquiries handle the rest
+
+  const SECTIONS = [
+    {
+      title: "Same-Day Confirmed",
+      icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
+      dot: "bg-[#187B65]",
+      intro: "Cities where a verified contractor is active today. Even here, your exact pickup window and price are confirmed with you before anything is scheduled or charged.",
+      cardLabel: "Verified contractor active — window confirmed per job",
+      cities: confirmedCities,
+      linkFor: () => "/#book",
+      bg: "bg-white",
+    },
+    {
+      title: "Matching Contractor",
+      icon: <MapPin className="w-5 h-5 text-[#187B65]" />,
+      dot: "bg-gold",
+      intro: "Requests are open in these cities. The system is matching or recruiting a local contractor — availability, price and your arrival window are confirmed after your request, never before.",
+      cardLabel: "Request open — matching contractor",
+      cities: matchingCities,
+      linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
+      bg: "bg-[#f4f7f5]",
+    },
+    {
+      title: "Recruiting Provider",
+      icon: <Hourglass className="w-5 h-5 text-slate-400" />,
+      dot: "bg-slate-300",
+      intro: "These markets have no verified contractor yet — customer demand here drives contractor recruitment. Requests are still accepted nationwide and no same-day service is promised.",
+      cardLabel: "Inquiries open — recruiting provider",
+      cities: recruitingCities,
+      linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
+      bg: "bg-white",
+    },
+  ];
+
   return (
     <div className="bg-white">
       <Navbar />
@@ -63,53 +95,51 @@ export default function Coverage() {
         </div>
       </section>
 
-      {SECTIONS.map((s) => {
-        const cities = COVERAGE.filter((c) => c.status === s.status);
-        return (
-          <section key={s.status} className={s.status === "partner_onboarding" ? "bg-[#f4f7f5]" : "bg-white"}>
-            <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
-              <h2 className="text-3xl font-bold text-[#102B2A] flex items-center gap-3">
-                <span className={`w-3 h-3 rounded-full ${s.dot}`} /> {STATUS_LABELS[s.status]}
-              </h2>
-              <p className="mt-2 text-slate-600 max-w-2xl">{s.intro}</p>
-              <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {cities.map((c) => (
-                  <Link
-                    key={c.name}
-                    to={s.linkFor(c)}
-                    className="group rounded-2xl border border-slate-100 bg-white shadow-sm p-6 flex items-center justify-between hover:border-[#187B65] transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      {s.status === "active" ? (
-                        <Clock className="w-5 h-5 text-[#187B65]" />
-                      ) : s.status === "partner_onboarding" ? (
-                        <Rocket className="w-5 h-5 text-[#187B65]" />
-                      ) : (
-                        <Hourglass className="w-5 h-5 text-slate-400" />
-                      )}
-                      <div>
-                        <div className="font-bold text-[#102B2A]">{c.name}, {c.province}</div>
-                        <div className="text-xs text-slate-500">{s.cardLabel}</div>
-                      </div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#187B65] transition-colors" />
-                  </Link>
-                ))}
-                <Link
-                  to="/request-service"
-                  className="rounded-2xl bg-[#102B2A] text-white p-6 flex items-center justify-between hover:bg-[#0a3020] transition-colors"
-                >
-                  <div>
-                    <div className="font-bold">Your city not listed?</div>
-                    <div className="text-xs text-slate-300 mt-1">Inquiries accepted in every Canadian city — availability and scheduling confirmed after your request.</div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-[#187B65]" />
-                </Link>
+      {SECTIONS.map((s) => (
+        <section key={s.title} className={s.bg}>
+          <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
+            <h2 className="text-3xl font-bold text-[#102B2A] flex items-center gap-3">
+              <span className={`w-3 h-3 rounded-full ${s.dot}`} /> {s.title}
+            </h2>
+            <p className="mt-2 text-slate-600 max-w-2xl">{s.intro}</p>
+            {s.title === "Same-Day Confirmed" && s.cities.length === 0 && (
+              <div className="mt-6 rounded-2xl border border-slate-100 bg-[#f4f7f5] p-5 max-w-2xl text-sm text-slate-600">
+                No city currently shows confirmed same-day capacity — a "Same-Day Confirmed" listing
+                appears here only once a verified contractor record is active in that city. Every
+                request is still accepted and matched before anything is scheduled.
               </div>
+            )}
+            <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {s.cities.map((c) => (
+                <Link
+                  key={c.name}
+                  to={s.linkFor(c)}
+                  className="group rounded-2xl border border-slate-100 bg-white shadow-sm p-6 flex items-center justify-between hover:border-[#187B65] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    {s.icon}
+                    <div>
+                      <div className="font-bold text-[#102B2A]">{c.name}, {c.province}</div>
+                      <div className="text-xs text-slate-500">{s.cardLabel}</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#187B65] transition-colors" />
+                </Link>
+              ))}
+              <Link
+                to="/request-service"
+                className="rounded-2xl bg-[#102B2A] text-white p-6 flex items-center justify-between hover:bg-[#0a3020] transition-colors"
+              >
+                <div>
+                  <div className="font-bold">Your city not listed?</div>
+                  <div className="text-xs text-slate-300 mt-1">Inquiries accepted in every Canadian city — availability and scheduling confirmed after your request.</div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[#187B65]" />
+              </Link>
             </div>
-          </section>
-        );
-      })}
+          </div>
+        </section>
+      ))}
 
       <section className="bg-white border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
@@ -131,7 +161,7 @@ export default function Coverage() {
 
       <section className="bg-white border-t border-slate-100">
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#102B2A]">Need a pickup in an active city?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#102B2A]">Need a pickup?</h2>
           <p className="mt-2 text-slate-600">Call or text and we'll confirm coverage for your address.</p>
           <a href="tel:+16048491745" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-8 py-4 hover:bg-[#125C4E] transition-colors">
             <Phone className="w-5 h-5" /> (604) 849-1745

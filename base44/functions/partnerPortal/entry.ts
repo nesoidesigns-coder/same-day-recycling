@@ -45,12 +45,13 @@ export default async function(req) {
     }
 
     const publicPartner = { id: partner.id, name: partner.name, city: partner.city };
+    // Test (internal_test) and cancelled bookings never reach contractors.
     const loadBookings = () => base44.asServiceRole.entities.Booking.filter(
-      { partner_id: partner.id, assignment_status: { $in: ['assigned', 'accepted'] } },
+      { partner_id: partner.id, assignment_status: { $in: ['assigned', 'accepted'] }, record_type: { $ne: 'internal_test' }, status: { $ne: 'cancelled' } },
       { sort: '-created_date', limit: 50 }
     );
     const loadHistory = () => base44.asServiceRole.entities.Booking.filter(
-      { partner_id: partner.id, assignment_status: 'completed' },
+      { partner_id: partner.id, assignment_status: 'completed', record_type: { $ne: 'internal_test' } },
       { sort: '-created_date', limit: 50 }
     );
 
@@ -106,10 +107,14 @@ export default async function(req) {
     if (booking.assignment_status !== validFrom[next]) {
       return Response.json({ error: `Cannot ${action} a booking in "${booking.assignment_status}" state.` }, { status: 409 });
     }
-    const updateData = { assignment_status: next };
+    // Every contractor action is timestamped in the booking's status history
+    // (accept, decline and complete), for an immutable acceptance audit trail.
+    const updateData = {
+      assignment_status: next,
+      status_history: [...(booking.status_history || []), { status: next, date: new Date().toISOString() }],
+    };
     if (next === 'completed') {
       updateData.status = 'completed';
-      updateData.status_history = [...(booking.status_history || []), { status: 'completed', date: new Date().toISOString() }];
     }
     await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
 

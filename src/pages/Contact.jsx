@@ -88,7 +88,8 @@ export default function Contact() {
               We're a nationwide agency — we operate in every Canadian city.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed mt-2">
-              Same-day pickup runs nationwide through our local contractor network. Anywhere in Canada?{" "}
+              Requests are accepted in every Canadian city. Same-day fulfillment depends on contractor
+              availability and is confirmed with you before anything is scheduled or charged.{" "}
               <Link to="/request-service" className="font-semibold text-[#187B65] hover:underline">Submit a request</Link> and dispatch takes it from there.
             </p>
           </div>

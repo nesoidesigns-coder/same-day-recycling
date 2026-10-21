@@ -12,8 +12,8 @@ const BANDS = [
 const perks = [
   {
     icon: ShieldCheck,
-    title: "Guaranteed pricing",
-    text: "You pay the price you approve before we lift anything. If your load takes less truck space than estimated, you pay less — you'll never get a surprise hike when the crew arrives.",
+    title: "Approved-price guarantee",
+    text: "The online estimate is preliminary. The only price you ever pay is the one you approve on-site before we lift anything — and if your load takes less truck space, you pay less.",
   },
   {
     icon: Users,
@@ -36,7 +36,7 @@ export default function TransparentPricing() {
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Transparent, weight-based pricing</h2>
           <p className="mt-4 text-slate-600">
             Other haulers quote "volume" and you find out the real number when a truck is already in your lane.
-            We publish exactly what each price tier covers, guarantee the quote, and reward customers who lend a hand.
+            We publish exactly what each price tier covers, the final price is always the one you approve on-site, and we reward customers who lend a hand.
           </p>
         </div>
         <div className="grid sm:grid-cols-3 gap-4 mb-10">

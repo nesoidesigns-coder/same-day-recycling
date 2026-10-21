@@ -10,8 +10,14 @@ export default function AssignTab({ partners }) {
   const [sel, setSel] = useState({}); // booking_id -> { partner_id, value }
 
   const load = async () => {
+    // Never dispatch cancelled or internal-test bookings: exclude them from
+    // the assignment queue entirely.
     const { items } = await base44.entities.Booking.filter(
-      { assignment_status: { $in: ["unassigned", "declined"] } },
+      {
+        assignment_status: { $in: ["unassigned", "declined"] },
+        status: { $ne: "cancelled" },
+        record_type: { $ne: "internal_test" },
+      },
       { sort: "-created_date", limit: 100 }
     );
     setBookings(items);
