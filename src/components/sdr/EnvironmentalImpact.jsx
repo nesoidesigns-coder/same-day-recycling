@@ -36,10 +36,10 @@ export default function EnvironmentalImpact() {
       <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">
+            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">
               <ShieldCheck className="w-4 h-4" /> Our environmental impact
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Real impact, measured by science</h2>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Real impact, measured by science</h2>
             <p className="mt-4 text-slate-600">
               Every load we sort is measured against the published research on what recycling actually achieves:
               waste kept out of landfills, energy saved, and valuable materials recovered instead of buried.
@@ -53,19 +53,19 @@ export default function EnvironmentalImpact() {
         <div className="grid md:grid-cols-3 gap-5">
           {highlights.map(({ key, icon: Icon, title, fact }) => (
             <div key={key} className="rounded-3xl bg-white border border-slate-100 shadow-sm p-8 flex flex-col">
-              <span className="w-11 h-11 rounded-2xl bg-[#1d9e56]/15 text-[#1d9e56] flex items-center justify-center mb-5">
+              <span className="w-11 h-11 rounded-2xl bg-[#187B65]/15 text-[#187B65] flex items-center justify-center mb-5">
                 <Icon className="w-5 h-5" />
               </span>
-              <div className="text-5xl font-extrabold text-[#1d9e56] tracking-tight">{fact.stat}</div>
-              <div className="mt-2 font-bold text-[#0c3b24]">{title}</div>
+              <div className="text-5xl font-extrabold text-[#187B65] tracking-tight">{fact.stat}</div>
+              <div className="mt-2 font-bold text-[#102B2A]">{title}</div>
               <p className="mt-3 text-sm text-slate-600 leading-relaxed flex-1">{fact.label}. {fact.detail}</p>
               <div className="mt-5 pt-4 border-t border-slate-100">
                 {fact.source_url ? (
-                  <a href={fact.source_url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#0c3b24] hover:text-[#1d9e56] transition-colors inline-flex items-center gap-1.5">
-                    <ExternalLink className="w-3.5 h-3.5 text-[#1d9e56]" /> {fact.source_name}
+                  <a href={fact.source_url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#102B2A] hover:text-[#187B65] transition-colors inline-flex items-center gap-1.5">
+                    <ExternalLink className="w-3.5 h-3.5 text-[#187B65]" /> {fact.source_name}
                   </a>
                 ) : (
-                  <span className="text-xs font-bold text-[#0c3b24]">{fact.source_name}</span>
+                  <span className="text-xs font-bold text-[#102B2A]">{fact.source_name}</span>
                 )}
                 {fact.verified_date && <span className="block text-[10px] font-semibold text-slate-400 mt-1">Verified {fact.verified_date}</span>}
               </div>
@@ -78,13 +78,13 @@ export default function EnvironmentalImpact() {
             {supporting.map((f) => (
               <div key={f.key} className="rounded-2xl border border-slate-200 bg-white/60 p-5">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-extrabold text-[#0c3b24]">{f.stat}</span>
+                  <span className="text-2xl font-extrabold text-[#102B2A]">{f.stat}</span>
                   <span className="text-xs font-bold text-slate-500">{f.label}</span>
                 </div>
                 <p className="mt-2 text-xs text-slate-600 leading-relaxed">{f.detail}</p>
                 {f.source_url && (
-                  <a href={f.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 hover:text-[#1d9e56] transition-colors">
-                    <ExternalLink className="w-3 h-3 text-[#1d9e56]" /> {f.source_name}
+                  <a href={f.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 hover:text-[#187B65] transition-colors">
+                    <ExternalLink className="w-3 h-3 text-[#187B65]" /> {f.source_name}
                   </a>
                 )}
               </div>

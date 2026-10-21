@@ -3,7 +3,7 @@ import { Gauge, DollarSign, BellRing, MapPinned, CalendarClock, Quote } from "lu
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-5";
+const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 holo-panel-deep backdrop-blur-sm p-5";
 const label = "text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-100/60";
 
 export default function ControlKpis({ bookings, quoteNew, clients }) {
@@ -30,12 +30,12 @@ export default function ControlKpis({ bookings, quoteNew, clients }) {
     <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
       {gauges.map((g) => (
         <div key={g.label} className={panel}>
-          <div className="holo-scan absolute top-0 left-0 right-0 h-px bg-[#1d9e56]/50" />
+          <div className="holo-scan absolute top-0 left-0 right-0 h-px bg-[#187B65]/50" />
           <div className="flex items-center gap-2">
-            <g.icon className="w-4 h-4 text-[#1d9e56]" />
+            <g.icon className="w-4 h-4 text-[#187B65]" />
             <div className={label}>{g.label}</div>
           </div>
-          <div className={`text-3xl font-bold tracking-tight mt-3 tabular-nums ${g.glow ? "text-[#1d9e56] holo-glow-text" : "text-white"}`}>{g.value}</div>
+          <div className={`text-3xl font-bold tracking-tight mt-3 tabular-nums ${g.glow ? "text-[#187B65] holo-glow-text" : "text-white"}`}>{g.value}</div>
           <div className="text-xs text-emerald-100/50 mt-1.5">{g.sub}</div>
         </div>
       ))}

@@ -7,7 +7,7 @@ function StatCard({ label, value, hint }) {
   return (
     <div className="rounded-2xl bg-white border border-slate-200/80 p-5">
       <div className="text-xs font-bold uppercase tracking-[0.15em] text-slate-400">{label}</div>
-      <div className="mt-2 text-3xl font-bold text-[#0c3b24]">{value}</div>
+      <div className="mt-2 text-3xl font-bold text-[#102B2A]">{value}</div>
       <div className="text-xs text-slate-500 mt-1">{hint}</div>
     </div>
   );
@@ -85,8 +85,8 @@ export default function AdminRoutes() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#0c3b24] flex items-center gap-2.5">
-            <RouteIcon className="w-7 h-7 text-[#1d9e56]" /> Route Intelligence
+          <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] flex items-center gap-2.5">
+            <RouteIcon className="w-7 h-7 text-[#187B65]" /> Route Intelligence
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Live route optimization across the national network — active jobs geolocated, clustered by city, and
@@ -97,7 +97,7 @@ export default function AdminRoutes() {
           <button onClick={loadLatest} disabled={loading} className="rounded-xl border border-slate-200 bg-white text-slate-600 font-bold px-4 py-2.5 text-sm hover:border-slate-400 disabled:opacity-60">
             <RefreshCw className="w-4 h-4 inline mr-1.5" /> Refresh
           </button>
-          <button onClick={optimize} disabled={optimizing} className="rounded-xl bg-[#1d9e56] text-[#0c3b24] font-bold px-4 py-2.5 text-sm hover:bg-[#17a04c] disabled:opacity-60">
+          <button onClick={optimize} disabled={optimizing} className="rounded-xl bg-[#187B65] text-[#102B2A] font-bold px-4 py-2.5 text-sm hover:bg-[#125C4E] disabled:opacity-60">
             {optimizing ? <Loader2 className="w-4 h-4 inline mr-1.5 animate-spin" /> : <Sparkles className="w-4 h-4 inline mr-1.5" />}
             {optimizing ? "Optimizing…" : "Optimize now"}
           </button>
@@ -119,7 +119,7 @@ export default function AdminRoutes() {
       ) : !plan ? (
         <div className="rounded-2xl bg-white border border-slate-200/80 p-10 text-center">
           <RouteIcon className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-          <h2 className="font-bold text-[#0c3b24]">No route plan yet</h2>
+          <h2 className="font-bold text-[#102B2A]">No route plan yet</h2>
           <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
             When active jobs exist, "Optimize now" geolocates every stop, clusters them, and builds the shortest
             stop order for each territory.
@@ -148,7 +148,7 @@ export default function AdminRoutes() {
                   onClick={() => setActiveCluster(c.key)}
                   className={`rounded-full px-4 py-2 text-sm font-bold capitalize transition-colors ${
                     (activeCluster || clusters[0].key) === c.key
-                      ? "bg-[#0c3b24] text-[#1d9e56]"
+                      ? "bg-[#102B2A] text-[#187B65]"
                       : "bg-white text-slate-600 border border-slate-200 hover:border-slate-400"
                   }`}
                 >
@@ -166,13 +166,13 @@ export default function AdminRoutes() {
                 <ol className="space-y-2">
                   {shown.stops.map((s) => (
                     <li key={s.booking_id} className="flex items-start gap-3 text-sm">
-                      <span className="w-6 h-6 rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="w-6 h-6 rounded-full bg-[#102B2A] text-[#187B65] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                         {s.stop_number}
                       </span>
                       <div>
-                        <div className="font-semibold text-[#0c3b24]">{s.name}</div>
+                        <div className="font-semibold text-[#102B2A]">{s.name}</div>
                         <div className="text-xs text-slate-500 flex items-center gap-1"><MapPin className="w-3 h-3" />{s.address}</div>
-                        {s.leg_km > 0 && <div className="text-xs text-[#1d9e56] font-semibold mt-0.5">+{s.leg_km} km</div>}
+                        {s.leg_km > 0 && <div className="text-xs text-[#187B65] font-semibold mt-0.5">+{s.leg_km} km</div>}
                       </div>
                     </li>
                   ))}

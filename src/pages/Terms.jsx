@@ -71,9 +71,9 @@ export default function Terms() {
     <div className="bg-white">
       <Navbar />
       <RexBanner message="The fine print — no junk in it, I promise." />
-      <section className="bg-[#0c3b24] text-white">
+      <section className="bg-[#102B2A] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Legal</div>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Legal</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Terms of Service</h1>
           <p className="mt-4 text-slate-300">Same Day Recycling &middot; Canada &middot; Last updated October 2026</p>
         </div>
@@ -82,12 +82,12 @@ export default function Terms() {
         <p className="text-slate-600">These terms apply to every booking and service provided by Same Day Recycling. By booking with us you agree to them.</p>
         {SECTIONS.map((s) => (
           <div key={s.h}>
-            <h2 className="text-xl font-bold text-[#0c3b24] mb-2">{s.h}</h2>
+            <h2 className="text-xl font-bold text-[#102B2A] mb-2">{s.h}</h2>
             {s.p.map((para, i) => (
               <p key={i} className="text-slate-600 mb-3">
                 {para.split("<contact>").map((part, j) =>
                   j === 1 ? (
-                    <Link key={j} to="/contact" className="font-semibold text-[#1d9e56] hover:underline">{part}</Link>
+                    <Link key={j} to="/contact" className="font-semibold text-[#187B65] hover:underline">{part}</Link>
                   ) : (
                     part
                   )

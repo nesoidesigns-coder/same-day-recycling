@@ -38,11 +38,11 @@ export default function AdminMarketing() {
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <span className="w-11 h-11 rounded-2xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
+          <span className="w-11 h-11 rounded-2xl bg-[#102B2A] text-[#187B65] flex items-center justify-center">
             <Megaphone className="w-5 h-5" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-[#0c3b24] tracking-tight">AI Marketing Hub</h1>
+            <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight">AI Marketing Hub</h1>
             <p className="text-sm text-slate-500">Lead-chasing AI, SEO insights and content tools</p>
           </div>
         </div>
@@ -54,7 +54,7 @@ export default function AdminMarketing() {
               onClick={() => setTab(t.key)}
               className={
                 tab === t.key
-                  ? "rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-5 py-2 text-sm"
+                  ? "rounded-full bg-[#102B2A] text-[#187B65] font-bold px-5 py-2 text-sm"
                   : "rounded-full bg-slate-100 text-slate-700 font-medium px-5 py-2 text-sm hover:bg-slate-200 transition-colors"
               }
             >

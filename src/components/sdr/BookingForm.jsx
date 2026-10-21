@@ -56,24 +56,24 @@ export default function BookingForm({ prefill }) {
     const quoteAmount = m ? parseFloat(m[1]) : 0;
     return (
       <div className="rounded-3xl bg-white p-10 border border-slate-100 text-center">
-        <CheckCircle2 className="w-14 h-14 text-[#1d9e56] mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-[#0c3b24]">Thanks!</h3>
+        <CheckCircle2 className="w-14 h-14 text-[#187B65] mx-auto mb-4" />
+        <h3 className="text-2xl font-bold text-[#102B2A]">Thanks!</h3>
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           We'll call you within 30 minutes to confirm your pickup window.
         </p>
         {bookingId && !payDone && quoteAmount > 0 && (
           <div className="mt-6 rounded-2xl bg-[#f4f7f5] border border-slate-100 p-5 text-left">
-            <div className="text-sm font-bold text-[#0c3b24]">Pay your estimated quote now</div>
+            <div className="text-sm font-bold text-[#102B2A]">Pay your estimated quote now</div>
             <p className="text-xs text-slate-500 mt-1 mb-3">Secure payment through PayPal. The final price is confirmed by the crew on arrival.</p>
             <PayPalButtons createPayload={{ kind: 'booking', booking_id: bookingId }} onPaid={() => setPayDone(true)} />
           </div>
         )}
         {payDone && (
-          <p className="mt-6 font-semibold text-[#1d9e56] flex items-center justify-center gap-1.5">
+          <p className="mt-6 font-semibold text-[#187B65] flex items-center justify-center gap-1.5">
             <CheckCircle2 className="w-4 h-4" /> Payment received — thank you!
           </p>
         )}
-        <button onClick={() => { setDone(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
+        <button onClick={() => { setDone(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
           Book another pickup
         </button>
         <ReviewInvite />
@@ -83,7 +83,7 @@ export default function BookingForm({ prefill }) {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-3xl bg-white p-6 md:p-8 border border-slate-100 shadow-sm">
-      <h3 className="text-2xl font-bold text-[#0c3b24]">Book your pickup</h3>
+      <h3 className="text-2xl font-bold text-[#102B2A]">Book your pickup</h3>
       <p className="text-sm text-slate-500 mt-1 mb-6">We'll call you back within 30 minutes.</p>
       <div className="space-y-4">
         <Field label="Your city" required>
@@ -110,7 +110,7 @@ export default function BookingForm({ prefill }) {
           <textarea value={form.items_description} onChange={update("items_description")} required rows={3} className="input resize-none" placeholder="e.g. one sofa, one mattress, a few boxes" />
         </Field>
         {quoteNote && (
-          <div className="rounded-xl bg-[#1d9e56]/10 px-4 py-2.5 text-sm font-semibold text-[#0c3b24]">
+          <div className="rounded-xl bg-[#187B65]/10 px-4 py-2.5 text-sm font-semibold text-[#102B2A]">
             Instant quote: {quoteNote} — final price confirmed on arrival.
           </div>
         )}
@@ -119,8 +119,8 @@ export default function BookingForm({ prefill }) {
             <input value={form.preferred_date} onChange={update("preferred_date")} type="date" className="input" />
           </Field>
           <Field label="Photo (optional)">
-            <label className="flex items-center gap-2 input cursor-pointer hover:border-[#1d9e56] transition-colors">
-              <Camera className="w-5 h-5 text-[#1d9e56]" />
+            <label className="flex items-center gap-2 input cursor-pointer hover:border-[#187B65] transition-colors">
+              <Camera className="w-5 h-5 text-[#187B65]" />
               <span className="text-slate-500 truncate">{photo ? photo.name : "Add a photo"}</span>
               <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] || null)} className="hidden" />
             </label>
@@ -128,7 +128,7 @@ export default function BookingForm({ prefill }) {
         </div>
       </div>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      <button disabled={submitting} className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+      <button disabled={submitting} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
         {submitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending…</> : <><Upload className="w-5 h-5" /> Book my pickup</>}
       </button>
     </form>
@@ -138,7 +138,7 @@ export default function BookingForm({ prefill }) {
 function Field({ label, required, children }) {
   return (
     <label className="block">
-      <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">{label}{required && <span className="text-[#1d9e56]"> *</span>}</span>
+      <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">{label}{required && <span className="text-[#187B65]"> *</span>}</span>
       {children}
     </label>
   );

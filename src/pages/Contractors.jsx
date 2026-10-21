@@ -99,7 +99,7 @@ export default function Contractors() {
       <Navbar />
 
       {/* Hero */}
-      <section className="bg-[#0c3b24] text-white">
+      <section className="bg-[#102B2A] text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-gold uppercase mb-5">
@@ -116,7 +116,7 @@ export default function Contractors() {
               languages, and drop booked jobs into your hands. You show up, haul, and get paid.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <a href="#apply" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#17a04c] transition-colors">
+              <a href="#apply" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 text-center hover:bg-[#125C4E] transition-colors">
                 Apply for Your Territory
               </a>
               <a href="tel:+16048491745" className="flex items-center justify-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-7 py-4 hover:bg-white/10 transition-colors">
@@ -136,8 +136,8 @@ export default function Contractors() {
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="max-w-2xl">
-            <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">The admin</div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Your business, run like a company</h2>
+            <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">The admin</div>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Your business, run like a company</h2>
             <p className="mt-4 text-lg text-slate-600">
               While you're on the truck, the dashboard is running your office: bookings tracked live,
               leads chased automatically, and your territory's search performance on one screen.
@@ -150,10 +150,10 @@ export default function Contractors() {
                   <Image src={item.img} alt={item.title} className="w-full h-full" fittingType="fill" />
                 </div>
                 <div className="p-6">
-                  <span className="w-10 h-10 rounded-xl bg-[#1d9e56]/10 flex items-center justify-center mb-4">
-                    <item.icon className="w-5 h-5 text-[#1d9e56]" />
+                  <span className="w-10 h-10 rounded-xl bg-[#187B65]/10 flex items-center justify-center mb-4">
+                    <item.icon className="w-5 h-5 text-[#187B65]" />
                   </span>
-                  <h3 className="text-lg font-bold text-[#0c3b24]">{item.title}</h3>
+                  <h3 className="text-lg font-bold text-[#102B2A]">{item.title}</h3>
                   <p className="mt-2 text-sm text-slate-600">{item.text}</p>
                 </div>
               </div>
@@ -166,8 +166,8 @@ export default function Contractors() {
       <section className="bg-[#f4f7f5]">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">The pages</div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Your territory, owned</h2>
+            <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">The pages</div>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Your territory, owned</h2>
             <p className="mt-4 text-lg text-slate-600">
               A city page built under the name that <em>is</em> the search term — "junk removal [your city]" —
               plus service pages for furniture, appliances, estate cleanouts and more. Every page is written,
@@ -175,7 +175,7 @@ export default function Contractors() {
             </p>
             <Link
               to="/coverage"
-              className="mt-6 inline-flex items-center gap-2 font-bold text-[#1d9e56] hover:underline"
+              className="mt-6 inline-flex items-center gap-2 font-bold text-[#187B65] hover:underline"
             >
               See a live territory page <ArrowRight className="w-4 h-4" />
             </Link>
@@ -183,7 +183,7 @@ export default function Contractors() {
           <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-8">
             <div className="grid grid-cols-2 gap-4">
               {["Furniture Removal", "Appliance Pickup", "Estate Cleanouts", "Condo & Strata", "Office Cleanouts", "Free Metal Pickup"].map((s) => (
-                <div key={s} className="rounded-2xl bg-[#f4f7f5] px-4 py-5 font-bold text-[#0c3b24] text-sm text-center">
+                <div key={s} className="rounded-2xl bg-[#f4f7f5] px-4 py-5 font-bold text-[#102B2A] text-sm text-center">
                   {s}
                 </div>
               ))}
@@ -197,18 +197,18 @@ export default function Contractors() {
       <section id="pricing" className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="text-center max-w-2xl mx-auto">
-            <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Partner pricing</div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">One flat monthly rate. That's the whole machine.</h2>
+            <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Partner pricing</div>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">One flat monthly rate. That's the whole machine.</h2>
             <p className="mt-4 text-slate-600">Plus a one-time territory activation of $250–500 to build and launch your pages.</p>
           </div>
           <div className="mt-12 grid md:grid-cols-3 gap-6">
             {tiers.map((t) => (
               <div
                 key={t.name}
-                className={`rounded-3xl p-8 border ${t.featured ? "border-[#1d9e56] bg-[#f4f7f5] shadow-lg" : "border-slate-100 bg-white shadow-sm"}`}
+                className={`rounded-3xl p-8 border ${t.featured ? "border-[#187B65] bg-[#f4f7f5] shadow-lg" : "border-slate-100 bg-white shadow-sm"}`}
               >
                 <div className="text-sm font-bold uppercase tracking-wide text-slate-500">{t.name}</div>
-                <div className="mt-3 text-4xl font-bold text-[#0c3b24]">
+                <div className="mt-3 text-4xl font-bold text-[#102B2A]">
                   {t.price}<span className="text-lg font-semibold text-slate-500">/mo</span>
                 </div>
                 <p className="mt-3 text-sm text-slate-600">{t.note}</p>
@@ -216,8 +216,8 @@ export default function Contractors() {
             ))}
           </div>
           <div className="mt-8 max-w-2xl mx-auto text-center space-y-3">
-            <p className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3 text-sm">
-              <BadgeCheck className="w-4 h-4 text-[#1d9e56]" />
+            <p className="inline-flex items-center gap-2 rounded-full bg-[#102B2A] text-white font-bold px-6 py-3 text-sm">
+              <BadgeCheck className="w-4 h-4 text-[#187B65]" />
               Exclusive territory — one partner per metro market. When your market is taken, it's taken.
             </p>
             <p className="text-slate-600 font-semibold">You spend $0 on ads, $0 on a website, $0 on an office.</p>
@@ -226,13 +226,13 @@ export default function Contractors() {
       </section>
 
       {/* REQUIREMENTS */}
-      <section className="bg-[#0c3b24] text-white">
+      <section className="bg-[#102B2A] text-white">
         <div className="max-w-5xl mx-auto px-4 py-16 md:py-20">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight">What it takes to join</h2>
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {requirements.map((r) => (
               <div key={r.text} className="flex items-start gap-3 rounded-2xl bg-white/5 p-5">
-                <r.icon className="w-5 h-5 text-[#1d9e56] shrink-0 mt-0.5" />
+                <r.icon className="w-5 h-5 text-[#187B65] shrink-0 mt-0.5" />
                 <span className="font-semibold text-sm">{r.text}</span>
               </div>
             ))}
@@ -246,7 +246,7 @@ export default function Contractors() {
       <section id="apply" className="bg-[#f4f7f5]">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#0c3b24]">Apply for your territory</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#102B2A]">Apply for your territory</h2>
             <p className="mt-3 text-slate-600">Territories open in order of application. We call every applicant.</p>
           </div>
           <PartnerApplicationForm />
@@ -256,11 +256,11 @@ export default function Contractors() {
       {/* FAQ */}
       <section className="bg-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#0c3b24]">Contractor FAQ</h2>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#102B2A]">Contractor FAQ</h2>
           <div className="mt-8 space-y-4">
             {faqs.map((f) => (
               <div key={f.q} className="rounded-2xl border border-slate-100 bg-white p-6">
-                <h3 className="font-bold text-[#0c3b24]">{f.q}</h3>
+                <h3 className="font-bold text-[#102B2A]">{f.q}</h3>
                 <p className="mt-2 text-slate-600 text-sm leading-relaxed">{f.a}</p>
               </div>
             ))}
@@ -269,11 +269,11 @@ export default function Contractors() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="bg-[#1d9e56] text-[#0c3b24]">
+      <section className="bg-[#187B65] text-[#102B2A]">
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Your city is open — for now.</h2>
           <p className="mt-3 font-semibold">One partner per metro market, in order of application.</p>
-          <a href="#apply" className="mt-8 inline-block rounded-full bg-[#0c3b24] text-white font-bold px-8 py-4 hover:bg-[#0a3020] transition-colors">
+          <a href="#apply" className="mt-8 inline-block rounded-full bg-[#102B2A] text-white font-bold px-8 py-4 hover:bg-[#0a3020] transition-colors">
             Apply for Your Territory
           </a>
         </div>

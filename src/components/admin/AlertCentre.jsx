@@ -80,11 +80,11 @@ export default function AlertCentre({ bookings, partners, reviewPending }) {
   return (
     <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
       <div className="flex items-center gap-2 mb-4">
-        <AlertTriangle className="w-4 h-4 text-[#1d9e56]" />
-        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#0c3b24]">Needs attention</h2>
+        <AlertTriangle className="w-4 h-4 text-[#187B65]" />
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A]">Needs attention</h2>
       </div>
       {alerts.length === 0 ? (
-        <div className="flex items-center gap-2 py-3 text-sm font-semibold text-[#1d9e56]">
+        <div className="flex items-center gap-2 py-3 text-sm font-semibold text-[#187B65]">
           <CheckCircle2 className="w-4 h-4" /> All clear — no open operational alerts.
         </div>
       ) : (
@@ -94,7 +94,7 @@ export default function AlertCentre({ bookings, partners, reviewPending }) {
               <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${SEVERITY[a.severity].dot}`} aria-label={SEVERITY[a.severity].label} />
               <a.icon className="w-4 h-4 text-slate-400 shrink-0" />
               <div className="flex-1 min-w-40">
-                <div className="text-sm font-bold text-[#0c3b24]">{a.title}</div>
+                <div className="text-sm font-bold text-[#102B2A]">{a.title}</div>
                 {a.detail && <div className="text-xs text-slate-500">{a.detail}</div>}
               </div>
               <Link to={a.action.to} className={`rounded-full ${SEVERITY[a.severity].bg} ${SEVERITY[a.severity].text} px-3 py-1.5 text-xs font-bold hover:brightness-95 transition`}>

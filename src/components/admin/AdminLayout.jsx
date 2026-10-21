@@ -44,10 +44,10 @@ function NavList({ pathname, onNavigate }) {
               to={n.to}
               onClick={onNavigate}
               className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
-                active ? "bg-[#0c3b24] text-white shadow-sm" : "text-slate-600 hover:bg-[#eef4f0] hover:text-[#0c3b24]"
+                active ? "bg-[#102B2A] text-white shadow-sm" : "text-slate-600 hover:bg-[#eef4f0] hover:text-[#102B2A]"
               }`}
             >
-              <n.icon className={`w-4 h-4 ${active ? "text-[#1d9e56]" : "text-slate-400"}`} />
+              <n.icon className={`w-4 h-4 ${active ? "text-[#187B65]" : "text-slate-400"}`} />
               {n.label}
             </Link>
           );
@@ -67,12 +67,12 @@ function NavList({ pathname, onNavigate }) {
 function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5 px-3">
-      <span className="w-9 h-9 rounded-xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
+      <span className="w-9 h-9 rounded-xl bg-[#102B2A] text-[#187B65] flex items-center justify-center">
         <Recycle className="w-5 h-5" />
       </span>
       <span>
-        <span className="block text-sm font-bold text-[#0c3b24] leading-tight">Same Day Recycling</span>
-        <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#1d9e56]">Command Centre</span>
+        <span className="block text-sm font-bold text-[#102B2A] leading-tight">Same Day Recycling</span>
+        <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#187B65]">Command Centre</span>
       </span>
     </Link>
   );
@@ -99,15 +99,15 @@ export default function AdminLayout() {
   if (role === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f6f8f7]">
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
       </div>
     );
   }
   if (role !== "admin") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-4 text-center bg-[#f6f8f7]">
-        <Lock className="w-10 h-10 text-[#1d9e56]" />
-        <h1 className="text-2xl font-bold text-[#0c3b24]">Admins only</h1>
+        <Lock className="w-10 h-10 text-[#187B65]" />
+        <h1 className="text-2xl font-bold text-[#102B2A]">Admins only</h1>
         <p className="text-slate-600">You need an admin account to open the Command Centre.</p>
       </div>
     );
@@ -123,7 +123,7 @@ export default function AdminLayout() {
           <NavList pathname={location.pathname} />
         </div>
         <div className="border-t border-slate-100 p-3">
-          <Link to="/" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-500 hover:text-[#0c3b24] hover:bg-[#eef4f0] transition-colors">
+          <Link to="/" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-500 hover:text-[#102B2A] hover:bg-[#eef4f0] transition-colors">
             <ExternalLink className="w-4 h-4" /> View live site
           </Link>
         </div>
@@ -131,14 +131,14 @@ export default function AdminLayout() {
 
       <header className="md:hidden sticky top-0 z-40 h-14 bg-white border-b border-slate-200/80 flex items-center justify-between px-4">
         <Brand />
-        <button onClick={() => setOpen(true)} className="p-2 -mr-2 text-[#0c3b24]" aria-label="Open menu">
+        <button onClick={() => setOpen(true)} className="p-2 -mr-2 text-[#102B2A]" aria-label="Open menu">
           <Menu className="w-6 h-6" />
         </button>
       </header>
 
       {open && (
         <div className="md:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-[#0c3b24]/40" onClick={() => setOpen(false)} />
+          <div className="absolute inset-0 bg-[#102B2A]/40" onClick={() => setOpen(false)} />
           <div className="relative w-72 max-w-[85vw] bg-white h-full flex flex-col shadow-xl">
             <div className="h-16 flex items-center justify-between border-b border-slate-100 px-3 pr-4 shrink-0">
               <Brand />

@@ -2,7 +2,7 @@ const STATUS_COLORS = {
   new: "#f59e0b",
   confirmed: "#38bdf8",
   scheduled: "#0ea5e9",
-  completed: "#1d9e56",
+  completed: "#187B65",
   cancelled: "#ef4444",
 };
 
@@ -17,7 +17,7 @@ export default function StatusBar({ bookings }) {
 
   return (
     <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
-      <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-[#0c3b24] mb-4">Jobs by status</h3>
+      <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A] mb-4">Jobs by status</h3>
       {total === 0 ? (
         <p className="text-sm text-slate-500 py-4">No bookings recorded yet — statuses appear here as jobs come in.</p>
       ) : (

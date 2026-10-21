@@ -2,15 +2,15 @@ import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const COLORS = {
   new: "#d9a422",
-  confirmed: "#0c3b24",
-  contacted: "#1d9e56",
+  confirmed: "#102B2A",
+  contacted: "#187B65",
   scheduled: "#7fd8a8",
-  completed: "#17a04c",
+  completed: "#125C4E",
   cancelled: "#f87171",
 };
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-4";
-const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
+const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 holo-panel-deep backdrop-blur-sm p-4";
+const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]/90";
 
 export default function StatusDonut({ bookings }) {
   const counts = new Map();
@@ -32,7 +32,7 @@ export default function StatusDonut({ bookings }) {
               </Pie>
               <Tooltip
                 formatter={(v) => [v, "Bookings"]}
-                contentStyle={{ background: "#06251a", border: "1px solid rgba(29,158,86,0.4)", borderRadius: 12, color: "#ecfdf5" }}
+                contentStyle={{ background: "#06251a", border: "1px solid rgba(24,123,101,0.4)", borderRadius: 12, color: "#ecfdf5" }}
                 itemStyle={{ color: "#ecfdf5" }}
               />
             </PieChart>

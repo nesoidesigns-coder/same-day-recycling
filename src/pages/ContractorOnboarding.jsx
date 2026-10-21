@@ -98,20 +98,20 @@ export default function ContractorOnboarding() {
   if (status === "done" && result) {
     const verdict = result.verdict || "needs_attention";
     const verdictMeta = {
-      pass: { icon: ShieldCheck, color: "text-[#1d9e56]", label: "Documents look good" },
+      pass: { icon: ShieldCheck, color: "text-[#187B65]", label: "Documents look good" },
       needs_attention: { icon: AlertTriangle, color: "text-amber-400", label: "Needs a quick look" },
       fail: { icon: XCircle, color: "text-red-400", label: "Issues found" },
     }[verdict];
     const VerdictIcon = verdictMeta.icon;
     return (
       <div className="min-h-screen bg-[#051511] px-4 py-12 text-emerald-50">
-        <div className="max-w-xl mx-auto rounded-3xl border border-[#1d9e56]/30 bg-[#0c3b24]/50 backdrop-blur-sm p-8 text-center">
-          <CheckCircle2 className="w-12 h-12 text-[#1d9e56] mx-auto" />
+        <div className="max-w-xl mx-auto rounded-3xl border border-[#187B65]/30 bg-[#102B2A]/50 backdrop-blur-sm p-8 text-center">
+          <CheckCircle2 className="w-12 h-12 text-[#187B65] mx-auto" />
           <h1 className="mt-4 text-2xl font-bold text-white tracking-tight">Application submitted</h1>
           <p className="mt-2 text-sm text-emerald-100/60">
             Thanks, {form.owner_name} — your profile and documents are in. Our team completes final approval and emails you at {form.email}.
           </p>
-          <div className="mt-6 rounded-2xl border border-[#1d9e56]/25 bg-[#051511]/60 p-5 text-left">
+          <div className="mt-6 rounded-2xl border border-[#187B65]/25 bg-[#051511]/60 p-5 text-left">
             <div className="flex items-center gap-2 text-sm font-bold text-white">
               <VerdictIcon className={`w-5 h-5 ${verdictMeta.color}`} />
               AI document check: {verdictMeta.label}
@@ -128,7 +128,7 @@ export default function ContractorOnboarding() {
               </ul>
             )}
           </div>
-          <Link to="/" className="mt-6 inline-flex rounded-full bg-[#1d9e56] text-[#032015] font-bold px-6 py-3 text-sm hover:bg-[#25b96b] transition-colors">
+          <Link to="/" className="mt-6 inline-flex rounded-full bg-[#187B65] text-[#032015] font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
             Back to homepage <ArrowRight className="w-4 h-4 inline ml-1" />
           </Link>
         </div>
@@ -140,8 +140,8 @@ export default function ContractorOnboarding() {
     <div className="min-h-screen bg-[#051511] text-emerald-50">
       <div className="max-w-2xl mx-auto px-4 py-12">
         <div className="mb-8 text-center">
-          <span className="inline-flex w-14 h-14 rounded-2xl border border-[#1d9e56]/40 bg-[#0c3b24]/60 items-center justify-center mb-4">
-            <Truck className="w-7 h-7 text-[#1d9e56]" />
+          <span className="inline-flex w-14 h-14 rounded-2xl border border-[#187B65]/40 bg-[#102B2A]/60 items-center justify-center mb-4">
+            <Truck className="w-7 h-7 text-[#187B65]" />
           </span>
           <h1 className="text-3xl font-bold text-white tracking-tight">Join the national contractor network</h1>
           <p className="mt-2 text-sm text-emerald-100/60">
@@ -150,19 +150,19 @@ export default function ContractorOnboarding() {
         </div>
 
         <form onSubmit={submit} className="space-y-8">
-          <section className="rounded-3xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-6 md:p-8 space-y-5">
+          <section className="rounded-3xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm p-6 md:p-8 space-y-5">
             <h2 className="text-lg font-bold text-white">1. Your profile</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="ob-company" className="block text-sm font-semibold text-white mb-1.5">Company name <span className="text-[#1d9e56]">*</span></label>
+                <label htmlFor="ob-company" className="block text-sm font-semibold text-white mb-1.5">Company name <span className="text-[#187B65]">*</span></label>
                 <input id="ob-company" className="input !bg-white" value={form.company} onChange={set("company")} placeholder="Dan's Hauling Ltd." />
               </div>
               <div>
-                <label htmlFor="ob-owner" className="block text-sm font-semibold text-white mb-1.5">Owner / contact name <span className="text-[#1d9e56]">*</span></label>
+                <label htmlFor="ob-owner" className="block text-sm font-semibold text-white mb-1.5">Owner / contact name <span className="text-[#187B65]">*</span></label>
                 <input id="ob-owner" className="input !bg-white" value={form.owner_name} onChange={set("owner_name")} placeholder="Dan Peters" />
               </div>
               <div>
-                <label htmlFor="ob-email" className="block text-sm font-semibold text-white mb-1.5">Email <span className="text-[#1d9e56]">*</span></label>
+                <label htmlFor="ob-email" className="block text-sm font-semibold text-white mb-1.5">Email <span className="text-[#187B65]">*</span></label>
                 <input id="ob-email" type="email" className="input !bg-white" value={form.email} onChange={set("email")} placeholder="dan@danshauling.ca" />
               </div>
               <div>
@@ -171,15 +171,15 @@ export default function ContractorOnboarding() {
               </div>
             </div>
             <div>
-              <label htmlFor="ob-city" className="block text-sm font-semibold text-white mb-1.5">Service city / territory <span className="text-[#1d9e56]">*</span></label>
+              <label htmlFor="ob-city" className="block text-sm font-semibold text-white mb-1.5">Service city / territory <span className="text-[#187B65]">*</span></label>
               <input id="ob-city" className="input !bg-white" value={form.city} onChange={set("city")} placeholder="Calgary" />
             </div>
             <div>
               <div className="block text-sm font-semibold text-white mb-2">Equipment list</div>
               <div className="grid sm:grid-cols-2 gap-2">
                 {EQUIPMENT_OPTIONS.map((item) => (
-                  <label key={item} className="flex items-center gap-2.5 rounded-xl border border-[#1d9e56]/25 bg-[#051511]/60 px-4 py-3 text-sm text-emerald-100/80 cursor-pointer hover:border-[#1d9e56]/60 transition-colors">
-                    <input type="checkbox" checked={form.equipment.includes(item)} onChange={() => toggleEquipment(item)} className="w-4 h-4 accent-[#1d9e56]" />
+                  <label key={item} className="flex items-center gap-2.5 rounded-xl border border-[#187B65]/25 bg-[#051511]/60 px-4 py-3 text-sm text-emerald-100/80 cursor-pointer hover:border-[#187B65]/60 transition-colors">
+                    <input type="checkbox" checked={form.equipment.includes(item)} onChange={() => toggleEquipment(item)} className="w-4 h-4 accent-[#187B65]" />
                     {item}
                   </label>
                 ))}
@@ -191,7 +191,7 @@ export default function ContractorOnboarding() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-6 md:p-8 space-y-4">
+          <section className="rounded-3xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm p-6 md:p-8 space-y-4">
             <h2 className="text-lg font-bold text-white">2. Verification documents</h2>
             <p className="text-sm text-emerald-100/60">PDF or photo. Uploads are stored privately — only our admin team and our AI verifier see them.</p>
             <div className="grid sm:grid-cols-2 gap-3">
@@ -199,13 +199,13 @@ export default function ContractorOnboarding() {
                 <label
                   key={d.key}
                   className={`flex flex-col gap-1 rounded-2xl border px-4 py-4 cursor-pointer transition-colors ${
-                    docs[d.key] ? "border-[#1d9e56] bg-[#1d9e56]/10" : "border-[#1d9e56]/25 bg-[#051511]/60 hover:border-[#1d9e56]/60"
+                    docs[d.key] ? "border-[#187B65] bg-[#187B65]/10" : "border-[#187B65]/25 bg-[#051511]/60 hover:border-[#187B65]/60"
                   }`}
                 >
                   <span className="flex items-center gap-2 text-sm font-bold text-white">
-                    <FileUp className={`w-4 h-4 ${docs[d.key] ? "text-[#1d9e56]" : "text-emerald-100/40"}`} />
+                    <FileUp className={`w-4 h-4 ${docs[d.key] ? "text-[#187B65]" : "text-emerald-100/40"}`} />
                     {d.label}
-                    {d.required && <span className="text-[#1d9e56]">*</span>}
+                    {d.required && <span className="text-[#187B65]">*</span>}
                   </span>
                   <span className="text-xs text-emerald-100/50">{docs[d.key]?.name || d.hint}</span>
                   <input type="file" accept="application/pdf,image/*" className="hidden" onChange={pickDoc(d.key)} />
@@ -216,7 +216,7 @@ export default function ContractorOnboarding() {
 
           {error && <p className="text-sm font-medium text-red-400" role="alert">{error}</p>}
 
-          <button type="submit" disabled={status === "submitting"} className="w-full rounded-full bg-[#1d9e56] text-[#032015] font-bold px-7 py-4 hover:bg-[#25b96b] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+          <button type="submit" disabled={status === "submitting"} className="w-full rounded-full bg-[#187B65] text-[#032015] font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
             {status === "submitting" && <Loader2 className="w-4 h-4 animate-spin" />}
             {status === "submitting" ? "Submitting and verifying…" : "Submit application"}
           </button>

@@ -2,8 +2,8 @@ import { MapPin } from "lucide-react";
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-4";
-const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
+const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 holo-panel-deep backdrop-blur-sm p-4";
+const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]/90";
 
 export default function RegionalPerformance({ bookings }) {
   const byCity = new Map();
@@ -23,7 +23,7 @@ export default function RegionalPerformance({ bookings }) {
   return (
     <div className={panel}>
       <p className={`${label} mb-3 inline-flex items-center gap-2`}>
-        <MapPin className="w-4 h-4 text-[#1d9e56]" /> Regional performance (recent bookings)
+        <MapPin className="w-4 h-4 text-[#187B65]" /> Regional performance (recent bookings)
       </p>
       {rows.length ? (
         <ul className="space-y-3">
@@ -35,8 +35,8 @@ export default function RegionalPerformance({ bookings }) {
                   {r.bookings} booking{r.bookings === 1 ? "" : "s"} · {money(r.revenue)}
                 </span>
               </div>
-              <div className="h-2 rounded-full bg-[#0c3b24] overflow-hidden">
-                <div className="h-full rounded-full bg-[#1d9e56] shadow-[0_0_10px_rgba(29,158,86,0.7)]" style={{ width: `${Math.round((r.bookings / maxBookings) * 100)}%` }} />
+              <div className="h-2 rounded-full bg-[#102B2A] overflow-hidden">
+                <div className="h-full rounded-full bg-[#187B65] shadow-[0_0_10px_rgba(24,123,101,0.7)]" style={{ width: `${Math.round((r.bookings / maxBookings) * 100)}%` }} />
               </div>
             </li>
           ))}

@@ -35,27 +35,27 @@ export default function HologramFeed() {
         <div className="relative z-10 flex justify-center">
           <AiMascotFull height={160} waveOnce className="-mb-9" />
         </div>
-        <div className="holo-flicker holo-panel relative rounded-2xl border border-[#1d9e56]/50 bg-[#041a10] shadow-[0_0_50px_rgba(29,158,86,0.35)] overflow-hidden">
+        <div className="holo-flicker holo-panel relative rounded-2xl border border-[#187B65]/50 bg-[#041a10] shadow-[0_0_50px_rgba(24,123,101,0.35)] overflow-hidden">
           {/* sweeping light bar */}
           <div
             className="holo-scan absolute left-0 right-0 h-16 pointer-events-none"
             style={{
               background:
-                "linear-gradient(to bottom, transparent, rgba(29,158,86,0.15), transparent)",
+                "linear-gradient(to bottom, transparent, rgba(24,123,101,0.15), transparent)",
             }}
           ></div>
 
           {/* header */}
-          <div className="relative flex items-center justify-between px-5 py-4 border-b border-[#1d9e56]/30">
-            <span className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-[#1d9e56] holo-glow-text">
+          <div className="relative flex items-center justify-between px-5 py-4 border-b border-[#187B65]/30">
+            <span className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-[#187B65] holo-glow-text">
               <AiMascot size={44} />
               <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-[#1d9e56] opacity-60 animate-ping"></span>
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#1d9e56]"></span>
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#187B65] opacity-60 animate-ping"></span>
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#187B65]"></span>
               </span>
               Dispatch Desk
             </span>
-            <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#1d9e56] holo-glow-text">
+            <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#187B65] holo-glow-text">
               Live Feed
             </span>
           </div>
@@ -69,9 +69,9 @@ export default function HologramFeed() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: i * 0.08 }}
-                  className="flex items-start gap-3 rounded-xl border border-[#1d9e56]/25 bg-[#1d9e56]/10 px-4 py-3"
+                  className="flex items-start gap-3 rounded-xl border border-[#187B65]/25 bg-[#187B65]/10 px-4 py-3"
                 >
-                  <span className="mt-0.5 text-[#1d9e56]">
+                  <span className="mt-0.5 text-[#187B65]">
                     {e.type === "booking" ? (
                       <Truck className="w-4 h-4" />
                     ) : (
@@ -82,7 +82,7 @@ export default function HologramFeed() {
                     <p className="text-sm text-[#d6f5e4] leading-snug">
                       {e.text}
                     </p>
-                    <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[#1d9e56]/80">
+                    <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[#187B65]/80">
                       {e.type === "booking" ? "Booking captured" : "Question answered"}
                       {e.city ? ` · ${e.city}` : ""} ·{" "}
                       {formatDistanceToNow(new Date(e.at), { addSuffix: true })}
@@ -92,12 +92,12 @@ export default function HologramFeed() {
               ))}
             </AnimatePresence>
             {events && shown.length === 0 && (
-              <p className="text-sm text-[#1d9e56]/70 text-center py-10 holo-glow-text">
+              <p className="text-sm text-[#187B65]/70 text-center py-10 holo-glow-text">
                 Online — awaiting the next visitor signal...
               </p>
             )}
             {!events && (
-              <p className="text-sm text-[#1d9e56]/70 text-center py-10 holo-glow-text">
+              <p className="text-sm text-[#187B65]/70 text-center py-10 holo-glow-text">
                 Connecting to the live network feed...
               </p>
             )}

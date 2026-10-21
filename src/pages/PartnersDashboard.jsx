@@ -6,8 +6,8 @@ import TerritoryCard from "@/components/partner/TerritoryCard";
 const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm";
-const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
+const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm";
+const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]/90";
 
 export default function PartnersDashboard() {
   const [stage, setStage] = useState("loading");
@@ -53,7 +53,7 @@ export default function PartnersDashboard() {
   if (stage === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#051511]">
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -61,8 +61,8 @@ export default function PartnersDashboard() {
   if (stage === "denied") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-4 text-center bg-[#051511]">
-        <span className="w-14 h-14 rounded-2xl border border-[#1d9e56]/40 bg-[#0c3b24]/60 flex items-center justify-center">
-          <Truck className="w-7 h-7 text-[#1d9e56]" />
+        <span className="w-14 h-14 rounded-2xl border border-[#187B65]/40 bg-[#102B2A]/60 flex items-center justify-center">
+          <Truck className="w-7 h-7 text-[#187B65]" />
         </span>
         <h1 className="text-2xl font-bold text-white tracking-tight">Partner access</h1>
         <p className="text-emerald-100/60 max-w-sm text-sm">
@@ -70,10 +70,10 @@ export default function PartnersDashboard() {
             ? `No active partner account is linked to ${me.email}. Ask the Same Day Recycling admin to add you as a partner.`
             : "Please log in with your partner account."}
         </p>
-        <button onClick={() => window.location.assign("/partner-register")} className="rounded-full border border-[#1d9e56]/40 bg-transparent text-emerald-50 font-bold px-6 py-3 text-sm hover:border-[#1d9e56] transition-colors">
+        <button onClick={() => window.location.assign("/partner-register")} className="rounded-full border border-[#187B65]/40 bg-transparent text-emerald-50 font-bold px-6 py-3 text-sm hover:border-[#187B65] transition-colors">
           Register as a partner
         </button>
-        <button onClick={() => base44.auth.logout("/login")} className="rounded-full bg-[#1d9e56] text-[#032015] font-bold px-6 py-3 text-sm hover:bg-[#25b96b] transition-colors">
+        <button onClick={() => base44.auth.logout("/login")} className="rounded-full bg-[#187B65] text-[#032015] font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
           Log in with another account
         </button>
       </div>
@@ -89,23 +89,23 @@ export default function PartnersDashboard() {
         <div className="flex flex-wrap items-start justify-between gap-4 mb-10">
           <div>
             <div className={`${label} flex items-center gap-2 mb-2`}>
-              <Radio className="w-3.5 h-3.5 text-[#1d9e56] holo-flicker" /> Partner dispatch
+              <Radio className="w-3.5 h-3.5 text-[#187B65] holo-flicker" /> Partner dispatch
             </div>
             <h1 className="text-3xl font-bold text-white tracking-tight">{partner.name}</h1>
             <p className="flex items-center gap-1.5 text-sm text-emerald-100/50 mt-1">
-              <MapPin className="w-4 h-4 text-[#1d9e56]" /> {partner.city}
+              <MapPin className="w-4 h-4 text-[#187B65]" /> {partner.city}
             </p>
           </div>
-          <button onClick={() => base44.auth.logout("/login")} className="flex items-center gap-2 rounded-full border border-[#1d9e56]/40 bg-[#0c3b24]/40 px-5 py-2.5 text-sm font-bold text-emerald-50 hover:border-[#1d9e56] transition-colors">
-            <LogOut className="w-4 h-4 text-[#1d9e56]" /> Log out
+          <button onClick={() => base44.auth.logout("/login")} className="flex items-center gap-2 rounded-full border border-[#187B65]/40 bg-[#102B2A]/40 px-5 py-2.5 text-sm font-bold text-emerald-50 hover:border-[#187B65] transition-colors">
+            <LogOut className="w-4 h-4 text-[#187B65]" /> Log out
           </button>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-10">
           <div className={`${panel} p-6`}>
-            <div className="holo-scan absolute top-0 left-0 right-0 h-px bg-[#1d9e56]/50" />
+            <div className="holo-scan absolute top-0 left-0 right-0 h-px bg-[#187B65]/50" />
             <div className={label}>Pending payout</div>
-            <div className="text-3xl font-bold text-[#1d9e56] holo-glow-text flex items-center gap-2 mt-3 tabular-nums">
+            <div className="text-3xl font-bold text-[#187B65] holo-glow-text flex items-center gap-2 mt-3 tabular-nums">
               <DollarSign className="w-6 h-6" />{money(pending)}
             </div>
             <p className="text-xs text-emerald-100/40 mt-2">75% of completed, unpaid jobs</p>
@@ -113,7 +113,7 @@ export default function PartnersDashboard() {
           <div className={`${panel} p-6`}>
             <div className={label}>Paid to date</div>
             <div className="text-3xl font-bold text-white flex items-center gap-2 mt-3 tabular-nums">
-              <CheckCircle2 className="w-6 h-6 text-[#1d9e56]" />{money(paid)}
+              <CheckCircle2 className="w-6 h-6 text-[#187B65]" />{money(paid)}
             </div>
             <p className="text-xs text-emerald-100/40 mt-2">Payouts already marked paid</p>
           </div>
@@ -134,10 +134,10 @@ export default function PartnersDashboard() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-white">{b.name}</span>
-                      <a href={`tel:${b.phone}`} className="flex items-center gap-1 text-sm text-[#1d9e56] font-semibold hover:text-[#25b96b] transition-colors">
+                      <a href={`tel:${b.phone}`} className="flex items-center gap-1 text-sm text-[#187B65] font-semibold hover:text-[#1FA184] transition-colors">
                         <Phone className="w-3.5 h-3.5" />{b.phone}
                       </a>
-                      <span className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] ${b.assignment_status === "accepted" ? "bg-[#1d9e56]/15 text-[#1d9e56] border border-[#1d9e56]/30" : "bg-amber-400/10 text-amber-300 border border-amber-400/30"}`}>
+                      <span className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] ${b.assignment_status === "accepted" ? "bg-[#187B65]/15 text-[#187B65] border border-[#187B65]/30" : "bg-amber-400/10 text-amber-300 border border-amber-400/30"}`}>
                         {b.assignment_status}
                       </span>
                     </div>
@@ -147,14 +147,14 @@ export default function PartnersDashboard() {
                   </div>
                   <div className="text-right shrink-0">
                     <div className={label}>Your payout</div>
-                    <div className="text-xl font-bold text-[#1d9e56] holo-glow-text mt-1 tabular-nums">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</div>
+                    <div className="text-xl font-bold text-[#187B65] holo-glow-text mt-1 tabular-nums">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</div>
                     <div className="text-[11px] text-emerald-100/40 mt-1 tabular-nums">of {money(b.job_value)} job</div>
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2 flex-wrap">
                   {b.assignment_status === "assigned" && (
                     <>
-                      <button onClick={() => act(b.id, "accept")} className="rounded-full bg-[#1d9e56] text-[#032015] font-bold px-5 py-2.5 text-sm hover:bg-[#25b96b] transition-colors flex items-center gap-2 shadow-[0_0_20px_rgba(29,158,86,0.35)]">
+                      <button onClick={() => act(b.id, "accept")} className="rounded-full bg-[#187B65] text-[#032015] font-bold px-5 py-2.5 text-sm hover:bg-[#1FA184] transition-colors flex items-center gap-2 shadow-[0_0_20px_rgba(24,123,101,0.35)]">
                         <CheckCircle2 className="w-4 h-4" /> Accept job
                       </button>
                       <button onClick={() => act(b.id, "decline")} className="rounded-full border border-emerald-100/20 text-emerald-100/70 font-bold px-5 py-2.5 text-sm hover:border-red-400/50 hover:text-red-300 transition-colors flex items-center gap-2">
@@ -163,7 +163,7 @@ export default function PartnersDashboard() {
                     </>
                   )}
                   {b.assignment_status === "accepted" && (
-                    <button onClick={() => act(b.id, "complete")} className="rounded-full border border-[#1d9e56]/60 bg-[#1d9e56]/10 text-[#1d9e56] font-bold px-5 py-2.5 text-sm hover:bg-[#1d9e56]/20 transition-colors flex items-center gap-2">
+                    <button onClick={() => act(b.id, "complete")} className="rounded-full border border-[#187B65]/60 bg-[#187B65]/10 text-[#187B65] font-bold px-5 py-2.5 text-sm hover:bg-[#187B65]/20 transition-colors flex items-center gap-2">
                       <PackageCheck className="w-4 h-4" /> Mark complete
                     </button>
                   )}
@@ -185,8 +185,8 @@ export default function PartnersDashboard() {
                   <div className="text-[11px] text-emerald-100/40 mt-0.5">{b.items_description}</div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="font-bold text-[#1d9e56] text-sm tabular-nums">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</div>
-                  <div className={`text-[10px] font-bold uppercase tracking-[0.15em] ${b.payout_paid ? "text-[#1d9e56]" : "text-amber-300"}`}>{b.payout_paid ? "Paid" : "Unpaid"}</div>
+                  <div className="font-bold text-[#187B65] text-sm tabular-nums">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</div>
+                  <div className={`text-[10px] font-bold uppercase tracking-[0.15em] ${b.payout_paid ? "text-[#187B65]" : "text-amber-300"}`}>{b.payout_paid ? "Paid" : "Unpaid"}</div>
                 </div>
               </div>
             ))}

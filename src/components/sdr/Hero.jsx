@@ -18,8 +18,8 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="top" className="relative bg-[#0c3b24] text-white overflow-hidden">
-      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#1d9e56]/20 blur-3xl pointer-events-none" />
+    <section id="top" className="relative bg-[#102B2A] text-white overflow-hidden">
+      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#187B65]/20 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -left-16 w-80 h-80 rounded-full bg-[#22d3ee]/10 blur-3xl pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
@@ -40,7 +40,7 @@ export default function Hero() {
             Book a pickup, understand your costs, and discover responsible options for your unwanted items. SameDay makes clearing your space straightforward, transparent, and convenient.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <a href="#estimator" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#25b96b] transition-colors">
+            <a href="#estimator" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 text-center hover:bg-[#1FA184] transition-colors">
               Get My Estimate
             </a>
             <a href="#book" className="rounded-full border-2 border-white/30 text-white font-bold px-7 py-4 text-center hover:bg-white/10 transition-colors">
@@ -65,12 +65,12 @@ export default function Hero() {
             ))}
           </div>
           <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 flex items-center gap-3">
-            <span className="w-10 h-10 rounded-full bg-[#1d9e56]/15 flex items-center justify-center">
-              <CalendarCheck className="w-5 h-5 text-[#1d9e56]" />
+            <span className="w-10 h-10 rounded-full bg-[#187B65]/15 flex items-center justify-center">
+              <CalendarCheck className="w-5 h-5 text-[#187B65]" />
             </span>
             <div className="leading-tight">
               <div className="text-xs text-slate-500 font-medium">Same-day</div>
-              <div className="font-bold text-[#0c3b24]">When booked before noon</div>
+              <div className="font-bold text-[#102B2A]">When booked before noon</div>
             </div>
           </div>
         </div>

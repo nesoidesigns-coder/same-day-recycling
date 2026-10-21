@@ -48,7 +48,7 @@ export default function SearchConsoleTab() {
     <div>
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-lg font-bold text-[#0c3b24]">Search Console Keywords</h2>
+          <h2 className="text-lg font-bold text-[#102B2A]">Search Console Keywords</h2>
           <p className="text-xs text-slate-500">
             {data ? `Google search performance, ${data.startDate} → ${data.endDate}` : "Loading…"}
           </p>
@@ -56,7 +56,7 @@ export default function SearchConsoleTab() {
         <button
           onClick={load}
           disabled={loading}
-          className="flex items-center gap-2 rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-4 py-2 text-sm hover:bg-[#17a04c] transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-4 py-2 text-sm hover:bg-[#125C4E] transition-colors disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Refresh
         </button>
@@ -77,33 +77,33 @@ export default function SearchConsoleTab() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
             <div className="rounded-2xl bg-[#f4f7f5] p-4">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                <MousePointerClick className="w-4 h-4 text-[#1d9e56]" /> Clicks
+                <MousePointerClick className="w-4 h-4 text-[#187B65]" /> Clicks
               </div>
-              <div className="text-2xl font-bold text-[#0c3b24]">{totals.clicks.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-[#102B2A]">{totals.clicks.toLocaleString()}</div>
             </div>
             <div className="rounded-2xl bg-[#f4f7f5] p-4">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                <Eye className="w-4 h-4 text-[#1d9e56]" /> Impressions
+                <Eye className="w-4 h-4 text-[#187B65]" /> Impressions
               </div>
-              <div className="text-2xl font-bold text-[#0c3b24]">{totals.impressions.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-[#102B2A]">{totals.impressions.toLocaleString()}</div>
             </div>
             <div className="rounded-2xl bg-[#f4f7f5] p-4">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                <TrendingUp className="w-4 h-4 text-[#1d9e56]" /> Avg CTR
+                <TrendingUp className="w-4 h-4 text-[#187B65]" /> Avg CTR
               </div>
-              <div className="text-2xl font-bold text-[#0c3b24]">{avgCtr}%</div>
+              <div className="text-2xl font-bold text-[#102B2A]">{avgCtr}%</div>
             </div>
             <div className="rounded-2xl bg-[#f4f7f5] p-4">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                <BarChart3 className="w-4 h-4 text-[#1d9e56]" /> Avg Position
+                <BarChart3 className="w-4 h-4 text-[#187B65]" /> Avg Position
               </div>
-              <div className="text-2xl font-bold text-[#0c3b24]">{avgPos}</div>
+              <div className="text-2xl font-bold text-[#102B2A]">{avgPos}</div>
             </div>
           </div>
 
           {quickWins.length > 0 && (
-            <div className="rounded-2xl border border-[#1d9e56]/30 bg-[#f4f7f5] p-4 mb-5">
-              <div className="font-bold text-[#0c3b24] text-sm mb-2">Quick wins — high impressions, low clicks</div>
+            <div className="rounded-2xl border border-[#187B65]/30 bg-[#f4f7f5] p-4 mb-5">
+              <div className="font-bold text-[#102B2A] text-sm mb-2">Quick wins — high impressions, low clicks</div>
               <ul className="space-y-1.5">
                 {quickWins.map((k, i) => (
                   <li key={i} className="text-sm text-slate-700">
@@ -123,7 +123,7 @@ export default function SearchConsoleTab() {
               <button
                 key={s.key}
                 onClick={() => setSortKey(s.key)}
-                className={`rounded-full px-3 py-1.5 text-xs font-bold ${sortKey === s.key ? "bg-[#0c3b24] text-[#1d9e56]" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold ${sortKey === s.key ? "bg-[#102B2A] text-[#187B65]" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
               >
                 {s.label}
               </button>
@@ -145,14 +145,14 @@ export default function SearchConsoleTab() {
               <tbody>
                 {sorted.map((k, i) => (
                   <tr key={i} className="border-t border-slate-100">
-                    <td className="px-4 py-2.5 font-semibold text-[#0c3b24]">{k.query}</td>
+                    <td className="px-4 py-2.5 font-semibold text-[#102B2A]">{k.query}</td>
                     <td className="px-4 py-2.5">{k.clicks}</td>
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
                         <span className="w-10">{k.impressions}</span>
-                        <div className="h-1.5 rounded-full bg-[#1d9e56]/20 flex-1 min-w-16">
+                        <div className="h-1.5 rounded-full bg-[#187B65]/20 flex-1 min-w-16">
                           <div
-                            className="h-1.5 rounded-full bg-[#1d9e56]"
+                            className="h-1.5 rounded-full bg-[#187B65]"
                             style={{ width: `${Math.round((k.impressions / maxImpressions) * 100)}%` }}
                           />
                         </div>

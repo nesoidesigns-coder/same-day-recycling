@@ -21,17 +21,17 @@ export default function FeaturedProviders() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
-            <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Featured</div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#0c3b24] tracking-tight">Verified providers</h2>
+            <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Featured</div>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">Verified providers</h2>
             <p className="mt-3 text-slate-600 text-lg">
               Confirmed members of the national network, with accepted materials and booking options on every listing.
             </p>
           </div>
           <Link
             to="/recycling"
-            className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#0a3020] transition-colors shrink-0"
+            className="inline-flex items-center gap-2 rounded-full bg-[#102B2A] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#0a3020] transition-colors shrink-0"
           >
-            Full directory <ArrowRight className="w-4 h-4 text-[#1d9e56]" />
+            Full directory <ArrowRight className="w-4 h-4 text-[#187B65]" />
           </Link>
         </div>
 
@@ -48,7 +48,7 @@ export default function FeaturedProviders() {
             {providers.map((p) => (
               <article key={p.id} className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                 <div className="flex items-start justify-between gap-3">
-                  <Link to={`/provider/${p.id}`} className="font-bold text-[#0c3b24] hover:text-[#1d9e56] leading-tight">
+                  <Link to={`/provider/${p.id}`} className="font-bold text-[#102B2A] hover:text-[#187B65] leading-tight">
                     {p.name}
                   </Link>
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-[10px] font-bold shrink-0">
@@ -62,7 +62,7 @@ export default function FeaturedProviders() {
                 {p.accepted_categories?.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {p.accepted_categories.slice(0, 3).map((k) => (
-                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#0c3b24] px-2.5 py-1 text-[10px] font-bold">
+                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#102B2A] px-2.5 py-1 text-[10px] font-bold">
                         {CATEGORY_LABELS[k] || k}
                       </span>
                     ))}
@@ -74,9 +74,9 @@ export default function FeaturedProviders() {
                   </div>
                 )}
                 <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <Link to={`/provider/${p.id}`} className="font-bold text-[#1d9e56] hover:underline">View details</Link>
+                  <Link to={`/provider/${p.id}`} className="font-bold text-[#187B65] hover:underline">View details</Link>
                   {p.website && (
-                    <a href={p.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-slate-500 hover:text-[#1d9e56]">
+                    <a href={p.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-slate-500 hover:text-[#187B65]">
                       <Globe className="w-3.5 h-3.5" /> Website
                     </a>
                   )}

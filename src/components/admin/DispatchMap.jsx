@@ -40,7 +40,7 @@ export default function DispatchMap({ bookings, onSelectCity, height = 320 }) {
   return (
     <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-4">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
-        <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-[#0c3b24]">Service-area map</h3>
+        <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A]">Service-area map</h3>
         {unmapped.length > 0 && (
           <span className="text-[11px] font-semibold text-amber-600">
             No map location for: {unmapped.map(([c]) => c).join(", ")}
@@ -58,7 +58,7 @@ export default function DispatchMap({ bookings, onSelectCity, height = 320 }) {
               key={m.city}
               center={m.coords}
               radius={10 + (m.count / max) * 16}
-              pathOptions={{ color: "#0c3b24", weight: 2, fillColor: "#1d9e56", fillOpacity: 0.55 }}
+              pathOptions={{ color: "#102B2A", weight: 2, fillColor: "#187B65", fillOpacity: 0.55 }}
               eventHandlers={{ click: () => onSelectCity && onSelectCity(m.city) }}
             >
               <Tooltip direction="top" className="sdr-map-tooltip" permanent={false}>

@@ -28,8 +28,8 @@ export default function PartnerAgreement() {
     <section className="bg-white">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
         <div className="max-w-2xl">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Before you sign</div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">The agreement, in plain English</h2>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Before you sign</div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">The agreement, in plain English</h2>
           <p className="mt-4 text-slate-600">
             You sign a written agreement before your territory activates. The structure is a service
             agency and trademark license — not a franchise — and the final form is reviewed by
@@ -40,10 +40,10 @@ export default function PartnerAgreement() {
         <div className="mt-10 grid sm:grid-cols-2 gap-4">
           {terms.map((t) => (
             <div key={t.title} className="rounded-3xl border border-slate-100 bg-[#f4f7f5] p-6">
-              <span className="w-10 h-10 rounded-xl bg-[#1d9e56]/10 flex items-center justify-center mb-4">
-                <t.icon className="w-5 h-5 text-[#1d9e56]" />
+              <span className="w-10 h-10 rounded-xl bg-[#187B65]/10 flex items-center justify-center mb-4">
+                <t.icon className="w-5 h-5 text-[#187B65]" />
               </span>
-              <h3 className="font-bold text-[#0c3b24]">{t.title}</h3>
+              <h3 className="font-bold text-[#102B2A]">{t.title}</h3>
               <p className="mt-2 text-sm text-slate-600 leading-relaxed">{t.text}</p>
             </div>
           ))}

@@ -116,11 +116,11 @@ export default function AdminFacebook() {
     <div className="min-h-screen bg-white">
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <span className="w-11 h-11 rounded-2xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
+          <span className="w-11 h-11 rounded-2xl bg-[#102B2A] text-[#187B65] flex items-center justify-center">
             <Facebook className="w-5 h-5" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-[#0c3b24] tracking-tight">Facebook AI Hub</h1>
+            <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight">Facebook AI Hub</h1>
             <p className="text-sm text-slate-500">AI posts, live highlights and Messenger auto-replies</p>
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function AdminFacebook() {
         {status && (
           <div className="mb-6 rounded-2xl border border-slate-100 bg-[#f4f7f5] px-5 py-4 flex items-center justify-between">
             <div>
-              <p className="font-bold text-[#0c3b24]">{status.page_name}</p>
+              <p className="font-bold text-[#102B2A]">{status.page_name}</p>
               <p className="text-sm text-slate-500">
                 {status.followers > 0 ? `${Number(status.followers).toLocaleString()} followers` : "Connected"}
               </p>
@@ -143,7 +143,7 @@ export default function AdminFacebook() {
                 <Button
                   size="sm"
                   onClick={toggleAutoReply}
-                  className={settings?.auto_reply_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#1d9e56] text-white hover:bg-[#17a04c]"}
+                  className={settings?.auto_reply_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#187B65] text-white hover:bg-[#125C4E]"}
                 >
                   <Power className="w-4 h-4 mr-1" />
                   {settings?.auto_reply_enabled === false ? "Off" : "On"}
@@ -154,7 +154,7 @@ export default function AdminFacebook() {
                 <Button
                   size="sm"
                   onClick={toggleAutoPost}
-                  className={settings?.auto_post_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#1d9e56] text-white hover:bg-[#17a04c]"}
+                  className={settings?.auto_post_enabled === false ? "bg-slate-200 text-slate-700 hover:bg-slate-300" : "bg-[#187B65] text-white hover:bg-[#125C4E]"}
                 >
                   <Power className="w-4 h-4 mr-1" />
                   {settings?.auto_post_enabled === false ? "Off" : "On"}
@@ -165,8 +165,8 @@ export default function AdminFacebook() {
         )}
 
         <div className="rounded-2xl border border-slate-100 p-5 mb-6">
-          <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-            <Sparkles className="w-4 h-4 text-[#1d9e56]" /> AI post generator
+          <h2 className="font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+            <Sparkles className="w-4 h-4 text-[#187B65]" /> AI post generator
           </h2>
           <div className="flex flex-col sm:flex-row gap-3 mb-3">
             <input
@@ -175,7 +175,7 @@ export default function AdminFacebook() {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
             />
-            <Button onClick={generate} disabled={busy === "draft" || !topic.trim()} className="bg-[#0c3b24] text-white hover:bg-[#0a3020]">
+            <Button onClick={generate} disabled={busy === "draft" || !topic.trim()} className="bg-[#102B2A] text-white hover:bg-[#0a3020]">
               {busy === "draft" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Draft with AI"}
             </Button>
           </div>
@@ -185,7 +185,7 @@ export default function AdminFacebook() {
                 <button
                   key={i}
                   onClick={() => setDraft(v)}
-                  className="text-xs rounded-full border border-[#1d9e56]/40 text-[#0c3b24] px-3 py-1.5 hover:bg-[#1d9e56]/10 transition-colors"
+                  className="text-xs rounded-full border border-[#187B65]/40 text-[#102B2A] px-3 py-1.5 hover:bg-[#187B65]/10 transition-colors"
                 >
                   Variation {i + 1}
                 </button>
@@ -199,17 +199,17 @@ export default function AdminFacebook() {
             onChange={(e) => setDraft(e.target.value)}
           />
           <div className="mt-3 flex items-center gap-3">
-            <Button onClick={publish} disabled={busy === "publish" || !draft.trim()} className="bg-[#1d9e56] text-white hover:bg-[#17a04c]">
+            <Button onClick={publish} disabled={busy === "publish" || !draft.trim()} className="bg-[#187B65] text-white hover:bg-[#125C4E]">
               {busy === "publish" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 mr-1" />} Publish to page
             </Button>
-            {notice && <span className="text-sm text-[#1d9e56] font-medium">{notice}</span>}
+            {notice && <span className="text-sm text-[#187B65] font-medium">{notice}</span>}
             {error && <span className="text-sm text-red-600">{error}</span>}
           </div>
         </div>
 
         <div className="rounded-2xl border border-slate-100 p-5 mb-6">
-          <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-            <BarChart3 className="w-4 h-4 text-[#1d9e56]" /> Traffic insights (last 7 days)
+          <h2 className="font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+            <BarChart3 className="w-4 h-4 text-[#187B65]" /> Traffic insights (last 7 days)
           </h2>
           {visits?.visits_7d ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -225,7 +225,7 @@ export default function AdminFacebook() {
           )}
           {visits?.visits_24h && (
             <div className="mt-4 pt-4 border-t border-slate-100">
-              <p className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Live · last 24 hours</p>
+              <p className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-2">Live · last 24 hours</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <Stat label="Site clicks" value={visits.visits_24h.total} />
                 <Stat label="From Facebook" value={visits.visits_24h.facebook} />
@@ -245,8 +245,8 @@ export default function AdminFacebook() {
         <EngagementSection />
 
         <div className="rounded-2xl border border-slate-100 p-5">
-          <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-            <MessageCircle className="w-4 h-4 text-[#1d9e56]" /> Recent AI Messenger replies
+          <h2 className="font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+            <MessageCircle className="w-4 h-4 text-[#187B65]" /> Recent AI Messenger replies
           </h2>
           {log.length === 0 ? (
             <p className="text-sm text-slate-500">
@@ -257,14 +257,14 @@ export default function AdminFacebook() {
               {log.map((entry) => (
                 <div key={entry.id} className="rounded-xl bg-[#f4f7f5] p-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-sm font-semibold text-[#0c3b24]">{entry.sender_name}</p>
+                    <p className="text-sm font-semibold text-[#102B2A]">{entry.sender_name}</p>
                     {entry.lead_captured && (
-                      <span className="rounded-full bg-[#1d9e56]/15 px-2 py-0.5 text-[11px] font-bold text-[#0c3b24]">Booking captured</span>
+                      <span className="rounded-full bg-[#187B65]/15 px-2 py-0.5 text-[11px] font-bold text-[#102B2A]">Booking captured</span>
                     )}
                   </div>
                   <p className="text-sm text-slate-600 mt-1">{entry.message_text}</p>
                   {entry.reply_text ? (
-                    <p className="text-sm text-slate-700 mt-2 pl-3 border-l-2 border-[#1d9e56]">{entry.reply_text}</p>
+                    <p className="text-sm text-slate-700 mt-2 pl-3 border-l-2 border-[#187B65]">{entry.reply_text}</p>
                   ) : (
                     <p className="text-xs text-red-600 mt-2">Send failed: {entry.error}</p>
                   )}
@@ -282,7 +282,7 @@ function Stat({ label, value }) {
   return (
     <div className="rounded-xl bg-[#f4f7f5] px-4 py-3">
       <p className="text-xs font-semibold text-slate-500">{label}</p>
-      <p className="text-xl font-bold text-[#0c3b24]">{Number(value || 0).toLocaleString()}</p>
+      <p className="text-xl font-bold text-[#102B2A]">{Number(value || 0).toLocaleString()}</p>
     </div>
   );
 }

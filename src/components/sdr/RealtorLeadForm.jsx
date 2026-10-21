@@ -29,12 +29,12 @@ export default function RealtorLeadForm() {
   if (done) {
     return (
       <div className="rounded-3xl bg-white p-10 border border-slate-100 text-center">
-        <CheckCircle2 className="w-14 h-14 text-[#1d9e56] mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-[#0c3b24]">Got it — we'll be in touch</h3>
+        <CheckCircle2 className="w-14 h-14 text-[#187B65] mx-auto mb-4" />
+        <h3 className="text-2xl font-bold text-[#102B2A]">Got it — we'll be in touch</h3>
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           We'll call you within 30 minutes with an upfront quote for the cleanout. Urgent listing? Call (604) 849-1745 and mention it's for a listing.
         </p>
-        <button onClick={() => { setDone(false); setForm({ agent_name: "", brokerage: "", email: "", phone: "", city: "", property_address: "", items_description: "", preferred_date: "" }); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
+        <button onClick={() => { setDone(false); setForm({ agent_name: "", brokerage: "", email: "", phone: "", city: "", property_address: "", items_description: "", preferred_date: "" }); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
           Submit another property
         </button>
       </div>
@@ -43,7 +43,7 @@ export default function RealtorLeadForm() {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-3xl bg-white p-6 md:p-8 border border-slate-100 shadow-sm">
-      <h3 className="text-2xl font-bold text-[#0c3b24]">Tell us about the cleanout</h3>
+      <h3 className="text-2xl font-bold text-[#102B2A]">Tell us about the cleanout</h3>
       <p className="text-sm text-slate-500 mt-1 mb-6">Two minutes. We call you back within 30 minutes with an upfront price.</p>
       <div className="space-y-4">
         <div className="grid sm:grid-cols-2 gap-4">
@@ -81,7 +81,7 @@ export default function RealtorLeadForm() {
         </Field>
       </div>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      <button disabled={submitting} className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+      <button disabled={submitting} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
         {submitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending…</> : "Send the lead"}
       </button>
       <p className="mt-3 text-xs text-slate-500 text-center">Upfront flat pricing, approved before we lift a thing. One invoice — bill the estate, the seller, or yourself.</p>
@@ -92,7 +92,7 @@ export default function RealtorLeadForm() {
 function Field({ label, required, children }) {
   return (
     <label className="block">
-      <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">{label}{required && <span className="text-[#1d9e56]"> *</span>}</span>
+      <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">{label}{required && <span className="text-[#187B65]"> *</span>}</span>
       {children}
     </label>
   );

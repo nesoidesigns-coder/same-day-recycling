@@ -14,6 +14,7 @@ import NationalCoverage from "@/components/sdr/NationalCoverage";
 import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import Reviews from "@/components/sdr/Reviews";
 import EnvironmentalImpact from "@/components/sdr/EnvironmentalImpact";
+import BusinessSolutions from "@/components/sdr/BusinessSolutions";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
@@ -40,6 +41,7 @@ export default function Home() {
       <NationalCoverage />
       <RecyclingCentersMap showSelector />
       <EnvironmentalImpact />
+      <BusinessSolutions />
       <Reviews />
       <FAQ />
       <FinalCTA />

@@ -55,7 +55,7 @@ export default function RecyclingDirectory() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <TopBar />
       <Navbar />
-      <div className="bg-[#0c3b24] text-white">
+      <div className="bg-[#102B2A] text-white">
         <div className="max-w-5xl mx-auto px-4 py-10">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Recycling services across Canada</h1>
           <p className="text-emerald-100/70 mt-2 max-w-2xl text-sm leading-relaxed">
@@ -76,7 +76,7 @@ export default function RecyclingDirectory() {
               <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Postal code, city, or province" className="input !bg-white pl-10" />
             </div>
-            <button type="submit" className="rounded-xl bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors">Search</button>
+            <button type="submit" className="rounded-xl bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors">Search</button>
           </form>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function RecyclingDirectory() {
                 {p.accepted_categories?.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {p.accepted_categories.slice(0, 4).map((k) => (
-                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#0c3b24] px-2.5 py-1 text-[10px] font-bold">{CATEGORY_LABELS[k] || k}</span>
+                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#102B2A] px-2.5 py-1 text-[10px] font-bold">{CATEGORY_LABELS[k] || k}</span>
                     ))}
                     {p.accepted_categories.length > 4 && <span className="rounded-full bg-slate-100 text-slate-500 px-2.5 py-1 text-[10px] font-bold">+{p.accepted_categories.length - 4} more</span>}
                   </div>

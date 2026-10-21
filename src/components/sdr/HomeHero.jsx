@@ -26,18 +26,18 @@ export default function HomeHero() {
   };
 
   return (
-    <section id="top" className="relative bg-[#0c3b24] text-white overflow-hidden">
-      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#1d9e56]/20 blur-3xl pointer-events-none" />
+    <section id="top" className="relative bg-[#102B2A] text-white overflow-hidden">
+      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#187B65]/20 blur-3xl pointer-events-none" />
       <div className="relative max-w-5xl mx-auto px-4 py-12 md:py-20 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-xs font-bold tracking-[0.14em] uppercase text-emerald-100/90">
-          <Network className="w-3.5 h-3.5 text-[#1d9e56]" />
-          Canada's Recycling Services Network
+          <Network className="w-3.5 h-3.5 text-[#187B65]" />
+          Canada's Recycling Service Network
         </div>
         <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
-          Recycling Services. Connected Across Canada.
+          Recycling Services, Connected Across Canada.
         </h1>
         <p className="mt-4 text-base md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-          Find recycling services, discover material recovery options, and connect with providers serving your community.
+          Find trusted recycling and removal services, request pickups, and manage your recycling needs through one intelligent platform.
         </p>
 
         {/* Primary: national search */}
@@ -67,20 +67,26 @@ export default function HomeHero() {
             </div>
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#1d9e56] text-[#0c3b24] font-bold text-base uppercase tracking-wide px-6 py-3.5 hover:bg-[#25b96b] transition-colors"
+              className="w-full rounded-xl bg-[#187B65] text-[#102B2A] font-bold text-base uppercase tracking-wide px-6 py-3.5 hover:bg-[#1FA184] transition-colors"
             >
               Find Recycling Services
             </button>
           </div>
         </form>
 
-        {/* Secondary action */}
-        <div className="mt-4 flex justify-center">
+        {/* Secondary actions */}
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
           <button
-            onClick={() => navigate("/coverage")}
+            onClick={() => document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" })}
             className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors"
           >
-            Explore the National Network <ArrowRight className="w-4 h-4 text-[#1d9e56]" />
+            Get a Quote
+          </button>
+          <button
+            onClick={() => navigate("/software")}
+            className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors"
+          >
+            Explore Business Solutions <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
           </button>
         </div>
 
@@ -100,14 +106,14 @@ export default function HomeHero() {
         </div>
 
         <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-semibold text-emerald-100/75">
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#1d9e56]" /> Verified providers only</span>
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#1d9e56]" /> Coverage shown only where confirmed</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Verified providers only</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Coverage shown only where confirmed</span>
         </div>
 
         <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-2 text-sm text-emerald-100/75">
           <span>One Country. One Network. A Smarter Way to Recycle.</span>
-          <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 font-semibold text-white hover:text-[#1d9e56] transition-colors">
-            <Phone className="w-4 h-4 text-[#1d9e56]" /> (604) 849-1745
+          <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 font-semibold text-white hover:text-[#187B65] transition-colors">
+            <Phone className="w-4 h-4 text-[#187B65]" /> (604) 849-1745
           </a>
         </div>
       </div>

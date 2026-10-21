@@ -13,12 +13,12 @@ const DOC_LABELS = [
 const STATUS_STYLES = {
   new: "bg-slate-700 text-slate-200",
   ai_reviewed: "bg-amber-500/20 text-amber-300",
-  approved: "bg-[#1d9e56]/20 text-[#1d9e56]",
+  approved: "bg-[#187B65]/20 text-[#187B65]",
   declined: "bg-red-500/20 text-red-300",
 };
 
 const VERDICT_ICONS = {
-  pass: { icon: ShieldCheck, cls: "text-[#1d9e56]" },
+  pass: { icon: ShieldCheck, cls: "text-[#187B65]" },
   needs_attention: { icon: AlertTriangle, cls: "text-amber-400" },
   fail: { icon: XCircle, cls: "text-red-400" },
 };
@@ -63,7 +63,7 @@ export default function AdminApplications() {
   if (!apps) {
     return (
       <div className="admin-console min-h-screen flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -76,11 +76,11 @@ export default function AdminApplications() {
             <h1 className="admin-headline text-2xl md:text-3xl font-bold tracking-tight">Contractor Applications</h1>
             <p className="text-sm text-emerald-100/50 mt-1">AI pre-checked applications awaiting your approval.</p>
           </div>
-          <div className="text-sm font-bold text-[#1d9e56]">{apps.length} total</div>
+          <div className="text-sm font-bold text-[#187B65]">{apps.length} total</div>
         </div>
 
         {apps.length === 0 && (
-          <div className="rounded-2xl border border-[#1d9e56]/20 bg-[#0c3b24]/40 p-10 text-center text-sm text-emerald-100/50">
+          <div className="rounded-2xl border border-[#187B65]/20 bg-[#102B2A]/40 p-10 text-center text-sm text-emerald-100/50">
             No applications yet. New contractor signups from /contractor-onboarding appear here.
           </div>
         )}
@@ -90,7 +90,7 @@ export default function AdminApplications() {
             const verdict = VERDICT_ICONS[app.ai_verdict] || VERDICT_ICONS.needs_attention;
             const VerdictIcon = verdict.icon;
             return (
-              <div key={app.id} className="rounded-2xl border border-[#1d9e56]/20 bg-[#0c3b24]/40 p-5">
+              <div key={app.id} className="rounded-2xl border border-[#187B65]/20 bg-[#102B2A]/40 p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
@@ -106,11 +106,11 @@ export default function AdminApplications() {
                   </div>
                   <div className="flex items-center gap-2">
                     {busyId === app.id ? (
-                      <Loader2 className="w-5 h-5 text-[#1d9e56] animate-spin" />
+                      <Loader2 className="w-5 h-5 text-[#187B65] animate-spin" />
                     ) : (
                       <>
                         {app.status !== "approved" && (
-                          <button onClick={() => setStatus(app, "approved")} className="rounded-full bg-[#1d9e56] text-[#032015] font-bold px-4 py-2 text-xs hover:bg-[#25b96b] transition-colors flex items-center gap-1.5">
+                          <button onClick={() => setStatus(app, "approved")} className="rounded-full bg-[#187B65] text-[#032015] font-bold px-4 py-2 text-xs hover:bg-[#1FA184] transition-colors flex items-center gap-1.5">
                             <Check className="w-3.5 h-3.5" /> Approve
                           </button>
                         )}
@@ -125,7 +125,7 @@ export default function AdminApplications() {
                 </div>
 
                 {(app.ai_summary || app.ai_issues?.length > 0) && (
-                  <div className="mt-4 rounded-xl border border-[#1d9e56]/20 bg-[#051511]/60 p-4">
+                  <div className="mt-4 rounded-xl border border-[#187B65]/20 bg-[#051511]/60 p-4">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-100/60">
                       <VerdictIcon className={`w-4 h-4 ${verdict.cls}`} /> AI document check · {app.ai_verdict?.replace("_", " ")}
                     </div>
@@ -149,7 +149,7 @@ export default function AdminApplications() {
                       key={field}
                       onClick={() => viewDoc(app[field])}
                       disabled={openingUri === app[field]}
-                      className="rounded-full border border-[#1d9e56]/30 bg-[#051511]/60 px-3 py-1.5 text-xs font-semibold text-emerald-100/80 hover:border-[#1d9e56] transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                      className="rounded-full border border-[#187B65]/30 bg-[#051511]/60 px-3 py-1.5 text-xs font-semibold text-emerald-100/80 hover:border-[#187B65] transition-colors flex items-center gap-1.5 disabled:opacity-50"
                     >
                       {openingUri === app[field] ? <Loader2 className="w-3 h-3 animate-spin" /> : <ExternalLink className="w-3 h-3" />}
                       {label}

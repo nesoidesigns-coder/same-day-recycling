@@ -51,8 +51,8 @@ export default function WeightCalculator({ onBook }) {
     <section id="weight-calculator" className="bg-[#f4f7f5]">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
         <div className="max-w-2xl mb-12">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Weight-based pricing</div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Price your load by weight</h2>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Weight-based pricing</div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Price your load by weight</h2>
           <p className="mt-4 text-slate-600">
             Tap the items you're getting rid of — we estimate the weight for you and map it to a published weight band,
             so you see your transparent price before booking.
@@ -61,7 +61,7 @@ export default function WeightCalculator({ onBook }) {
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           <div className="rounded-3xl border border-slate-100 bg-white p-6 md:p-8">
             <label className="block mb-6">
-              <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Your city</span>
+              <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Your city</span>
               <select value={city} onChange={(e) => setCity(e.target.value)} className="input">
                 <option value="">Standard rates (any city)</option>
                 {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
@@ -71,46 +71,46 @@ export default function WeightCalculator({ onBook }) {
               {ITEMS.map((it) => (
                 <div key={it.name} className="flex items-center justify-between bg-[#f4f7f5] rounded-xl border border-slate-100 px-3 py-2">
                   <div className="min-w-0">
-                    <div className="text-sm font-medium text-[#0c3b24] truncate">{it.name}</div>
+                    <div className="text-sm font-medium text-[#102B2A] truncate">{it.name}</div>
                     <div className="text-[11px] font-semibold text-slate-400">~{it.lbs} lbs each</div>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button type="button" onClick={() => bump(it.name, -1)} aria-label={`Remove ${it.name}`} className="w-7 h-7 rounded-full bg-white hover:bg-slate-200 flex items-center justify-center">
                       <span className="text-slate-600 font-bold text-sm leading-none">−</span>
                     </button>
-                    <span className="w-5 text-center text-sm font-bold text-[#0c3b24]">{qty[it.name] || 0}</span>
-                    <button type="button" onClick={() => bump(it.name, 1)} aria-label={`Add ${it.name}`} className="w-7 h-7 rounded-full bg-[#1d9e56]/15 hover:bg-[#1d9e56]/30 flex items-center justify-center">
-                      <span className="text-[#1d9e56] font-bold text-sm leading-none">+</span>
+                    <span className="w-5 text-center text-sm font-bold text-[#102B2A]">{qty[it.name] || 0}</span>
+                    <button type="button" onClick={() => bump(it.name, 1)} aria-label={`Add ${it.name}`} className="w-7 h-7 rounded-full bg-[#187B65]/15 hover:bg-[#187B65]/30 flex items-center justify-center">
+                      <span className="text-[#187B65] font-bold text-sm leading-none">+</span>
                     </button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-3xl bg-[#0c3b24] text-white p-8 md:p-10">
+          <div className="rounded-3xl bg-[#102B2A] text-white p-8 md:p-10">
             {weight <= 0 ? (
               <div className="text-center py-10">
-                <Scale className="w-10 h-10 text-[#1d9e56] mx-auto mb-4" />
+                <Scale className="w-10 h-10 text-[#187B65] mx-auto mb-4" />
                 <p className="text-slate-300">Add items and your weight-based estimate appears here.</p>
               </div>
             ) : (
               <div>
-                <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Your load</div>
+                <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Your load</div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl md:text-5xl font-bold tracking-tight">~{weight.toLocaleString()} lbs</span>
-                  {loading && <Loader2 className="w-5 h-5 animate-spin text-[#1d9e56]" />}
+                  {loading && <Loader2 className="w-5 h-5 animate-spin text-[#187B65]" />}
                 </div>
                 {overFull ? (
                   <>
-                    <div className="mt-3 inline-block rounded-full bg-[#1d9e56]/20 text-[#1d9e56] font-semibold px-4 py-1.5 text-sm">More than a full truck</div>
+                    <div className="mt-3 inline-block rounded-full bg-[#187B65]/20 text-[#187B65] font-semibold px-4 py-1.5 text-sm">More than a full truck</div>
                     <p className="mt-5 text-slate-300 text-sm">That's a multi-truck job — call (604) 849-1745 and we'll quote it in minutes.</p>
                   </>
                 ) : (
                   <>
                     {quote ? (
                       <>
-                        <div className="mt-4 text-2xl md:text-3xl font-bold tracking-tight text-[#1d9e56]">{quote.range}</div>
-                        <div className="mt-3 inline-block rounded-full bg-[#1d9e56]/20 text-[#1d9e56] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
+                        <div className="mt-4 text-2xl md:text-3xl font-bold tracking-tight text-[#187B65]">{quote.range}</div>
+                        <div className="mt-3 inline-block rounded-full bg-[#187B65]/20 text-[#187B65] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
                       </>
                     ) : (
                       <div className="mt-4 text-2xl font-bold text-slate-400">Calculating…</div>
@@ -118,7 +118,7 @@ export default function WeightCalculator({ onBook }) {
                     <p className="mt-5 text-slate-300 text-sm">Weight estimates are approximate — final price is confirmed on arrival before we lift a thing, and you pay less if the load takes less space.</p>
                     <button
                       onClick={() => onBook({ items_text: itemsText, estimate_text: quote ? `${quote.range} (${quote.label}), ~${weight.toLocaleString()} lbs` : `~${weight.toLocaleString()} lbs`, city })}
-                      className="mt-8 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 hover:bg-[#17a04c] transition-colors flex items-center justify-center gap-2"
+                      className="mt-8 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors flex items-center justify-center gap-2"
                     >
                       Book this pickup <ArrowRight className="w-5 h-5" />
                     </button>

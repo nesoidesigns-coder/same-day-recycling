@@ -8,8 +8,8 @@ export default function AiMascot({ size = 44, className = "" }) {
       className={`relative inline-block shrink-0 mascot-float ${className}`}
       style={{ width: size, height: size }}
     >
-      <span className="absolute -inset-1 rounded-full bg-[#1d9e56]/50 blur-[6px] mascot-glow"></span>
-      <span className="relative block w-full h-full overflow-hidden rounded-full border-2 border-[#1d9e56]">
+      <span className="absolute -inset-1 rounded-full bg-[#187B65]/50 blur-[6px] mascot-glow"></span>
+      <span className="relative block w-full h-full overflow-hidden rounded-full border-2 border-[#187B65]">
         <Image
           src={MASCOT_URL}
           originWidth={480}

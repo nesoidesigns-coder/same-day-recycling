@@ -26,8 +26,8 @@ export default function TerritoryCard() {
 
   if (!data) {
     return (
-      <div className="relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm p-8 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-[#1d9e56] animate-spin" />
+      <div className="relative overflow-hidden rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm p-8 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -39,20 +39,20 @@ export default function TerritoryCard() {
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 bg-[#0c3b24]/50 backdrop-blur-sm">
-      <div className="holo-scan absolute top-0 left-0 right-0 h-px bg-[#1d9e56]/50" />
-      <div className="px-6 py-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#1d9e56]/20">
+    <div className="relative overflow-hidden rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm">
+      <div className="holo-scan absolute top-0 left-0 right-0 h-px bg-[#187B65]/50" />
+      <div className="px-6 py-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#187B65]/20">
         <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-[#1d9e56]" />
+          <MapPin className="w-5 h-5 text-[#187B65]" />
           <span className="font-bold text-white tracking-tight">Territory: {data.city || "—"}</span>
         </div>
-        <span className="text-[#1d9e56] text-[10px] font-bold uppercase tracking-[0.25em] holo-flicker">Same Day Recycling Network</span>
+        <span className="text-[#187B65] text-[10px] font-bold uppercase tracking-[0.25em] holo-flicker">Same Day Recycling Network</span>
       </div>
-      <div className="grid grid-cols-3 divide-x divide-[#1d9e56]/15">
+      <div className="grid grid-cols-3 divide-x divide-[#187B65]/15">
         {stats.map((s) => (
           <div key={s.sub} className="p-6 text-center">
-            <s.icon className="w-5 h-5 mx-auto text-[#1d9e56]" />
-            <div className={`text-2xl font-bold mt-2 tabular-nums ${s.glow ? "text-[#1d9e56] holo-glow-text" : "text-white"}`}>{s.value}</div>
+            <s.icon className="w-5 h-5 mx-auto text-[#187B65]" />
+            <div className={`text-2xl font-bold mt-2 tabular-nums ${s.glow ? "text-[#187B65] holo-glow-text" : "text-white"}`}>{s.value}</div>
             <div className={`${label} mt-1`}>{s.sub}</div>
           </div>
         ))}

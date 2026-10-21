@@ -43,11 +43,11 @@ export default function ActiveBookingsMap() {
     <section className="bg-white py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1d9e56]/10 px-4 py-1.5 text-sm font-semibold text-[#0c3b24]">
-            <Radio className="w-4 h-4 text-[#1d9e56]" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-sm font-semibold text-[#102B2A]">
+            <Radio className="w-4 h-4 text-[#187B65]" />
             Live activity
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#0c3b24] tracking-tight">
+          <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">
             Live bookings on the map
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
@@ -58,7 +58,7 @@ export default function ActiveBookingsMap() {
         <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm h-[380px] md:h-[480px] relative z-0">
           {points === null ? (
             <div className="w-full h-full flex items-center justify-center bg-[#f4f7f5]">
-              <div className="w-8 h-8 border-4 border-slate-200 border-t-[#1d9e56] rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-4 border-slate-200 border-t-[#187B65] rounded-full animate-spin"></div>
             </div>
           ) : (
             <MapContainer
@@ -77,8 +77,8 @@ export default function ActiveBookingsMap() {
                   center={[p.lat, p.lng]}
                   radius={p.status === "completed" ? 7 : 9}
                   pathOptions={{
-                    color: "#0c3b24",
-                    fillColor: p.status === "completed" ? "#1d9e56" : "#0c3b24",
+                    color: "#102B2A",
+                    fillColor: p.status === "completed" ? "#187B65" : "#102B2A",
                     fillOpacity: p.status === "completed" ? 0.95 : 0.85,
                     weight: 2,
                   }}

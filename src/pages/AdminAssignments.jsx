@@ -15,10 +15,10 @@ export default function AdminAssignments() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#0c3b24] tracking-tight mb-1">Assignments</h1>
+      <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight mb-1">Assignments</h1>
       <p className="text-sm text-slate-500 mb-6">Route unassigned jobs to partner contractors by territory.</p>
       {partners === null ? (
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-12" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-12" />
       ) : (
         <AssignTab partners={partners} />
       )}

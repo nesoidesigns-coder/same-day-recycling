@@ -53,12 +53,12 @@ export default function AdminPayouts() {
   if (failed) {
     return <p className="rounded-2xl bg-red-50 text-red-700 p-6 font-semibold">Could not load payout data. Refresh and try again.</p>;
   }
-  if (!data) return <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-20" />;
+  if (!data) return <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-20" />;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-[#0c3b24] tracking-tight">Financial Control</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] tracking-tight">Financial Control</h1>
         <p className="text-sm text-slate-500 mt-1">Booking value, partner earnings and platform revenue — calculated from booking records only</p>
       </div>
 
@@ -70,7 +70,7 @@ export default function AdminPayouts() {
       </div>
 
       <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
-        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#0c3b24] mb-1">Payouts by partner</h2>
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A] mb-1">Payouts by partner</h2>
         <p className="text-xs text-slate-500 mb-4">Partner share: 75% of job value · Referral retained: 25%</p>
         {data.rows.length === 0 ? (
           <p className="text-slate-500 text-sm py-6 text-center">No completed jobs yet — payouts appear here as jobs are completed.</p>
@@ -79,19 +79,19 @@ export default function AdminPayouts() {
             {data.rows.map((r) => (
               <div key={r.name} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#f6f8f7] px-4 py-3">
                 <div>
-                  <div className="font-bold text-[#0c3b24] text-sm">{r.name || "Unassigned"}</div>
+                  <div className="font-bold text-[#102B2A] text-sm">{r.name || "Unassigned"}</div>
                   <div className="text-xs text-slate-500">{r.jobs} completed job{r.jobs === 1 ? "" : "s"}</div>
                 </div>
                 <div className="flex flex-wrap gap-x-5 gap-y-1 text-right text-sm">
-                  <span><span className="text-xs text-slate-400 font-semibold">Booked </span><span className="font-bold text-[#0c3b24]">{money(r.revenue)}</span></span>
-                  <span><span className="text-xs text-slate-400 font-semibold">Partner </span><span className="font-bold text-[#1d9e56]">{money(r.revenue * PARTNER_SHARE)}</span></span>
-                  <span><span className="text-xs text-slate-400 font-semibold">Paid </span><span className="font-bold text-[#0c3b24]">{money(r.paid * PARTNER_SHARE)}</span></span>
+                  <span><span className="text-xs text-slate-400 font-semibold">Booked </span><span className="font-bold text-[#102B2A]">{money(r.revenue)}</span></span>
+                  <span><span className="text-xs text-slate-400 font-semibold">Partner </span><span className="font-bold text-[#187B65]">{money(r.revenue * PARTNER_SHARE)}</span></span>
+                  <span><span className="text-xs text-slate-400 font-semibold">Paid </span><span className="font-bold text-[#102B2A]">{money(r.paid * PARTNER_SHARE)}</span></span>
                   <span><span className="text-xs text-slate-400 font-semibold">Owed </span><span className="font-bold text-amber-600">{money(r.unpaid * PARTNER_SHARE)}</span></span>
                 </div>
                 <button
                   onClick={() => markPaid(r.name)}
                   disabled={!r.unpaid}
-                  className="rounded-full bg-[#0c3b24] text-white font-bold px-4 py-2 text-xs hover:bg-[#0a3020] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                  className="rounded-full bg-[#102B2A] text-white font-bold px-4 py-2 text-xs hover:bg-[#0a3020] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
                 >
                   <DollarSign className="w-3.5 h-3.5" /> Mark paid
                 </button>
@@ -103,8 +103,8 @@ export default function AdminPayouts() {
 
       <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
         <div className="flex items-center gap-2 mb-4">
-          <History className="w-4 h-4 text-[#1d9e56]" />
-          <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#0c3b24]">Payout history</h2>
+          <History className="w-4 h-4 text-[#187B65]" />
+          <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A]">Payout history</h2>
           <span className="text-xs text-slate-400">Verified paid records only</span>
         </div>
         {data.history.length === 0 ? (
@@ -124,11 +124,11 @@ export default function AdminPayouts() {
               <tbody className="divide-y divide-slate-100">
                 {data.history.map((b) => (
                   <tr key={b.id}>
-                    <td className="py-2.5 px-2 font-semibold text-[#0c3b24]">{b.name}</td>
+                    <td className="py-2.5 px-2 font-semibold text-[#102B2A]">{b.name}</td>
                     <td className="py-2.5 px-2 text-slate-600">{b.partner_name || "—"}</td>
                     <td className="py-2.5 px-2 text-slate-500">{b.preferred_date || "—"}</td>
-                    <td className="py-2.5 px-2 text-right text-[#0c3b24] font-semibold">{money(b.job_value)}</td>
-                    <td className="py-2.5 px-2 text-right text-[#1d9e56] font-bold">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</td>
+                    <td className="py-2.5 px-2 text-right text-[#102B2A] font-semibold">{money(b.job_value)}</td>
+                    <td className="py-2.5 px-2 text-right text-[#187B65] font-bold">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</td>
                   </tr>
                 ))}
               </tbody>

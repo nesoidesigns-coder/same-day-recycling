@@ -7,11 +7,11 @@ const items = [
 
 export default function TrustBar() {
   return (
-    <section className="bg-gold text-[#0c3b24]">
+    <section className="bg-gold text-[#102B2A]">
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
         {items.map((b) => (
           <div key={b} className="flex items-center gap-2 text-sm md:text-base font-bold">
-            <span className="w-2 h-2 rounded-full bg-[#0c3b24]" />
+            <span className="w-2 h-2 rounded-full bg-[#102B2A]" />
             {b}
           </div>
         ))}

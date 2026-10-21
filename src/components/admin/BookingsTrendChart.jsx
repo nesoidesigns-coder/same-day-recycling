@@ -1,7 +1,7 @@
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#1d9e56]/25 holo-panel-deep backdrop-blur-sm p-4";
-const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d9e56]/90";
+const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 holo-panel-deep backdrop-blur-sm p-4";
+const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]/90";
 
 export default function BookingsTrendChart({ bookings }) {
   const days = [];
@@ -18,16 +18,16 @@ export default function BookingsTrendChart({ bookings }) {
       <p className={`${label} mb-3`}>Bookings per day (last 14 days)</p>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(29,158,86,0.15)" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(24,123,101,0.15)" vertical={false} />
           <XAxis dataKey="date" fontSize={10} interval={1} tickMargin={6} stroke="#7fd8a8" tick={{ fill: "#a7f3d0", opacity: 0.6 }} />
           <YAxis fontSize={11} allowDecimals={false} width={28} stroke="#7fd8a8" tick={{ fill: "#a7f3d0", opacity: 0.6 }} />
           <Tooltip
             formatter={(v) => [v, "Bookings"]}
-            cursor={{ fill: "rgba(29,158,86,0.1)" }}
-            contentStyle={{ background: "#06251a", border: "1px solid rgba(29,158,86,0.4)", borderRadius: 12, color: "#ecfdf5" }}
+            cursor={{ fill: "rgba(24,123,101,0.1)" }}
+            contentStyle={{ background: "#06251a", border: "1px solid rgba(24,123,101,0.4)", borderRadius: 12, color: "#ecfdf5" }}
             itemStyle={{ color: "#ecfdf5" }}
           />
-          <Bar dataKey="bookings" fill="#1d9e56" radius={[4, 4, 0, 0]} name="Bookings" />
+          <Bar dataKey="bookings" fill="#187B65" radius={[4, 4, 0, 0]} name="Bookings" />
         </BarChart>
       </ResponsiveContainer>
     </div>

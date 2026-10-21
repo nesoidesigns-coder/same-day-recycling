@@ -80,7 +80,7 @@ export default function AdminSoftware() {
   if (loading) {
     return (
       <div className="admin-console min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -91,14 +91,14 @@ export default function AdminSoftware() {
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-6">
-          <span className="w-11 h-11 rounded-2xl bg-[#1d9e56]/15 text-[#1d9e56] flex items-center justify-center">
+          <span className="w-11 h-11 rounded-2xl bg-[#187B65]/15 text-[#187B65] flex items-center justify-center">
             <Cpu className="w-5 h-5" />
           </span>
           <div>
             <h1 className="text-2xl font-bold tracking-tight admin-headline">Software Command Centre</h1>
             <p className="text-sm text-emerald-100/60">National operations intelligence across every licensed company instance</p>
           </div>
-          <Link to="/software" className="ml-auto hidden sm:inline-block rounded-full border border-[#1d9e56]/40 text-[#a8f0cc] font-bold px-5 py-2 text-sm hover:bg-[#1d9e56]/10 transition-colors">
+          <Link to="/software" className="ml-auto hidden sm:inline-block rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-5 py-2 text-sm hover:bg-[#187B65]/10 transition-colors">
             Sales page &rarr;
           </Link>
         </div>
@@ -110,8 +110,8 @@ export default function AdminSoftware() {
               onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-colors border ${
                 tab === t.key
-                  ? "bg-[#1d9e56] text-[#0c3b24] border-[#1d9e56]"
-                  : "bg-transparent text-emerald-100/60 border-[#1d9e56]/25 hover:text-[#a8f0cc] hover:bg-[#1d9e56]/10"
+                  ? "bg-[#187B65] text-[#102B2A] border-[#187B65]"
+                  : "bg-transparent text-emerald-100/60 border-[#187B65]/25 hover:text-[#54D9AE] hover:bg-[#187B65]/10"
               }`}
             >
               <t.icon className="w-4 h-4" />

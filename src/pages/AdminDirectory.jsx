@@ -47,7 +47,7 @@ export default function AdminDirectory() {
 
   if (providers === null) {
     return (
-      <div className="min-h-screen admin-console flex items-center justify-center"><Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" /></div>
+      <div className="min-h-screen admin-console flex items-center justify-center"><Loader2 className="w-8 h-8 text-[#187B65] animate-spin" /></div>
     );
   }
 

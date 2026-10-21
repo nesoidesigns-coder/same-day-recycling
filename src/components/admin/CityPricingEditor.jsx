@@ -53,12 +53,12 @@ export default function CityPricingEditor() {
     setSaving(false);
   };
 
-  if (!values) return <Loader2 className="w-6 h-6 text-[#1d9e56] animate-spin mx-auto my-8" />;
+  if (!values) return <Loader2 className="w-6 h-6 text-[#187B65] animate-spin mx-auto my-8" />;
 
   return (
     <div className="max-w-xl">
       <label className="block mb-5">
-        <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">City</span>
+        <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">City</span>
         <input
           value={cityKey}
           onChange={(e) => setCityKey(e.target.value)}
@@ -74,7 +74,7 @@ export default function CityPricingEditor() {
       <div className="space-y-4">
         {RATE_FIELDS.map(([key, label]) => (
           <label key={key} className="flex items-center justify-between gap-4">
-            <span className="text-sm font-semibold text-[#0c3b24]">{label}</span>
+            <span className="text-sm font-semibold text-[#102B2A]">{label}</span>
             <div className="flex items-center gap-2">
               <span className="text-slate-500">$</span>
               <input
@@ -88,7 +88,7 @@ export default function CityPricingEditor() {
             </div>
           </label>
         ))}
-        <button onClick={save} disabled={saving} className="w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-3 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+        <button onClick={save} disabled={saving} className="w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-3 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
           {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : saved ? <CheckCircle2 className="w-5 h-5" /> : null}
           {saving ? "Saving…" : saved ? "Saved" : `Save ${cityKey || "default"} rates`}
         </button>

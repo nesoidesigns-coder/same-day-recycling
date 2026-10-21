@@ -62,7 +62,7 @@ export default function AdminPricing() {
   if (role === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -70,8 +70,8 @@ export default function AdminPricing() {
   if (role !== "admin") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-4 text-center">
-        <Lock className="w-10 h-10 text-[#1d9e56]" />
-        <h1 className="text-2xl font-bold text-[#0c3b24]">Admins only</h1>
+        <Lock className="w-10 h-10 text-[#187B65]" />
+        <h1 className="text-2xl font-bold text-[#102B2A]">Admins only</h1>
         <p className="text-slate-600">You need an admin account to edit pricing.</p>
       </div>
     );
@@ -81,10 +81,10 @@ export default function AdminPricing() {
     <div className="min-h-screen bg-[#f4f7f5]">
       <div className="max-w-xl mx-auto px-4 py-16">
         <div className="mb-8">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-2">Admin</div>
-          <h1 className="text-3xl font-bold text-[#0c3b24]">Pricing settings</h1>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-2">Admin</div>
+          <h1 className="text-3xl font-bold text-[#102B2A]">Pricing settings</h1>
           <p className="text-slate-600 mt-2 text-sm">Placeholder rates — used by the instant quote calculator and the AI chat. Final price is always confirmed on arrival.</p>
-          <Link to="/admin/jobs" className="inline-block mt-3 text-sm font-semibold text-[#1d9e56] hover:underline">Dispatch, partners &amp; payouts →</Link>
+          <Link to="/admin/jobs" className="inline-block mt-3 text-sm font-semibold text-[#187B65] hover:underline">Dispatch, partners &amp; payouts →</Link>
         </div>
         {!row && !Object.keys(values).length ? (
           <p className="text-slate-600">Loading settings…</p>
@@ -92,7 +92,7 @@ export default function AdminPricing() {
           <div className="rounded-3xl bg-white border border-slate-100 p-6 md:p-8 space-y-4">
             {FIELDS.map(([key, label]) => (
               <label key={key} className="flex items-center justify-between gap-4">
-                <span className="text-sm font-semibold text-[#0c3b24]">{label}</span>
+                <span className="text-sm font-semibold text-[#102B2A]">{label}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-slate-500">$</span>
                   <input
@@ -105,7 +105,7 @@ export default function AdminPricing() {
                 </div>
               </label>
             ))}
-            <button onClick={save} disabled={saving} className="w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-3.5 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+            <button onClick={save} disabled={saving} className="w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-3.5 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : saved ? <CheckCircle2 className="w-5 h-5" /> : null}
               {saving ? "Saving…" : saved ? "Saved" : "Save prices"}
             </button>

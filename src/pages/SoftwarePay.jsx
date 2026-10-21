@@ -60,10 +60,10 @@ export default function SoftwarePay() {
     <div className="min-h-screen bg-[#f4f7f5]">
       <div className="max-w-lg mx-auto px-4 py-10">
         <div className="flex items-center gap-2 justify-center mb-8">
-          <span className="w-10 h-10 rounded-xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
+          <span className="w-10 h-10 rounded-xl bg-[#102B2A] text-[#187B65] flex items-center justify-center">
             <Recycle className="w-5 h-5" />
           </span>
-          <span className="font-bold text-[#0c3b24] text-lg">Same Day Recycling OS</span>
+          <span className="font-bold text-[#102B2A] text-lg">Same Day Recycling OS</span>
         </div>
 
         {loading || verifying ? (
@@ -77,7 +77,7 @@ export default function SoftwarePay() {
         ) : (
           <div className="space-y-5">
             <div className="rounded-3xl bg-white border border-slate-100 p-6 text-center">
-              <h1 className="text-2xl font-bold text-[#0c3b24]">{license.company}</h1>
+              <h1 className="text-2xl font-bold text-[#102B2A]">{license.company}</h1>
               <p className="text-sm text-slate-500 mt-1">Software license · {license.plan} plan · {license.contact_name}</p>
             </div>
 
@@ -89,13 +89,13 @@ export default function SoftwarePay() {
 
             <div className="rounded-3xl bg-white border border-slate-100 p-6">
               <div className="flex items-center gap-2 mb-1">
-                <CreditCard className="w-5 h-5 text-[#1d9e56]" />
-                <h2 className="font-bold text-[#0c3b24]">One-time setup fee</h2>
-                <span className="ml-auto font-bold text-[#0c3b24]">{money(license.setup_fee)}</span>
+                <CreditCard className="w-5 h-5 text-[#187B65]" />
+                <h2 className="font-bold text-[#102B2A]">One-time setup fee</h2>
+                <span className="ml-auto font-bold text-[#102B2A]">{money(license.setup_fee)}</span>
               </div>
               <p className="text-sm text-slate-500 mb-4">Activates your license and prepares your company dashboard.</p>
               {license.setup_paid ? (
-                <p className="flex items-center gap-1.5 font-semibold text-[#1d9e56]">
+                <p className="flex items-center gap-1.5 font-semibold text-[#187B65]">
                   <CheckCircle2 className="w-5 h-5" /> Setup fee paid — thank you!
                 </p>
               ) : (
@@ -108,23 +108,23 @@ export default function SoftwarePay() {
 
             <div className="rounded-3xl bg-white border border-slate-100 p-6">
               <div className="flex items-center gap-2 mb-1">
-                <Repeat className="w-5 h-5 text-[#1d9e56]" />
-                <h2 className="font-bold text-[#0c3b24]">Monthly license subscription</h2>
-                <span className="ml-auto font-bold text-[#0c3b24]">{money(license.monthly_fee)}/mo</span>
+                <Repeat className="w-5 h-5 text-[#187B65]" />
+                <h2 className="font-bold text-[#102B2A]">Monthly license subscription</h2>
+                <span className="ml-auto font-bold text-[#102B2A]">{money(license.monthly_fee)}/mo</span>
               </div>
               <p className="text-sm text-slate-500 mb-4">
                 Recurring monthly billing through PayPal. Once verified, your account is provisioned automatically and
                 your login is emailed to {license.contact_name ? "you" : "you"}.
               </p>
               {license.subscription_active ? (
-                <p className="flex items-center gap-1.5 font-semibold text-[#1d9e56]">
+                <p className="flex items-center gap-1.5 font-semibold text-[#187B65]">
                   <CheckCircle2 className="w-5 h-5" /> Subscription active — your company dashboard is being provisioned.
                 </p>
               ) : (
                 <button
                   onClick={subscribe}
                   disabled={subscribing}
-                  className="w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors disabled:opacity-60"
+                  className="w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors disabled:opacity-60"
                 >
                   {subscribing ? "Starting…" : "Subscribe with PayPal"}
                 </button>

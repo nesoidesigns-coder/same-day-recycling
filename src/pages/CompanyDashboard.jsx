@@ -58,7 +58,7 @@ export default function CompanyDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -68,9 +68,9 @@ export default function CompanyDashboard() {
       <div className="min-h-screen bg-white">
         <Navbar />
         <div className="max-w-lg mx-auto px-4 py-24 text-center">
-          <h1 className="text-2xl font-bold text-[#0c3b24]">No software license on this account</h1>
+          <h1 className="text-2xl font-bold text-[#102B2A]">No software license on this account</h1>
           <p className="text-slate-500 mt-3">License the Same Day Recycling OS to unlock your company dashboard.</p>
-          <Link to="/software" className="inline-block mt-6 rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors">Get a license</Link>
+          <Link to="/software" className="inline-block mt-6 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors">Get a license</Link>
         </div>
         <Footer />
       </div>
@@ -82,9 +82,9 @@ export default function CompanyDashboard() {
       <div className="min-h-screen bg-white">
         <Navbar />
         <div className="max-w-lg mx-auto px-4 py-24 text-center">
-          <h1 className="text-2xl font-bold text-[#0c3b24]">License {license.status}</h1>
+          <h1 className="text-2xl font-bold text-[#102B2A]">License {license.status}</h1>
           <p className="text-slate-500 mt-3">Dashboard access is paused until your license subscription is active.</p>
-          <a href={`/software-pay?pay=${license.pay_token}`} className="inline-block mt-6 rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors">Renew or complete payment</a>
+          <a href={`/software-pay?pay=${license.pay_token}`} className="inline-block mt-6 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors">Renew or complete payment</a>
         </div>
         <Footer />
       </div>
@@ -118,10 +118,10 @@ export default function CompanyDashboard() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-[#0c3b24] tracking-tight">{license.company} · Recycling OS</h1>
+            <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight">{license.company} · Recycling OS</h1>
             <p className="text-sm text-slate-500">{license.plan} plan · {license.city || "Canada"}{license.province ? `, ${license.province}` : ""}</p>
           </div>
-          <span className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${license.status === "active" ? "bg-[#1d9e56]/15 text-[#1d9e56]" : "bg-amber-100 text-amber-700"}`}>
+          <span className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${license.status === "active" ? "bg-[#187B65]/15 text-[#187B65]" : "bg-amber-100 text-amber-700"}`}>
             {license.status === "active" ? "License active" : "Setup paid — subscription pending"}
           </span>
         </div>
@@ -132,7 +132,7 @@ export default function CompanyDashboard() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={tab === t.key
-                ? "rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-5 py-2 text-sm whitespace-nowrap flex items-center gap-1.5"
+                ? "rounded-full bg-[#102B2A] text-[#187B65] font-bold px-5 py-2 text-sm whitespace-nowrap flex items-center gap-1.5"
                 : "rounded-full bg-white text-slate-600 font-medium px-5 py-2 text-sm hover:bg-slate-200 transition-colors whitespace-nowrap flex items-center gap-1.5 border border-slate-100"}
             >
               <t.icon className="w-4 h-4" /> {t.label}
@@ -154,7 +154,7 @@ export default function CompanyDashboard() {
               </GaugeCard>
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
                 <div className="flex items-center gap-2 mb-3">
-                  <BarChart3 className="w-4 h-4 text-[#1d9e56]" />
+                  <BarChart3 className="w-4 h-4 text-[#187B65]" />
                   <div className="text-sm font-bold text-slate-800">Pickup volume — last 6 months</div>
                 </div>
                 <div className="h-48">
@@ -163,7 +163,7 @@ export default function CompanyDashboard() {
                       <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip />
-                      <Bar dataKey="pickups" fill="#1d9e56" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="pickups" fill="#187B65" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

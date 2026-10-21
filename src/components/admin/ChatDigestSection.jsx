@@ -23,10 +23,10 @@ export default function ChatDigestSection() {
   return (
     <div className="rounded-2xl border border-slate-100 p-5 mb-6">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <h2 className="font-bold text-[#0c3b24] flex items-center gap-2">
-          <MessageCircle className="w-4 h-4 text-[#1d9e56]" /> AI chat digest
+        <h2 className="font-bold text-[#102B2A] flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-[#187B65]" /> AI chat digest
         </h2>
-        <Button size="sm" onClick={run} disabled={loading} className="bg-[#1d9e56] text-white hover:bg-[#17a04c]">
+        <Button size="sm" onClick={run} disabled={loading} className="bg-[#187B65] text-white hover:bg-[#125C4E]">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Run digest now"}
         </Button>
       </div>
@@ -45,8 +45,8 @@ export default function ChatDigestSection() {
           </div>
           {data.leads && data.leads.length > 0 && (
             <div>
-              <h3 className="font-bold text-[#0c3b24] text-sm mb-2 flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-[#1d9e56]" /> Hot leads
+              <h3 className="font-bold text-[#102B2A] text-sm mb-2 flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-[#187B65]" /> Hot leads
               </h3>
               <ul className="flex flex-col gap-1.5">
                 {data.leads.map((l, i) => (
@@ -57,8 +57,8 @@ export default function ChatDigestSection() {
           )}
           {data.followups_text && (
             <div>
-              <h3 className="font-bold text-[#0c3b24] text-sm mb-2 flex items-center gap-1.5">
-                <Inbox className="w-3.5 h-3.5 text-[#1d9e56]" /> Needs follow-up
+              <h3 className="font-bold text-[#102B2A] text-sm mb-2 flex items-center gap-1.5">
+                <Inbox className="w-3.5 h-3.5 text-[#187B65]" /> Needs follow-up
               </h3>
               <ul className="list-disc pl-5 text-sm text-slate-600 flex flex-col gap-1">
                 {data.followups_text.split(" | ").map((t, i) => (
@@ -77,7 +77,7 @@ function MiniStat({ label, value }) {
   return (
     <div className="rounded-xl bg-[#f4f7f5] px-4 py-3">
       <p className="text-xs font-semibold text-slate-500">{label}</p>
-      <p className="text-xl font-bold text-[#0c3b24]">{Number(value || 0).toLocaleString()}</p>
+      <p className="text-xl font-bold text-[#102B2A]">{Number(value || 0).toLocaleString()}</p>
     </div>
   );
 }

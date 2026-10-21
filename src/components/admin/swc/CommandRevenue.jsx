@@ -18,12 +18,12 @@ export default function CommandRevenue({ licenses, transactions }) {
           { icon: CreditCard, label: "Setup revenue", value: money(setupRevenue), sub: "All-time paid setups" },
           { icon: Receipt, label: "Transactions", value: String(transactions.length), sub: "All PayPal activity" },
         ].map((g) => (
-          <div key={g.label} className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-5">
+          <div key={g.label} className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-5">
             <div className="flex items-center gap-2">
-              <g.icon className="w-4 h-4 text-[#1d9e56]" />
+              <g.icon className="w-4 h-4 text-[#187B65]" />
               <div className="text-xs font-bold tracking-wide text-emerald-100/60 uppercase">{g.label}</div>
             </div>
-            <div className="text-2xl font-bold text-[#a8f0cc] mt-2 holo-glow-text">{g.value}</div>
+            <div className="text-2xl font-bold text-[#54D9AE] mt-2 holo-glow-text">{g.value}</div>
             <div className="text-xs text-emerald-100/50 mt-1">{g.sub}</div>
           </div>
         ))}
@@ -32,16 +32,16 @@ export default function CommandRevenue({ licenses, transactions }) {
       <h2 className="text-sm font-bold tracking-wide text-emerald-100/60 uppercase mb-3">PayPal transactions</h2>
       <div className="space-y-2">
         {transactions.length === 0 && (
-          <div className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-10 text-center text-emerald-100/50">
+          <div className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-10 text-center text-emerald-100/50">
             No payment transactions yet.
           </div>
         )}
         {transactions.map((t) => (
-          <div key={t.id} className="holo-panel-deep rounded-xl border border-[#1d9e56]/20 px-5 py-3.5 flex flex-wrap items-center gap-3">
+          <div key={t.id} className="holo-panel-deep rounded-xl border border-[#187B65]/20 px-5 py-3.5 flex flex-wrap items-center gap-3">
             <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${statusBadge(t.status === "active" ? "active" : t.status === "paid" ? "active" : "")}`}>{t.status}</span>
-            <span className="text-sm font-bold text-[#a8f0cc]">{purposeLabel[t.purpose] || t.purpose}</span>
+            <span className="text-sm font-bold text-[#54D9AE]">{purposeLabel[t.purpose] || t.purpose}</span>
             <span className="text-sm text-emerald-100/60">{t.customer_email || t.paypal_payer_email || <NotTracked label="no payer" />}</span>
-            <span className="ml-auto text-sm font-bold text-[#a8f0cc]">{money(t.amount)} {t.currency || "CAD"}</span>
+            <span className="ml-auto text-sm font-bold text-[#54D9AE]">{money(t.amount)} {t.currency || "CAD"}</span>
             <span className="text-xs text-emerald-100/40 w-24 text-right">{(t.created_date || "").slice(0, 10) || ""}</span>
           </div>
         ))}

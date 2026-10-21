@@ -39,7 +39,7 @@ export default function SoftwareSales() {
       <div className="admin-console text-white">
         {/* Hero */}
         <div className="max-w-6xl mx-auto px-4 pt-16 pb-14 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#1d9e56]/40 bg-[#1d9e56]/10 px-4 py-1.5 text-xs font-bold tracking-[0.18em] uppercase text-[#a8f0cc]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#187B65]/40 bg-[#187B65]/10 px-4 py-1.5 text-xs font-bold tracking-[0.18em] uppercase text-[#54D9AE]">
             <ShieldCheck className="w-3.5 h-3.5" /> Canadian-built · Data-isolated · PayPal-secured
           </span>
           <h1 className="mt-6 text-4xl md:text-6xl font-extrabold tracking-tight admin-headline">
@@ -50,10 +50,10 @@ export default function SoftwareSales() {
             in one secure dashboard. License it, log in, and operate like a national company from day one.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="#licensing" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-3.5 hover:bg-[#17a04c] transition-colors flex items-center gap-2">
+            <a href="#licensing" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-3.5 hover:bg-[#125C4E] transition-colors flex items-center gap-2">
               <CreditCard className="w-4 h-4" /> Get a license
             </a>
-            <a href="#preview" className="rounded-full border border-[#1d9e56]/40 text-[#a8f0cc] font-bold px-7 py-3.5 hover:bg-[#1d9e56]/10 transition-colors">
+            <a href="#preview" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-7 py-3.5 hover:bg-[#187B65]/10 transition-colors">
               See the OS
             </a>
           </div>
@@ -64,8 +64,8 @@ export default function SoftwareSales() {
               { k: "24/7", v: "Always-on operations" },
               { k: "CAD", v: "Priced in Canadian dollars" },
             ].map((s) => (
-              <div key={s.k} className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-5">
-                <div className="text-2xl font-extrabold text-[#a8f0cc] holo-glow-text">{s.k}</div>
+              <div key={s.k} className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-5">
+                <div className="text-2xl font-extrabold text-[#54D9AE] holo-glow-text">{s.k}</div>
                 <div className="text-xs text-emerald-100/60 mt-1">{s.v}</div>
               </div>
             ))}
@@ -74,10 +74,10 @@ export default function SoftwareSales() {
 
         {/* Dashboard preview */}
         <div id="preview" className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="holo-panel-deep rounded-3xl border border-[#1d9e56]/25 p-6 md:p-10">
+          <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-6 md:p-10">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#1d9e56] mb-3">Inside the dashboard</div>
+                <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#187B65] mb-3">Inside the dashboard</div>
                 <h2 className="text-3xl font-extrabold tracking-tight admin-headline">Command your entire operation</h2>
                 <ul className="mt-6 space-y-3">
                   {[
@@ -88,7 +88,7 @@ export default function SoftwareSales() {
                     "Strict company-level isolation — your data is yours alone",
                   ].map((p) => (
                     <li key={p} className="flex items-start gap-2.5 text-sm text-emerald-100/80">
-                      <CheckCircle2 className="w-4 h-4 text-[#1d9e56] mt-0.5 shrink-0" /> {p}
+                      <CheckCircle2 className="w-4 h-4 text-[#187B65] mt-0.5 shrink-0" /> {p}
                     </li>
                   ))}
                 </ul>
@@ -104,11 +104,11 @@ export default function SoftwareSales() {
           <p className="text-center text-emerald-100/60 mt-3 mb-10">Purpose-built for independent recycling and junk-hauling businesses across Canada.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {FEATURES.map((f) => (
-              <div key={f.title} className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-6 hover:border-[#1d9e56]/50 transition-colors">
-                <span className="w-10 h-10 rounded-xl bg-[#1d9e56]/15 text-[#1d9e56] flex items-center justify-center mb-4">
+              <div key={f.title} className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-6 hover:border-[#187B65]/50 transition-colors">
+                <span className="w-10 h-10 rounded-xl bg-[#187B65]/15 text-[#187B65] flex items-center justify-center mb-4">
                   <f.icon className="w-5 h-5" />
                 </span>
-                <div className="font-bold text-[#a8f0cc]">{f.title}</div>
+                <div className="font-bold text-[#54D9AE]">{f.title}</div>
                 <p className="text-sm text-emerald-100/60 mt-2 leading-relaxed">{f.desc}</p>
               </div>
             ))}
@@ -117,9 +117,9 @@ export default function SoftwareSales() {
 
         {/* Live gauges */}
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="holo-panel-deep rounded-3xl border border-[#1d9e56]/25 p-8 md:p-12">
+          <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-8 md:p-12">
             <div className="text-center mb-10">
-              <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#1d9e56]">Network intelligence</div>
+              <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#187B65]">Network intelligence</div>
               <h2 className="text-3xl font-extrabold tracking-tight admin-headline mt-2">Performance you can watch</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -137,19 +137,19 @@ export default function SoftwareSales() {
           <p className="text-center text-emerald-100/60 mt-3 mb-10">One-time setup plus a monthly license subscription, billed securely through PayPal.</p>
           <div className="grid md:grid-cols-3 gap-5">
             {TIERS.map((t, i) => (
-              <div key={t.key} className={`rounded-3xl p-7 flex flex-col ${i === 1 ? "holo-panel-deep border-2 border-[#1d9e56]" : "holo-panel-deep border border-[#1d9e56]/20"}`}>
-                {i === 1 && <span className="self-start mb-3 rounded-full bg-[#1d9e56] text-[#0c3b24] text-[10px] font-bold tracking-widest uppercase px-3 py-1">Most popular</span>}
-                <div className="text-lg font-bold text-[#a8f0cc]">{t.name} <span className="text-xs font-semibold text-emerald-100/50">· {t.tag}</span></div>
+              <div key={t.key} className={`rounded-3xl p-7 flex flex-col ${i === 1 ? "holo-panel-deep border-2 border-[#187B65]" : "holo-panel-deep border border-[#187B65]/20"}`}>
+                {i === 1 && <span className="self-start mb-3 rounded-full bg-[#187B65] text-[#102B2A] text-[10px] font-bold tracking-widest uppercase px-3 py-1">Most popular</span>}
+                <div className="text-lg font-bold text-[#54D9AE]">{t.name} <span className="text-xs font-semibold text-emerald-100/50">· {t.tag}</span></div>
                 <div className="mt-4 text-4xl font-extrabold text-white">${t.monthly}<span className="text-base font-semibold text-emerald-100/50">/mo CAD</span></div>
                 <div className="text-sm text-emerald-100/60 mt-1">+ ${t.setup.toLocaleString("en-CA")} one-time setup</div>
                 <ul className="mt-5 space-y-2.5 flex-1">
                   {t.points.map((p) => (
                     <li key={p} className="flex items-start gap-2 text-sm text-emerald-100/80">
-                      <CheckCircle2 className="w-4 h-4 text-[#1d9e56] mt-0.5 shrink-0" /> {p}
+                      <CheckCircle2 className="w-4 h-4 text-[#187B65] mt-0.5 shrink-0" /> {p}
                     </li>
                   ))}
                 </ul>
-                <Link to={`/software/start?plan=${t.key}`} className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors text-center block">
+                <Link to={`/software/start?plan=${t.key}`} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors text-center block">
                   License the OS
                 </Link>
               </div>
@@ -165,9 +165,9 @@ export default function SoftwareSales() {
               { icon: RefreshCcw, t: "Verified provisioning", d: "Your account is provisioned only after PayPal verifies your subscription payment. Test mode until you flip it live." },
               { icon: Lock, t: "You control access", d: "Pause, resume or cancel from the national console. Cancelling ends the PayPal billing and locks the dashboard." },
             ].map((c) => (
-              <div key={c.t} className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-6">
-                <c.icon className="w-5 h-5 text-[#1d9e56] mb-3" />
-                <div className="font-bold text-[#a8f0cc]">{c.t}</div>
+              <div key={c.t} className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-6">
+                <c.icon className="w-5 h-5 text-[#187B65] mb-3" />
+                <div className="font-bold text-[#54D9AE]">{c.t}</div>
                 <p className="text-sm text-emerald-100/60 mt-2 leading-relaxed">{c.d}</p>
               </div>
             ))}

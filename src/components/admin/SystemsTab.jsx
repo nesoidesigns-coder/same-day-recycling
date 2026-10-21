@@ -8,7 +8,7 @@ function StatCard({ icon, label, value, sub }) {
       <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold mb-1">
         {icon} {label}
       </div>
-      <span className="text-2xl font-bold text-[#0c3b24]">{value}</span>
+      <span className="text-2xl font-bold text-[#102B2A]">{value}</span>
       {sub && <div className="text-xs text-slate-400 mt-1">{sub}</div>}
     </div>
   );
@@ -35,7 +35,7 @@ function AutomationRow({ label, lastIso, healthyAfterH }) {
           <Clock className="w-3 h-3" /> {never ? "No activity yet" : fmtDate(lastIso)}
         </p>
       </div>
-      <span className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${ok ? "bg-[#e7f6ee] text-[#0c3b24]" : "bg-amber-100 text-amber-800"}`}>
+      <span className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${ok ? "bg-[#e7f6ee] text-[#102B2A]" : "bg-amber-100 text-amber-800"}`}>
         {ok ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
         {ok ? "Healthy" : "Stale"}
       </span>
@@ -71,8 +71,8 @@ export default function SystemsTab() {
   return (
     <div>
       <div className="flex items-center justify-between gap-3 mb-5">
-        <h2 className="font-bold text-[#0c3b24] flex items-center gap-2">
-          <Activity className="w-5 h-5 text-[#1d9e56]" /> Systems Analysis
+        <h2 className="font-bold text-[#102B2A] flex items-center gap-2">
+          <Activity className="w-5 h-5 text-[#187B65]" /> Systems Analysis
         </h2>
         <button
           onClick={load}
@@ -87,14 +87,14 @@ export default function SystemsTab() {
 
       {!data && !error && (
         <div className="flex items-center justify-center py-10">
-          <div className="w-8 h-8 border-4 border-slate-200 border-t-[#1d9e56] rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-[#187B65] rounded-full animate-spin"></div>
         </div>
       )}
 
       {data && (
         <div className="space-y-8">
           <section>
-            <h3 className="font-bold text-[#0c3b24] mb-3 text-sm">Business metrics</h3>
+            <h3 className="font-bold text-[#102B2A] mb-3 text-sm">Business metrics</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <StatCard icon={<CalendarCheck className="w-3.5 h-3.5" />} label="Bookings total" value={(b?.bookings_total || 0).toLocaleString()} sub={`${b?.bookings_7d || 0} in last 7 days`} />
               <StatCard icon={<DollarSign className="w-3.5 h-3.5" />} label="Completed revenue" value={`$${(b?.completed_revenue || 0).toLocaleString()}`} />
@@ -112,7 +112,7 @@ export default function SystemsTab() {
           </section>
 
           <section>
-            <h3 className="font-bold text-[#0c3b24] mb-3 text-sm">Automation health</h3>
+            <h3 className="font-bold text-[#102B2A] mb-3 text-sm">Automation health</h3>
             <div className="rounded-2xl border border-slate-100 divide-y divide-slate-50">
               <AutomationRow label="Latest booking received" lastIso={a?.latest_booking} healthyAfterH={168} />
               <AutomationRow label="AI blog publishing (AI Content Sync)" lastIso={a?.latest_blog_post} healthyAfterH={168} />
@@ -129,13 +129,13 @@ export default function SystemsTab() {
           </section>
 
           <section>
-            <h3 className="font-bold text-[#0c3b24] mb-3 text-sm flex items-center gap-2">
-              <AlertTriangle className={`w-4 h-4 ${errs?.total_fb_errors ? "text-amber-600" : "text-[#1d9e56]"}`} /> Error log
+            <h3 className="font-bold text-[#102B2A] mb-3 text-sm flex items-center gap-2">
+              <AlertTriangle className={`w-4 h-4 ${errs?.total_fb_errors ? "text-amber-600" : "text-[#187B65]"}`} /> Error log
               <span className="text-xs font-medium text-slate-400">{errs?.total_fb_errors || 0} total</span>
             </h3>
             {(errs?.recent || []).length === 0 ? (
-              <div className="rounded-2xl bg-[#f4f7f5] px-4 py-4 flex items-center gap-2 text-sm text-[#0c3b24]">
-                <CheckCircle2 className="w-4 h-4 text-[#1d9e56]" /> No errors logged. All automation replies are clean.
+              <div className="rounded-2xl bg-[#f4f7f5] px-4 py-4 flex items-center gap-2 text-sm text-[#102B2A]">
+                <CheckCircle2 className="w-4 h-4 text-[#187B65]" /> No errors logged. All automation replies are clean.
               </div>
             ) : (
               <div className="rounded-2xl border border-slate-100 divide-y divide-slate-50">

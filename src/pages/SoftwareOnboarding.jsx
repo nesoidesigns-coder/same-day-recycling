@@ -139,19 +139,19 @@ export default function SoftwareOnboarding() {
                   <span
                     className={`w-10 h-10 rounded-full flex items-center justify-center border transition-colors ${
                       step === s.n
-                        ? "bg-[#1d9e56] text-[#0c3b24] border-[#1d9e56]"
+                        ? "bg-[#187B65] text-[#102B2A] border-[#187B65]"
                         : step > s.n
-                          ? "bg-[#1d9e56]/15 text-[#1d9e56] border-[#1d9e56]/40"
-                          : "text-emerald-100/40 border-[#1d9e56]/20"
+                          ? "bg-[#187B65]/15 text-[#187B65] border-[#187B65]/40"
+                          : "text-emerald-100/40 border-[#187B65]/20"
                     }`}
                   >
                     {step > s.n ? <CheckCircle2 className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
                   </span>
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${step >= s.n ? "text-[#a8f0cc]" : "text-emerald-100/40"}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${step >= s.n ? "text-[#54D9AE]" : "text-emerald-100/40"}`}>
                     {s.label}
                   </span>
                 </div>
-                {i < STEPS.length - 1 && <div className={`flex-1 h-px mx-3 ${step > s.n ? "bg-[#1d9e56]/50" : "bg-[#1d9e56]/15"}`} />}
+                {i < STEPS.length - 1 && <div className={`flex-1 h-px mx-3 ${step > s.n ? "bg-[#187B65]/50" : "bg-[#187B65]/15"}`} />}
               </div>
             ))}
           </div>
@@ -166,21 +166,21 @@ export default function SoftwareOnboarding() {
           {step === 1 && (
             <form
               onSubmit={(e) => { e.preventDefault(); persist(); goStep(2); }}
-              className="holo-panel-deep rounded-3xl border border-[#1d9e56]/25 p-7"
+              className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-7"
             >
               <h1 className="text-2xl font-extrabold tracking-tight admin-headline">Tell us about your business</h1>
               <p className="text-sm text-emerald-100/60 mt-2 mb-6">This becomes your isolated company workspace. Your business email will be your login.</p>
 
-              <div className="text-xs font-bold uppercase tracking-[0.15em] text-[#1d9e56] mb-3">Choose your plan</div>
+              <div className="text-xs font-bold uppercase tracking-[0.15em] text-[#187B65] mb-3">Choose your plan</div>
               <div className="grid grid-cols-3 gap-2 mb-6">
                 {Object.entries(PLANS).map(([key, p]) => (
                   <button
                     type="button"
                     key={key}
                     onClick={() => setPlan(key)}
-                    className={`rounded-2xl border p-3 text-left transition-colors ${plan === key ? "border-[#1d9e56] bg-[#1d9e56]/10" : "border-[#1d9e56]/20 hover:border-[#1d9e56]/50"}`}
+                    className={`rounded-2xl border p-3 text-left transition-colors ${plan === key ? "border-[#187B65] bg-[#187B65]/10" : "border-[#187B65]/20 hover:border-[#187B65]/50"}`}
                   >
-                    <div className="font-bold text-[#a8f0cc] text-sm">{p.name}</div>
+                    <div className="font-bold text-[#54D9AE] text-sm">{p.name}</div>
                     <div className="text-xs text-emerald-100/60 mt-0.5">${p.monthly}/mo</div>
                   </button>
                 ))}
@@ -199,28 +199,28 @@ export default function SoftwareOnboarding() {
                 </div>
               </div>
 
-              <button className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors flex items-center justify-center gap-2">
+              <button className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors flex items-center justify-center gap-2">
                 Create your account <ArrowRight className="w-4 h-4" />
               </button>
               <p className="text-center text-xs text-emerald-100/40 mt-4">
-                Already have a login? <Link to="/login?returnTo=%2Fsoftware%2Fstart%3Fstep%3D3" className="text-[#1d9e56] font-semibold hover:underline">Sign in</Link> and pick up at the subscription step.
+                Already have a login? <Link to="/login?returnTo=%2Fsoftware%2Fstart%3Fstep%3D3" className="text-[#187B65] font-semibold hover:underline">Sign in</Link> and pick up at the subscription step.
               </p>
             </form>
           )}
 
           {/* Step 2 — Account creation & verification */}
           {step === 2 && (
-            <div className="holo-panel-deep rounded-3xl border border-[#1d9e56]/25 p-7">
+            <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-7">
               {authState === "checking" ? (
                 <div className="flex items-center justify-center gap-2 py-10 text-emerald-100/60">
                   <Loader2 className="w-5 h-5 animate-spin" /> Checking your session…
                 </div>
               ) : authState === "signed_in" ? (
                 <div className="text-center py-4">
-                  <CheckCircle2 className="w-10 h-10 text-[#1d9e56] mx-auto" />
+                  <CheckCircle2 className="w-10 h-10 text-[#187B65] mx-auto" />
                   <h1 className="text-2xl font-extrabold tracking-tight admin-headline mt-4">You're signed in</h1>
                   <p className="text-sm text-emerald-100/60 mt-2">{form.email} is verified and ready. Continue to start your license subscription.</p>
-                  <button onClick={() => goStep(3)} className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors flex items-center justify-center gap-2">
+                  <button onClick={() => goStep(3)} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors flex items-center justify-center gap-2">
                     Continue <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -231,13 +231,13 @@ export default function SoftwareOnboarding() {
                     You're signed in with a different account than {form.email}. Go back and use your signed-in email as the business email, or sign in as {form.email} instead.
                   </div>
                   <div className="flex gap-3 mt-6">
-                    <button onClick={() => goStep(1)} className="flex-1 rounded-full border border-[#1d9e56]/40 text-[#a8f0cc] font-bold px-5 py-3 hover:bg-[#1d9e56]/10 transition-colors">Back to business details</button>
-                    <Link to="/login?returnTo=%2Fsoftware%2Fstart%3Fstep%3D3" className="flex-1 rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-3 text-center hover:bg-[#17a04c] transition-colors">Sign in</Link>
+                    <button onClick={() => goStep(1)} className="flex-1 rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-5 py-3 hover:bg-[#187B65]/10 transition-colors">Back to business details</button>
+                    <Link to="/login?returnTo=%2Fsoftware%2Fstart%3Fstep%3D3" className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 text-center hover:bg-[#125C4E] transition-colors">Sign in</Link>
                   </div>
                 </div>
               ) : showOtp ? (
                 <div className="text-center py-2">
-                  <Mail className="w-10 h-10 text-[#1d9e56] mx-auto" />
+                  <Mail className="w-10 h-10 text-[#187B65] mx-auto" />
                   <h1 className="text-2xl font-extrabold tracking-tight admin-headline mt-4">Verify your email</h1>
                   <p className="text-sm text-emerald-100/60 mt-2 mb-6">We sent a 6-digit code to {form.email}. Enter it below to verify your account.</p>
                   <div className="flex justify-center mb-5">
@@ -251,13 +251,13 @@ export default function SoftwareOnboarding() {
                   <button
                     onClick={verify}
                     disabled={busy || otp.length < 6}
-                    className="w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                    className="w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                   >
                     {busy ? <><Loader2 className="w-4 h-4 animate-spin" /> Verifying…</> : <>Verify &amp; continue <ArrowRight className="w-4 h-4" /></>}
                   </button>
                   <p className="text-center text-sm text-emerald-100/50 mt-4">
                     Didn't receive it?{" "}
-                    <button onClick={resend} className="text-[#1d9e56] font-semibold hover:underline">Resend code</button>
+                    <button onClick={resend} className="text-[#187B65] font-semibold hover:underline">Resend code</button>
                   </p>
                 </div>
               ) : (
@@ -271,11 +271,11 @@ export default function SoftwareOnboarding() {
                   <button
                     onClick={startSignup}
                     disabled={busy || !pw || !pw2}
-                    className="mt-5 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                    className="mt-5 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                   >
                     {busy ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending code…</> : <>Send verification code <ArrowRight className="w-4 h-4" /></>}
                   </button>
-                  <button onClick={() => goStep(1)} className="mt-4 w-full rounded-full border border-[#1d9e56]/40 text-[#a8f0cc] font-bold px-6 py-3 hover:bg-[#1d9e56]/10 transition-colors">
+                  <button onClick={() => goStep(1)} className="mt-4 w-full rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
                     <ArrowLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" /> Back
                   </button>
                 </>
@@ -285,16 +285,16 @@ export default function SoftwareOnboarding() {
 
           {/* Step 3 — Initiate the license subscription */}
           {step === 3 && (
-            <div className="holo-panel-deep rounded-3xl border border-[#1d9e56]/25 p-7">
+            <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-7">
               <h1 className="text-2xl font-extrabold tracking-tight admin-headline">Start your subscription</h1>
               <p className="text-sm text-emerald-100/60 mt-2 mb-6">
                 Review your license, then we'll take you to secure PayPal checkout for the one-time setup fee and your monthly subscription. Your dashboard is provisioned automatically once PayPal verifies payment.
               </p>
 
-              <div className="rounded-2xl bg-black/20 border border-[#1d9e56]/20 p-5 mb-5">
+              <div className="rounded-2xl bg-black/20 border border-[#187B65]/20 p-5 mb-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-bold text-[#a8f0cc]">{PLANS[plan].name} plan</div>
+                    <div className="font-bold text-[#54D9AE]">{PLANS[plan].name} plan</div>
                     <div className="text-xs text-emerald-100/60 mt-0.5">{form.company} · {form.city || "Canada"}{form.province ? ", " + form.province : ""}</div>
                   </div>
                   <div className="text-right">
@@ -302,7 +302,7 @@ export default function SoftwareOnboarding() {
                     <div className="text-xs text-emerald-100/60">+ {money(PLANS[plan].setup)} setup</div>
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-[#1d9e56]/10 text-xs text-emerald-100/60 flex flex-wrap gap-x-6 gap-y-1">
+                <div className="mt-3 pt-3 border-t border-[#187B65]/10 text-xs text-emerald-100/60 flex flex-wrap gap-x-6 gap-y-1">
                   <span>Contact: {form.contact_name}</span>
                   <span>Login: {form.email}</span>
                 </div>
@@ -314,25 +314,25 @@ export default function SoftwareOnboarding() {
                 "Your isolated company dashboard is provisioned automatically",
               ].map((t, i) => (
                 <div key={t} className="flex items-center gap-2.5 text-sm text-emerald-100/80 mb-2.5">
-                  <span className="w-5 h-5 rounded-full bg-[#1d9e56]/15 text-[#1d9e56] text-[10px] font-bold flex items-center justify-center shrink-0">{i + 1}</span> {t}
+                  <span className="w-5 h-5 rounded-full bg-[#187B65]/15 text-[#187B65] text-[10px] font-bold flex items-center justify-center shrink-0">{i + 1}</span> {t}
                 </div>
               ))}
 
               <button
                 onClick={startSubscription}
                 disabled={busy}
-                className="mt-6 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3.5 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {busy ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing checkout…</> : <><Rocket className="w-4 h-4" /> Initiate subscription</>}
               </button>
-              <button onClick={() => goStep(1)} className="mt-4 w-full rounded-full border border-[#1d9e56]/40 text-[#a8f0cc] font-bold px-6 py-3 hover:bg-[#1d9e56]/10 transition-colors">
+              <button onClick={() => goStep(1)} className="mt-4 w-full rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
                 <ArrowLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" /> Edit business details
               </button>
             </div>
           )}
 
           <div className="flex items-center justify-center gap-2 mt-10 text-emerald-100/40 text-xs">
-            <Recycle className="w-3.5 h-3.5 text-[#1d9e56]" /> Same Day Recycling OS · Secured by PayPal
+            <Recycle className="w-3.5 h-3.5 text-[#187B65]" /> Same Day Recycling OS · Secured by PayPal
           </div>
         </div>
       </div>

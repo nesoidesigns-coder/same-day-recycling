@@ -36,14 +36,14 @@ export default function LeadsTab() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-sm font-semibold text-[#0c3b24]">Filter by city</span>
+        <span className="text-sm font-semibold text-[#102B2A]">Filter by city</span>
         <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="input w-48 py-2">
           <option value="">All cities</option>
           {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
         </select>
       </div>
       {loading && !leads.length ? (
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-12" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-12" />
       ) : leads.length === 0 ? (
         <p className="text-slate-500 text-center py-12">No leads yet — realtor submissions from /real-estate appear here.</p>
       ) : (
@@ -53,15 +53,15 @@ export default function LeadsTab() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-[#0c3b24]">{l.agent_name}</span>
+                    <span className="font-bold text-[#102B2A]">{l.agent_name}</span>
                     {l.brokerage && <span className="rounded-full bg-slate-100 text-slate-600 px-3 py-1 text-xs font-bold">{l.brokerage}</span>}
-                    <a href={`tel:${l.phone}`} className="flex items-center gap-1 text-sm text-[#1d9e56] font-semibold"><Phone className="w-3.5 h-3.5" />{l.phone}</a>
+                    <a href={`tel:${l.phone}`} className="flex items-center gap-1 text-sm text-[#187B65] font-semibold"><Phone className="w-3.5 h-3.5" />{l.phone}</a>
                     <a href={`mailto:${l.email}`} className="flex items-center gap-1 text-sm text-slate-500 font-semibold"><Mail className="w-3.5 h-3.5" />{l.email}</a>
                     <span className="flex items-center gap-1 text-xs font-semibold text-slate-500"><MapPin className="w-3.5 h-3.5" />{l.city || "—"}</span>
                     <select
                       value={l.status || "new"}
                       onChange={(e) => setStatus(l, e.target.value)}
-                      className="rounded-full border border-slate-200 px-3 py-1 text-xs font-bold text-[#0c3b24] capitalize"
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs font-bold text-[#102B2A] capitalize"
                       aria-label="Lead status"
                     >
                       {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -78,7 +78,7 @@ export default function LeadsTab() {
             </div>
           ))}
           {cursor && (
-            <button onClick={() => load(false)} disabled={loading} className="w-full rounded-full bg-white border border-slate-200 text-[#0c3b24] font-bold px-6 py-3 hover:border-[#1d9e56] transition-colors disabled:opacity-60">
+            <button onClick={() => load(false)} disabled={loading} className="w-full rounded-full bg-white border border-slate-200 text-[#102B2A] font-bold px-6 py-3 hover:border-[#187B65] transition-colors disabled:opacity-60">
               {loading ? "Loading…" : "Load more"}
             </button>
           )}
@@ -100,16 +100,16 @@ function AiBlock({ lead }) {
   return (
     <div className="mt-3 rounded-2xl bg-[#f4f7f5] p-4">
       <div className="flex items-center gap-2 flex-wrap">
-        <Sparkles className="w-4 h-4 text-[#1d9e56]" />
-        <span className="text-xs font-bold text-[#0c3b24]">AI processed</span>
+        <Sparkles className="w-4 h-4 text-[#187B65]" />
+        <span className="text-xs font-bold text-[#102B2A]">AI processed</span>
         {lead.quote_low ? (
-          <span className="rounded-full bg-[#1d9e56]/15 px-3 py-1 text-xs font-bold text-[#0c3b24]">
+          <span className="rounded-full bg-[#187B65]/15 px-3 py-1 text-xs font-bold text-[#102B2A]">
             ${Number(lead.quote_low).toLocaleString()} – ${Number(lead.quote_high).toLocaleString()} · {lead.load_label || "estimate"}
           </span>
         ) : null}
         {lead.ai_reply && (
-          <button onClick={copy} className="ml-auto flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-[#0c3b24] hover:border-[#1d9e56] transition-colors">
-            {copied ? <Check className="w-3.5 h-3.5 text-[#1d9e56]" /> : <Copy className="w-3.5 h-3.5" />}
+          <button onClick={copy} className="ml-auto flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-[#102B2A] hover:border-[#187B65] transition-colors">
+            {copied ? <Check className="w-3.5 h-3.5 text-[#187B65]" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? "Copied" : "Copy reply"}
           </button>
         )}

@@ -37,19 +37,19 @@ export default function CitySummaryTab() {
     return (
       <div className="rounded-3xl bg-white border border-slate-100 p-8 text-center">
         <p className="text-slate-600 mb-4">Couldn't load the booking summary. Try again in a moment.</p>
-        <button onClick={() => setAttempt((n) => n + 1)} className="rounded-full bg-[#0c3b24] text-white font-bold px-6 py-2.5 hover:bg-[#0a3020] transition-colors text-sm">
+        <button onClick={() => setAttempt((n) => n + 1)} className="rounded-full bg-[#102B2A] text-white font-bold px-6 py-2.5 hover:bg-[#0a3020] transition-colors text-sm">
           Retry
         </button>
       </div>
     );
   }
-  if (!rows) return <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-12" />;
+  if (!rows) return <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-12" />;
 
   const max = Math.max(1, ...rows.list.map((r) => r.total));
 
   return (
     <div className="rounded-3xl bg-white border border-slate-100 p-6 md:p-8">
-      <h2 className="text-xl font-bold text-[#0c3b24]">Bookings by city</h2>
+      <h2 className="text-xl font-bold text-[#102B2A]">Bookings by city</h2>
       <p className="text-sm text-slate-500 mt-1">
         {rows.totals} booking{rows.totals === 1 ? "" : "s"} across all cities.
       </p>
@@ -57,15 +57,15 @@ export default function CitySummaryTab() {
         {rows.list.map((r) => (
           <div key={r.city}>
             <div className="flex items-center justify-between text-sm mb-1.5">
-              <span className="font-bold text-[#0c3b24]">{r.city}</span>
+              <span className="font-bold text-[#102B2A]">{r.city}</span>
               <span className="text-slate-500">
-                <span className="font-bold text-[#0c3b24]">{r.total}</span> total
+                <span className="font-bold text-[#102B2A]">{r.total}</span> total
                 {r.total > 0 && <> · {r.completed} completed ({Math.round((r.completed / r.total) * 100)}%)</>}
               </span>
             </div>
             <div className="h-3 rounded-full bg-[#f4f7f5] overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#1d9e56] transition-all"
+                className="h-full rounded-full bg-[#187B65] transition-all"
                 style={{ width: `${Math.round((r.total / max) * 100)}%` }}
               />
             </div>

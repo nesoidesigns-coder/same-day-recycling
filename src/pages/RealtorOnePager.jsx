@@ -56,7 +56,7 @@ export default function RealtorOnePager() {
         <div className="flex justify-end mb-4 print:hidden">
           <button
             onClick={() => window.print()}
-            className="rounded-full bg-[#0c3b24] text-white font-bold px-5 py-2.5 hover:bg-[#0a3020] transition-colors text-sm flex items-center gap-2"
+            className="rounded-full bg-[#102B2A] text-white font-bold px-5 py-2.5 hover:bg-[#0a3020] transition-colors text-sm flex items-center gap-2"
           >
             <Printer className="w-4 h-4" /> Print / Save as PDF
           </button>
@@ -64,9 +64,9 @@ export default function RealtorOnePager() {
 
         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm print:rounded-none print:shadow-none print:border-0">
           {/* Header */}
-          <div className="bg-[#0c3b24] text-white rounded-t-3xl px-8 py-8 print:rounded-none">
+          <div className="bg-[#102B2A] text-white rounded-t-3xl px-8 py-8 print:rounded-none">
             <div className="flex items-center gap-3 mb-3">
-              <span className="w-10 h-10 rounded-lg bg-[#1d9e56] text-[#0c3b24] flex items-center justify-center">
+              <span className="w-10 h-10 rounded-lg bg-[#187B65] text-[#102B2A] flex items-center justify-center">
                 <Recycle className="w-5 h-5" />
               </span>
               <span className="text-xl font-bold">Same Day Recycling</span>
@@ -82,14 +82,14 @@ export default function RealtorOnePager() {
           <div className="px-8 py-8 space-y-8">
             {/* Why realtors */}
             <section>
-              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-4">
-                <Home className="w-5 h-5 text-[#1d9e56]" /> Why realtors call us first
+              <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2 mb-4">
+                <Home className="w-5 h-5 text-[#187B65]" /> Why realtors call us first
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 {BENEFITS.map((b) => (
                   <div key={b.title} className="rounded-2xl bg-[#f4f7f5] p-4 print:border print:border-slate-200">
-                    <b.icon className="w-5 h-5 text-[#1d9e56] mb-2" />
-                    <h3 className="font-bold text-[#0c3b24] text-sm">{b.title}</h3>
+                    <b.icon className="w-5 h-5 text-[#187B65] mb-2" />
+                    <h3 className="font-bold text-[#102B2A] text-sm">{b.title}</h3>
                     <p className="text-sm text-slate-600 mt-1 leading-relaxed">{b.text}</p>
                   </div>
                 ))}
@@ -98,13 +98,13 @@ export default function RealtorOnePager() {
 
             {/* Scenarios */}
             <section>
-              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-                <Building2 className="w-5 h-5 text-[#1d9e56]" /> Built for your deals
+              <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+                <Building2 className="w-5 h-5 text-[#187B65]" /> Built for your deals
               </h2>
               <ul className="space-y-2">
                 {SCENARIOS.map((s) => (
                   <li key={s} className="flex gap-2 text-sm text-slate-700">
-                    <CalendarCheck className="w-4 h-4 text-[#1d9e56] shrink-0 mt-0.5" />
+                    <CalendarCheck className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
                     {s}
                   </li>
                 ))}
@@ -113,8 +113,8 @@ export default function RealtorOnePager() {
 
             {/* Open-house clutter-free */}
             <section>
-              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-                <Sparkles className="w-5 h-5 text-[#1d9e56]" /> Keep every open house clutter-free
+              <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-[#187B65]" /> Keep every open house clutter-free
               </h2>
               <p className="text-sm text-slate-600 mb-3 leading-relaxed">
                 Clutter kills offers. We clear listings before they cost you money — at every stage of the sale:
@@ -127,7 +127,7 @@ export default function RealtorOnePager() {
                   "Before possession: vacant-property sweeps so keys hand over clean",
                 ].map((s) => (
                   <li key={s} className="flex gap-2 text-sm text-slate-700">
-                    <Key className="w-4 h-4 text-[#1d9e56] shrink-0 mt-0.5" />
+                    <Key className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
                     {s}
                   </li>
                 ))}
@@ -136,11 +136,11 @@ export default function RealtorOnePager() {
 
             {/* Testimonial */}
             <section className="rounded-2xl bg-[#f4f7f5] p-5 print:border print:border-slate-200">
-              <Quote className="w-5 h-5 text-[#1d9e56] mb-2" />
-              <p className="text-sm text-[#0c3b24] leading-relaxed italic">
+              <Quote className="w-5 h-5 text-[#187B65] mb-2" />
+              <p className="text-sm text-[#102B2A] leading-relaxed italic">
                 "I called at 9am about a hoarder-condition condo in Mount Pleasant, had the cleanout quote by 9:40 and the whole unit cleared by 3 the same afternoon. Photos were staged the next morning. I've stopped using anyone else for pre-listing cleanouts."
               </p>
-              <p className="text-xs font-bold text-[#0c3b24] mt-3">
+              <p className="text-xs font-bold text-[#102B2A] mt-3">
                 Melissa C. — REALTOR®
               </p>
               <p className="text-xs text-slate-500">Same-day turnaround, pre-listing cleanout</p>
@@ -148,8 +148,8 @@ export default function RealtorOnePager() {
 
             {/* How it works */}
             <section>
-              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-                <ShieldCheck className="w-5 h-5 text-[#1d9e56]" /> How it works
+              <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+                <ShieldCheck className="w-5 h-5 text-[#187B65]" /> How it works
               </h2>
               <div className="grid sm:grid-cols-3 gap-3">
                 {[
@@ -158,7 +158,7 @@ export default function RealtorOnePager() {
                   { step: "3", text: "We lift, sweep up and leave — recycling and donating everything salvageable." },
                 ].map((s) => (
                   <div key={s.step} className="rounded-2xl bg-[#f4f7f5] p-4 print:border print:border-slate-200">
-                    <div className="w-7 h-7 rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold flex items-center justify-center text-sm mb-2">{s.step}</div>
+                    <div className="w-7 h-7 rounded-full bg-[#187B65] text-[#102B2A] font-bold flex items-center justify-center text-sm mb-2">{s.step}</div>
                     <p className="text-sm text-slate-700 leading-relaxed">{s.text}</p>
                   </div>
                 ))}
@@ -167,13 +167,13 @@ export default function RealtorOnePager() {
 
             {/* Bulk cleanout rates */}
             <section>
-              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-                <DollarSign className="w-5 h-5 text-[#1d9e56]" /> Bulk cleanout rates for listings
+              <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+                <DollarSign className="w-5 h-5 text-[#187B65]" /> Bulk cleanout rates for listings
               </h2>
               <div className="rounded-2xl border border-slate-200 overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#0c3b24] text-white">
+                    <tr className="bg-[#102B2A] text-white">
                       <th className="text-left px-4 py-3 font-bold">Load size</th>
                       <th className="text-left px-4 py-3 font-bold">What that looks like</th>
                       <th className="text-right px-4 py-3 font-bold">Flat rate</th>
@@ -189,9 +189,9 @@ export default function RealtorOnePager() {
                       ["Full truck", "Whole-house estate cleanout, hot tub, renovation debris", "$649"],
                     ].map(([size, example, rate], i) => (
                       <tr key={size} className={i % 2 ? "bg-[#f4f7f5]" : "bg-white"}>
-                        <td className="px-4 py-3 font-bold text-[#0c3b24]">{size}</td>
+                        <td className="px-4 py-3 font-bold text-[#102B2A]">{size}</td>
                         <td className="px-4 py-3 text-slate-600">{example}</td>
-                        <td className="px-4 py-3 text-right font-bold text-[#1d9e56]">{rate}</td>
+                        <td className="px-4 py-3 text-right font-bold text-[#187B65]">{rate}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -204,20 +204,20 @@ export default function RealtorOnePager() {
 
             {/* Referral + rates */}
             <section className="grid sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border-2 border-[#1d9e56] p-5">
-                <h3 className="font-bold text-[#0c3b24] text-sm flex items-center gap-2"><DollarSign className="w-4 h-4 text-[#1d9e56]" /> Realtor referral credit</h3>
+              <div className="rounded-2xl border-2 border-[#187B65] p-5">
+                <h3 className="font-bold text-[#102B2A] text-sm flex items-center gap-2"><DollarSign className="w-4 h-4 text-[#187B65]" /> Realtor referral credit</h3>
                 <p className="text-sm text-slate-600 mt-1 leading-relaxed">$25 credit for every completed job you send our way — stackable, paid back to you or applied to your client's invoice.</p>
               </div>
-              <div className="rounded-2xl border-2 border-[#1d9e56] p-5">
-                <h3 className="font-bold text-[#0c3b24] text-sm flex items-center gap-2"><Building2 className="w-4 h-4 text-[#1d9e56]" /> Property manager plan</h3>
+              <div className="rounded-2xl border-2 border-[#187B65] p-5">
+                <h3 className="font-bold text-[#102B2A] text-sm flex items-center gap-2"><Building2 className="w-4 h-4 text-[#187B65]" /> Property manager plan</h3>
                 <p className="text-sm text-slate-600 mt-1 leading-relaxed">For strata and rental portfolios: $299/month covers up to 4 pickups — ideal for ongoing turnover cleanouts.</p>
               </div>
             </section>
 
             {/* Priority Scheduling */}
-            <section className="rounded-2xl border-2 border-[#1d9e56] bg-white p-5 print:p-5">
-              <h2 className="font-bold text-[#0c3b24] text-sm flex items-center gap-2 mb-3">
-                <Timer className="w-4 h-4 text-[#1d9e56]" /> Priority Scheduling — realtor partners only
+            <section className="rounded-2xl border-2 border-[#187B65] bg-white p-5 print:p-5">
+              <h2 className="font-bold text-[#102B2A] text-sm flex items-center gap-2 mb-3">
+                <Timer className="w-4 h-4 text-[#187B65]" /> Priority Scheduling — realtor partners only
               </h2>
               <ul className="space-y-2">
                 {[
@@ -227,7 +227,7 @@ export default function RealtorOnePager() {
                   "Before/after photos emailed for your file and your seller",
                 ].map((p) => (
                   <li key={p} className="flex gap-2 text-sm text-slate-700">
-                    <CalendarCheck className="w-4 h-4 text-[#1d9e56] shrink-0 mt-0.5" />
+                    <CalendarCheck className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
                     {p}
                   </li>
                 ))}
@@ -239,18 +239,18 @@ export default function RealtorOnePager() {
 
             {/* Lead form */}
             <section className="print:hidden">
-              <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2 mb-3">
-                <CalendarCheck className="w-5 h-5 text-[#1d9e56]" /> Book a property cleanout
+              <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2 mb-3">
+                <CalendarCheck className="w-5 h-5 text-[#187B65]" /> Book a property cleanout
               </h2>
               <RealtorLeadForm />
             </section>
 
             {/* CTA / footer */}
-            <section className="rounded-2xl bg-[#0c3b24] text-white px-6 py-6 text-center">
+            <section className="rounded-2xl bg-[#102B2A] text-white px-6 py-6 text-center">
               <p className="font-bold text-lg">Book before noon — we haul the same day.</p>
               <p className="text-white/80 text-sm mt-1">Upfront pricing approved before we lift a thing. Eco receipts on every job.</p>
               <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a href="tel:+16048491745" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 text-sm flex items-center gap-2">
+                <a href="tel:+16048491745" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 text-sm flex items-center gap-2">
                   <Phone className="w-4 h-4" /> (604) 849-1745
                 </a>
                 <span className="text-sm text-white/80 font-medium">samedayrecycling.ca</span>

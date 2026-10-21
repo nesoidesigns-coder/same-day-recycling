@@ -38,7 +38,7 @@ export default function SchedulingTab({ license, customers, pickups, onChanged }
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-[#0c3b24] mb-4">Schedule a pickup</h2>
+      <h2 className="text-lg font-bold text-[#102B2A] mb-4">Schedule a pickup</h2>
       <form onSubmit={schedule} className="rounded-2xl bg-white border border-slate-100 p-5 grid sm:grid-cols-2 gap-3 mb-6">
         <select required value={customerId} onChange={(e) => pickCustomer(e.target.value)} className="input sm:col-span-2">
           <option value="" disabled>Select customer</option>
@@ -55,7 +55,7 @@ export default function SchedulingTab({ license, customers, pickups, onChanged }
         <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="input" placeholder="Pickup address" />
         <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="input" placeholder="City" />
         <input value={form.items_description} onChange={(e) => setForm({ ...form, items_description: e.target.value })} className="input sm:col-span-2" placeholder="What are we picking up?" />
-        <button disabled={busy || !customerId} className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-5 py-3 text-sm sm:col-span-2 disabled:opacity-60 flex items-center justify-center gap-2">
+        <button disabled={busy || !customerId} className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 text-sm sm:col-span-2 disabled:opacity-60 flex items-center justify-center gap-2">
           {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Schedule pickup
         </button>
       </form>
@@ -68,7 +68,7 @@ export default function SchedulingTab({ license, customers, pickups, onChanged }
           {upcoming.map((p) => (
             <div key={p.id} className="rounded-2xl bg-white border border-slate-100 p-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="font-bold text-[#0c3b24]">{p.customer_name} <span className="text-xs font-semibold text-slate-400">{p.scheduled_date}{p.time_window ? ` · ${p.time_window}` : ""}</span></div>
+                <div className="font-bold text-[#102B2A]">{p.customer_name} <span className="text-xs font-semibold text-slate-400">{p.scheduled_date}{p.time_window ? ` · ${p.time_window}` : ""}</span></div>
                 <div className="text-xs text-slate-500 mt-0.5">{[p.address, p.city].filter(Boolean).join(", ")}</div>
                 {p.items_description && <div className="text-xs text-slate-400 mt-1">{p.items_description}</div>}
               </div>

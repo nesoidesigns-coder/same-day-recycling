@@ -55,7 +55,7 @@ export default function RecyclingAssistant() {
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-6">
-          <span className="w-11 h-11 rounded-2xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center"><Sparkles className="w-5 h-5" /></span>
+          <span className="w-11 h-11 rounded-2xl bg-[#102B2A] text-[#187B65] flex items-center justify-center"><Sparkles className="w-5 h-5" /></span>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Recycling Assistant</h1>
             <p className="text-sm text-slate-500">Local rules, cited sources, honest uncertainty</p>
@@ -71,7 +71,7 @@ export default function RecyclingAssistant() {
           <div className="p-4 md:p-6 space-y-4 max-h-[55vh] overflow-y-auto">
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${m.role === "user" ? "bg-[#0c3b24] text-white" : "bg-[#f4f7f5] text-[#0c3b24]"}`}>
+                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${m.role === "user" ? "bg-[#102B2A] text-white" : "bg-[#f4f7f5] text-[#102B2A]"}`}>
                   {m.loading ? (
                     <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
                   ) : (
@@ -111,7 +111,7 @@ export default function RecyclingAssistant() {
                                 {p.accepted_categories?.length > 0 && (
                                   <div className="flex flex-wrap gap-1 mt-1.5">
                                     {p.accepted_categories.slice(0, 4).map((k) => (
-                                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#0c3b24] px-2 py-0.5 text-[9px] font-bold">{CATEGORY_LABELS[k] || k}</span>
+                                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#102B2A] px-2 py-0.5 text-[9px] font-bold">{CATEGORY_LABELS[k] || k}</span>
                                     ))}
                                   </div>
                                 )}

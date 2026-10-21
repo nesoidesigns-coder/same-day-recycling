@@ -10,19 +10,19 @@ export default function RingGauge({ value, max = 100, label, sub, unavailableRea
           <circle cx="60" cy="60" r={R} fill="none" stroke="#e6efe9" strokeWidth="10" />
           {frac !== null && (
             <circle
-              cx="60" cy="60" r={R} fill="none" stroke="#1d9e56" strokeWidth="10" strokeLinecap="round"
+              cx="60" cy="60" r={R} fill="none" stroke="#187B65" strokeWidth="10" strokeLinecap="round"
               strokeDasharray={C} strokeDashoffset={C * (1 - frac)}
             />
           )}
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-lg font-bold text-[#0c3b24]">
+          <span className="text-lg font-bold text-[#102B2A]">
             {unavailableReason ? "—" : (value === null || value === undefined ? "—" : value)}
           </span>
         </div>
       </div>
       <div>
-        <div className="text-sm font-bold text-[#0c3b24]">{label}</div>
+        <div className="text-sm font-bold text-[#102B2A]">{label}</div>
         <div className="text-xs text-slate-500 mt-0.5">
           {unavailableReason ? `Not tracked: ${unavailableReason}` : sub}
         </div>

@@ -38,10 +38,10 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#0c3b24] text-emerald-100/70">
+    <footer className="bg-[#102B2A] text-emerald-100/70">
       <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2 font-bold text-white">
-          <span className="w-8 h-8 rounded-lg bg-gold text-[#0c3b24] flex items-center justify-center">
+          <span className="w-8 h-8 rounded-lg bg-gold text-[#102B2A] flex items-center justify-center">
             <Recycle className="w-4 h-4" />
           </span>
           <span>© 2026 Same Day Recycling — samedayrecycling.ca</span>

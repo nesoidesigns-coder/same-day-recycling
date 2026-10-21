@@ -53,11 +53,11 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
     <section id="recycling-centers" className="bg-white py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-8">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1d9e56]/10 px-4 py-1.5 text-sm font-semibold text-[#0c3b24]">
-            <Recycle className="w-4 h-4 text-[#1d9e56]" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-sm font-semibold text-[#102B2A]">
+            <Recycle className="w-4 h-4 text-[#187B65]" />
             Live recycling map
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#0c3b24] tracking-tight">
+          <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">
             {activeCity ? `Recycling centers in ${activeCity}` : "Recycling centers in every city we serve"}
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
@@ -74,7 +74,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
               onClick={() => setActiveCity(null)}
               className={
                 !activeCity
-                  ? "rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-4 py-2 text-sm"
+                  ? "rounded-full bg-[#102B2A] text-[#187B65] font-bold px-4 py-2 text-sm"
                   : "rounded-full bg-slate-100 text-slate-700 font-medium px-4 py-2 text-sm hover:bg-slate-200 transition-colors"
               }
             >
@@ -86,7 +86,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                 onClick={() => setActiveCity(c.name)}
                 className={
                   activeCity === c.name
-                    ? "rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-4 py-2 text-sm"
+                    ? "rounded-full bg-[#102B2A] text-[#187B65] font-bold px-4 py-2 text-sm"
                     : "rounded-full bg-slate-100 text-slate-700 font-medium px-4 py-2 text-sm hover:bg-slate-200 transition-colors"
                 }
               >
@@ -113,11 +113,11 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                     key={c.id}
                     center={[c.lat, c.lng]}
                     radius={8}
-                    pathOptions={{ color: "#0c3b24", fillColor: "#1d9e56", fillOpacity: 1, weight: 2 }}
+                    pathOptions={{ color: "#102B2A", fillColor: "#187B65", fillOpacity: 1, weight: 2 }}
                   >
                     <Popup>
                       <div style={{ minWidth: 180 }}>
-                        <strong style={{ color: "#0c3b24" }}>{c.name}</strong>
+                        <strong style={{ color: "#102B2A" }}>{c.name}</strong>
                         <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{c.address}</div>
                         {c.accepts && (
                           <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
@@ -147,17 +147,17 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {shown.slice(0, 12).map((c) => (
                 <div key={c.id} className="rounded-2xl border border-slate-100 bg-[#f4f7f5] p-4">
-                  <p className="font-bold text-[#0c3b24] text-sm">{c.name}</p>
+                  <p className="font-bold text-[#102B2A] text-sm">{c.name}</p>
                   <p className="text-xs text-slate-500 mt-1">{c.address}</p>
                   {c.accepts && <p className="text-xs text-slate-600 mt-2">Accepts: {c.accepts}</p>}
                   <div className="flex items-center gap-3 mt-2 text-xs">
                     {c.phone && (
-                      <a href={`tel:${c.phone}`} className="inline-flex items-center gap-1 text-[#1d9e56] font-semibold">
+                      <a href={`tel:${c.phone}`} className="inline-flex items-center gap-1 text-[#187B65] font-semibold">
                         <Phone className="w-3 h-3" /> Call
                       </a>
                     )}
                     {c.website && (
-                      <a href={c.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[#1d9e56] font-semibold">
+                      <a href={c.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[#187B65] font-semibold">
                         <ExternalLink className="w-3 h-3" /> Website
                       </a>
                     )}
@@ -181,7 +181,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             <button
               onClick={refresh}
               disabled={refreshing}
-              className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-white font-bold px-6 py-3 text-sm hover:bg-[#0a3020] transition-colors disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-[#102B2A] text-white font-bold px-6 py-3 text-sm hover:bg-[#0a3020] transition-colors disabled:opacity-60"
             >
               {refreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               {refreshing ? "Checking for updates…" : "Update map"}

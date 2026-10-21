@@ -44,7 +44,7 @@ export default function SeoTab() {
 
   useEffect(() => { load(); }, []);
 
-  if (loading && !data) return <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-12" />;
+  if (loading && !data) return <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-12" />;
 
   if (error) return <p className="text-red-600 text-center py-12">{error}</p>;
 
@@ -101,9 +101,9 @@ export default function SeoTab() {
             <tbody>
               {keywords.map((k, i) => (
                 <tr key={i} className="border-b border-slate-50 last:border-0">
-                  <td className="px-5 py-3 font-semibold text-[#0c3b24]">{k.query}</td>
+                  <td className="px-5 py-3 font-semibold text-[#102B2A]">{k.query}</td>
                   <td className="px-5 py-3 text-slate-500">{shortPage(k.page)}</td>
-                  <td className="px-5 py-3 text-right font-bold text-[#0c3b24]">{k.clicks}</td>
+                  <td className="px-5 py-3 text-right font-bold text-[#102B2A]">{k.clicks}</td>
                   <td className="px-5 py-3 text-right text-slate-600">{k.impressions}</td>
                   <td className="px-5 py-3 text-right text-slate-600">{k.ctr}%</td>
                   <td className="px-5 py-3 text-right text-slate-600">{k.position}</td>

@@ -16,11 +16,11 @@ function Ring({ pct, neutral }) {
       <circle cx="42" cy="42" r={r} fill="none" stroke="#e5e7eb" strokeWidth="8" />
       {!neutral && (
         <circle
-          cx="42" cy="42" r={r} fill="none" stroke="#1d9e56" strokeWidth="8" strokeLinecap="round"
+          cx="42" cy="42" r={r} fill="none" stroke="#187B65" strokeWidth="8" strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)} transform="rotate(-90 42 42)"
         />
       )}
-      <text x="42" y="40" textAnchor="middle" className="fill-[#0c3b24] font-bold" style={{ fontSize: 15 }}>
+      <text x="42" y="40" textAnchor="middle" className="fill-[#102B2A] font-bold" style={{ fontSize: 15 }}>
         {neutral ? "—" : `${Math.round(pct)}%`}
       </text>
       <text x="42" y="55" textAnchor="middle" className="fill-slate-400" style={{ fontSize: 9 }}>
@@ -61,7 +61,7 @@ export default function TrustGauges() {
     <section aria-label="Trust metrics" className="bg-[#f4f7f5] border-y border-slate-100">
       <div className="max-w-7xl mx-auto px-4 py-14">
         <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#0c3b24]">How we measure trust</h2>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#102B2A]">How we measure trust</h2>
           <p className="mt-2 text-sm text-slate-500 max-w-xl mx-auto">
             Every metric below states what it counts, its reporting period, and where the number comes from. Unavailable data stays blank.
           </p>
@@ -69,7 +69,7 @@ export default function TrustGauges() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="rounded-2xl bg-white border border-slate-100 p-6 flex flex-col items-center text-center">
             <Ring pct={data ? (data.total ? (data.verified / data.total) * 100 : 0) : 0} neutral={!data || !data.total} />
-            <div className="mt-3 flex items-center gap-1.5 font-bold text-[#0c3b24]"><ShieldCheck className="w-4 h-4 text-[#1d9e56]" /> Verified listings</div>
+            <div className="mt-3 flex items-center gap-1.5 font-bold text-[#102B2A]"><ShieldCheck className="w-4 h-4 text-[#187B65]" /> Verified listings</div>
             <p className="mt-2 text-xs text-slate-500 leading-relaxed">
               {data && data.total
                 ? `${data.verified} of ${data.total} directory listings confirmed against an official source.`
@@ -80,11 +80,11 @@ export default function TrustGauges() {
           <div className="rounded-2xl bg-white border border-slate-100 p-6 flex flex-col items-center text-center">
             <div className="w-20 h-20 flex items-center justify-center">
               <div className="text-center">
-                <Star className="w-8 h-8 text-[#1d9e56] fill-[#1d9e56] mx-auto" />
-                <div className="mt-1 text-xl font-bold text-[#0c3b24]">{data?.satisfaction ? data.satisfaction.avg.toFixed(1) : "—"}</div>
+                <Star className="w-8 h-8 text-[#187B65] fill-[#187B65] mx-auto" />
+                <div className="mt-1 text-xl font-bold text-[#102B2A]">{data?.satisfaction ? data.satisfaction.avg.toFixed(1) : "—"}</div>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-1.5 font-bold text-[#0c3b24]"><Star className="w-4 h-4 text-[#1d9e56]" /> Customer satisfaction</div>
+            <div className="mt-3 flex items-center gap-1.5 font-bold text-[#102B2A]"><Star className="w-4 h-4 text-[#187B65]" /> Customer satisfaction</div>
             <p className="mt-2 text-xs text-slate-500 leading-relaxed">
               {data?.satisfaction
                 ? `Average of ${data.satisfaction.count} approved customer review${data.satisfaction.count === 1 ? "" : "s"} — all-time.`
@@ -95,7 +95,7 @@ export default function TrustGauges() {
           {NEUTRAL.map((g) => (
             <div key={g.key} className="rounded-2xl bg-white border border-slate-100 p-6 flex flex-col items-center text-center">
               <Ring pct={0} neutral />
-              <div className="mt-3 flex items-center gap-1.5 font-bold text-[#0c3b24]"><g.icon className="w-4 h-4 text-slate-400" /> {g.name}</div>
+              <div className="mt-3 flex items-center gap-1.5 font-bold text-[#102B2A]"><g.icon className="w-4 h-4 text-slate-400" /> {g.name}</div>
               <p className="mt-2 text-xs text-slate-500 leading-relaxed">{g.def}</p>
               <p className="mt-2 text-[10px] text-slate-400 flex items-center gap-1"><Info className="w-3 h-3" /> Not yet tracked</p>
             </div>

@@ -42,7 +42,7 @@ export default function AdminOverview() {
     return <p className="rounded-2xl bg-red-50 text-red-700 p-6 font-semibold">Could not load dashboard data. Refresh the page or check System Health.</p>;
   }
   if (!data) {
-    return <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-20" />;
+    return <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-20" />;
   }
 
   const { bookings, partners, quoteNew, reviews, reviewPending, pendingPayouts, paidPayouts } = data;
@@ -67,7 +67,7 @@ export default function AdminOverview() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-[#0c3b24] tracking-tight">Operations Overview</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] tracking-tight">Operations Overview</h1>
         <p className="text-sm text-slate-500 mt-1">Live network status across all Canadian service cities · all figures from real records</p>
       </div>
 

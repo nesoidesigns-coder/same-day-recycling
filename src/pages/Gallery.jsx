@@ -10,7 +10,7 @@ export default function Gallery() {
       <TopBar />
       <Navbar />
 
-      <section className="bg-[#0c3b24] text-white">
+      <section className="bg-[#102B2A] text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-gold uppercase mb-5">
             <span className="w-8 h-px bg-gold" />
@@ -30,7 +30,7 @@ export default function Gallery() {
         <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
           <PhotoGallery />
           <div className="mt-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-500">
-            <Recycle className="w-4 h-4 text-[#1d9e56]" />
+            <Recycle className="w-4 h-4 text-[#187B65]" />
             Gallery imagery represents our network's fleet, crews, and job sites
           </div>
         </div>

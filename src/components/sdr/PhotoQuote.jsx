@@ -48,8 +48,8 @@ export default function PhotoQuote({ onBook, city: fixedCity }) {
     <section id="photo-quote" className="bg-[#f4f7f5]">
       <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
         <div className="max-w-2xl mb-10">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Photo quote</div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Text a photo, get a firm price</h2>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Photo quote</div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Text a photo, get a firm price</h2>
           <p className="mt-4 text-slate-600">No site visit, no waiting around for an estimator. Snap one photo of your junk and get a firm, no-obligation price in about a minute.</p>
         </div>
         <div className="grid lg:grid-cols-2 gap-8 items-start">
@@ -62,14 +62,14 @@ export default function PhotoQuote({ onBook, city: fixedCity }) {
                 </div>
               ) : (
                 <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-[#f4f7f5] px-4 py-10 text-center mb-1">
-                  <Camera className="w-9 h-9 text-[#1d9e56] mx-auto mb-3" />
-                  <div className="font-bold text-[#0c3b24]">Snap or choose a photo</div>
+                  <Camera className="w-9 h-9 text-[#187B65] mx-auto mb-3" />
+                  <div className="font-bold text-[#102B2A]">Snap or choose a photo</div>
                   <div className="text-sm text-slate-500 mt-1">One clear shot of the pile is all we need</div>
                 </div>
               )}
             </label>
             <label className="block mt-5">
-              <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Anything the photo doesn't show? (optional)</span>
+              <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Anything the photo doesn't show? (optional)</span>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -80,7 +80,7 @@ export default function PhotoQuote({ onBook, city: fixedCity }) {
             </label>
             {!fixedCity && (
               <label className="block mt-4">
-                <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Your city</span>
+                <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Your city</span>
                 <select value={city} onChange={(e) => setCity(e.target.value)} className="input">
                   <option value="">Standard rates (any city)</option>
                   {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
@@ -90,28 +90,28 @@ export default function PhotoQuote({ onBook, city: fixedCity }) {
             <button
               onClick={getQuote}
               disabled={!photo || loading}
-              className="mt-5 w-full rounded-full bg-[#0c3b24] text-white font-bold px-7 py-3.5 hover:bg-[#0a3020] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+              className="mt-5 w-full rounded-full bg-[#102B2A] text-white font-bold px-7 py-3.5 hover:bg-[#0a3020] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
               {loading ? "Reading your photo…" : "Get my firm price"}
             </button>
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
           </div>
-          <div className="rounded-3xl bg-[#0c3b24] text-white p-8 md:p-10">
+          <div className="rounded-3xl bg-[#102B2A] text-white p-8 md:p-10">
             {!quote ? (
               <div className="text-center py-10">
-                <ImageIcon className="w-10 h-10 text-[#1d9e56] mx-auto mb-4" />
+                <ImageIcon className="w-10 h-10 text-[#187B65] mx-auto mb-4" />
                 <p className="text-slate-300">Your firm price will appear here.</p>
               </div>
             ) : (
               <div>
-                <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Your firm price</div>
+                <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Your firm price</div>
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{quote.range}</div>
-                <div className="mt-3 inline-block rounded-full bg-[#1d9e56]/20 text-[#1d9e56] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
+                <div className="mt-3 inline-block rounded-full bg-[#187B65]/20 text-[#187B65] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
                 <p className="mt-5 text-slate-300 text-sm">Firm from your photo, no obligation. Final price confirmed on arrival before we lift a thing.</p>
                 <button
                   onClick={() => onBook({ items_text: itemsText, estimate_text: `${quote.range} (${quote.label})`, city })}
-                  className="mt-8 w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 hover:bg-[#17a04c] transition-colors flex items-center justify-center gap-2"
+                  className="mt-8 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors flex items-center justify-center gap-2"
                 >
                   Book this pickup <ArrowRight className="w-5 h-5" />
                 </button>

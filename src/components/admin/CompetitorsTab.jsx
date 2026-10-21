@@ -52,7 +52,7 @@ export default function CompetitorsTab() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-bold text-[#0c3b24] flex items-center gap-2">
+        <h2 className="text-xl font-bold text-[#102B2A] flex items-center gap-2">
           <Eye className="w-5 h-5" /> Competitor Analysis
         </h2>
         <p className="text-sm text-slate-500 mt-1">
@@ -64,18 +64,18 @@ export default function CompetitorsTab() {
         {COMPETITORS.map((c) => (
           <div key={c.name} className="rounded-2xl border border-slate-100 bg-[#f4f7f5] p-5">
             <div className="flex items-start justify-between gap-3">
-              <h3 className="font-bold text-[#0c3b24]">{c.name}</h3>
+              <h3 className="font-bold text-[#102B2A]">{c.name}</h3>
               <a
                 href={c.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-[#1d9e56] hover:underline"
+                className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-[#187B65] hover:underline"
               >
                 <Link2 className="w-3.5 h-3.5" /> Visit
               </a>
             </div>
-            <p className="mt-2 text-sm text-slate-600"><span className="font-semibold text-[#0c3b24]">Their angle:</span> {c.angle}</p>
-            <p className="mt-2 text-sm text-slate-600"><span className="font-semibold text-[#1d9e56]">Your opening:</span> {c.gap}</p>
+            <p className="mt-2 text-sm text-slate-600"><span className="font-semibold text-[#102B2A]">Their angle:</span> {c.angle}</p>
+            <p className="mt-2 text-sm text-slate-600"><span className="font-semibold text-[#187B65]">Your opening:</span> {c.gap}</p>
           </div>
         ))}
       </div>
@@ -83,8 +83,8 @@ export default function CompetitorsTab() {
       <div className="rounded-2xl border border-slate-100 bg-white p-5">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h3 className="font-bold text-[#0c3b24] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#1d9e56]" /> Fresh web analysis
+            <h3 className="font-bold text-[#102B2A] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#187B65]" /> Fresh web analysis
             </h3>
             <p className="text-sm text-slate-500 mt-1">
               Research live competitor pricing, ads and offers across all 7 cities.
@@ -93,7 +93,7 @@ export default function CompetitorsTab() {
           <button
             onClick={runAnalysis}
             disabled={loading}
-            className="rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-5 py-2.5 text-sm hover:bg-[#0a3020] transition-colors disabled:opacity-60 flex items-center gap-2"
+            className="rounded-full bg-[#102B2A] text-[#187B65] font-bold px-5 py-2.5 text-sm hover:bg-[#0a3020] transition-colors disabled:opacity-60 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
             {loading ? "Analyzing…" : "Run analysis"}
@@ -105,11 +105,11 @@ export default function CompetitorsTab() {
             <p className="text-sm text-slate-700">{report.summary}</p>
             {report.key_takeaways?.length > 0 && (
               <div>
-                <div className="text-xs font-bold uppercase tracking-widest text-[#0c3b24] mb-2">Key takeaways</div>
+                <div className="text-xs font-bold uppercase tracking-widest text-[#102B2A] mb-2">Key takeaways</div>
                 <ul className="space-y-1.5">
                   {report.key_takeaways.map((t, i) => (
                     <li key={i} className="text-sm text-slate-600 flex gap-2">
-                      <span className="text-[#1d9e56] font-bold">•</span> {t}
+                      <span className="text-[#187B65] font-bold">•</span> {t}
                     </li>
                   ))}
                 </ul>
@@ -117,11 +117,11 @@ export default function CompetitorsTab() {
             )}
             {report.opportunities?.length > 0 && (
               <div>
-                <div className="text-xs font-bold uppercase tracking-widest text-[#1d9e56] mb-2">Opportunities</div>
+                <div className="text-xs font-bold uppercase tracking-widest text-[#187B65] mb-2">Opportunities</div>
                 <ul className="space-y-1.5">
                   {report.opportunities.map((t, i) => (
                     <li key={i} className="text-sm text-slate-600 flex gap-2">
-                      <span className="text-[#1d9e56] font-bold">•</span> {t}
+                      <span className="text-[#187B65] font-bold">•</span> {t}
                     </li>
                   ))}
                 </ul>

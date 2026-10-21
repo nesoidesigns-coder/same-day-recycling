@@ -113,7 +113,7 @@ export default function ProviderDetail() {
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Accepted materials (as reported by this facility)</div>
               <div className="flex flex-wrap gap-2">
                 {provider.accepted_categories.map((k) => (
-                  <span key={k} className="rounded-full bg-[#f4f7f5] text-[#0c3b24] px-3 py-1.5 text-xs font-bold border border-emerald-100">{CATEGORY_LABELS[k] || k}</span>
+                  <span key={k} className="rounded-full bg-[#f4f7f5] text-[#102B2A] px-3 py-1.5 text-xs font-bold border border-emerald-100">{CATEGORY_LABELS[k] || k}</span>
                 ))}
               </div>
             </div>

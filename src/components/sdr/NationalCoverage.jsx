@@ -25,8 +25,8 @@ export default function NationalCoverage() {
     <section id="national-coverage" className="bg-white py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-10">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Coverage</div>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#0c3b24] tracking-tight">
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Coverage</div>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">
             Provinces and territories
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
@@ -50,9 +50,9 @@ export default function NationalCoverage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <MapPin className={`w-5 h-5 ${n > 0 ? "text-[#1d9e56]" : "text-slate-300"}`} />
+                      <MapPin className={`w-5 h-5 ${n > 0 ? "text-[#187B65]" : "text-slate-300"}`} />
                       <div>
-                        <div className="font-bold text-[#0c3b24] leading-tight">{r.name}</div>
+                        <div className="font-bold text-[#102B2A] leading-tight">{r.name}</div>
                         <div className="text-xs text-slate-500">{r.capital}</div>
                       </div>
                     </div>
@@ -74,14 +74,14 @@ export default function NationalCoverage() {
                     {n > 0 ? (
                       <Link
                         to={`/recycling?loc=${encodeURIComponent(r.name)}`}
-                        className="inline-flex items-center gap-1 font-bold text-[#1d9e56] hover:underline shrink-0"
+                        className="inline-flex items-center gap-1 font-bold text-[#187B65] hover:underline shrink-0"
                       >
                         Browse <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     ) : (
                       <Link
                         to="/contractors"
-                        className="inline-flex items-center gap-1 font-bold text-slate-600 hover:text-[#1d9e56] shrink-0"
+                        className="inline-flex items-center gap-1 font-bold text-slate-600 hover:text-[#187B65] shrink-0"
                       >
                         Apply <ArrowRight className="w-3.5 h-3.5" />
                       </Link>

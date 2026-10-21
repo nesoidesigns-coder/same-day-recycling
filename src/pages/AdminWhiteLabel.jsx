@@ -116,7 +116,7 @@ export default function AdminWhiteLabel() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
       </div>
     );
   }
@@ -134,11 +134,11 @@ export default function AdminWhiteLabel() {
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-6">
-          <span className="w-11 h-11 rounded-2xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
+          <span className="w-11 h-11 rounded-2xl bg-[#102B2A] text-[#187B65] flex items-center justify-center">
             <Briefcase className="w-5 h-5" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-[#0c3b24] tracking-tight">White Label Control Room</h1>
+            <h1 className="text-2xl font-bold text-[#102B2A] tracking-tight">White Label Control Room</h1>
             <p className="text-sm text-slate-500">Applications pipeline and licensed clients</p>
           </div>
         </div>
@@ -147,10 +147,10 @@ export default function AdminWhiteLabel() {
           {gauges.map((g) => (
             <div key={g.label} className="rounded-3xl bg-[#f4f7f5] border border-slate-100 p-5">
               <div className="flex items-center gap-2">
-                <g.icon className="w-4 h-4 text-[#1d9e56]" />
+                <g.icon className="w-4 h-4 text-[#187B65]" />
                 <div className="text-xs font-bold tracking-wide text-slate-500 uppercase">{g.label}</div>
               </div>
-              <div className="text-2xl font-bold text-[#0c3b24] mt-2">{g.value}</div>
+              <div className="text-2xl font-bold text-[#102B2A] mt-2">{g.value}</div>
               <div className="text-xs text-slate-500 mt-1">{g.sub}</div>
             </div>
           ))}
@@ -163,7 +163,7 @@ export default function AdminWhiteLabel() {
               onClick={() => setTab(t.key)}
               className={
                 tab === t.key
-                  ? "rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-5 py-2 text-sm"
+                  ? "rounded-full bg-[#102B2A] text-[#187B65] font-bold px-5 py-2 text-sm"
                   : "rounded-full bg-slate-100 text-slate-700 font-medium px-5 py-2 text-sm hover:bg-slate-200 transition-colors"
               }
             >
@@ -188,8 +188,8 @@ export default function AdminWhiteLabel() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#0c3b24] text-lg">{l.company}</span>
-                      <span className={`text-[11px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${l.status === "won" ? "bg-[#1d9e56]/15 text-[#1d9e56]" : l.status === "lost" ? "bg-red-100 text-red-600" : "bg-slate-200 text-slate-600"}`}>{l.status}</span>
+                      <span className="font-bold text-[#102B2A] text-lg">{l.company}</span>
+                      <span className={`text-[11px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${l.status === "won" ? "bg-[#187B65]/15 text-[#187B65]" : l.status === "lost" ? "bg-red-100 text-red-600" : "bg-slate-200 text-slate-600"}`}>{l.status}</span>
                     </div>
                     <div className="text-sm text-slate-600 mt-0.5">{l.contact_name} · {l.email}{l.phone ? ` · ${l.phone}` : ""}</div>
                     <div className="text-sm text-slate-500 mt-1">
@@ -198,11 +198,11 @@ export default function AdminWhiteLabel() {
                     {l.message && <p className="text-sm text-slate-600 mt-2 italic">"{l.message}"</p>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <select value={l.status} onChange={(e) => setLeadStatus(l.id, e.target.value)} disabled={busyId === l.id} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-[#0c3b24]">
+                    <select value={l.status} onChange={(e) => setLeadStatus(l.id, e.target.value)} disabled={busyId === l.id} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-[#102B2A]">
                       {LEAD_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
                     {!["won", "lost"].includes(l.status) && (
-                      <button onClick={() => convert(l)} disabled={busyId === l.id} className="rounded-full bg-[#1d9e56] text-[#0c3b24] px-4 py-2 text-sm font-bold hover:bg-[#17a04c] transition-colors flex items-center gap-1.5 disabled:opacity-60">
+                      <button onClick={() => convert(l)} disabled={busyId === l.id} className="rounded-full bg-[#187B65] text-[#102B2A] px-4 py-2 text-sm font-bold hover:bg-[#125C4E] transition-colors flex items-center gap-1.5 disabled:opacity-60">
                         <ArrowRightCircle className="w-4 h-4" /> Onboard
                       </button>
                     )}
@@ -226,9 +226,9 @@ export default function AdminWhiteLabel() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#0c3b24] text-lg">{c.company}</span>
-                      <span className={`text-[11px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${c.status === "active" ? "bg-[#1d9e56]/15 text-[#1d9e56]" : c.status === "churned" ? "bg-red-100 text-red-600" : "bg-slate-200 text-slate-600"}`}>{c.status}</span>
-                      <span className="text-[11px] font-bold uppercase tracking-wide rounded-full bg-[#0c3b24] text-[#1d9e56] px-2.5 py-0.5">{c.plan}</span>
+                      <span className="font-bold text-[#102B2A] text-lg">{c.company}</span>
+                      <span className={`text-[11px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${c.status === "active" ? "bg-[#187B65]/15 text-[#187B65]" : c.status === "churned" ? "bg-red-100 text-red-600" : "bg-slate-200 text-slate-600"}`}>{c.status}</span>
+                      <span className="text-[11px] font-bold uppercase tracking-wide rounded-full bg-[#102B2A] text-[#187B65] px-2.5 py-0.5">{c.plan}</span>
                     </div>
                     <div className="text-sm text-slate-600 mt-0.5">{c.contact_name} · {c.email}</div>
                     <div className="text-sm text-slate-500 mt-1">
@@ -240,12 +240,12 @@ export default function AdminWhiteLabel() {
                     <button
                       onClick={() => copyPayLink(c)}
                       disabled={busyId === c.id}
-                      className="rounded-full bg-[#0c3b24] text-[#1d9e56] px-4 py-2 text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-1.5 disabled:opacity-60"
+                      className="rounded-full bg-[#102B2A] text-[#187B65] px-4 py-2 text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-1.5 disabled:opacity-60"
                     >
                       {copiedId === c.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                       {copiedId === c.id ? "Link copied" : c.pay_token ? "Copy payment link" : "Create payment link"}
                     </button>
-                    <select value={c.status} onChange={(e) => setClientStatus(c.id, e.target.value)} disabled={busyId === c.id} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-[#0c3b24]">
+                    <select value={c.status} onChange={(e) => setClientStatus(c.id, e.target.value)} disabled={busyId === c.id} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-[#102B2A]">
                       {CLIENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
@@ -266,14 +266,14 @@ export default function AdminWhiteLabel() {
             {payments.map((t) => (
               <div key={t.id} className="rounded-2xl bg-white border border-slate-100 p-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-[#0c3b24]">{t.ref_label || (PURPOSE_LABELS[t.purpose] || t.purpose)}</div>
+                  <div className="font-bold text-[#102B2A]">{t.ref_label || (PURPOSE_LABELS[t.purpose] || t.purpose)}</div>
                   <div className="text-xs text-slate-500 mt-0.5">
                     {PURPOSE_LABELS[t.purpose] || t.purpose} · {t.kind === "subscription" ? "Recurring" : "One-time"}
                     {t.paypal_payer_email ? ` · ${t.paypal_payer_email}` : ""}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-[#0c3b24]">{money(t.amount)} {t.currency}</div>
+                  <div className="font-bold text-[#102B2A]">{money(t.amount)} {t.currency}</div>
                   <div className="text-xs mt-0.5">{STATUS_BADGES[t.status] || t.status}</div>
                 </div>
               </div>

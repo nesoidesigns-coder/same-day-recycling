@@ -21,18 +21,18 @@ export default function RouteMap({ stops }) {
         />
         <Polyline
           positions={stops.map((s) => [s.lat, s.lng])}
-          pathOptions={{ color: "#1d9e56", weight: 3, opacity: 0.8 }}
+          pathOptions={{ color: "#187B65", weight: 3, opacity: 0.8 }}
         />
         {stops.map((s) => (
           <CircleMarker
             key={s.booking_id}
             center={[s.lat, s.lng]}
             radius={9}
-            pathOptions={{ color: "#0c3b24", fillColor: "#1d9e56", fillOpacity: 1, weight: 2 }}
+            pathOptions={{ color: "#102B2A", fillColor: "#187B65", fillOpacity: 1, weight: 2 }}
           >
             <Popup>
               <div style={{ minWidth: 170 }}>
-                <div style={{ fontWeight: 700, color: "#0c3b24" }}>
+                <div style={{ fontWeight: 700, color: "#102B2A" }}>
                   Stop {s.stop_number}: {s.name}
                 </div>
                 <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{s.address}</div>

@@ -27,7 +27,7 @@ function StatCard({ label, value }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-[#0c3b24]">{value}</p>
+      <p className="mt-1 text-2xl font-bold text-[#102B2A]">{value}</p>
     </div>
   );
 }
@@ -92,8 +92,8 @@ export default function AnalyticsTab() {
   const quotePct = pctOf(quotesN, visitors);
   const bookingOverallPct = pctOf(bookingsN, visitors);
   const funnel = [
-    { label: "Visitors (28d)", value: visitors, width: 100, note: null, color: "#0c3b24" },
-    { label: "Quote requests", value: quotesN, width: Math.max(quotePct, 4), note: `${quotePct}% of visitors`, color: "#1d9e56" },
+    { label: "Visitors (28d)", value: visitors, width: 100, note: null, color: "#102B2A" },
+    { label: "Quote requests", value: quotesN, width: Math.max(quotePct, 4), note: `${quotePct}% of visitors`, color: "#187B65" },
     { label: "Bookings", value: bookingsN, width: Math.max(bookingOverallPct, 3), note: `${pctOf(bookingsN, quotesN)}% of quotes`, color: "#d9a422" },
   ];
 
@@ -110,13 +110,13 @@ export default function AnalyticsTab() {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold text-[#0c3b24]">Site Analytics (Google)</h2>
+          <h2 className="text-lg font-bold text-[#102B2A]">Site Analytics (Google)</h2>
           <p className="text-sm text-slate-500">Live traffic from Google Analytics, last 28 days</p>
         </div>
         <button
           onClick={load}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-full bg-[#0c3b24] text-[#1d9e56] font-bold px-4 py-2 text-sm disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-[#102B2A] text-[#187B65] font-bold px-4 py-2 text-sm disabled:opacity-60"
         >
           <RefreshCw className={"w-4 h-4" + (loading ? " animate-spin" : "")} />
           Refresh
@@ -144,8 +144,8 @@ export default function AnalyticsTab() {
           </div>
 
           <div className="rounded-2xl border border-slate-200 p-4">
-            <p className="text-sm font-bold text-[#0c3b24] mb-3 inline-flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-[#1d9e56]" /> Visitors &amp; page views per day
+            <p className="text-sm font-bold text-[#102B2A] mb-3 inline-flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-[#187B65]" /> Visitors &amp; page views per day
             </p>
             {data.daily.length ? (
               <ResponsiveContainer width="100%" height={220}>
@@ -154,8 +154,8 @@ export default function AnalyticsTab() {
                   <XAxis dataKey="date" tickFormatter={fmtDate} fontSize={11} />
                   <YAxis fontSize={11} allowDecimals={false} />
                   <Tooltip formatter={(v) => [v, undefined]} labelFormatter={(l) => l} />
-                  <Line type="monotone" dataKey="users" stroke="#1d9e56" strokeWidth={2} dot={false} name="Visitors" />
-                  <Line type="monotone" dataKey="pageviews" stroke="#0c3b24" strokeWidth={2} dot={false} name="Pageviews" />
+                  <Line type="monotone" dataKey="users" stroke="#187B65" strokeWidth={2} dot={false} name="Visitors" />
+                  <Line type="monotone" dataKey="pageviews" stroke="#102B2A" strokeWidth={2} dot={false} name="Pageviews" />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
@@ -165,8 +165,8 @@ export default function AnalyticsTab() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="rounded-2xl border border-slate-200 p-4">
-              <p className="text-sm font-bold text-[#0c3b24] mb-3 inline-flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-[#1d9e56]" /> Bookings per day (last 14 days)
+              <p className="text-sm font-bold text-[#102B2A] mb-3 inline-flex items-center gap-2">
+                <CalendarDays className="w-4 h-4 text-[#187B65]" /> Bookings per day (last 14 days)
               </p>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={bookingDays}>
@@ -174,20 +174,20 @@ export default function AnalyticsTab() {
                   <XAxis dataKey="date" fontSize={10} interval={1} tickMargin={6} />
                   <YAxis fontSize={11} allowDecimals={false} width={28} />
                   <Tooltip formatter={(v) => [v, "Bookings"]} />
-                  <Bar dataKey="bookings" fill="#1d9e56" radius={[4, 4, 0, 0]} name="Bookings" />
+                  <Bar dataKey="bookings" fill="#187B65" radius={[4, 4, 0, 0]} name="Bookings" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-2xl border border-slate-200 p-4">
-              <p className="text-sm font-bold text-[#0c3b24] mb-4 inline-flex items-center gap-2">
-                <Filter className="w-4 h-4 text-[#1d9e56]" /> Conversion funnel
+              <p className="text-sm font-bold text-[#102B2A] mb-4 inline-flex items-center gap-2">
+                <Filter className="w-4 h-4 text-[#187B65]" /> Conversion funnel
               </p>
               <div className="space-y-4">
                 {funnel.map((step) => (
                   <div key={step.label}>
                     <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="font-semibold text-[#0c3b24]">{step.label}</span>
+                      <span className="font-semibold text-[#102B2A]">{step.label}</span>
                       <span className="text-slate-500">
                         {step.value.toLocaleString()}
                         {step.note ? ` · ${step.note}` : ""}
@@ -204,8 +204,8 @@ export default function AnalyticsTab() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="rounded-2xl border border-slate-200 p-4">
-              <p className="text-sm font-bold text-[#0c3b24] mb-3 inline-flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-[#1d9e56]" /> Traffic sources
+              <p className="text-sm font-bold text-[#102B2A] mb-3 inline-flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-[#187B65]" /> Traffic sources
               </p>
               {srcRows.length ? (
                 <ResponsiveContainer width="100%" height={Math.max(srcRows.length * 44 + 40, 160)}>
@@ -216,7 +216,7 @@ export default function AnalyticsTab() {
                       formatter={(v) => [v, "Sessions"]}
                       labelFormatter={(l, payload) => (payload && payload[0] ? payload[0].payload.raw : l)}
                     />
-                    <Bar dataKey="sessions" fill="#1d9e56" radius={[0, 6, 6, 0]} barSize={18} name="Sessions" />
+                    <Bar dataKey="sessions" fill="#187B65" radius={[0, 6, 6, 0]} barSize={18} name="Sessions" />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -225,19 +225,19 @@ export default function AnalyticsTab() {
             </div>
 
             <div className="rounded-2xl border border-slate-200 p-4">
-              <p className="text-sm font-bold text-[#0c3b24] mb-3">Top 5 pages</p>
+              <p className="text-sm font-bold text-[#102B2A] mb-3">Top 5 pages</p>
               {top5.length ? (
                 <ul className="space-y-3">
                   {top5.map((p) => (
                     <li key={p.path} className="text-sm">
                       <div className="flex items-center justify-between gap-3 mb-1">
                         <span className="truncate text-slate-700">{p.path}</span>
-                        <span className="font-semibold text-[#0c3b24] whitespace-nowrap">
+                        <span className="font-semibold text-[#102B2A] whitespace-nowrap">
                           {p.pageviews.toLocaleString()} views
                         </span>
                       </div>
                       <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                        <div className="h-full rounded-full bg-[#0c3b24]" style={{ width: `${Math.round((p.pageviews / maxTop) * 100)}%` }} />
+                        <div className="h-full rounded-full bg-[#102B2A]" style={{ width: `${Math.round((p.pageviews / maxTop) * 100)}%` }} />
                       </div>
                     </li>
                   ))}

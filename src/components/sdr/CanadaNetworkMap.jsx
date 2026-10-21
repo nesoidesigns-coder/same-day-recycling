@@ -35,11 +35,11 @@ export default function CanadaNetworkMap() {
     <section className="bg-[#f4f7f5] py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-8">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1d9e56]/10 px-4 py-1.5 text-sm font-semibold text-[#0c3b24]">
-            <Network className="w-4 h-4 text-[#1d9e56]" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-sm font-semibold text-[#102B2A]">
+            <Network className="w-4 h-4 text-[#187B65]" />
             National network
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#0c3b24] tracking-tight">
+          <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">
             One network, built for all of Canada
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
@@ -65,7 +65,7 @@ export default function CanadaNetworkMap() {
                   <Polyline
                     key={`line-${p.id}`}
                     positions={[[p.lat, p.lng], [HUB.lat, HUB.lng]]}
-                    pathOptions={{ color: "#1d9e56", opacity: 0.18, weight: 1.2 }}
+                    pathOptions={{ color: "#187B65", opacity: 0.18, weight: 1.2 }}
                   />
                 ))}
                 {/* expansion connections: open regions to HQ */}
@@ -73,7 +73,7 @@ export default function CanadaNetworkMap() {
                   <Polyline
                     key={`open-${r.code}`}
                     positions={[[r.lat, r.lng], [HUB.lat, HUB.lng]]}
-                    pathOptions={{ color: "#0c3b24", opacity: 0.1, weight: 1, dashArray: "4 6" }}
+                    pathOptions={{ color: "#102B2A", opacity: 0.1, weight: 1, dashArray: "4 6" }}
                   />
                 ))}
                 {/* open-region capital nodes */}
@@ -86,7 +86,7 @@ export default function CanadaNetworkMap() {
                   >
                     <Popup>
                       <div style={{ minWidth: 160 }}>
-                        <strong style={{ color: "#0c3b24" }}>{r.name}</strong>
+                        <strong style={{ color: "#102B2A" }}>{r.name}</strong>
                         <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
                           Expansion region — provider applications open
                         </div>
@@ -100,11 +100,11 @@ export default function CanadaNetworkMap() {
                     key={p.id}
                     center={[p.lat, p.lng]}
                     radius={7}
-                    pathOptions={{ color: "#0c3b24", fillColor: "#1d9e56", fillOpacity: 1, weight: 2, className: "network-pulse" }}
+                    pathOptions={{ color: "#102B2A", fillColor: "#187B65", fillOpacity: 1, weight: 2, className: "network-pulse" }}
                   >
                     <Popup>
                       <div style={{ minWidth: 170 }}>
-                        <strong style={{ color: "#0c3b24" }}>{p.name}</strong>
+                        <strong style={{ color: "#102B2A" }}>{p.name}</strong>
                         <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
                           Verified provider — {[p.city, p.province].filter(Boolean).join(", ")}
                         </div>
@@ -116,10 +116,10 @@ export default function CanadaNetworkMap() {
                 <CircleMarker
                   center={[HUB.lat, HUB.lng]}
                   radius={9}
-                  pathOptions={{ color: "#0c3b24", fillColor: "#0c3b24", fillOpacity: 1, weight: 3 }}
+                  pathOptions={{ color: "#102B2A", fillColor: "#102B2A", fillOpacity: 1, weight: 3 }}
                 >
                   <Popup>
-                    <div style={{ fontWeight: 700, color: "#0c3b24" }}>{HUB.label}</div>
+                    <div style={{ fontWeight: 700, color: "#102B2A" }}>{HUB.label}</div>
                   </Popup>
                 </CircleMarker>
               </MapContainer>
@@ -127,15 +127,15 @@ export default function CanadaNetworkMap() {
 
             <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold text-slate-600">
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#1d9e56] inline-block" />
-                <ShieldCheck className="w-3.5 h-3.5 text-[#1d9e56]" /> {providers.length} verified providers
+                <span className="w-3 h-3 rounded-full bg-[#187B65] inline-block" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> {providers.length} verified providers
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-slate-300 inline-block" />
                 <Rocket className="w-3.5 h-3.5 text-slate-500" /> {openRegions.length} regions expanding next
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#0c3b24] inline-block" /> Network HQ — Canada
+                <span className="w-3 h-3 rounded-full bg-[#102B2A] inline-block" /> Network HQ — Canada
               </span>
             </div>
           </>

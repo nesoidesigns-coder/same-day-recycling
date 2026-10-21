@@ -29,8 +29,8 @@ export default function SeoInsightsTab() {
 
   return (
     <div className="rounded-2xl border border-slate-100 p-5">
-      <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-2">
-        <TrendingUp className="w-4 h-4 text-[#1d9e56]" /> SEO booster
+      <h2 className="font-bold text-[#102B2A] flex items-center gap-2 mb-2">
+        <TrendingUp className="w-4 h-4 text-[#187B65]" /> SEO booster
       </h2>
       <p className="text-sm text-slate-500 mb-4">
         Pulls your real Google search data, then the AI turns it into concrete wins: better page titles, metas and content ideas for every city page.
@@ -38,7 +38,7 @@ export default function SeoInsightsTab() {
       <button
         onClick={analyze}
         disabled={loading}
-        className="inline-flex items-center gap-2 rounded-full bg-[#1d9e56] text-white font-bold px-6 py-3 text-sm hover:bg-[#17a04c] transition-colors disabled:opacity-60"
+        className="inline-flex items-center gap-2 rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#125C4E] transition-colors disabled:opacity-60"
       >
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lightbulb className="w-4 h-4" />}
         {loading ? "Analyzing…" : "Analyze with latest search data"}
@@ -49,11 +49,11 @@ export default function SeoInsightsTab() {
         <div className="mt-6 flex flex-col gap-5">
           {result.quick_wins?.length > 0 && (
             <div>
-              <h3 className="font-bold text-[#0c3b24] text-sm mb-2">Quick wins (ranked 4-15, worth pushing to page 1)</h3>
+              <h3 className="font-bold text-[#102B2A] text-sm mb-2">Quick wins (ranked 4-15, worth pushing to page 1)</h3>
               <div className="flex flex-col gap-2">
                 {result.quick_wins.map((q, i) => (
                   <div key={i} className="rounded-xl bg-[#f4f7f5] p-3 text-sm">
-                    <p className="font-semibold text-[#0c3b24]">&ldquo;{q.query}&rdquo; &rarr; {q.page}</p>
+                    <p className="font-semibold text-[#102B2A]">&ldquo;{q.query}&rdquo; &rarr; {q.page}</p>
                     <p className="text-slate-600">{q.why}</p>
                   </div>
                 ))}
@@ -62,7 +62,7 @@ export default function SeoInsightsTab() {
           )}
           {result.page_recommendations?.map((r, i) => (
             <div key={i} className="rounded-xl border border-slate-100 p-4">
-              <p className="font-bold text-[#0c3b24] text-sm">{r.page}</p>
+              <p className="font-bold text-[#102B2A] text-sm">{r.page}</p>
               {r.focus_keywords?.length > 0 && (
                 <p className="text-xs text-slate-500 mt-1">Target: {r.focus_keywords.join(", ")}</p>
               )}

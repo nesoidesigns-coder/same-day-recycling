@@ -24,8 +24,8 @@ export default function AnalysisDisplayer() {
 
   return (
     <div className="rounded-3xl bg-white border border-slate-100 p-6 md:p-8">
-      <h2 className="font-bold text-[#0c3b24] flex items-center gap-2 mb-2">
-        <Lightbulb className="w-5 h-5 text-[#1d9e56]" /> AI analyses
+      <h2 className="font-bold text-[#102B2A] flex items-center gap-2 mb-2">
+        <Lightbulb className="w-5 h-5 text-[#187B65]" /> AI analyses
       </h2>
       <p className="text-sm text-slate-500 mb-5">
         Every AI research report the site runs — competitor analysis, market research and receptionist lookups — saved and displayed here.
@@ -33,7 +33,7 @@ export default function AnalysisDisplayer() {
 
       {analyses === null && (
         <div className="flex justify-center py-6">
-          <Loader2 className="w-6 h-6 text-[#1d9e56] animate-spin" />
+          <Loader2 className="w-6 h-6 text-[#187B65] animate-spin" />
         </div>
       )}
       {analyses !== null && analyses.length === 0 && (
@@ -47,7 +47,7 @@ export default function AnalysisDisplayer() {
               <div key={r.id} className="rounded-xl bg-[#f4f7f5] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <button onClick={() => setExpandedId(open ? null : r.id)} className="min-w-0 text-left flex-1">
-                    <p className="font-semibold text-[#0c3b24] text-sm">{r.topic}</p>
+                    <p className="font-semibold text-[#102B2A] text-sm">{r.topic}</p>
                     <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
                       {r.origin === "receptionist" && <MessageCircle className="w-3 h-3" />}
                       {r.origin === "receptionist" ? "From AI receptionist" : "From research tool"}
@@ -57,7 +57,7 @@ export default function AnalysisDisplayer() {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => setExpandedId(open ? null : r.id)}
-                      className="p-2 text-slate-500 hover:text-[#1d9e56] transition-colors"
+                      className="p-2 text-slate-500 hover:text-[#187B65] transition-colors"
                       aria-label="Toggle analysis"
                     >
                       <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -76,11 +76,11 @@ export default function AnalysisDisplayer() {
                     <p className="text-slate-700">{r.summary}</p>
                     {r.key_takeaways?.length > 0 && (
                       <div>
-                        <h4 className="font-bold text-[#0c3b24] text-xs mb-1">Key takeaways</h4>
+                        <h4 className="font-bold text-[#102B2A] text-xs mb-1">Key takeaways</h4>
                         <ul className="flex flex-col gap-1">
                           {r.key_takeaways.map((t, i) => (
                             <li key={i} className="text-slate-600 flex gap-2">
-                              <Sparkles className="w-3.5 h-3.5 text-[#1d9e56] shrink-0 mt-0.5" /> {t}
+                              <Sparkles className="w-3.5 h-3.5 text-[#187B65] shrink-0 mt-0.5" /> {t}
                             </li>
                           ))}
                         </ul>
@@ -88,7 +88,7 @@ export default function AnalysisDisplayer() {
                     )}
                     {r.opportunities?.length > 0 && (
                       <div>
-                        <h4 className="font-bold text-[#0c3b24] text-xs mb-1">Opportunities</h4>
+                        <h4 className="font-bold text-[#102B2A] text-xs mb-1">Opportunities</h4>
                         <ul className="list-disc pl-5 text-slate-600 flex flex-col gap-1">
                           {r.opportunities.map((o, i) => <li key={i}>{o}</li>)}
                         </ul>
@@ -96,7 +96,7 @@ export default function AnalysisDisplayer() {
                     )}
                     {r.sources?.length > 0 && (
                       <div>
-                        <h4 className="font-bold text-[#0c3b24] text-xs mb-1">Sources</h4>
+                        <h4 className="font-bold text-[#102B2A] text-xs mb-1">Sources</h4>
                         <ul className="list-disc pl-5 text-xs text-slate-500 flex flex-col gap-1 break-words">
                           {r.sources.map((s, i) => <li key={i} className="break-words">{s}</li>)}
                         </ul>

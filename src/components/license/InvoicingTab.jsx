@@ -44,11 +44,11 @@ export default function InvoicingTab({ license, pickups, invoices, onChanged }) 
       <div className="grid grid-cols-2 gap-3 mb-5">
         <div className="rounded-2xl bg-[#f4f7f5] border border-slate-100 p-4">
           <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Collected</div>
-          <div className="text-2xl font-bold text-[#1d9e56] mt-1">{money(collected)}</div>
+          <div className="text-2xl font-bold text-[#187B65] mt-1">{money(collected)}</div>
         </div>
         <div className="rounded-2xl bg-[#f4f7f5] border border-slate-100 p-4">
           <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Outstanding</div>
-          <div className="text-2xl font-bold text-[#0c3b24] mt-1">{money(outstanding)}</div>
+          <div className="text-2xl font-bold text-[#102B2A] mt-1">{money(outstanding)}</div>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ export default function InvoicingTab({ license, pickups, invoices, onChanged }) 
           {unInvoiced.map((p) => (
             <div key={p.id} className="rounded-2xl bg-white border border-slate-100 p-4 flex flex-wrap items-center gap-3">
               <div className="flex-1 min-w-[180px]">
-                <div className="font-bold text-[#0c3b24] text-sm">{p.customer_name}</div>
+                <div className="font-bold text-[#102B2A] text-sm">{p.customer_name}</div>
                 <div className="text-xs text-slate-500">{p.scheduled_date} · {[p.address, p.city].filter(Boolean).join(", ")}</div>
               </div>
               <input
@@ -70,7 +70,7 @@ export default function InvoicingTab({ license, pickups, invoices, onChanged }) 
                 placeholder="$ Amount"
                 inputMode="decimal"
               />
-              <button onClick={() => createInvoice(p)} disabled={busyId === p.id} className="rounded-full bg-[#1d9e56] text-[#0c3b24] px-4 py-2 text-sm font-bold hover:bg-[#17a04c] transition-colors flex items-center gap-1.5 disabled:opacity-60">
+              <button onClick={() => createInvoice(p)} disabled={busyId === p.id} className="rounded-full bg-[#187B65] text-[#102B2A] px-4 py-2 text-sm font-bold hover:bg-[#125C4E] transition-colors flex items-center gap-1.5 disabled:opacity-60">
                 {busyId === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />} Invoice
               </button>
             </div>
@@ -88,18 +88,18 @@ export default function InvoicingTab({ license, pickups, invoices, onChanged }) 
             return (
               <div key={p.id} className="rounded-2xl bg-white border border-slate-100 p-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-[#0c3b24] text-sm">{inv.customer_name} <span className="ml-1 font-extrabold">{money(inv.amount)}</span></div>
+                  <div className="font-bold text-[#102B2A] text-sm">{inv.customer_name} <span className="ml-1 font-extrabold">{money(inv.amount)}</span></div>
                   <div className="text-xs text-slate-500 mt-0.5">Issued {inv.issued_date || "—"}{inv.paid_date ? ` · Paid ${inv.paid_date}` : ""}</div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${inv.status === "paid" ? "bg-[#1d9e56]/15 text-[#1d9e56]" : inv.status === "sent" ? "bg-sky-100 text-sky-700" : "bg-slate-200 text-slate-600"}`}>{inv.status}</span>
+                  <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-2.5 py-0.5 ${inv.status === "paid" ? "bg-[#187B65]/15 text-[#187B65]" : inv.status === "sent" ? "bg-sky-100 text-sky-700" : "bg-slate-200 text-slate-600"}`}>{inv.status}</span>
                   {inv.status === "draft" && (
-                    <button onClick={() => setStatus(inv, "sent")} disabled={busyId === inv.id} className="rounded-full bg-[#0c3b24] text-[#1d9e56] px-3.5 py-1.5 text-xs font-bold flex items-center gap-1 disabled:opacity-60">
+                    <button onClick={() => setStatus(inv, "sent")} disabled={busyId === inv.id} className="rounded-full bg-[#102B2A] text-[#187B65] px-3.5 py-1.5 text-xs font-bold flex items-center gap-1 disabled:opacity-60">
                       <Send className="w-3.5 h-3.5" /> Mark sent
                     </button>
                   )}
                   {inv.status !== "paid" && (
-                    <button onClick={() => setStatus(inv, "paid")} disabled={busyId === inv.id} className="rounded-full bg-[#1d9e56]/15 text-[#1d9e56] px-3.5 py-1.5 text-xs font-bold flex items-center gap-1 disabled:opacity-60">
+                    <button onClick={() => setStatus(inv, "paid")} disabled={busyId === inv.id} className="rounded-full bg-[#187B65]/15 text-[#187B65] px-3.5 py-1.5 text-xs font-bold flex items-center gap-1 disabled:opacity-60">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Mark paid
                     </button>
                   )}

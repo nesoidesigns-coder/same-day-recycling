@@ -39,14 +39,14 @@ export default function AdminPartners() {
     load();
   };
 
-  if (partners === null) return <Loader2 className="w-8 h-8 text-[#1d9e56] animate-spin mx-auto my-20" />;
+  if (partners === null) return <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-20" />;
 
   const activeCount = partners.filter((p) => p.active !== false).length;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-[#0c3b24] tracking-tight">Partners</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] tracking-tight">Partners</h1>
         <p className="text-sm text-slate-500 mt-1">{activeCount} of {partners.length} partner contractors available for dispatch</p>
       </div>
 
@@ -64,19 +64,19 @@ export default function AdminPartners() {
                 <div key={p.id} className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="font-bold text-[#0c3b24]">{p.name}</div>
+                      <div className="font-bold text-[#102B2A]">{p.name}</div>
                       <div className="text-xs text-slate-500">{p.email}</div>
                     </div>
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${p.active !== false ? "bg-[#1d9e56]/15 text-[#1d9e56]" : "bg-slate-100 text-slate-500"}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${p.active !== false ? "bg-[#187B65]/15 text-[#187B65]" : "bg-slate-100 text-slate-500"}`}>
                       {p.active !== false ? "Available" : "Inactive"}
                     </span>
                   </div>
-                  <div className="text-xs font-semibold text-[#0c3b24] mt-2">{p.city || "No city set"}</div>
+                  <div className="text-xs font-semibold text-[#102B2A] mt-2">{p.city || "No city set"}</div>
                   {p.equipment?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-2">
                       {p.equipment.map((eq) => (
-                        <span key={eq} className="flex items-center gap-1 rounded-full bg-[#eef4f0] text-[#0c3b24] px-2 py-0.5 text-[11px] font-semibold">
-                          <Truck className="w-3 h-3 text-[#1d9e56]" />{eq}
+                        <span key={eq} className="flex items-center gap-1 rounded-full bg-[#eef4f0] text-[#102B2A] px-2 py-0.5 text-[11px] font-semibold">
+                          <Truck className="w-3 h-3 text-[#187B65]" />{eq}
                         </span>
                       ))}
                     </div>
@@ -90,7 +90,7 @@ export default function AdminPartners() {
                     <span className="text-xs text-slate-500">{stats.jobs} active job{stats.jobs === 1 ? "" : "s"} · ${Math.round(stats.value).toLocaleString()} value</span>
                     <button
                       onClick={() => toggleActive(p)}
-                      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${p.active !== false ? "border border-slate-200 text-slate-600 hover:border-[#1d9e56]" : "bg-[#1d9e56] text-[#0c3b24]"}`}
+                      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${p.active !== false ? "border border-slate-200 text-slate-600 hover:border-[#187B65]" : "bg-[#187B65] text-[#102B2A]"}`}
                     >
                       <Power className="w-3 h-3" /> {p.active !== false ? "Pause" : "Reactivate"}
                     </button>
@@ -102,7 +102,7 @@ export default function AdminPartners() {
         </div>
 
         <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-6">
-          <h2 className="text-lg font-bold text-[#0c3b24] flex items-center gap-2"><Users className="w-5 h-5 text-[#1d9e56]" /> Add a partner</h2>
+          <h2 className="text-lg font-bold text-[#102B2A] flex items-center gap-2"><Users className="w-5 h-5 text-[#187B65]" /> Add a partner</h2>
           <p className="text-sm text-slate-500 mt-1">Sends a login invite, then lists them for dispatch.</p>
           <div className="mt-4 space-y-3">
             <input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="input" placeholder="Company / partner name" aria-label="Partner name" />
@@ -120,18 +120,18 @@ export default function AdminPartners() {
                       type="checkbox"
                       checked={form.equipment.includes(item)}
                       onChange={() => setForm((f) => ({ ...f, equipment: f.equipment.includes(item) ? f.equipment.filter((x) => x !== item) : [...f.equipment, item] }))}
-                      className="w-4 h-4 accent-[#1d9e56]"
+                      className="w-4 h-4 accent-[#187B65]"
                     />
                     {item}
                   </label>
                 ))}
               </div>
             </div>
-            <button onClick={add} disabled={saving} className="w-full rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+            <button onClick={add} disabled={saving} className="w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
               {saving ? "Adding…" : "Add partner & send invite"}
             </button>
-            <p className="text-[11px] text-slate-400 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#1d9e56]" /> Contractors can also self-register at /partner-register — their account links automatically.</p>
+            <p className="text-[11px] text-slate-400 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#187B65]" /> Contractors can also self-register at /partner-register — their account links automatically.</p>
           </div>
         </div>
       </div>

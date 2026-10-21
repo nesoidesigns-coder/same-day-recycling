@@ -39,28 +39,28 @@ export default function CommandOverview({ licenses, transactions, customers, pic
           { icon: DollarSign, label: "Setup revenue", value: money(setupRevenue), sub: `${ordersPaid} setup payment${ordersPaid === 1 ? "" : "s"}` },
           { icon: Activity, label: "Open invoices", value: money(openInvoiced), sub: `${openInvoices.length} across all instances` },
         ].map((g) => (
-          <div key={g.label} className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-5">
+          <div key={g.label} className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-5">
             <div className="flex items-center gap-2">
-              <g.icon className="w-4 h-4 text-[#1d9e56]" />
+              <g.icon className="w-4 h-4 text-[#187B65]" />
               <div className="text-xs font-bold tracking-wide text-emerald-100/60 uppercase">{g.label}</div>
             </div>
-            <div className="text-2xl font-bold text-[#a8f0cc] mt-2 holo-glow-text">{g.value}</div>
+            <div className="text-2xl font-bold text-[#54D9AE] mt-2 holo-glow-text">{g.value}</div>
             <div className="text-xs text-emerald-100/50 mt-1">{g.sub}</div>
           </div>
         ))}
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mb-8">
-        <div className="holo-panel-deep holo-panel rounded-2xl border border-[#1d9e56]/20 p-6 flex items-center justify-center relative overflow-hidden">
+        <div className="holo-panel-deep holo-panel rounded-2xl border border-[#187B65]/20 p-6 flex items-center justify-center relative overflow-hidden">
           <HoloGauge value={provisioningRate} label="Provisioning rate" sub="Active licenses" />
         </div>
-        <div className="holo-panel-deep holo-panel rounded-2xl border border-[#1d9e56]/20 p-6 flex items-center justify-center relative overflow-hidden">
+        <div className="holo-panel-deep holo-panel rounded-2xl border border-[#187B65]/20 p-6 flex items-center justify-center relative overflow-hidden">
           <HoloGauge value={paymentRate} label="Payment success" sub="Setup + subscriptions" />
         </div>
-        <div className="holo-panel-deep rounded-2xl border border-[#1d9e56]/20 p-6">
+        <div className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Globe2 className="w-4 h-4 text-[#1d9e56]" />
-            <div className="text-sm font-bold text-[#a8f0cc]">Geographic coverage</div>
+            <Globe2 className="w-4 h-4 text-[#187B65]" />
+            <div className="text-sm font-bold text-[#54D9AE]">Geographic coverage</div>
           </div>
           {provinces.length === 0 ? (
             <p className="text-sm text-emerald-100/50">No licensed companies yet.</p>
@@ -69,23 +69,23 @@ export default function CommandOverview({ licenses, transactions, customers, pic
               {provinces.map(([p, n]) => (
                 <div key={p} className="flex items-center gap-3">
                   <span className="w-16 text-xs font-bold text-emerald-100/70">{p}</span>
-                  <div className="flex-1 h-2.5 rounded-full bg-[#1d9e56]/10 overflow-hidden">
-                    <div className="h-full rounded-full bg-[#1d9e56] network-pulse" style={{ width: `${(n / maxProv) * 100}%` }} />
+                  <div className="flex-1 h-2.5 rounded-full bg-[#187B65]/10 overflow-hidden">
+                    <div className="h-full rounded-full bg-[#187B65] network-pulse" style={{ width: `${(n / maxProv) * 100}%` }} />
                   </div>
-                  <span className="text-xs font-bold text-[#a8f0cc] w-6 text-right">{n}</span>
+                  <span className="text-xs font-bold text-[#54D9AE] w-6 text-right">{n}</span>
                 </div>
               ))}
             </div>
           )}
           <div className="grid grid-cols-2 gap-2 mt-5">
-            <div className="rounded-xl bg-[#06251b] border border-[#1d9e56]/15 p-3">
+            <div className="rounded-xl bg-[#06251b] border border-[#187B65]/15 p-3">
               <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-100/50">Data adoption</div>
-              <div className="text-lg font-bold text-[#a8f0cc]">{active.length ? `${adoptionRate}%` : <span className="text-xs text-emerald-100/30">not tracked</span>}</div>
+              <div className="text-lg font-bold text-[#54D9AE]">{active.length ? `${adoptionRate}%` : <span className="text-xs text-emerald-100/30">not tracked</span>}</div>
               <div className="text-[10px] text-emerald-100/40">{adopted} active instance{adopted === 1 ? "" : "s"} with customers</div>
             </div>
-            <div className="rounded-xl bg-[#06251b] border border-[#1d9e56]/15 p-3">
+            <div className="rounded-xl bg-[#06251b] border border-[#187B65]/15 p-3">
               <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-100/50">Pickup completion</div>
-              <div className="text-lg font-bold text-[#a8f0cc]">{pickups.length ? `${pickupCompletion}%` : <span className="text-xs text-emerald-100/30">not tracked</span>}</div>
+              <div className="text-lg font-bold text-[#54D9AE]">{pickups.length ? `${pickupCompletion}%` : <span className="text-xs text-emerald-100/30">not tracked</span>}</div>
               <div className="text-[10px] text-emerald-100/40">{donePickups} of {pickups.length} pickups done · {cancelledSubs} subs cancelled</div>
             </div>
           </div>
