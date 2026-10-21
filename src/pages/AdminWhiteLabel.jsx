@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import {
   Loader2, Users, Building2, TrendingUp, DollarSign, Briefcase,
-  ArrowRightCircle,
+  ArrowRightCircle, CreditCard, Copy, Check,
 } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -14,7 +14,22 @@ const MODE_LABELS = { custom_branding: "Custom branding", full_app: "Full separa
 const TABS = [
   { key: "leads", label: "Applications" },
   { key: "clients", label: "Clients" },
+  { key: "payments", label: "Payments" },
 ];
+
+const PURPOSE_LABELS = {
+  booking_quote: "Booking quote",
+  white_label_setup: "White-label setup fee",
+  white_label_subscription: "White-label monthly subscription",
+};
+
+const STATUS_BADGES = {
+  created: "Awaiting payment",
+  paid: "Paid",
+  active: "Active",
+  failed: "Failed",
+  cancelled: "Cancelled",
+};
 
 const money = (n) => "$" + (Number(n) || 0).toLocaleString("en-CA");
 
@@ -24,14 +39,18 @@ export default function AdminWhiteLabel() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
+  const [payments, setPayments] = useState([]);
+  const [copiedId, setCopiedId] = useState(null);
 
   const load = async () => {
-    const [l, c] = await Promise.all([
+    const [l, c, p] = await Promise.all([
       base44.entities.WhiteLabelLead.filter({}, { sort: "-created_date", limit: 100 }),
       base44.entities.WhiteLabelClient.filter({}, { sort: "-created_date", limit: 100 }),
+      base44.entities.PaypalTransaction.filter({}, { sort: "-created_date", limit: 100 }),
     ]);
     setLeads(l.items || l);
     setClients(c.items || c);
+    setPayments(p.items || p);
     setLoading(false);
   };
 
@@ -63,12 +82,30 @@ export default function AdminWhiteLabel() {
       monthly_fee: 199,
       brand_name: lead.company,
       status: "onboarding",
+      pay_token: crypto.randomUUID(),
       notes: lead.message || "",
     });
     await base44.entities.WhiteLabelLead.update(lead.id, { status: "won" });
     setTab("clients");
     await load();
     setBusyId(null);
+  };
+
+  const copyPayLink = async (c) => {
+    let token = c.pay_token;
+    if (!token) {
+      token = crypto.randomUUID();
+      await base44.entities.WhiteLabelClient.update(c.id, { pay_token: token });
+    }
+    const url = `${window.location.origin}/white-label-pay?pay=${token}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      window.prompt("Copy this payment link:", url);
+    }
+    setCopiedId(c.id);
+    await load();
+    setTimeout(() => setCopiedId(null), 2500);
   };
 
   const mrr = clients.filter((c) => c.status === "active").reduce((s, c) => s + (Number(c.monthly_fee) || 0), 0);
@@ -199,9 +236,45 @@ export default function AdminWhiteLabel() {
                     </div>
                     {c.notes && <p className="text-sm text-slate-600 mt-2 italic">"{c.notes}"</p>}
                   </div>
-                  <select value={c.status} onChange={(e) => setClientStatus(c.id, e.target.value)} disabled={busyId === c.id} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-[#0c3b24]">
-                    {CLIENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => copyPayLink(c)}
+                      disabled={busyId === c.id}
+                      className="rounded-full bg-[#0c3b24] text-[#1d9e56] px-4 py-2 text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-1.5 disabled:opacity-60"
+                    >
+                      {copiedId === c.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copiedId === c.id ? "Link copied" : c.pay_token ? "Copy payment link" : "Create payment link"}
+                    </button>
+                    <select value={c.status} onChange={(e) => setClientStatus(c.id, e.target.value)} disabled={busyId === c.id} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-[#0c3b24]">
+                      {CLIENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "payments" && (
+          <div className="space-y-3">
+            {payments.length === 0 && (
+              <div className="rounded-3xl bg-[#f4f7f5] border border-slate-100 p-10 text-center text-slate-500">
+                <CreditCard className="w-8 h-8 mx-auto text-slate-300" />
+                <p className="mt-3">No PayPal transactions yet. Create a payment link for a client, or accept payment after a booking.</p>
+              </div>
+            )}
+            {payments.map((t) => (
+              <div key={t.id} className="rounded-2xl bg-white border border-slate-100 p-4 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="font-bold text-[#0c3b24]">{t.ref_label || (PURPOSE_LABELS[t.purpose] || t.purpose)}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">
+                    {PURPOSE_LABELS[t.purpose] || t.purpose} · {t.kind === "subscription" ? "Recurring" : "One-time"}
+                    {t.paypal_payer_email ? ` · ${t.paypal_payer_email}` : ""}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-[#0c3b24]">{money(t.amount)} {t.currency}</div>
+                  <div className="text-xs mt-0.5">{STATUS_BADGES[t.status] || t.status}</div>
                 </div>
               </div>
             ))}
