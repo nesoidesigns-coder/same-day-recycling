@@ -9,6 +9,7 @@ import TransparentPricing from "@/components/sdr/TransparentPricing";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import CanadaNetworkMap from "@/components/sdr/CanadaNetworkMap";
+import ProvinceImpact from "@/components/sdr/ProvinceImpact";
 import FeaturedProviders from "@/components/sdr/FeaturedProviders";
 import NationalCoverage from "@/components/sdr/NationalCoverage";
 import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
@@ -32,6 +33,7 @@ export default function Home() {
       <HomeHero onCity={(city) => bookFromQuote({ city })} />
       <TrustGauges />
       <CanadaNetworkMap />
+      <ProvinceImpact />
       <Services />
       <HowItWorks />
       <TransparentPricing />
