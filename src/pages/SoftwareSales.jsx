@@ -10,6 +10,7 @@ import HoloGauge from "@/components/software/HoloGauge";
 import PreviewImg from "@/components/software/PreviewImg";
 import EnterpriseInquiryForm from "@/components/software/EnterpriseInquiryForm";
 import RoiCalculator from "@/components/software/RoiCalculator";
+import PlatformChat from "@/components/software/PlatformChat";
 
 const FEATURES = [
   { icon: Users, title: "Customer CRM", desc: "Every commercial and residential customer, notes, contact history and service preferences in one clean record." },
@@ -63,6 +64,9 @@ export default function SoftwareSales() {
             </a>
             <a href="#preview" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-7 py-3.5 hover:bg-[#187B65]/10 transition-colors">
               See the OS
+            </a>
+            <a href="#ask" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-7 py-3.5 hover:bg-[#187B65]/10 transition-colors">
+              Ask Rex
             </a>
           </div>
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
@@ -142,6 +146,18 @@ export default function SoftwareSales() {
         {/* ROI calculator */}
         <div id="roi-calculator">
           <RoiCalculator />
+        </div>
+
+        {/* Live platform guide */}
+        <div id="ask" className="max-w-4xl mx-auto px-4 pb-16">
+          <div className="text-center mb-8">
+            <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#187B65]">Live walkthrough</div>
+            <h2 className="text-3xl font-extrabold tracking-tight admin-headline mt-2">Ask Rex — he explains the whole system</h2>
+            <p className="text-emerald-100/60 mt-3 max-w-xl mx-auto">
+              Business owners and buyers: get every question about the OS, white-label, pricing and the AI answered live. Rex passes serious buyers to the team for a callback.
+            </p>
+          </div>
+          <PlatformChat />
         </div>
 
         {/* Licensing */}
