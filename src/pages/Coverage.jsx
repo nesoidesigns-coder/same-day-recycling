@@ -6,6 +6,7 @@ import Footer from "@/components/sdr/Footer";
 import { COVERAGE } from "@/lib/coverage";
 import { REGIONS } from "@/lib/regions";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
+import CoverageMap from "@/components/coverage/CoverageMap";
 
 // Coverage page — driven entirely by the live status engine
 // (src/hooks/useCoverageStatus.js → coverageStatus endpoint). Three honest,
@@ -23,10 +24,6 @@ export default function Coverage() {
   const { statusFor, loaded, verifiedCities, matchingCities } = useCoverageStatus();
 
   const registryByName = new Map(COVERAGE.map((c) => [c.name.toLowerCase(), c]));
-  const cityLink = (name) =>
-    registryByName.has(String(name).toLowerCase())
-      ? `/junk-removal-${registryByName.get(String(name).toLowerCase()).slug || ""}`
-      : `/request-service?city=${encodeURIComponent(name)}`;
 
   const slugFor = (name) => {
     const c = registryByName.get(String(name).toLowerCase());
@@ -104,6 +101,12 @@ export default function Coverage() {
               <RefreshCw className="w-4 h-4 animate-spin" /> Checking live network status…
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="bg-[#f4f7f5] border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
+          <CoverageMap />
         </div>
       </section>
 

@@ -16,10 +16,17 @@ export default async function(req) {
     // 1. Verified contractor capacity: active partner records. Simulation
     //    and internal test partners are excluded from capacity.
     const { items: partners } = await srole.entities.Partner.filter({ active: true }, { limit: 200 });
-    const verifiedCities = [...new Set((partners || [])
-      .filter((p) => !TEST_PARTNER_NAMES.includes(String(p.name || '').trim().toLowerCase()))
+    const realPartners = (partners || [])
+      .filter((p) => !TEST_PARTNER_NAMES.includes(String(p.name || '').trim().toLowerCase()));
+    const verifiedCities = [...new Set(realPartners
       .map((p) => String(p.city || '').trim())
       .filter(Boolean))];
+    // Per-city contractor counts for the coverage map (aggregate only, no names or contact data).
+    const contractorCounts = {};
+    for (const p of realPartners) {
+      const city = String(p.city || '').trim();
+      if (city) contractorCounts[city] = (contractorCounts[city] || 0) + 1;
+    }
 
     // 2. Open requests awaiting contractor matching, grouped by city.
     //    Cities that already have verified capacity are not re-listed.
@@ -37,6 +44,7 @@ export default async function(req) {
 
     return Response.json({
       verified_cities: verifiedCities,
+      contractor_counts: contractorCounts,
       matching_cities: matchingCities,
       generated_at: new Date().toISOString(),
     });

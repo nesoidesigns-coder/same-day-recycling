@@ -40,5 +40,13 @@ export default function useCoverageStatus() {
     return "recruiting";
   };
 
-  return { statusFor, loaded: !!data, verifiedCities: verified, matchingCities: matching };
+  return {
+    statusFor,
+    loaded: !!data,
+    verifiedCities: verified,
+    matchingCities: matching,
+    contractorCounts: data?.contractor_counts || {},
+    verifiedCityNames: data?.verified_cities || [],
+    matchingCityNames: data?.matching_cities || [],
+  };
 }
