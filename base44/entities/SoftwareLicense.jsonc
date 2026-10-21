@@ -95,6 +95,10 @@
       "type": "string",
       "default": ""
     },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false
+    },
     "started_date": {
       "type": "string",
       "format": "date"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
 import { Loader2, CheckCircle2, Recycle, CreditCard, Repeat } from "lucide-react";
 import PayPalButtons from "@/components/pay/PayPalButtons";
 
@@ -139,9 +140,14 @@ export default function SoftwarePay() {
                 your login is emailed to you.
               </p>
               {license.subscription_active ? (
-                <p className="flex items-center gap-1.5 font-semibold text-[#187B65]">
-                  <CheckCircle2 className="w-5 h-5" /> Subscription active — your company dashboard is being provisioned.
-                </p>
+                <div className="space-y-3">
+                  <p className="flex items-center gap-1.5 font-semibold text-[#187B65]">
+                    <CheckCircle2 className="w-5 h-5" /> Subscription active — payment verified!
+                  </p>
+                  <Link to="/company" className="inline-block rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 text-sm hover:bg-[#125C4E] transition-colors">
+                    Set up your dashboard
+                  </Link>
+                </div>
               ) : (
                 <button
                   onClick={subscribe}

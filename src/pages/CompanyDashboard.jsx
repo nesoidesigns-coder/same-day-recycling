@@ -13,6 +13,7 @@ import SchedulingTab from "@/components/license/SchedulingTab";
 import DispatchTab from "@/components/license/DispatchTab";
 import InvoicingTab from "@/components/license/InvoicingTab";
 import BrandingTab from "@/components/license/BrandingTab";
+import OnboardingWizard from "@/components/license/OnboardingWizard";
 
 const money = (n) => "$" + (Number(n) || 0).toLocaleString("en-CA");
 const TABS = [
@@ -100,6 +101,15 @@ export default function CompanyDashboard() {
           <a href={`/software-pay?pay=${license.pay_token}`} className="inline-block mt-6 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors">Renew or complete payment</a>
         </div>
         <Footer />
+      </div>
+    );
+  }
+
+  if (!license.onboarding_complete) {
+    return (
+      <div className="min-h-screen bg-[#f4f7f5]">
+        <Navbar />
+        <OnboardingWizard license={license} onComplete={load} />
       </div>
     );
   }

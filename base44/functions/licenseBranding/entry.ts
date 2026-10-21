@@ -34,6 +34,7 @@ export default async function(req) {
       patch.support_email = e;
     }
     if (typeof body.support_phone === 'string') patch.support_phone = body.support_phone.trim().slice(0, 40);
+    if (body.onboarding_complete === true) patch.onboarding_complete = true;
 
     if (!Object.keys(patch).length) return Response.json({ error: 'Nothing to update.' }, { status: 400 });
     await srole.entities.SoftwareLicense.update(lic.id, patch);
