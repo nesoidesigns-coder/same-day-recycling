@@ -137,18 +137,18 @@ export default function ReceptionistChat() {
           </motion.div>
         )}
         <span className="hidden sm:inline-block rounded-full bg-white shadow-lg border border-slate-100 px-4 py-2 text-sm font-bold text-[#102B2A]">Chat with us</span>
-        <button onClick={handleOpen} aria-label="Chat with us" className="rounded-full shadow-lg transition-transform hover:scale-105">
+        <button onClick={handleOpen} aria-label="Chat with us" className="relative flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-transform hover:scale-105">
           {open ? (
             <span className="w-14 h-14 rounded-full bg-[#187B65] text-[#102B2A] flex items-center justify-center">
               <X className="w-6 h-6" />
             </span>
           ) : (
-            <AiMascotFull height={64} />
+            <AiMascotFull height={56} />
           )}
         </button>
       </div>
       {open && (
-        <div className="fixed bottom-[calc(6rem_+_env(safe-area-inset-bottom))] right-4 z-[60] w-[calc(100vw-2rem)] max-w-sm h-[min(28rem,calc(100dvh-9.5rem))] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+        <div className="fixed bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] right-4 z-[60] w-[min(24rem,calc(100vw-2rem))] h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
           <div className="bg-[#102B2A] text-white px-5 py-4 flex items-center gap-3">
             <AiMascot size={40} />
             <div>
