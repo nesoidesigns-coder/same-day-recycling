@@ -60,6 +60,49 @@
       "default": "",
       "maxLength": 1000
     },
+    "territory_subscription": {
+      "type": "object",
+      "default": {},
+      "description": "Flat-fee territory subscription terms, when this agreement is a territory membership.",
+      "properties": {
+        "is_flat_fee_subscription": {
+          "type": "boolean",
+          "default": false
+        },
+        "monthly_rate": {
+          "type": "number",
+          "default": 0
+        },
+        "activation_fee": {
+          "type": "number",
+          "default": 0
+        },
+        "billing_cycle": {
+          "type": "string",
+          "enum": [
+            "monthly",
+            "annual"
+          ],
+          "default": "monthly"
+        },
+        "cancellation_notice_days": {
+          "type": "number",
+          "default": 30
+        },
+        "territory_cities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "lead_delivery_commitment": {
+          "type": "string",
+          "default": "",
+          "maxLength": 500
+        }
+      }
+    },
     "status": {
       "type": "string",
       "enum": [

@@ -67,7 +67,7 @@ export default function RealtorLanding() {
               </span>
               <div className="leading-tight">
                 <div className="text-xs text-slate-500 font-medium">Realtors &amp; strata managers</div>
-                <div className="font-bold text-[#102B2A]">Same-day dispatch</div>
+                <div className="font-bold text-[#102B2A]">Same-day goal, confirmed per job</div>
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function RealtorLanding() {
       {/* Benefits */}
       <section className="bg-[#f4f7f5] py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] text-center">Why realtors call us first</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] text-center">Built for realtors and property managers</h2>
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {BENEFITS.map((b) => (
               <div key={b.title} className="rounded-3xl bg-white border border-slate-100 p-6">

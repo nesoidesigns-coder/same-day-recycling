@@ -257,6 +257,15 @@ export default function Contractors() {
             </p>
             <p className="text-slate-600 font-semibold">No hidden charges: every fee is disclosed in your agreement before you sign.</p>
           </div>
+          <div className="mt-10 max-w-3xl mx-auto rounded-3xl border border-slate-200 bg-[#f6f8f7] p-6 md:p-8">
+            <h3 className="text-lg font-bold text-[#102B2A]">Subscription terms, plainly</h3>
+            <ul className="mt-4 space-y-2.5 text-sm text-slate-600">
+              <li><span className="font-bold text-[#102B2A]">What you pay:</span> a flat monthly territory subscription, plus a one-time territory activation. Job commissions are NOT automatic: they apply only if your written agreement says so, and only for the job sources it lists.</li>
+              <li><span className="font-bold text-[#102B2A]">Cancellation:</span> cancel with written notice. Your territory reopens for the next partner when your agreement ends.</li>
+              <li><span className="font-bold text-[#102B2A]">Territory conditions:</span> territories are membership seats in a shared market, not exclusive rights. Territory pages stay on the platform's domain.</li>
+              <li><span className="font-bold text-[#102B2A]">Lead delivery limits:</span> lead flow depends on customer demand in your city. No minimum number of jobs is promised, and no earnings are guaranteed.</li>
+            </ul>
+          </div>
         </div>
       </section>
 

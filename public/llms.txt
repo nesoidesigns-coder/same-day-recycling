@@ -1,10 +1,10 @@
 # Same Day Recycling
 
-> Canada's intelligent recycling and removal network. Same-day junk, furniture and appliance removal through an operator network in the Lower Mainland of British Columbia, a free national recycling directory, and a software operating system licensed to independent recycling businesses across Canada. Book online at https://samedayrecycling.ca/#book or call (604) 849-1745 — open 24 hours.
+> Canada's intelligent recycling and removal network. Junk, furniture and appliance removal requests are accepted nationwide through an operator network across Canada, along with a free national recycling directory and a software operating system licensed to independent recycling businesses across Canada. Same-day fulfillment depends on confirmed contractor availability in each city. Book online at https://samedayrecycling.ca/#book or call (604) 849-1745 — open 24 hours.
 
 ## What Same Day Recycling does
 
-- **Same-day pickup (consumer & business):** junk removal, furniture removal, appliance removal, estate/garage/condo cleanouts. Book before noon for same-afternoon service. Upfront pricing from $139 (small load) to $649 (full truck), free estimates, price approved before loading. Curbside Discount: $25 off when items are staged outside and no one is home.
+- **Pickup requests (consumer & business):** junk removal, furniture removal, appliance removal, estate/garage/condo cleanouts. Same-day service is the operating goal and is subject to contractor availability; requests outside same-day windows are scheduled for the next available slot. Upfront pricing from $139 (small load) to $649 (full truck), free estimates, price approved before loading. Curbside Discount: $25 off when items are staged outside and no one is home.
 - **Free scrap metal pickup:** metal is collected at no charge wherever a network partner is live (https://samedayrecycling.ca/free-metal-pickup).
 - **Recycling directory:** searchable, verified listings of where to recycle materials across Canada, by material and city (https://samedayrecycling.ca/recycling).
 - **Recycling assistant:** AI chat that answers how-to-recycle questions with cited sources and local provider suggestions (https://samedayrecycling.ca/recycling-assistant).

@@ -16,6 +16,7 @@ const TYPES = [
 const blank = {
   partner_id: "", agreement_type: "network_membership", fee_model: "none", fee_percent: "",
   fee_fixed_amount: "", applies_to_sources: [], membership_fee_monthly: "", fee_disclosure: "",
+  flat_subscription: false, activation_fee: "", cancellation_notice_days: "30", territory_cities: "", lead_delivery_commitment: "",
 };
 
 export default function AgreementForm({ partners, onSaved }) {
@@ -47,6 +48,15 @@ export default function AgreementForm({ partners, onSaved }) {
       applies_to_sources: f.agreement_type === "software_license_only" ? [] : f.applies_to_sources,
       membership_fee_monthly: Number(f.membership_fee_monthly) || 0,
       fee_disclosure: f.fee_disclosure.trim() || autoDisclosure(),
+      territory_subscription: f.flat_subscription && f.agreement_type === "network_membership" ? {
+        is_flat_fee_subscription: true,
+        monthly_rate: Number(f.membership_fee_monthly) || 0,
+        activation_fee: Number(f.activation_fee) || 0,
+        billing_cycle: "monthly",
+        cancellation_notice_days: Number(f.cancellation_notice_days) || 30,
+        territory_cities: f.territory_cities.split(",").map((c) => c.trim()).filter(Boolean),
+        lead_delivery_commitment: f.lead_delivery_commitment.trim(),
+      } : {},
       status: "draft",
     });
     setSaving(false);
@@ -84,6 +94,22 @@ export default function AgreementForm({ partners, onSaved }) {
           <input type="number" min="0" placeholder="Monthly membership $ (optional)" value={f.membership_fee_monthly} onChange={(e) => set("membership_fee_monthly", e.target.value)} className="input py-2.5" />
         )}
       </div>
+      {f.agreement_type === "network_membership" && (
+        <div className="rounded-xl border border-slate-200 p-3 space-y-3">
+          <label className="flex items-center gap-2 text-xs font-bold text-[#102B2A] cursor-pointer">
+            <input type="checkbox" checked={f.flat_subscription} onChange={(e) => set("flat_subscription", e.target.checked)} />
+            Flat-fee territory subscription (no job commission unless a fee model above says otherwise)
+          </label>
+          {f.flat_subscription && (
+            <div className="grid sm:grid-cols-2 gap-3">
+              <input type="number" min="0" placeholder="One-time activation fee $" value={f.activation_fee} onChange={(e) => set("activation_fee", e.target.value)} className="input py-2.5" />
+              <input type="number" min="0" placeholder="Cancellation notice (days)" value={f.cancellation_notice_days} onChange={(e) => set("cancellation_notice_days", e.target.value)} className="input py-2.5" />
+              <input placeholder="Territory cities, comma separated" value={f.territory_cities} onChange={(e) => set("territory_cities", e.target.value)} className="input py-2.5 sm:col-span-2" />
+              <textarea placeholder="Lead delivery terms (e.g. leads depend on customer demand; no minimum volume is promised)" value={f.lead_delivery_commitment} onChange={(e) => set("lead_delivery_commitment", e.target.value)} rows={2} maxLength={500} className="input text-sm sm:col-span-2" />
+            </div>
+          )}
+        </div>
+      )}
       {!isSoftware && f.fee_model !== "none" && (
         <div>
           <div className="text-xs font-semibold text-[#102B2A] mb-1">Fee applies only to</div>

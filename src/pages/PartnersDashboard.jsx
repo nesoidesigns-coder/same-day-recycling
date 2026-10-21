@@ -4,6 +4,8 @@ import { Loader2, Truck, CheckCircle2, XCircle, DollarSign, LogOut, MapPin, Phon
 import TerritoryCard from "@/components/partner/TerritoryCard";
 import IncomingRequests from "@/components/partner/IncomingRequests";
 import Financials from "@/components/partner/Financials";
+import Performance from "@/components/partner/Performance";
+import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -134,6 +136,10 @@ export default function PartnersDashboard() {
         </div>
 
         <Financials />
+
+        <Performance />
+
+        <SubscriptionTerms />
 
         <div className="mb-10">
           <TerritoryCard />

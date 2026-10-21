@@ -1,6 +1,8 @@
-// Benchmarked against competitor research (Oct 2026): local minimums ~$200
-// (1-800-GOT-JUNK), small loads (min-1/4 truck) $107-$396, full trucks $590-$1,099.
-// We stay clearly under market on the low tiers to win same-day searches.
+// Tier prices are the platform's own defaults, editable per city in Admin > Pricing.
+// They were set after a one-time review of publicly listed competitor rates (Oct 2026),
+// which varied widely by city and load. They are NOT a live market benchmark and the
+// public site must not claim to be "under market". Quotes are preliminary estimates;
+// the final price is approved by the customer before any work or payment.
 export const DEFAULT_PRICES = {
   minimum_pickup: 139,
   eighth_truck: 189,

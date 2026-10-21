@@ -131,8 +131,16 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                 <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Your estimate</div>
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{quote.range}</div>
                 <div className="mt-3 inline-block rounded-full bg-[#187B65]/20 text-[#187B65] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
-                <p className="mt-5 text-slate-300 text-sm">
-                  What's in this estimate: the base service price for your tier band, less any curbside discount — no extra fees are added online. Applicable taxes (GST and/or PST) are added only when you approve the final price before payment. Volume is estimated in eighths of a truck from the items you gave; extra or heavier items found on arrival change the final amount, which you approve before we lift a thing.
+                <p className="mt-2 text-sm text-emerald-100/60">Estimated load size: {quote.eighths} of 8 truck sections</p>
+                <ul className="mt-4 space-y-1.5 text-sm text-slate-300">
+                  <li>Base service price for the {quote.label} tier band{quote.discount ? `, less the $${quote.discount} curbside discount` : ""}</li>
+                  <li>Includes transport to the sorting facility and standard disposal</li>
+                  <li>Labour and loading included within the tier band</li>
+                  <li>Recycling and donation sorting at no extra charge</li>
+                  <li>Taxes (GST and/or PST) added only when you approve the final price</li>
+                </ul>
+                <p className="mt-4 text-slate-400 text-xs">
+                  Preliminary estimate only. Extra or heavier items found on arrival change the final amount, which you approve before we lift a thing.
                 </p>
                 <button
                   onClick={() => onBook({ items_text: itemsText, estimate_text: `${quote.range} (${quote.label})`, city })}

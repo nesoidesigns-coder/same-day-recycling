@@ -84,6 +84,7 @@ import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
 import AdminRevenue from './pages/AdminRevenue';
 import AdminAgreements from './pages/AdminAgreements';
+import AdminSalesIntelligence from './pages/AdminSalesIntelligence';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
@@ -169,6 +170,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/payouts" element={<AdminPayouts />} />
           <Route path="/admin/revenue" element={<AdminRevenue />} />
           <Route path="/admin/agreements" element={<AdminAgreements />} />
+          <Route path="/admin/sales" element={<AdminSalesIntelligence />} />
           <Route path="/admin/cities" element={<AdminCities />} />
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/keywords" element={<AdminKeywords />} />

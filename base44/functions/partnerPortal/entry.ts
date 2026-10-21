@@ -133,6 +133,67 @@ export default async function(req) {
       });
     }
 
+    // Contractor performance report: qualified leads delivered, acceptance,
+    // completed jobs, gross job value and effective acquisition cost per job.
+    if (action === 'reporting') {
+      const [assigned, declined, completed, leads] = await Promise.all([
+        base44.asServiceRole.entities.Booking.filter(
+          { partner_id: partner.id, record_type: { $ne: 'internal_test' }, assignment_status: { $in: ['assigned', 'accepted', 'scheduled'] } },
+          { limit: 500 },
+        ),
+        base44.asServiceRole.entities.Booking.filter(
+          { partner_id: partner.id, record_type: { $ne: 'internal_test' }, assignment_status: 'declined' },
+          { limit: 500 },
+        ),
+        base44.asServiceRole.entities.Booking.filter(
+          { partner_id: partner.id, record_type: { $ne: 'internal_test' }, assignment_status: { $in: ['completed', 'paid'] } },
+          { limit: 500 },
+        ),
+        base44.asServiceRole.entities.NationalRequest.filter(
+          {
+            city: { $regex: '^\\s*' + String(partner.city || '').trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', $options: 'i' },
+            status: { $in: ['new', 'provider_matching', 'recruiting'] },
+          },
+          { limit: 500 },
+        ),
+      ]);
+      const agreementPage = await base44.asServiceRole.entities.ContractorAgreement.filter(
+        { partner_id: partner.id, status: 'active' }, { limit: 1 }
+      );
+      const agreement = (Array.isArray(agreementPage) ? agreementPage : agreementPage?.items || [])[0] || null;
+      const n = (v) => Number(v) || 0;
+      const gross = completed.reduce((s, b) => s + n(b.final_invoice || b.job_value), 0);
+      const fees = completed.reduce((s, b) => s + n(b.platform_fee_amount), 0);
+      const platformCompleted = completed.filter((b) => b.job_source === 'platform_generated').length;
+      const membership = agreement ? n(agreement.membership_fee_monthly) : 0;
+      return Response.json({
+        partner: publicPartner,
+        qualified_leads_in_area: leads.length,
+        jobs_offered: assigned.length + declined.length + completed.length,
+        declined: declined.length,
+        accepted: assigned.length + completed.length,
+        acceptance_rate: (assigned.length + declined.length + completed.length)
+          ? Math.round(((assigned.length + completed.length) / (assigned.length + declined.length + completed.length)) * 100)
+          : null,
+        completed_jobs: completed.length,
+        gross_job_value: Math.round(gross * 100) / 100,
+        platform_fees_paid: Math.round(fees * 100) / 100,
+        membership_mrr: membership,
+        platform_completed_jobs: platformCompleted,
+        // Acquisition cost per platform-generated completed job. Only shown
+        // when at least one platform-generated job completed; otherwise null.
+        effective_acquisition_cost: platformCompleted
+          ? Math.round(((fees + membership) / platformCompleted) * 100) / 100
+          : null,
+        agreement: agreement && {
+          type: agreement.agreement_type,
+          subscription: agreement.territory_subscription || null,
+          fee_model: agreement.fee_model,
+          disclosure: agreement.fee_disclosure,
+        },
+      });
+    }
+
     // Territory overview: bookings, quotes and estimated revenue for this partner's city.
     if (action === 'territory') {
       const city = String(partner.city || '').trim();
