@@ -252,7 +252,7 @@ export default function AdminAnalytics() {
                 {b.quotes_outstanding.total_quotes > 0 ? (
                   <StatusGauge
                     max={b.quotes_outstanding.total_quotes}
-                    segments={[{ label: "Awaiting response", value: b.quotes_outstanding.value, color: "bg-cyan-500" }, { label: "Handled", value: b.quotes_outstanding.total_quotes - b.quotes_outstanding.value, color: "bg-slate-200" }]}
+                    segments={[{ label: "Awaiting response", value: b.quotes_outstanding.value, color: "bg-emerald-500" }, { label: "Handled", value: b.quotes_outstanding.total_quotes - b.quotes_outstanding.value, color: "bg-slate-200" }]}
                   />
                 ) : (
                   <EmptyGauge title="Outstanding quote requests" reasons="No quote requests on record yet" />
@@ -269,7 +269,7 @@ export default function AdminAnalytics() {
                 ) : (
                   <StatusGauge
                     max={o.scheduled_today.value + o.completed_today.value}
-                    segments={[{ label: "Completed", value: o.completed_today.value, color: "bg-emerald-500" }, { label: "Remaining today", value: o.scheduled_today.value, color: "bg-cyan-500" }]}
+                    segments={[{ label: "Completed", value: o.completed_today.value, color: "bg-emerald-500" }, { label: "Remaining today", value: o.scheduled_today.value, color: "bg-emerald-300" }]}
                   />
                 )) : null}
               </GaugeCard>
@@ -328,7 +328,7 @@ export default function AdminAnalytics() {
                   </>
                 )}
               </GaugeCard>
-              <StatCard title="Genuine reviews" value={x.reviews_count.value} sub="Approved reviews only" tone="cyan" />
+              <StatCard title="Genuine reviews" value={x.reviews_count.value} sub="Approved reviews only" tone="emerald" />
               <EmptyGauge
                 title="Complaints, booking abandonment & response time"
                 reasons={[x.complaints.reason, x.abandonment.reason, x.response_time.reason]}
