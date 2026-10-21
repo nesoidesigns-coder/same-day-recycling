@@ -10,6 +10,15 @@ User-agent: CCBot
 User-agent: Amazonbot
 User-agent: Applebot
 User-agent: Bytespider
+User-agent: Perplexity-User
+User-agent: Meta-ExternalAgent
+User-agent: FacebookBot
+User-agent: MistralAI-User
+User-agent: YouBot
+User-agent: GoogleOther
+User-agent: GoogleOther-Inspector
+User-agent: Diffbot
+User-agent: ImagesiftBot
 Disallow: /admin
 Disallow: /company
 Disallow: /partners
