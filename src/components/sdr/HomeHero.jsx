@@ -92,7 +92,7 @@ export default function HomeHero({ onCity }) {
             onClick={() => navigate("/software")}
             className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors"
           >
-            Explore the Platform <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
+            Explore Recycling Software <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
           </button>
         </div>
 
