@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { MapPin, ArrowRight, Phone, BadgeCheck, Building2, Rocket, CheckCircle2, Hourglass } from "lucide-react";
+import { MapPin, ArrowRight, Phone, BadgeCheck, Building2, Rocket, CheckCircle2, Hourglass, ClipboardCheck } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { REGIONS, regionByCode } from "@/lib/regions";
@@ -81,22 +81,31 @@ export default function ProvincePage() {
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
             Recycling Services in {region.name}
           </h1>
-          <p className="mt-5 text-lg text-slate-300 max-w-2xl">
+          <div className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-[11px] font-bold text-emerald-700">
+            <ClipboardCheck className="w-3.5 h-3.5" /> Service Requests Open
+          </div>
+          <p className="mt-4 text-lg text-slate-300 max-w-2xl">
+            Service requests are open across {region.name} — every city, town, rural community and
+            remote location. Tell us what needs to go and we'll work to connect you with a qualified
+            local service provider.
             {activeCities.length ? (
-              <>Same-day pickup is live today in <span className="text-white font-semibold">{activeCities.map((c) => c.name).join(", ")}</span>. Independent drop-off facilities are listed below.</>
-            ) : onboardingCities.length ? (
-              <>Same-day pickup is not live in {region.name} yet. A verified partner is being onboarded in {onboardingCities.map((c) => c.name).join(", ")} — booking opens once that partner is verified.</>
-            ) : (
-              <>Same-day pickup is not live in {region.name} yet. Coverage status for every market is listed below, and partner applications are open across the region.</>
-            )}
+              <> Confirmed same-day capacity today in <span className="text-white font-semibold">{activeCities.map((c) => c.name).join(", ")}</span>.</>
+            ) : null}{" "}
+            Same-day fulfillment depends on contractor availability and is confirmed with you before anything is scheduled or charged.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="tel:+16048491745" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors flex items-center gap-2">
+            <Link to={`/request-service?province=${region.code}`} className="rounded-full bg-[#187B65] text-white font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors flex items-center gap-2">
+              Request Service <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link to="/contractors" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
+              Find Local Contractor
+            </Link>
+            <Link to={`/recycling?loc=${encodeURIComponent(region.name)}`} className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
+              View Recycling Directory
+            </Link>
+            <a href="tel:+16048491745" className="rounded-full border border-white/20 text-slate-200 font-bold px-6 py-3 hover:bg-white/10 transition-colors flex items-center gap-2">
               <Phone className="w-4 h-4" /> Call (604) 849-1745
             </a>
-            <Link to="/coverage" className="rounded-full border border-[#187B65]/40 text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors">
-              See full coverage
-            </Link>
           </div>
         </div>
       </section>

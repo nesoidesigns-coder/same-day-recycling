@@ -59,6 +59,10 @@ export default function OverviewTab() {
 
   const verifiedMap = Object.fromEntries(data.verifiedByProvince.map((r) => [r.province_code, r.count]));
   const topCities = [...data.byCity].filter((c) => c.city).sort((a, b) => b.count - a.count).slice(0, 10);
+  // Regions with live demand but zero verified contractors — recruitment targets.
+  const coverageGaps = [...data.byProvince]
+    .filter((r) => r.province_code && !(verifiedMap[r.province_code] > 0))
+    .map((r) => ({ code: r.province_code, count: r.count }));
 
   return (
     <div className="space-y-8">
@@ -129,6 +133,21 @@ export default function OverviewTab() {
           )}
         </div>
       </div>
+
+      {coverageGaps.length > 0 && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 shadow-sm p-5">
+          <h3 className="font-bold text-amber-800 mb-2">Regions requiring additional contractor coverage</h3>
+          <p className="text-xs text-amber-700 mb-3">Live customer demand with zero verified contractors in the region — recruit or source a local contractor for each.</p>
+          <div className="flex flex-wrap gap-2">
+            {coverageGaps.map((g) => (
+              <span key={g.code} className="inline-flex items-center gap-1.5 rounded-full bg-white border border-amber-300 px-3 py-1.5 text-xs font-bold text-amber-800">
+                {provinceName(g.code) || g.code}
+                <span className="text-amber-600">· {g.count} request{g.count === 1 ? "" : "s"}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

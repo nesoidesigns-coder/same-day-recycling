@@ -46,15 +46,15 @@ export default function Coverage() {
       <section className="bg-[#102B2A] text-white">
         <div className="max-w-5xl mx-auto px-4 py-16 md:py-20">
           <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Canada's Recycling Network. One Intelligent Platform.</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Recycling &amp; Junk Removal Requests Across Canada</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Same Day Recycling is a nationwide recycling and junk removal agency.
-            We operate in every Canadian city — same-day pickup runs through our
-            <span className="text-white font-semibold"> local contractor network nationwide</span>,
-            with pricing and arrival windows confirmed before each appointment.
+            Service requests are open in all 10 provinces and 3 territories — cities, towns, rural
+            communities and remote locations. Tell us what needs to go and we'll work to connect you
+            with a qualified local service provider. Same-day fulfillment depends on contractor
+            availability and is confirmed with you before anything is scheduled or charged.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
-            {["Operating in every Canadian city", "Nationwide dispatch network", "Pricing & arrival window confirmed before pickup", "Every job tracked to completion"].map((t) => (
+            {["Requests open in every province & territory", "Nationwide contractor matching", "Pricing & availability confirmed before pickup", "Every job tracked to completion"].map((t) => (
               <span key={t} className="inline-flex items-center rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-slate-100">
                 {t}
               </span>

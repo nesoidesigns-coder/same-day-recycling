@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, ShieldCheck, Rocket, ArrowRight, Loader2 } from "lucide-react";
+import { MapPin, ShieldCheck, ArrowRight, Loader2, ClipboardCheck, UserSearch, Recycle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { REGIONS } from "@/lib/regions";
 
+// National coverage grid — service requests are open in every province and
+// territory. The verified-listing count is live directory data only; it is
+// never shown as contractor coverage. Contractor recruitment is a separate
+// action from customer service requests.
 export default function NationalCoverage() {
   const [counts, setCounts] = useState(null);
 
@@ -27,11 +31,12 @@ export default function NationalCoverage() {
         <div className="max-w-2xl mb-10">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Coverage</div>
           <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">
-            Provinces and territories
+            Recycling &amp; Junk Removal Requests Across Canada
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            Built for all 10 provinces and 3 territories. Verified listings and live service are shown only where
-            confirmed — everywhere else, partner applications are open.
+            Service requests are open in all 10 provinces and 3 territories — cities, towns, rural
+            communities and remote locations. Tell us what needs to go and we'll work to connect you
+            with a qualified local service provider.
           </p>
         </div>
 
@@ -50,42 +55,46 @@ export default function NationalCoverage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <MapPin className={`w-5 h-5 ${n > 0 ? "text-[#187B65]" : "text-slate-300"}`} />
+                      <MapPin className="w-5 h-5 text-[#187B65]" />
                       <div>
                         <div className="font-bold text-[#102B2A] leading-tight">{r.name}</div>
                         <div className="text-xs text-slate-500">{r.capital}</div>
                       </div>
                     </div>
-                    {n > 0 ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-[10px] font-bold shrink-0">
-                        <ShieldCheck className="w-3 h-3" /> {n} verified
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-1 text-[10px] font-bold shrink-0">
-                        <Rocket className="w-3 h-3" /> Expanding
-                      </span>
-                    )}
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-[10px] font-bold shrink-0">
+                      <ClipboardCheck className="w-3 h-3" /> Service Requests Open
+                    </span>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">
-                      {n > 0 ? "Verified directory listings available" : "No verified listings yet"}
-                    </span>
-                    {n > 0 ? (
+                  <div className="mt-4 pt-3 border-t border-slate-100">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />
+                      {n > 0
+                        ? `${n} verified directory listing${n === 1 ? "" : "s"} available`
+                        : "No verified directory listings yet — requests still accepted"}
+                    </div>
+                    <div className="mt-3 flex flex-col gap-1.5">
                       <Link
-                        to={`/recycling?loc=${encodeURIComponent(r.name)}`}
-                        className="inline-flex items-center gap-1 font-bold text-[#187B65] hover:underline shrink-0"
+                        to={`/request-service?province=${r.code}`}
+                        className="inline-flex items-center justify-between rounded-xl bg-[#187B65] text-white font-bold px-4 py-2.5 text-xs hover:bg-[#125C4E] transition-colors"
                       >
-                        Browse <ArrowRight className="w-3.5 h-3.5" />
+                        Request Service <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
-                    ) : (
-                      <Link
-                        to="/contractors"
-                        className="inline-flex items-center gap-1 font-bold text-slate-600 hover:text-[#187B65] shrink-0"
-                      >
-                        Apply <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    )}
+                      <div className="flex gap-1.5">
+                        <Link
+                          to="/contractors"
+                          className="flex-1 inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 text-slate-700 font-semibold px-3 py-2 text-[11px] hover:border-[#187B65] hover:text-[#187B65] transition-colors"
+                        >
+                          <UserSearch className="w-3.5 h-3.5" /> Find Local Contractor
+                        </Link>
+                        <Link
+                          to={`/recycling?loc=${encodeURIComponent(r.name)}`}
+                          className="flex-1 inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 text-slate-700 font-semibold px-3 py-2 text-[11px] hover:border-[#187B65] hover:text-[#187B65] transition-colors"
+                        >
+                          <Recycle className="w-3.5 h-3.5" /> Recycling Directory
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );

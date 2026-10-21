@@ -13,9 +13,10 @@ import { CITIES } from "@/lib/cities";
 export default function NationalRequestForm() {
   const params = new URLSearchParams(window.location.search);
   const prefillCity = (params.get("city") || "").slice(0, 120);
+  const prefillProvince = REGIONS.some((r) => r.code === (params.get("province") || "").toUpperCase()) ? params.get("province").toUpperCase() : "";
   const prefillService = SERVICE_TYPES.some((s) => s.value === params.get("service")) ? params.get("service") : "junk_removal";
   const [form, setForm] = useState({
-    name: "", phone: "", email: "", city: prefillCity, province_code: "",
+    name: "", phone: "", email: "", city: prefillCity, province_code: prefillProvince,
     postal_code: "", service_type: prefillService, items_description: "",
     preferred_date: "", notes: "",
   });

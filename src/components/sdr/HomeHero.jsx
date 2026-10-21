@@ -14,10 +14,10 @@ export default function HomeHero({ onCity }) {
           Canada's Intelligent Recycling &amp; Removal Network
         </div>
         <h1 className="mt-4 text-[1.65rem] leading-tight sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
-          Canada's Recycling Network. One Intelligent Platform.
+          Recycling &amp; Junk Removal Requests Across Canada
         </h1>
         <p className="mt-3 text-[15px] md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-          Find recycling services, compare local providers, arrange pickups, and manage recycling operations through one connected platform.
+          Tell us what needs to go. We'll work to connect you with a qualified local service provider — in every province and territory.
         </p>
 
         {/* Primary: unified postal/city → coverage → material → provider discovery */}
@@ -25,25 +25,25 @@ export default function HomeHero({ onCity }) {
           <ServiceDiscovery onCity={onCity} />
         </div>
 
-        {/* Secondary actions */}
+        {/* Primary + secondary national actions */}
         <div className="mt-5 flex flex-wrap justify-center gap-2.5">
           <button
-            onClick={() => document.getElementById("book")?.scrollIntoView({ behavior: "smooth" })}
-            className="inline-flex items-center min-h-[48px] rounded-full border-2 border-white/30 text-white font-bold px-5 py-2.5 text-sm hover:bg-white/10 transition-colors"
+            onClick={() => navigate("/request-service")}
+            className="inline-flex items-center min-h-[48px] rounded-full bg-[#187B65] text-white font-bold px-7 py-2.5 text-sm shadow-lg shadow-[#187B65]/30 hover:bg-[#125C4E] transition-colors"
           >
-            Request a Pickup
+            Request Service <ArrowRight className="w-4 h-4" />
           </button>
           <button
-            onClick={() => navigate("/software")}
+            onClick={() => navigate("/recycling")}
             className="inline-flex items-center min-h-[48px] rounded-full border-2 border-white/30 text-white font-bold px-5 py-2.5 text-sm hover:bg-white/10 transition-colors"
           >
-            Explore Recycling Software <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
+            Browse Recycling Directory
           </button>
         </div>
 
         <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-semibold text-emerald-100/75">
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Verified providers only</span>
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Coverage shown only where confirmed</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Requests open in every province &amp; territory</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Same-day fulfillment depends on contractor availability &amp; confirmation</span>
         </div>
 
         <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-2 text-sm text-emerald-100/75">
