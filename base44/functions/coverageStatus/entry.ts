@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
+import { isTestPartner } from '../../shared/coverageStatus.ts';
 
 // Public, aggregate-only coverage status endpoint. PII-free: returns city
 // names and counts only. This is the single authoritative source for:
@@ -6,7 +7,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 //   - Open matching activity: cities with open customer requests awaiting
 //     contractor contact (NationalRequest status new/provider_matching)
 // Facility directory records are NEVER counted as contractor capacity.
-const TEST_PARTNER_NAMES = ['test simulation contractor'];
+
 
 export default async function(req) {
   try {
@@ -17,7 +18,7 @@ export default async function(req) {
     //    and internal test partners are excluded from capacity.
     const { items: partners } = await srole.entities.Partner.filter({ active: true }, { limit: 200 });
     const realPartners = (partners || [])
-      .filter((p) => !TEST_PARTNER_NAMES.includes(String(p.name || '').trim().toLowerCase()));
+      .filter((p) => !isTestPartner(p));
     const verifiedCities = [...new Set(realPartners
       .map((p) => String(p.city || '').trim())
       .filter(Boolean))];

@@ -18,6 +18,19 @@ export const ACTIVE_CITIES = [
 // extracted city values still resolve.
 export const ONBOARDING_CITIES = [];
 
+// Test partners (sandbox/dispatch-simulation records) never count as real
+// contractor capacity and never receive real job offers.
+export const TEST_PARTNER_NAMES = ['test simulation contractor'];
+
+export function isTestPartner(p) {
+  const name = String(p?.name || '').trim().toLowerCase();
+  const email = String(p?.email || '').trim().toLowerCase();
+  return TEST_PARTNER_NAMES.includes(name)
+    || name.startsWith('zztest')
+    || email.startsWith('zztest')
+    || email.endsWith('@example.com');
+}
+
 export function isActiveCity(raw) {
   const value = String(raw || '').toLowerCase().trim();
   if (!value) return false;

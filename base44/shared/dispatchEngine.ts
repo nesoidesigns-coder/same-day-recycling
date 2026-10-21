@@ -19,6 +19,7 @@
 // fully tracked.
 
 import { computeFee, pickActiveAgreement } from './feeEngine.ts';
+import { isTestPartner } from './coverageStatus.ts';
 
 // entity filter()/list() return a page ({items}) when given options, or a bare array.
 export const toItems = (page) => (Array.isArray(page) ? page : (page && page.items) || []);
@@ -106,6 +107,7 @@ export async function findCandidates(srole, request) {
     if (p.active === false || alreadyOffered.has(p.id)) continue;
     if (p.dispatch_mode === 'manual_only') continue; // partner opted out of auto-offers
     if (p.verified === false) continue; // only verified contractors receive offers
+    if (isTestPartner(p)) continue; // sandbox/test partners never receive real offers
     const partnerServices = (p.service_types || []).map((s) => String(s));
     if (partnerServices.length > 0 && !partnerServices.includes(serviceType)) continue; // job type
     const partnerCity = normCity(p.city);
