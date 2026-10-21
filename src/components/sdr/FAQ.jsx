@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 
 export const faqs = [
-  { q: "What areas do you serve?", a: "Same-day service is live today across BC's Lower Mainland — Vancouver, Burnaby, Surrey, Richmond and Coquitlam. Partner territories are onboarding nationwide (Toronto, Calgary, Montreal and more), and the recycling directory covers every province and territory." },
+  { q: "What areas do you serve?", a: "We're a nationwide agency — service requests are accepted in every Canadian city. Our dispatch team arranges a qualified local contractor for each job, and same-day pickup is subject to contractor availability, location, and confirmation. The recycling directory covers every province and territory." },
   { q: "How fast is same-day furniture removal?", a: "Book before noon and your furniture removal or junk disposal happens the same afternoon. Later bookings are scheduled for the next available slot." },
   { q: "How does pricing work?", a: "Pricing is based on the truck space your items take up. Pickups start at $139 for small loads and top out at $649 for a full truck, depending on your city. We give you a free on-site estimate and you approve the price before we lift a thing — no hidden fees." },
   { q: "What junk items do you take?", a: "Almost everything — furniture removal and sofa or mattress disposal, appliance pickup, electronics, hot tubs, yard waste, construction and renovation debris, garage and estate cleanout contents. We also pick up scrap metal for free across Canada wherever a network partner is live. If you're unsure, just ask." },

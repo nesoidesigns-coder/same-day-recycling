@@ -25,7 +25,7 @@ const SERVICE_INFO = {
 
 const QUICK_JOBS = [
   "I need an old refrigerator removed in Surrey",
-  "Clear out a garage full of junk in Vancouver",
+  "Clear out a garage full of junk in Toronto",
   "Office cleanout in Burnaby before the lease ends",
   "Old TV and computer recycling pickup",
 ];

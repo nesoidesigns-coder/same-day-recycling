@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Bot, Send, CheckCircle2, Circle, Sparkles, Phone, Loader2 } from "lucide-react";
 
 const OPENING =
-  "Hi, I'm Rex — the Same Day Recycling booking engine. Same-day pickup is confirmed in Vancouver, Burnaby, Surrey, Richmond and Coquitlam, and I accept inquiries from every city in Canada. Tell me what you need picked up and where. What are we clearing out today?";
+  "Hi, I'm Rex — the Same Day Recycling booking engine. We're a nationwide agency: I accept service requests from every city in Canada, and our dispatch team arranges a qualified local contractor — same-day pickup is confirmed once a contractor accepts. Tell me what you need picked up and where. What are we clearing out today?";
 
 const FIELD_ROWS = [
   ["name", "Name", true],
@@ -19,7 +19,7 @@ const FIELD_ROWS = [
 
 const STARTERS = [
   "I need an old fridge and a couch picked up tomorrow morning in Surrey",
-  "Book a junk removal for a garage cleanout in Vancouver",
+  "Book a junk removal for a garage cleanout in Toronto",
   "I have boxes and a mattress to recycle in Burnaby",
 ];
 

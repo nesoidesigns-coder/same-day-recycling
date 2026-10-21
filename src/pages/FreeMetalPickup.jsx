@@ -12,7 +12,7 @@ export default function FreeMetalPickup() {
     description: "Check free scrap metal pickup in confirmed service areas. Describe your metal items, request collection and confirm eligibility with the team.",
     path: "/free-metal-pickup",
   });
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "Vancouver", metal: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", metal: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");

@@ -10,7 +10,7 @@ const CONFIG = {
   intro: "When junk has to go today, the cutoff matters: bookings made before noon usually get a crew the same afternoon. Later bookings are scheduled for the next available slot. Every price is approved by you before anything is lifted.",
   items: ["Book before noon → same afternoon", "Curbside Discount: $25 off, no need to be home", "Upfront pricing from $139", "Price approved before we lift anything", "Every load sorted for recycling & donation", "Recycling Impact Report for your records"],
   steps: [
-    { title: "Check the clock", text: "Before noon Vancouver time? Same-day pickup is usually on. After that, we book the next available slot." },
+    { title: "Check the clock", text: "Before noon local time? Same-day pickup is usually on. After that, we book the next available slot." },
     { title: "Quote and book", text: "Get an instant quote online or by phone, then lock in your time window — it takes minutes." },
     { title: "Crew arrives", text: "We call or text your arrival window, do all the lifting, and email your Recycling Impact Report after." },
   ],
