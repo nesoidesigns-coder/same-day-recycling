@@ -78,9 +78,25 @@ export async function applySubscriptionState(srole, purpose, refId, state, clien
     });
     if (!lic.provisioned_date) {
       try {
+        let invited = false;
         const inviter = (client && client.users) || srole.users;
-        if (!inviter) throw new Error('No users module available.');
-        await inviter.inviteUser(lic.email, 'user');
+        if (inviter && typeof inviter.inviteUser === 'function') {
+          await inviter.inviteUser(lic.email, 'user');
+          invited = true;
+        } else if (client && client.fetchWithAuth && client.getConfig) {
+          // Some runtimes omit the users module; call the invite endpoint with
+          // the service-role credentials fetchWithAuth forwards.
+          const cfg = client.getConfig();
+          const res = await client.fetchWithAuth('/api/apps/' + cfg.appId + '/runtime/users/invite-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_email: lic.email, role: 'user' }),
+          });
+          if (!res.ok) throw new Error('Invite endpoint returned ' + res.status);
+          invited = true;
+        }
+        if (!invited) throw new Error('No invite mechanism available.');
+        await srole.entities.SoftwareLicense.update(lic.id, { notes: 'Account invite sent.' });
       } catch (e) {
         await srole.entities.SoftwareLicense.update(lic.id, { notes: ('Account invite: ' + (e.message || 'failed')).slice(0, 1000) });
       }
