@@ -12,8 +12,9 @@
 
 ## Coverage (current)
 
-- **Active & verified same-day service:** Vancouver, Burnaby, Surrey, Richmond, Coquitlam (BC).
-- **Partner onboarding / coming soon:** other cities across Canada; territory applications at https://samedayrecycling.ca/contractor-onboarding.
+- **Nationwide service requests:** accepted in every Canadian province and territory; local pickup availability is confirmed per job after contractor matching.
+- **Active dispatch territories:** 29 cities including Vancouver, Calgary, Edmonton, Winnipeg, Toronto, Ottawa, Montreal, Halifax, Whitehorse, Yellowknife and Iqaluit; same-day fulfillment depends on confirmed contractor availability in each city.
+- **Partner onboarding:** contractor territory applications at https://samedayrecycling.ca/contractor-onboarding.
 - **Province and territory pages:** https://samedayrecycling.ca/coverage
 
 ## Pricing

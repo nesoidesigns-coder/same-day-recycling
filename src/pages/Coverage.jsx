@@ -11,8 +11,8 @@ const SECTIONS = [
     status: "active",
     icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
     dot: "bg-[#187B65]",
-    intro: "Operating nationwide — every Canadian city is covered. Our dispatch team confirms pricing, pickup availability and your arrival window before issuing a guaranteed appointment.",
-    cardLabel: "Same-day pickup — nationwide",
+    intro: "Operating nationwide — inquiries are open in every Canadian city. Our dispatch team confirms pricing, pickup availability and your arrival window with you before anything is scheduled or charged.",
+    cardLabel: "Active dispatch territory — nationwide",
     linkFor: () => "/#book",
   },
   {
@@ -36,7 +36,7 @@ const SECTIONS = [
 export default function Coverage() {
   useSEO({
     title: "Pickup Coverage & Network Expansion | Same Day Recycling",
-    description: "Same-day recycling and junk removal in every Canadian city. Nationwide dispatch network, upfront pricing and arrival windows confirmed before each appointment.",
+    description: "Recycling and junk removal requests accepted in every Canadian city. Nationwide contractor network, upfront pricing and arrival windows confirmed before each appointment.",
     path: "/coverage",
   });
   return (
