@@ -1,0 +1,33 @@
+# Same Day Recycling
+
+> Canada's intelligent recycling and removal network. Same-day junk, furniture and appliance removal through an operator network in the Lower Mainland of British Columbia, a free national recycling directory, and a software operating system licensed to independent recycling businesses across Canada. Book online at https://samedayrecycling.ca/#book or call (604) 849-1745 — open 24 hours.
+
+## What Same Day Recycling does
+
+- **Same-day pickup (consumer & business):** junk removal, furniture removal, appliance removal, estate/garage/condo cleanouts. Book before noon for same-afternoon service. Upfront pricing from $139 (small load) to $649 (full truck), free estimates, price approved before loading. Curbside Discount: $25 off when items are staged outside and no one is home.
+- **Free scrap metal pickup:** metal is collected at no charge wherever a network partner is live (https://samedayrecycling.ca/free-metal-pickup).
+- **Recycling directory:** searchable, verified listings of where to recycle materials across Canada, by material and city (https://samedayrecycling.ca/recycling).
+- **Recycling assistant:** AI chat that answers how-to-recycle questions with cited sources and local provider suggestions (https://samedayrecycling.ca/recycling-assistant).
+- **Software OS for recycling businesses:** licensed white-label dashboard giving independent companies customer management, dispatch, scheduling, invoicing and analytics (https://samedayrecycling.ca/software). Plans: Starter $2,500 setup + $199/mo; Growth $4,500 + $399/mo; Network $9,500 + $799/mo; annual billing = 10 months' price.
+
+## Coverage (current)
+
+- **Active & verified same-day service:** Vancouver, Burnaby, Surrey, Richmond, Coquitlam (BC).
+- **Partner onboarding / coming soon:** other cities across Canada; territory applications at https://samedayrecycling.ca/contractor-onboarding.
+- **Province and territory pages:** https://samedayrecycling.ca/coverage
+
+## Pricing
+
+- Truck-space pricing: $139–$649 CAD depending on load size and city; free quote at https://samedayrecycling.ca/#book or photo quote by text to (604) 849-1745.
+
+## Sustainability claims (cited)
+
+- Canada diverted 27.1% of solid waste in 2022; landfills accounted for 17% of national methane emissions (Environment and Climate Change Canada).
+- Recycling aluminum uses about 95% less energy than producing it from raw ore (International Aluminium Institute).
+
+## Contact
+
+- Phone/text: (604) 849-1745 (24 hours)
+- Email: samedayrecycling@gmail.com
+- Website: https://samedayrecycling.ca
+- Sitemap: https://samedayrecycling.ca/sitemap.xml
