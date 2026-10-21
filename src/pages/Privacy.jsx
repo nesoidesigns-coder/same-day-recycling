@@ -43,7 +43,7 @@ const SECTIONS = [
   {
     h: "Service limitations",
     p: [
-      "Confirmed same-day pickup is offered only in our active service areas (currently BC's Lower Mainland). Elsewhere you can join the waitlist, and we will only contact you about service as it launches.",
+      "We accept service requests from every Canadian city. Same-day pickup is confirmed wherever a verified local contractor is available; elsewhere, your request is matched or a contractor is sourced for your area, and we contact you with the confirmed details.",
     ],
   },
   {
@@ -84,7 +84,7 @@ export default function Privacy() {
         </div>
       </section>
       <section className="max-w-3xl mx-auto px-4 py-12 md:py-16 space-y-8">
-        <p className="text-slate-600">Same Day Recycling provides same-day junk removal, furniture removal and recycling services in our active service areas (currently BC's Lower Mainland), expanding across Canada through verified partners. This policy explains what personal information we collect, why, and how you can control it. Questions? Call us at (604) 849-1745 or use our <Link to="/contact" className="font-semibold text-[#187B65] hover:underline">contact form</Link>.</p>
+        <p className="text-slate-600">Same Day Recycling provides same-day junk removal, furniture removal and recycling services nationwide, expanding through verified contractor partners in every Canadian city. This policy explains what personal information we collect, why, and how you can control it. Questions? Call us at (604) 849-1745 or use our <Link to="/contact" className="font-semibold text-[#187B65] hover:underline">contact form</Link>.</p>
         {SECTIONS.map((s) => (
           <div key={s.h}>
             <h2 className="text-xl font-bold text-[#102B2A] mb-2">{s.h}</h2>

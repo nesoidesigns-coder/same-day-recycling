@@ -89,7 +89,7 @@ export default function ExploreServices() {
               </div>
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-                <div className="text-sm"><span className="font-bold text-[#102B2A]">Coming soon</span><span className="block text-slate-600">Expansion is planned — no confirmed service availability.</span></div>
+                <div className="text-sm"><span className="font-bold text-[#102B2A]">Sourcing contractors</span><span className="block text-slate-600">Requests are accepted here nationwide — our dispatch team is recruiting a local contractor for this market.</span></div>
               </div>
             </div>
           </div>

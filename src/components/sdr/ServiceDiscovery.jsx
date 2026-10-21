@@ -178,7 +178,7 @@ export default function ServiceDiscovery({ onCity }) {
             {availability.status === "coming_soon" && (
               <div className="flex items-start gap-2 text-sm font-bold text-[#102B2A]">
                 <Clock className="w-4 h-4 text-[#187B65] mt-0.5 shrink-0" />
-                <span>Service is coming soon to {resolved.city} — not available yet.</span>
+                <span>Requests are open nationwide — our dispatch team is sourcing a contractor in {resolved.city}.</span>
               </div>
             )}
             {availability.status === "province" && (

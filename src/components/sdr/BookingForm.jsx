@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
-import { cityByName, isCityActive } from "@/lib/coverage";
+import { isCityActive } from "@/lib/coverage";
 import { provinceForCity, taxFor } from "@/lib/canadaTax";
 import ReviewInvite from "@/components/sdr/ReviewInvite";
 import PayPalButtons from "@/components/pay/PayPalButtons";
@@ -31,9 +30,9 @@ export default function BookingForm({ prefill }) {
 
   const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  // Availability rule shared by every booking surface: only active
-  // territories can confirm a booking — anywhere else submits as a
-  // service waitlist so the customer is saved for launch day.
+  // Availability rule shared by every booking surface: coverage is
+  // national — active cities book directly, anywhere else submits as a
+  // nationwide service request so dispatch sources the local contractor.
   const notLive = !!form.city && !isCityActive(form.city);
 
   const handleSubmit = async (e) => {
@@ -42,16 +41,18 @@ export default function BookingForm({ prefill }) {
     setSubmitting(true);
     try {
       if (notLive) {
-        await base44.entities.ServiceWaitlist.create({
+        await base44.functions.invoke('nationalRequest', {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          city: form.city,
           address: form.address,
-          notes: form.items_description,
-          source: "booking_form",
+          city: form.city,
+          service_type: 'junk_removal',
+          items_description: form.items_description,
+          preferred_date: form.preferred_date,
+          notes: form.curbside ? "Customer requested curbside pickup ($25 discount)." : "",
         });
-        base44.analytics.track({ eventName: "service_waitlist_joined", properties: { city: form.city } });
+        base44.analytics.track({ eventName: "national_request_submitted", properties: { city: form.city, source: "booking_form" } });
         setWaitlisted(true);
         setDone(true);
         return;
@@ -81,10 +82,10 @@ export default function BookingForm({ prefill }) {
     return (
       <div className="rounded-3xl bg-white p-10 border border-slate-100 text-center">
         <CheckCircle2 className="w-14 h-14 text-[#187B65] mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-[#102B2A]">{waitlisted ? "You're on the waitlist!" : "Thanks!"}</h3>
+        <h3 className="text-2xl font-bold text-[#102B2A]">{waitlisted ? "Request received!" : "Thanks!"}</h3>
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           {waitlisted
-            ? `We've saved your request for ${form.city} and we'll contact you as soon as a verified partner launches there.`
+            ? `Your request for ${form.city} is in our system. We operate in every Canadian city — our dispatch team is arranging your local contractor and will call you with pricing and your pickup window.`
             : "We'll call you within 30 minutes to confirm your pickup window."}
         </p>
         {!waitlisted && bookingId && !payDone && quoteAmount > 0 && (() => {
@@ -132,10 +133,7 @@ export default function BookingForm({ prefill }) {
         </Field>
         {notLive && (
           <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
-            Requests from {form.city} are confirmed nationwide — we operate in every Canadian city. Same-day pickup is subject to daily availability, and scheduling is confirmed after your request.
-            <span className="mt-1 block font-normal text-amber-800/80">
-              <Link to={`/request-service?city=${encodeURIComponent(form.city)}`} className="underline font-semibold">Submit a nationwide request</Link> — our dispatch team arranges your local contractor and keeps your job in our system.
-            </span>
+            We operate in every Canadian city — submitting below creates a nationwide service request. Our dispatch team arranges your local contractor and confirms pricing and your pickup window before anything is scheduled.
           </div>
         )}
         <div className="grid sm:grid-cols-2 gap-4">

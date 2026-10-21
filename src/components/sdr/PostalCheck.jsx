@@ -125,8 +125,8 @@ export default function PostalCheck({ onCity }) {
                 <Search className="w-4 h-4 text-[#187B65] mt-0.5 shrink-0" />
                 <span>
                   {result.comingSoon.length > 0
-                    ? `Service is coming soon to ${PROVINCE_NAMES[result.province]} — same-day pickup isn't available yet.`
-                    : `Same-day pickup isn't live in ${PROVINCE_NAMES[result.province]} yet.`}
+                    ? `Requests are open in ${PROVINCE_NAMES[result.province]} — we're sourcing contractors for same-day coverage.`
+                    : `Requests are open in ${PROVINCE_NAMES[result.province]} — our dispatch team sources a local contractor for you.`}
                   <span className="block font-medium text-slate-600 mt-1">
                     Our national directory still lists verified recycling providers near you.
                   </span>

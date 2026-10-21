@@ -8,7 +8,7 @@ const SECTIONS = [
   {
     h: "Our services",
     p: [
-      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup in our active service areas (currently BC's Lower Mainland), with additional cities served as verified partners go live. Booking by phone, text, website form or through our online booking assistant creates a service request; it becomes a confirmed booking only once service availability for your city is verified by our booking system.",
+      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup nationwide — we accept service requests from every Canadian city, province and territory. A service request created by phone, text, website form or our online booking assistant becomes a confirmed booking only once a verified local contractor is available and our dispatch team has confirmed your appointment.",
     ],
   },
   {
