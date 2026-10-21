@@ -14,6 +14,7 @@ const links = [
   { label: "Recycling Centers", to: "/recycling-centers" },
   { label: "Blog", to: "/blog" },
   { label: "Fleet Gallery", to: "/gallery" },
+  { label: "Pricing", to: "/pricing" },
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "White Label", to: "/white-label" },
   { label: "Leave a Review", to: "/review" },

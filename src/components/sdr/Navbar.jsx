@@ -4,7 +4,7 @@ import { Menu, X, Recycle, ChevronDown } from "lucide-react";
 
 const primaryLinks = [
   { label: "Services", to: "/#services" },
-  { label: "Pricing", to: "/#transparent-pricing" },
+  { label: "Pricing", to: "/pricing" },
   { label: "How It Works", to: "/#how-it-works" },
   { label: "Service Area", to: "/#service-area" },
   { label: "Business Solutions", to: "/subscriptions" },

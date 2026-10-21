@@ -58,6 +58,7 @@ import PropertyManagers from './pages/PropertyManagers';
 import WhiteLabel from './pages/WhiteLabel';
 import AdminWhiteLabel from './pages/AdminWhiteLabel';
 import Gallery from './pages/Gallery';
+import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
       {CITIES.map((c) => (
         <Route key={c.slug} path={`/junk-removal-${c.slug}`} element={<CityPage slugParam={c.slug} />} />
       ))}
+      <Route path="/pricing" element={<Pricing />} />
       <Route path="/subscriptions" element={<Subscriptions />} />
       <Route path="/free-metal-pickup" element={<FreeMetalPickup />} />
       <Route path="/about" element={<About />} />
