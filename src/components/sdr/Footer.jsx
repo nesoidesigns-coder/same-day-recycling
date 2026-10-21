@@ -15,6 +15,7 @@ const links = [
   { label: "Blog", to: "/blog" },
   { label: "Fleet Gallery", to: "/gallery" },
   { label: "Pricing", to: "/pricing" },
+  { label: "Software OS", to: "/software" },
   { label: "Subscriptions", to: "/subscriptions" },
   { label: "White Label", to: "/white-label" },
   { label: "Leave a Review", to: "/review" },

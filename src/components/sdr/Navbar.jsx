@@ -14,6 +14,7 @@ const primaryLinks = [
 const moreLinks = [
   { label: "Recycling Directory", to: "/recycling" },
   { label: "Recycling Assistant", to: "/recycling-assistant" },
+  { label: "Software OS", to: "/software" },
   { label: "Realtors", to: "/realtors" },
   { label: "Contractors", to: "/contractors" },
   { label: "Partner Onboarding", to: "/contractor-onboarding" },

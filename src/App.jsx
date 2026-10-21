@@ -58,6 +58,10 @@ import PropertyManagers from './pages/PropertyManagers';
 import WhiteLabel from './pages/WhiteLabel';
 import AdminWhiteLabel from './pages/AdminWhiteLabel';
 import WhiteLabelPay from './pages/WhiteLabelPay';
+import SoftwareSales from './pages/SoftwareSales';
+import SoftwarePay from './pages/SoftwarePay';
+import CompanyDashboard from './pages/CompanyDashboard';
+import AdminSoftware from './pages/AdminSoftware';
 import Gallery from './pages/Gallery';
 import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
@@ -110,6 +114,8 @@ const AuthenticatedApp = () => {
       <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/white-label" element={<WhiteLabel />} />
       <Route path="/white-label-pay" element={<WhiteLabelPay />} />
+      <Route path="/software" element={<SoftwareSales />} />
+      <Route path="/software-pay" element={<SoftwarePay />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />
@@ -141,6 +147,8 @@ const AuthenticatedApp = () => {
         <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
         <Route path="/admin/gallery" element={<AdminGallery />} />
         <Route path="/admin/marketing" element={<AdminMarketing />} />
+        <Route path="/admin/software" element={<AdminSoftware />} />
+        <Route path="/company" element={<CompanyDashboard />} />
         <Route path="/partners" element={<PartnersDashboard />} />
         <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />

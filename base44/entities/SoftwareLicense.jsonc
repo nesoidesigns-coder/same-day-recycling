@@ -1,0 +1,114 @@
+{
+  "name": "SoftwareLicense",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "province": {
+      "type": "string",
+      "default": ""
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "network"
+      ],
+      "default": "starter"
+    },
+    "setup_fee": {
+      "type": "number",
+      "default": 2500
+    },
+    "monthly_fee": {
+      "type": "number",
+      "default": 199
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "provisioning",
+        "setup_paid",
+        "active",
+        "paused",
+        "cancelled"
+      ],
+      "default": "provisioning"
+    },
+    "pay_token": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_plan_id": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_subscription_id": {
+      "type": "string",
+      "default": ""
+    },
+    "started_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "provisioned_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "company",
+    "contact_name",
+    "email"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

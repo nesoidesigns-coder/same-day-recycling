@@ -1,0 +1,116 @@
+{
+  "name": "LicensePickup",
+  "type": "object",
+  "properties": {
+    "license_email": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string",
+      "default": ""
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_phone": {
+      "type": "string",
+      "default": ""
+    },
+    "address": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "items_description": {
+      "type": "string",
+      "default": ""
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time_window": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "dispatched",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "weight_kg": {
+      "type": "number"
+    },
+    "driver": {
+      "type": "string",
+      "default": ""
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "license_email",
+    "customer_name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.license_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.license_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.license_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.license_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

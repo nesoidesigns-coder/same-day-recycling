@@ -87,6 +87,56 @@ export default async function(req) {
       });
     }
 
+    if (action === 'get_license') {
+      const payToken = String(body.pay_token || '').trim();
+      if (!payToken) return Response.json({ error: 'Missing payment token.' }, { status: 400 });
+      const { items } = await srole.entities.SoftwareLicense.filter({ pay_token: payToken }, { limit: 1 });
+      if (!items || !items.length) return Response.json({ error: 'This payment link is not valid.' }, { status: 404 });
+      const c = items[0];
+      const setup = await srole.entities.PaypalTransaction.filter({ purpose: 'license_setup', ref_id: c.id, status: 'paid' }, { limit: 1 });
+      const sub = await srole.entities.PaypalTransaction.filter({ purpose: 'license_subscription', ref_id: c.id, status: 'active' }, { limit: 1 });
+      return Response.json({
+        company: c.company,
+        contact_name: c.contact_name,
+        setup_fee: Number(c.setup_fee) || 0,
+        monthly_fee: Number(c.monthly_fee) || 0,
+        plan: c.plan,
+        setup_paid: !!(setup.items && setup.items.length),
+        subscription_active: !!(sub.items && sub.items.length),
+      });
+    }
+
+    if (action === 'create_license') {
+      const s = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+      const company = s(body.company, 100);
+      const contactName = s(body.contact_name, 80);
+      const email = s(body.email, 120).toLowerCase();
+      const city = s(body.city, 60);
+      const province = s(body.province, 40);
+      const plan = ['starter', 'growth', 'network'].includes(body.plan) ? body.plan : 'starter';
+      if (!company || !contactName || !email || !email.includes('@')) {
+        return Response.json({ error: 'Company, contact name and a valid email are required.' }, { status: 400 });
+      }
+      const FEES = { starter: { setup: 2500, monthly: 199 }, growth: { setup: 4500, monthly: 399 }, network: { setup: 9500, monthly: 799 } };
+      const existing = await srole.entities.SoftwareLicense.filter({ email }, { limit: 1 });
+      if (existing.items && existing.items.length) {
+        return Response.json({ pay_token: existing.items[0].pay_token, existing: true });
+      }
+      const rec = await srole.entities.SoftwareLicense.create({
+        company,
+        contact_name: contactName,
+        email,
+        city,
+        province,
+        plan,
+        setup_fee: FEES[plan].setup,
+        monthly_fee: FEES[plan].monthly,
+        status: 'provisioning',
+        pay_token: crypto.randomUUID(),
+      });
+      return Response.json({ pay_token: rec.pay_token, existing: false });
+    }
+
     if (action === 'create_order') {
       const kind = String(body.kind || '');
       let amount = 0, description = '', refId = '', refLabel = '', purpose = '', customerEmail = '';
@@ -116,6 +166,19 @@ export default async function(req) {
         refId = c.id;
         refLabel = c.company;
         description = 'White-label setup fee - ' + c.company;
+        customerEmail = c.email || '';
+      } else if (kind === 'license_setup') {
+        const payToken = String(body.pay_token || '').trim();
+        if (!payToken) return Response.json({ error: 'Missing payment token.' }, { status: 400 });
+        const { items } = await srole.entities.SoftwareLicense.filter({ pay_token: payToken }, { limit: 1 });
+        if (!items || !items.length) return Response.json({ error: 'This payment link is not valid.' }, { status: 404 });
+        const c = items[0];
+        amount = Number(c.setup_fee) || 0;
+        if (!amount) return Response.json({ error: 'No setup fee is configured for this license.' }, { status: 422 });
+        purpose = 'license_setup';
+        refId = c.id;
+        refLabel = c.company;
+        description = 'Software license setup fee - ' + c.company;
         customerEmail = c.email || '';
       } else {
         return Response.json({ error: 'Unknown payment kind.' }, { status: 400 });
@@ -151,6 +214,12 @@ export default async function(req) {
       const { items } = await srole.entities.PaypalTransaction.filter({ paypal_order_id: orderId }, { limit: 1 });
       if (items && items.length) {
         await srole.entities.PaypalTransaction.update(items[0].id, { status: 'paid', paypal_payer_email: payerEmail });
+        if (items[0].purpose === 'license_setup' && items[0].ref_id) {
+          const lic = await srole.entities.SoftwareLicense.get(items[0].ref_id).catch(() => null);
+          if (lic && lic.id && lic.status === 'provisioning') {
+            await srole.entities.SoftwareLicense.update(lic.id, { status: 'setup_paid' });
+          }
+        }
       }
       return Response.json({ status: cap.status, payerEmail });
     }
@@ -158,17 +227,21 @@ export default async function(req) {
     if (action === 'create_subscription') {
       const payToken = String(body.pay_token || '').trim();
       if (!payToken) return Response.json({ error: 'Missing payment token.' }, { status: 400 });
-      const { items } = await srole.entities.WhiteLabelClient.filter({ pay_token: payToken }, { limit: 1 });
+      const isLicense = body.target === 'license';
+      const entity = isLicense ? srole.entities.SoftwareLicense : srole.entities.WhiteLabelClient;
+      const purpose = isLicense ? 'license_subscription' : 'white_label_subscription';
+      const payReturn = isLicense ? '/software-pay?pay=' : '/white-label-pay?pay=';
+      const { items } = await entity.filter({ pay_token: payToken }, { limit: 1 });
       if (!items || !items.length) return Response.json({ error: 'This payment link is not valid.' }, { status: 404 });
       const c = items[0];
       const monthly = Number(c.monthly_fee) || 0;
-      if (!monthly) return Response.json({ error: 'No monthly fee is configured for this client.' }, { status: 422 });
+      if (!monthly) return Response.json({ error: 'No monthly fee is configured.' }, { status: 422 });
       let planId = c.paypal_plan_id || '';
       if (!planId) {
         const product = await paypal('/v1/catalogs/products', 'POST', {
           name: ('Same Day Recycling - ' + c.company).slice(0, 127),
           type: 'SERVICE',
-          description: 'Monthly white-label service',
+          description: isLicense ? 'Software license subscription' : 'Monthly white-label service',
         });
         const plan = await paypal('/v1/billing/plans', 'POST', {
           product_id: product.id,
@@ -182,7 +255,7 @@ export default async function(req) {
           payment_preferences: { auto_bill_outstanding: true },
         });
         planId = plan.id;
-        await srole.entities.WhiteLabelClient.update(c.id, { paypal_plan_id: planId });
+        await entity.update(c.id, { paypal_plan_id: planId });
       }
       const origin = appOrigin(req);
       const sub = await paypal('/v1/billing/subscriptions', 'POST', {
@@ -193,14 +266,14 @@ export default async function(req) {
           locale: 'en-CA',
           user_action: 'SUBSCRIBE_NOW',
           shipping_preference: 'NO_SHIPPING',
-          return_url: origin + '/white-label-pay?pay=' + payToken,
-          cancel_url: origin + '/white-label-pay?pay=' + payToken + '&cancelled=1',
+          return_url: origin + payReturn + payToken,
+          cancel_url: origin + payReturn + payToken + '&cancelled=1',
         },
       });
       const approve = (sub.links || []).find((l) => l.rel === 'approve');
       await srole.entities.PaypalTransaction.create({
         kind: 'subscription',
-        purpose: 'white_label_subscription',
+        purpose,
         ref_id: c.id,
         ref_label: c.company,
         customer_email: c.email || '',
@@ -224,11 +297,47 @@ export default async function(req) {
           paypal_payer_email: (sub.subscriber && sub.subscriber.email_address) || '',
         });
         if (items[0].ref_id) {
-          await srole.entities.WhiteLabelClient.update(items[0].ref_id, { status: 'active' });
+          if (items[0].purpose === 'license_subscription') {
+            const lic = await srole.entities.SoftwareLicense.get(items[0].ref_id).catch(() => null);
+            if (lic && lic.id && lic.status !== 'cancelled') {
+              const today = new Date().toISOString().slice(0, 10);
+              await srole.entities.SoftwareLicense.update(lic.id, {
+                status: 'active',
+                paypal_subscription_id: subId,
+                started_date: lic.started_date || today,
+                provisioned_date: today,
+              });
+              try {
+                await srole.users.inviteUser(lic.email, 'user');
+              } catch (e) {
+                await srole.entities.SoftwareLicense.update(lic.id, { notes: ('Account invite: ' + (e.message || 'failed')).slice(0, 1000) });
+              }
+            }
+          } else {
+            await srole.entities.WhiteLabelClient.update(items[0].ref_id, { status: 'active' });
+          }
         }
         return Response.json({ status: 'active' });
       }
       return Response.json({ status: status.toLowerCase() });
+    }
+
+    if (action === 'cancel_subscription') {
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') return Response.json({ error: 'Admins only.' }, { status: 403 });
+      const subId = String(body.subscription_id || '').trim();
+      if (!subId) return Response.json({ error: 'Missing subscription.' }, { status: 400 });
+      await paypal('/v1/billing/subscriptions/' + subId + '/cancel', 'POST', { reason: 'NOT_AGREED' });
+      const { items } = await srole.entities.PaypalTransaction.filter({ paypal_subscription_id: subId }, { limit: 1 });
+      if (items && items.length) {
+        await srole.entities.PaypalTransaction.update(items[0].id, { status: 'cancelled' });
+        if (items[0].purpose === 'license_subscription' && items[0].ref_id) {
+          await srole.entities.SoftwareLicense.update(items[0].ref_id, { status: 'cancelled' }).catch(() => {});
+        } else if (items[0].ref_id) {
+          await srole.entities.WhiteLabelClient.update(items[0].ref_id, { status: 'churned' }).catch(() => {});
+        }
+      }
+      return Response.json({ ok: true });
     }
 
     return Response.json({ error: 'Unknown action.' }, { status: 400 });
