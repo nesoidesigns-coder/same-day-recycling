@@ -1,0 +1,61 @@
+{
+  "name": "SoftwareInquiry",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
+    "fleet_size": {
+      "type": "number",
+      "default": 1
+    },
+    "message": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "won",
+        "lost"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "company",
+    "contact_name",
+    "email"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

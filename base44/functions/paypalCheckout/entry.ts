@@ -230,6 +230,7 @@ export default async function(req) {
       const payToken = String(body.pay_token || '').trim();
       if (!payToken) return Response.json({ error: 'Missing payment token.' }, { status: 400 });
       const isLicense = body.target === 'license';
+      const annual = body.billing_cycle === 'annual';
       const entity = isLicense ? srole.entities.SoftwareLicense : srole.entities.WhiteLabelClient;
       const purpose = isLicense ? 'license_subscription' : 'white_label_subscription';
       const payReturn = isLicense ? '/software-pay?pay=' : '/white-label-pay?pay=';
@@ -238,26 +239,28 @@ export default async function(req) {
       const c = items[0];
       const monthly = Number(c.monthly_fee) || 0;
       if (!monthly) return Response.json({ error: 'No monthly fee is configured.' }, { status: 422 });
-      let planId = c.paypal_plan_id || '';
+      // Annual = 10x the monthly rate (2 months free), billed once per year
+      const billAmount = annual ? Math.round(monthly * 10 * 100) / 100 : monthly;
+      let planId = annual ? (c.paypal_annual_plan_id || '') : (c.paypal_plan_id || '');
       if (!planId) {
         const product = await paypal('/v1/catalogs/products', 'POST', {
           name: ('Same Day Recycling - ' + c.company).slice(0, 127),
           type: 'SERVICE',
-          description: isLicense ? 'Software license subscription' : 'Monthly white-label service',
+          description: isLicense ? 'Software license subscription' : 'White-label service',
         });
         const plan = await paypal('/v1/billing/plans', 'POST', {
           product_id: product.id,
-          name: 'Monthly plan',
+          name: annual ? 'Annual plan (2 months free)' : 'Monthly plan',
           billing_cycles: [{
-            frequency: { interval_unit: 'MONTH', interval_count: 1 },
+            frequency: { interval_unit: annual ? 'YEAR' : 'MONTH', interval_count: 1 },
             tenure_type: 'REGULAR',
             sequence: 1,
-            pricing_scheme: { fixed_price: { value: monthly.toFixed(2), currency_code: CURRENCY } },
+            pricing_scheme: { fixed_price: { value: billAmount.toFixed(2), currency_code: CURRENCY } },
           }],
           payment_preferences: { auto_bill_outstanding: true },
         });
         planId = plan.id;
-        await entity.update(c.id, { paypal_plan_id: planId });
+        await entity.update(c.id, annual ? { paypal_annual_plan_id: planId, billing_cycle: 'annual' } : { paypal_plan_id: planId, billing_cycle: 'monthly' });
       }
       const origin = appOrigin(req);
       const sub = await paypal('/v1/billing/subscriptions', 'POST', {
@@ -279,7 +282,7 @@ export default async function(req) {
         ref_id: c.id,
         ref_label: c.company,
         customer_email: c.email || '',
-        amount: monthly,
+        amount: billAmount,
         currency: CURRENCY,
         paypal_subscription_id: sub.id,
         status: 'created',

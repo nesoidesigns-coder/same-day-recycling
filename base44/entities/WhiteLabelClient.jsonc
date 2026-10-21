@@ -29,6 +29,14 @@
       ],
       "default": "starter"
     },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly"
+    },
     "setup_fee": {
       "type": "number",
       "default": 2500
@@ -64,6 +72,10 @@
       "default": ""
     },
     "paypal_plan_id": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_annual_plan_id": {
       "type": "string",
       "default": ""
     },

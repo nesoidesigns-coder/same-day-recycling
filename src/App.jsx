@@ -54,6 +54,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Contractors from './pages/Contractors';
 import Coverage from './pages/Coverage';
+import ProvincePage from './pages/ProvincePage';
 import PropertyManagers from './pages/PropertyManagers';
 import WhiteLabel from './pages/WhiteLabel';
 import AdminWhiteLabel from './pages/AdminWhiteLabel';
@@ -112,6 +113,7 @@ const AuthenticatedApp = () => {
       <Route path="/contractors" element={<Contractors />} />
       <Route path="/contractor-onboarding" element={<ContractorOnboarding />} />
       <Route path="/coverage" element={<Coverage />} />
+      <Route path="/region/:code" element={<ProvincePage />} />
       <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/white-label" element={<WhiteLabel />} />
       <Route path="/white-label-pay" element={<WhiteLabelPay />} />

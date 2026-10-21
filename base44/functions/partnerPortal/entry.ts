@@ -92,7 +92,12 @@ export default async function(req) {
     if (booking.assignment_status !== validFrom[next]) {
       return Response.json({ error: `Cannot ${action} a booking in "${booking.assignment_status}" state.` }, { status: 409 });
     }
-    await base44.asServiceRole.entities.Booking.update(bookingId, { assignment_status: next });
+    const updateData = { assignment_status: next };
+    if (next === 'completed') {
+      updateData.status = 'completed';
+      updateData.status_history = [...(booking.status_history || []), { status: 'completed', date: new Date().toISOString() }];
+    }
+    await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
 
     const [{ items: jobs }, { items: history }] = await Promise.all([loadBookings(), loadHistory()]);
     return Response.json({ ok: true, partner: publicPartner, jobs, history });

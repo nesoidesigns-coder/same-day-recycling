@@ -7,6 +7,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import HoloGauge from "@/components/software/HoloGauge";
 import PreviewImg from "@/components/software/PreviewImg";
+import EnterpriseInquiryForm from "@/components/software/EnterpriseInquiryForm";
 
 const FEATURES = [
   { icon: Users, title: "Customer CRM", desc: "Every commercial and residential customer, notes, contact history and service preferences in one clean record." },
@@ -119,14 +120,14 @@ export default function SoftwareSales() {
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-8 md:p-12">
             <div className="text-center mb-10">
-              <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#187B65]">Network intelligence</div>
-              <h2 className="text-3xl font-extrabold tracking-tight admin-headline mt-2">Performance you can watch</h2>
+              <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#187B65]">Platform design</div>
+              <h2 className="text-3xl font-extrabold tracking-tight admin-headline mt-2">Engineered for trust</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <HoloGauge value={99} label="Uptime" sub="Rolling 30 days" />
-              <HoloGauge value={94} label="On-time pickups" sub="Same-day window" />
-              <HoloGauge value={38} label="Route savings" sub="Optimized vs naive" />
+              <HoloGauge value={99} label="Uptime" sub="Platform target" />
               <HoloGauge value={100} label="Data isolation" sub="Company-level RLS" />
+              <HoloGauge value={100} label="Automation" sub="Quote to dispatch to invoice" />
+              <HoloGauge value={100} label="Same-day dispatch" sub="Book before noon nationwide" />
             </div>
           </div>
         </div>
@@ -149,11 +150,29 @@ export default function SoftwareSales() {
                     </li>
                   ))}
                 </ul>
-                <Link to={`/software/start?plan=${t.key}`} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors text-center block">
-                  License the OS
-                </Link>
+                {t.key === "network" ? (
+                  <a href="#enterprise" className="mt-6 w-full rounded-full border-2 border-[#187B65] text-[#54D9AE] font-bold px-6 py-3 hover:bg-[#187B65]/10 transition-colors text-center block">
+                    Talk to our team
+                  </a>
+                ) : (
+                  <Link to={`/software/start?plan=${t.key}`} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors text-center block">
+                    License the OS
+                  </Link>
+                )}
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Enterprise inquiry */}
+        <div id="enterprise" className="max-w-3xl mx-auto px-4 pb-16">
+          <div className="holo-panel-deep rounded-3xl border border-[#187B65]/25 p-8">
+            <div className="text-xs font-bold tracking-[0.18em] uppercase text-[#187B65]">Enterprise &amp; multi-territory</div>
+            <h2 className="text-3xl font-extrabold tracking-tight admin-headline mt-2">Talk to our team</h2>
+            <p className="text-emerald-100/60 mt-3">
+              Running multiple territories or a large fleet? Tell us about your operation and we'll scope a Network license for you.
+            </p>
+            <EnterpriseInquiryForm />
           </div>
         </div>
 

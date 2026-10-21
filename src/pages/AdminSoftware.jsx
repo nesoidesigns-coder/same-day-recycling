@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Loader2, Cpu, LayoutDashboard, Building2, Activity, DollarSign } from "lucide-react";
+import { Loader2, Cpu, LayoutDashboard, Building2, Activity, DollarSign, Inbox } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -9,12 +9,14 @@ import CommandOverview from "@/components/admin/swc/CommandOverview";
 import CommandCompanies from "@/components/admin/swc/CommandCompanies";
 import CommandOperations from "@/components/admin/swc/CommandOperations";
 import CommandRevenue from "@/components/admin/swc/CommandRevenue";
+import CommandInquiries from "@/components/admin/swc/CommandInquiries";
 
 const TABS = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "companies", label: "Companies", icon: Building2 },
   { key: "operations", label: "Operations", icon: Activity },
   { key: "revenue", label: "Revenue", icon: DollarSign },
+  { key: "inquiries", label: "Inquiries", icon: Inbox },
 ];
 
 export default function AdminSoftware() {
@@ -24,27 +26,40 @@ export default function AdminSoftware() {
   const [customers, setCustomers] = useState([]);
   const [pickups, setPickups] = useState([]);
   const [invoices, setInvoices] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
+  const [period, setPeriod] = useState("all");
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
 
   const load = async () => {
-    const [l, t, cust, pick, inv] = await Promise.all([
+    const [l, t, cust, pick, inv, inq] = await Promise.all([
       base44.entities.SoftwareLicense.filter({}, { sort: "-created_date", limit: 200 }),
       base44.entities.PaypalTransaction.filter({}, { sort: "-created_date", limit: 200 }),
       base44.entities.LicenseCustomer.filter({}, { limit: 500 }),
       base44.entities.LicensePickup.filter({}, { limit: 500 }),
       base44.entities.LicenseInvoice.filter({}, { limit: 500 }),
+      base44.entities.SoftwareInquiry.filter({}, { sort: "-created_date", limit: 200 }),
     ]);
     setLicenses(l.items || l);
     setTransactions(t.items || t);
     setCustomers(cust.items || cust);
     setPickups(pick.items || pick);
     setInvoices(inv.items || inv);
+    setInquiries(inq.items || inq);
     setLoading(false);
   };
 
   useEffect(() => { load().catch(() => setLoading(false)); }, []);
+
+  const periodCutoff = period === "all" ? "" : new Date(Date.now() - Number(period) * 86400000).toISOString().slice(0, 10);
+  const periodTransactions = periodCutoff
+    ? transactions.filter((t) => (t.created_date || "").slice(0, 10) >= periodCutoff)
+    : transactions;
+  const newLicenses = periodCutoff
+    ? licenses.filter((l) => (l.created_date || "").slice(0, 10) >= periodCutoff).length
+    : licenses.length;
+  const PERIODS = [{ key: "7", label: "7 days" }, { key: "30", label: "30 days" }, { key: "90", label: "90 days" }, { key: "all", label: "All time" }];
 
   const setLicenseStatus = async (id, status) => {
     setBusyId(id);
@@ -64,6 +79,13 @@ export default function AdminSoftware() {
     setCopiedId(c.id);
     await load();
     setTimeout(() => setCopiedId(null), 2500);
+  };
+
+  const setInquiryStatus = async (id, status) => {
+    setBusyId(id);
+    await base44.entities.SoftwareInquiry.update(id, { status });
+    await load();
+    setBusyId(null);
   };
 
   const cancelSubscription = async (c) => {
@@ -103,6 +125,23 @@ export default function AdminSoftware() {
           </Link>
         </div>
 
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-100/40 mr-1">Period</span>
+          {PERIODS.map((p) => (
+            <button
+              key={p.key}
+              onClick={() => setPeriod(p.key)}
+              className={`rounded-full px-4 py-1.5 text-xs font-bold transition-colors border ${
+                period === p.key
+                  ? "bg-[#187B65] text-[#102B2A] border-[#187B65]"
+                  : "border-[#187B65]/25 text-emerald-100/60 hover:text-[#54D9AE] hover:bg-[#187B65]/10"
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+
         <div className="flex flex-wrap gap-2 mb-8">
           {TABS.map((t) => (
             <button
@@ -120,10 +159,11 @@ export default function AdminSoftware() {
           ))}
         </div>
 
-        {tab === "overview" && <CommandOverview licenses={licenses} transactions={transactions} customers={customers} pickups={pickups} invoices={invoices} />}
+        {tab === "overview" && <CommandOverview licenses={licenses} transactions={periodTransactions} customers={customers} pickups={pickups} invoices={invoices} newLicenses={newLicenses} />}
         {tab === "companies" && <CommandCompanies licenses={licenses} busyId={busyId} copiedId={copiedId} onCopyPayLink={copyPayLink} onCancelSubscription={cancelSubscription} onStatusChange={setLicenseStatus} />}
         {tab === "operations" && <CommandOperations licenses={licenses} customers={customers} pickups={pickups} invoices={invoices} />}
-        {tab === "revenue" && <CommandRevenue licenses={licenses} transactions={transactions} />}
+        {tab === "revenue" && <CommandRevenue licenses={licenses} transactions={periodTransactions} />}
+        {tab === "inquiries" && <CommandInquiries inquiries={inquiries} busyId={busyId} onStatusChange={setInquiryStatus} />}
       </div>
       <Footer />
     </div>

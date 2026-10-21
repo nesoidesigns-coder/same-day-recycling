@@ -16,6 +16,7 @@ export default function SoftwarePay() {
   const [verifying, setVerifying] = useState(!!subReturn);
   const [error, setError] = useState("");
   const [subscribing, setSubscribing] = useState(false);
+  const [cycle, setCycle] = useState("monthly");
 
   const loadLicense = async () => {
     if (!payToken) {
@@ -47,7 +48,7 @@ export default function SoftwarePay() {
   const subscribe = async () => {
     setSubscribing(true);
     try {
-      const { data } = await base44.functions.invoke("paypalCheckout", { action: "create_subscription", pay_token: payToken, target: "license" });
+      const { data } = await base44.functions.invoke("paypalCheckout", { action: "create_subscription", pay_token: payToken, target: "license", billing_cycle: cycle });
       if (data.approve_url) window.location.href = data.approve_url;
       else setSubscribing(false);
     } catch (e) {
@@ -107,14 +108,28 @@ export default function SoftwarePay() {
             </div>
 
             <div className="rounded-3xl bg-white border border-slate-100 p-6">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-3">
                 <Repeat className="w-5 h-5 text-[#187B65]" />
-                <h2 className="font-bold text-[#102B2A]">Monthly license subscription</h2>
-                <span className="ml-auto font-bold text-[#102B2A]">{money(license.monthly_fee)}/mo</span>
+                <h2 className="font-bold text-[#102B2A]">License subscription</h2>
+              </div>
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                <button
+                  onClick={() => setCycle("monthly")}
+                  className={`rounded-xl px-3 py-2.5 text-sm font-bold border transition-colors ${cycle === "monthly" ? "border-[#187B65] bg-[#187B65]/10 text-[#102B2A]" : "border-slate-200 text-slate-500 hover:border-[#187B65]/50"}`}
+                >
+                  Monthly · {money(license.monthly_fee)}/mo
+                </button>
+                <button
+                  onClick={() => setCycle("annual")}
+                  className={`rounded-xl px-3 py-2.5 text-sm font-bold border transition-colors ${cycle === "annual" ? "border-[#187B65] bg-[#187B65]/10 text-[#102B2A]" : "border-slate-200 text-slate-500 hover:border-[#187B65]/50"}`}
+                >
+                  Annual · {money(license.monthly_fee * 10)}/yr
+                  <span className="block text-[10px] font-bold text-[#187B65]">2 months free</span>
+                </button>
               </div>
               <p className="text-sm text-slate-500 mb-4">
-                Recurring monthly billing through PayPal. Once verified, your account is provisioned automatically and
-                your login is emailed to {license.contact_name ? "you" : "you"}.
+                Recurring {cycle === "annual" ? "annual (10x monthly, billed yearly)" : "monthly"} billing through PayPal. Once verified, your account is provisioned automatically and
+                your login is emailed to you.
               </p>
               {license.subscription_active ? (
                 <p className="flex items-center gap-1.5 font-semibold text-[#187B65]">

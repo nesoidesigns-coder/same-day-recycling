@@ -1,4 +1,5 @@
 import { TrendingUp, DollarSign, CreditCard, Receipt } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { money, statusBadge, NotTracked } from "./shared";
 
 const purposeLabel = { license_setup: "Setup fee", license_subscription: "Subscription", booking_quote: "Booking quote", white_label_setup: "White label setup", white_label_subscription: "White label sub" };
@@ -27,6 +28,29 @@ export default function CommandRevenue({ licenses, transactions }) {
             <div className="text-xs text-emerald-100/50 mt-1">{g.sub}</div>
           </div>
         ))}
+      </div>
+
+      <div className="holo-panel-deep rounded-2xl border border-[#187B65]/20 p-6 mb-8">
+        <div className="text-sm font-bold text-[#54D9AE] mb-4">Transaction volume by day</div>
+        {(() => {
+          const byDay = {};
+          transactions.forEach((t) => {
+            const day = (t.created_date || "").slice(0, 10);
+            if (day) byDay[day] = (byDay[day] || 0) + (Number(t.amount) || 0);
+          });
+          const data = Object.entries(byDay).sort(([a], [b]) => a.localeCompare(b)).map(([day, total]) => ({ day: day.slice(5), total: Math.round(total * 100) / 100 }));
+          if (!data.length) return <p className="text-sm text-emerald-100/50 py-6 text-center">No transactions in this period.</p>;
+          return (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={data}>
+                <XAxis dataKey="day" tick={{ fill: "#94a3b8", fontSize: 11 }} stroke="#1c4a3a" />
+                <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} stroke="#1c4a3a" width={56} />
+                <Tooltip contentStyle={{ background: "#06251b", border: "1px solid rgba(24,123,101,0.4)", borderRadius: 12, color: "#e2f5ec" }} formatter={(v) => [money(v) + " CAD", "Volume"]} />
+                <Bar dataKey="total" fill="#187B65" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          );
+        })()}
       </div>
 
       <h2 className="text-sm font-bold tracking-wide text-emerald-100/60 uppercase mb-3">PayPal transactions</h2>

@@ -19,6 +19,19 @@
   <url><loc>https://samedayrecycling.ca/white-label</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://samedayrecycling.ca/gallery</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://samedayrecycling.ca/coverage</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/BC</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/AB</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/SK</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/MB</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/ON</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/QC</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/NB</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/NS</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/PE</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/NL</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/YT</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/NT</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/region/NU</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
   <url><loc>https://samedayrecycling.ca/review</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://samedayrecycling.ca/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://samedayrecycling.ca/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>

@@ -3,6 +3,7 @@ import { MapPin, Rocket, ArrowRight, Phone } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { CITIES } from "@/lib/cities";
+import { REGIONS } from "@/lib/regions";
 
 export default function Coverage() {
   return (
@@ -54,7 +55,7 @@ export default function Coverage() {
             Partner applications open — contractors run these territories under the Same Day Recycling machine.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {["Edmonton", "Calgary"].map((city) => (
+            {["Vancouver", "Saskatoon", "Regina", "Victoria", "St. John's"].map((city) => (
               <Link
                 key={city}
                 to={`/contractors?city=${encodeURIComponent(city)}`}
@@ -85,6 +86,24 @@ export default function Coverage() {
       </section>
 
       <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
+          <h2 className="text-3xl font-bold text-[#102B2A]">Browse by province &amp; territory</h2>
+          <p className="mt-2 text-slate-600">Verified recycling providers and same-day booking cities in every region.</p>
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {REGIONS.map((r) => (
+              <Link
+                key={r.code}
+                to={`/region/${r.code}`}
+                className="rounded-xl border border-slate-100 bg-white shadow-sm px-4 py-3.5 text-sm font-bold text-[#102B2A] hover:border-[#187B65] transition-colors"
+              >
+                {r.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white border-t border-slate-100">
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-[#102B2A]">Need a pickup today?</h2>
           <p className="mt-2 text-slate-600">Call or text and we'll get a truck moving.</p>

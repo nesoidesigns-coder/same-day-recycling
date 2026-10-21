@@ -48,6 +48,21 @@
       ],
       "default": "new"
     },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
     "assignment_status": {
       "type": "string",
       "enum": [

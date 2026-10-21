@@ -37,6 +37,7 @@ export default async function(req) {
     }
 
     const booking = await base44.entities.Booking.create({
+      status_history: [{ status: 'new', date: new Date().toISOString() }],
       name,
       phone,
       address,
@@ -86,6 +87,7 @@ export default async function(req) {
       <p style="margin:4px 0"><strong>Date / time:</strong> ${preferred}</p>
       <p style="margin:4px 0"><strong>Address:</strong> ${address}${city ? `, ${city}` : ''}</p>
       <p style="margin-top:12px">We'll confirm your exact time slot shortly.</p>
+      <p style="margin-top:12px;font-size:13px;color:#64748b">Your request status: Request received → Confirmed → Scheduled → Completed. We update you at every step.</p>
       <p style="margin-top:12px">Questions? Call us at <a href="tel:+16048491745" style="color:#1d9e56;font-weight:bold">${BUSINESS_PHONE}</a></p>
     </div>`;
 
@@ -95,7 +97,7 @@ export default async function(req) {
           to: email,
           from_name: 'Same Day Recycling',
           subject: `Booking received — we'll confirm your time slot shortly`,
-          text: `Hi ${name}, your pickup is booked! Service: ${items}${quote_estimate ? ` (${quote_estimate})` : ''}. Date/time: ${preferred}. Address: ${address}${city ? ', ' + city : ''}. We'll confirm your exact time slot shortly. Questions? Call ${BUSINESS_PHONE}.`,
+          text: `Hi ${name}, your pickup is booked! Service: ${items}${quote_estimate ? ` (${quote_estimate})` : ''}. Date/time: ${preferred}. Address: ${address}${city ? ', ' + city : ''}. We'll confirm your exact time slot shortly. Your request status: Request received, Confirmed, Scheduled, Completed. We update you at every step. Questions? Call ${BUSINESS_PHONE}.`,
           html: customerHtml,
         });
         notified.customer_email = 'sent';

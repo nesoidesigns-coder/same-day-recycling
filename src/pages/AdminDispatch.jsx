@@ -10,6 +10,7 @@ const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
 const ACTIVE_STATUSES = ["new", "confirmed", "scheduled"];
 const STATUS_ORDER = ["new", "confirmed", "scheduled", "completed", "cancelled"];
+const STATUS_LABELS = { new: "Request Received", confirmed: "Confirmed", scheduled: "Scheduled", completed: "Completed", cancelled: "Cancelled" };
 const ASSIGN_STATES = ["unassigned", "declined", "", null, undefined];
 
 const badge = (a) => {
@@ -137,7 +138,8 @@ export default function AdminDispatch() {
   };
 
   const updateStatus = async (b, status) => {
-    await base44.entities.Booking.update(b.id, { status });
+    const history = [...(b.status_history || []), { status, date: new Date().toISOString() }];
+    await base44.entities.Booking.update(b.id, { status, status_history: history });
     if ((status === "confirmed" || status === "scheduled") && b.status !== status) {
       try {
         await base44.functions.invoke("addBookingToCalendar", { booking_id: b.id });
@@ -180,14 +182,21 @@ export default function AdminDispatch() {
   );
 
   const statusSelect = (b) => (
-    <select
-      value={b.status || "new"}
-      onChange={(e) => updateStatus(b, e.target.value)}
-      className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold text-[#102B2A] capitalize bg-white"
-      aria-label="Booking status"
-    >
-      {STATUS_ORDER.map((s) => <option key={s} value={s}>{s}</option>)}
-    </select>
+    <div className="flex flex-col gap-0.5">
+      <select
+        value={b.status || "new"}
+        onChange={(e) => updateStatus(b, e.target.value)}
+        className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold text-[#102B2A] bg-white"
+        aria-label="Booking status"
+      >
+        {STATUS_ORDER.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+      </select>
+      {b.status_history?.length > 0 && (
+        <span className="text-[10px] text-slate-400">
+          {new Date(b.status_history[b.status_history.length - 1].date).toLocaleString("en-CA", { dateStyle: "short", timeStyle: "short" })}
+        </span>
+      )}
+    </div>
   );
 
   return (
@@ -244,7 +253,7 @@ export default function AdminDispatch() {
         </select>
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="input py-2" aria-label="Filter by status">
           <option value="">All statuses</option>
-          {STATUS_ORDER.map((s) => <option key={s} value={s}>{s}</option>)}
+          {STATUS_ORDER.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
         </select>
         <select value={partnerFilter} onChange={(e) => setPartnerFilter(e.target.value)} className="input py-2" aria-label="Filter by partner">
           <option value="">All partners</option>
