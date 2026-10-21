@@ -17,7 +17,17 @@ import ResetPassword from './pages/ResetPassword';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import AdminPricing from './pages/AdminPricing';
-import AdminControlCenter from './pages/AdminControlCenter';
+import AdminOverview from './pages/AdminOverview';
+import AdminLayout from '@/components/admin/AdminLayout';
+import AdminDispatch from './pages/AdminDispatch';
+import AdminLeads from './pages/AdminLeads';
+import AdminAssignments from './pages/AdminAssignments';
+import AdminPartners from './pages/AdminPartners';
+import AdminPayouts from './pages/AdminPayouts';
+import AdminCities from './pages/AdminCities';
+import AdminReviews from './pages/AdminReviews';
+import AdminKeywords from './pages/AdminKeywords';
+import AdminSystem from './pages/AdminSystem';
 import AdminAnalytics from './pages/AdminAnalytics';
 import RecyclingDirectory from './pages/RecyclingDirectory';
 import ProviderDetail from './pages/ProviderDetail';
@@ -26,7 +36,6 @@ import AdminDirectory from './pages/AdminDirectory';
 import CityPage from './pages/CityPage';
 import CityRedirect from './pages/CityRedirect';
 import { CITIES } from '@/lib/cities';
-import AdminJobs from './pages/AdminJobs';
 import PartnersDashboard from './pages/PartnersDashboard';
 import PartnerRegister from './pages/PartnerRegister';
 import Subscriptions from './pages/Subscriptions';
@@ -110,11 +119,21 @@ const AuthenticatedApp = () => {
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:slug" element={<BlogPost />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/admin" element={<AdminControlCenter />} />
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminOverview />} />
+          <Route path="/admin/jobs" element={<AdminDispatch />} />
+          <Route path="/admin/leads" element={<AdminLeads />} />
+          <Route path="/admin/assignments" element={<AdminAssignments />} />
+          <Route path="/admin/partners" element={<AdminPartners />} />
+          <Route path="/admin/payouts" element={<AdminPayouts />} />
+          <Route path="/admin/cities" element={<AdminCities />} />
+          <Route path="/admin/reviews" element={<AdminReviews />} />
+          <Route path="/admin/keywords" element={<AdminKeywords />} />
+          <Route path="/admin/system" element={<AdminSystem />} />
+        </Route>
         <Route path="/admin/pricing" element={<AdminPricing />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/admin/directory" element={<AdminDirectory />} />
-        <Route path="/admin/jobs" element={<AdminJobs />} />
         <Route path="/admin/facebook" element={<AdminFacebook />} />
         <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
         <Route path="/admin/gallery" element={<AdminGallery />} />
