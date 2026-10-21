@@ -83,6 +83,7 @@ import CityPage from './pages/CityPage';
 import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import CityRedirect from '@/components/CityRedirect';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -185,6 +186,7 @@ const AuthenticatedApp = () => {
         <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />
       </Route>
+      <Route path="/city/:cityName" element={<CityRedirect />} />
       <Route path="/:pageSlug" element={<CityPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
