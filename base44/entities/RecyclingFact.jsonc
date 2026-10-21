@@ -1,0 +1,55 @@
+{
+  "name": "RecyclingFact",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string"
+    },
+    "stat": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    },
+    "source_name": {
+      "type": "string",
+      "default": ""
+    },
+    "source_url": {
+      "type": "string",
+      "default": ""
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "key",
+    "stat",
+    "label"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

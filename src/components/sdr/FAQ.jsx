@@ -8,6 +8,7 @@ const faqs = [
   { q: "What junk items do you take?", a: "Almost everything — furniture removal and sofa or mattress disposal, appliance pickup, electronics, hot tubs, yard waste, construction and renovation debris, garage and estate cleanout contents. We also pick up scrap metal for free across Canada wherever a network partner is live. If you're unsure, just ask." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, and fuel. Anything else, just ask." },
   { q: "What happens to my stuff?", a: "We sort every load: reusable furniture and household items go to donation partners, metal is recycled, and the rest is disposed of responsibly. Most loads avoid the landfill entirely." },
+  { q: "Why does recycling matter?", a: "The published science is clear. In 2022 Canada diverted 27.1% of its solid waste, yet landfills still accounted for 17% of national methane emissions, and recycling aluminum uses about 95% less energy than making it from raw ore (sources: Environment and Climate Change Canada, International Aluminium Institute). Every load we sort keeps material out of that system." },
   { q: "Do I need to be home?", a: "Not for curbside pickup. Stage items in your driveway, lane or garage front and take $25 off with our Curbside Discount — no need to be home, and we text you the arrival window." },
   { q: "Can I get a quote from a photo?", a: "Yes — snap one photo of your junk and we'll send back a firm, no-obligation price. Use the photo quote tool above, or text your photo to (604) 849-1745." },
 ];

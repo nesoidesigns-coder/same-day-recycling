@@ -13,6 +13,7 @@ import FeaturedProviders from "@/components/sdr/FeaturedProviders";
 import NationalCoverage from "@/components/sdr/NationalCoverage";
 import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import Reviews from "@/components/sdr/Reviews";
+import WhyRecycling from "@/components/sdr/WhyRecycling";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
@@ -38,6 +39,7 @@ export default function Home() {
       <FeaturedProviders />
       <NationalCoverage />
       <RecyclingCentersMap showSelector />
+      <WhyRecycling />
       <Reviews />
       <FAQ />
       <FinalCTA />
