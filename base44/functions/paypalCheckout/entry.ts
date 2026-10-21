@@ -211,7 +211,9 @@ export default async function(req) {
           await applySubscriptionState(srole, purpose, c.id, 'active', base44);
           return Response.json({ error: 'A subscription is already active for this account.', already_active: true }, { status: 409 });
         }
-        if (exStatus === 'APPROVED') {
+        // Reuse the pending agreement whether the buyer has approved yet or not,
+        // so repeated checkout attempts never pile up duplicate agreements.
+        if (exStatus === 'APPROVED' || exStatus === 'APPROVAL_PENDING') {
           const ap = ((existing && existing.links) || []).find((l) => l.rel === 'approve');
           return Response.json({ approve_url: ap ? ap.href : null, subscription_id: pending.paypal_subscription_id, reused: true });
         }

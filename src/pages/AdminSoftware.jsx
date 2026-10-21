@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Loader2, Cpu, LayoutDashboard, Building2, Activity, DollarSign, Inbox } from "lucide-react";
+import { Loader2, Cpu, LayoutDashboard, Building2, Activity, DollarSign, Inbox, CreditCard } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -10,6 +10,7 @@ import CommandCompanies from "@/components/admin/swc/CommandCompanies";
 import CommandOperations from "@/components/admin/swc/CommandOperations";
 import CommandRevenue from "@/components/admin/swc/CommandRevenue";
 import CommandInquiries from "@/components/admin/swc/CommandInquiries";
+import CommandPayments from "@/components/admin/swc/CommandPayments";
 
 const TABS = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const TABS = [
   { key: "operations", label: "Operations", icon: Activity },
   { key: "revenue", label: "Revenue", icon: DollarSign },
   { key: "inquiries", label: "Inquiries", icon: Inbox },
+  { key: "payments", label: "Payments", icon: CreditCard },
 ];
 
 export default function AdminSoftware() {
@@ -164,6 +166,7 @@ export default function AdminSoftware() {
         {tab === "operations" && <CommandOperations licenses={licenses} customers={customers} pickups={pickups} invoices={invoices} />}
         {tab === "revenue" && <CommandRevenue licenses={licenses} transactions={periodTransactions} />}
         {tab === "inquiries" && <CommandInquiries inquiries={inquiries} busyId={busyId} onStatusChange={setInquiryStatus} />}
+        {tab === "payments" && <CommandPayments transactions={periodTransactions} />}
       </div>
       <Footer />
     </div>
