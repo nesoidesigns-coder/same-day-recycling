@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, MapPin, Phone, ShieldCheck, Network, ArrowRight } from "lucide-react";
+import PostalCheck from "./PostalCheck";
 
 const POPULAR = [
   { label: "Electronics", q: "electronics" },
@@ -12,7 +13,7 @@ const POPULAR = [
   { label: "Construction", q: "construction materials" },
 ];
 
-export default function HomeHero() {
+export default function HomeHero({ onCity }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
@@ -40,8 +41,13 @@ export default function HomeHero() {
           Find trusted recycling and removal services, request pickups, and manage your recycling needs through one intelligent platform.
         </p>
 
-        {/* Primary: national search */}
-        <form onSubmit={searchDirectory} className="mt-7 max-w-2xl mx-auto" aria-label="Search the national recycling directory">
+        {/* Primary: postal-code service discovery */}
+        <div className="mt-7 max-w-2xl mx-auto">
+          <PostalCheck onCity={onCity} />
+        </div>
+
+        {/* Secondary: national directory search */}
+        <form onSubmit={searchDirectory} className="mt-6 max-w-2xl mx-auto" aria-label="Search the national recycling directory">
           <div className="grid gap-3">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -91,7 +97,8 @@ export default function HomeHero() {
         </div>
 
         <div className="mt-7">
-          <div className="text-xs font-bold tracking-[0.15em] text-emerald-100/60 uppercase mb-3">Popular materials</div>
+          <div className="text-xs font-bold tracking-[0.15em] text-emerald-100/60 uppercase mb-3 mt-6">Or search the full directory</div>
+          <div className="text-xs font-bold tracking-[0.15em] text-emerald-100/60 uppercase mb-3 mt-6">Popular materials</div>
           <div className="flex flex-wrap justify-center gap-2">
             {POPULAR.map((c) => (
               <button

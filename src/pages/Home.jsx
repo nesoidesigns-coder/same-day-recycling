@@ -29,7 +29,7 @@ export default function Home() {
     <div className="bg-white pb-20 md:pb-0">
       <TopBar />
       <Navbar />
-      <HomeHero />
+      <HomeHero onCity={(city) => bookFromQuote({ city })} />
       <TrustGauges />
       <CanadaNetworkMap />
       <Services />
