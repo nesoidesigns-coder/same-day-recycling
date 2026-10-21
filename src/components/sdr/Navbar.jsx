@@ -90,8 +90,8 @@ export default function Navbar() {
               </div>
             )}
           </div>
-          <Link to="/#book" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-2.5 text-sm hover:bg-[#125C4E] transition-colors">
-            Book a Pickup
+          <Link to="/#book" className="rounded-full bg-[#187B65] text-white font-bold px-5 py-2.5 text-sm shadow-sm shadow-[#187B65]/30 hover:bg-[#125C4E] hover:shadow-md transition-all">
+            Get a Free Quote
           </Link>
         </div>
         <button className="md:hidden p-2 text-[#102B2A]" onClick={() => setOpen(!open)} aria-label="Menu">
@@ -105,8 +105,8 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link to="/#book" onClick={() => setOpen(false)} className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 text-sm text-center">
-            Book a Pickup
+          <Link to="/#book" onClick={() => setOpen(false)} className="rounded-full bg-[#187B65] text-white font-bold px-5 py-3 text-sm text-center shadow-sm shadow-[#187B65]/30">
+            Get a Free Quote
           </Link>
           <div className="pt-2 border-t border-slate-100">
             <div className="text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">More</div>
