@@ -137,6 +137,9 @@ export default function AdminPayouts() {
         )}
       </div>
 
+      <p className="rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3">
+        Legacy view: this page applies a flat 75/25 split to every completed job. It does not use per-agreement fee terms. For agreement-based fees, platform revenue and contractor net, use Revenue Intelligence (Admin &rarr; Revenue). Changing this calculation requires administrator approval.
+      </p>
       <p className="text-xs text-slate-400 px-1">
         Reconciliation: partner owed + platform revenue always equals gross completed value (75/25 split). No external payment processor is connected yet — totals come from booking records, never invented.
       </p>
