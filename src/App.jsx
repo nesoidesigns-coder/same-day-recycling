@@ -75,6 +75,7 @@ import SameDayPickup from './pages/SameDayPickup';
 import AdminSearchIntelligence from './pages/AdminSearchIntelligence';
 import ExploreServices from './pages/ExploreServices';
 import ServiceFinder from './pages/ServiceFinder';
+import AIBookingCenter from './pages/AIBookingCenter';
 import CityPage from './pages/CityPage';
 import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
@@ -139,6 +140,7 @@ const AuthenticatedApp = () => {
       <Route path="/same-day-pickup" element={<SameDayPickup />} />
       <Route path="/services" element={<ExploreServices />} />
       <Route path="/service-finder" element={<ServiceFinder />} />
+      <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />

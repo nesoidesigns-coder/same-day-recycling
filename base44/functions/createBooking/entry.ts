@@ -1,8 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
-
-const OWNER_EMAIL = 'nesoidesigns@gmail.com';
-const BUSINESS_PHONE = '(604) 849-1745';
+import { sendBookingNotifications } from '../../shared/bookingNotify.ts';
 
 export default async function(req) {
   try {
@@ -41,61 +39,17 @@ export default async function(req) {
       ...(photo_uri ? { photo_uri } : {}),
     });
 
-    const preferred = `${preferred_date || 'any date'}${time_window ? ` · ${time_window}` : ''}`;
-    const ownerText = `New booking: ${name}, ${phone}. ${address}${city ? ', ' + city : ''}. ${items}. Preferred: ${preferred}.${quote_estimate ? ` Quote: ${quote_estimate}.` : ''}${email ? ` Email: ${email}.` : ''}`;
-
-    // 1) Instant email to the owner
-    let ownerEmail = 'failed';
-    try {
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: OWNER_EMAIL,
-        from_name: 'Same Day Recycling',
-        subject: `New booking: ${name}${city ? ` — ${city}` : ''}`,
-        text: ownerText,
-        html: `<div style="font-family:sans-serif;max-width:560px">
-          <h2 style="color:#0c3b24">New booking received</h2>
-          <p style="margin:0;font-size:18px;font-weight:bold">${name}</p>
-          <p style="margin:4px 0"><a href="tel:${phone}" style="color:#1d9e56;font-weight:bold">${phone}</a>${email ? ` · ${email}` : ''}</p>
-          <p style="margin:4px 0"><strong>Address:</strong> ${address}${city ? `, ${city}` : ''}</p>
-          <p style="margin:4px 0"><strong>Items:</strong> ${items}</p>
-          <p style="margin:4px 0"><strong>Preferred:</strong> ${preferred}</p>
-          ${quote_estimate ? `<p style="margin:4px 0"><strong>Quote:</strong> ${quote_estimate}</p>` : ''}
-          <p style="margin-top:16px;color:#64748b;font-size:13px">Manage it in the admin dashboard → /admin/jobs</p>
-        </div>`,
-      });
-      ownerEmail = 'sent';
-    } catch (e) {
-      // non-fatal
-    }
-
-    const notified = { owner_email: ownerEmail, customer_email: 'skipped' };
-
-    // 2) Instant confirmation to the customer (email + SMS)
-    const customerHtml = `<div style="font-family:sans-serif;max-width:560px">
-      <h2 style="color:#0c3b24">Your pickup is booked ✅</h2>
-      <p style="margin:0 0 12px">Hi ${name}, thanks for choosing Same Day Recycling. Here's what we have:</p>
-      <p style="margin:4px 0"><strong>Service:</strong> ${items}${quote_estimate ? ` (${quote_estimate})` : ''}</p>
-      <p style="margin:4px 0"><strong>Date / time:</strong> ${preferred}</p>
-      <p style="margin:4px 0"><strong>Address:</strong> ${address}${city ? `, ${city}` : ''}</p>
-      <p style="margin-top:12px">We'll confirm your exact time slot shortly.</p>
-      <p style="margin-top:12px;font-size:13px;color:#64748b">Your request status: Request received → Confirmed → Scheduled → Completed. We update you at every step.</p>
-      <p style="margin-top:12px">Questions? Call us at <a href="tel:+16048491745" style="color:#1d9e56;font-weight:bold">${BUSINESS_PHONE}</a></p>
-    </div>`;
-
-    if (email) {
-      try {
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: email,
-          from_name: 'Same Day Recycling',
-          subject: `Booking received — we'll confirm your time slot shortly`,
-          text: `Hi ${name}, your pickup is booked! Service: ${items}${quote_estimate ? ` (${quote_estimate})` : ''}. Date/time: ${preferred}. Address: ${address}${city ? ', ' + city : ''}. We'll confirm your exact time slot shortly. Your request status: Request received, Confirmed, Scheduled, Completed. We update you at every step. Questions? Call ${BUSINESS_PHONE}.`,
-          html: customerHtml,
-        });
-        notified.customer_email = 'sent';
-      } catch (e) {
-        notified.customer_email = 'failed';
-      }
-    }
+    const notified = await sendBookingNotifications(base44.asServiceRole, {
+      name,
+      phone,
+      address,
+      city,
+      items_description: items,
+      email,
+      preferred_date,
+      time_window,
+      quote_estimate,
+    });
 
     return Response.json({ ok: true, booking_id: booking?.id, notified });
   } catch (error) {

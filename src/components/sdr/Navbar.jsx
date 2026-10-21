@@ -15,6 +15,7 @@ const primaryLinks = [
 const moreLinks = [
   { label: "Explore Services", to: "/services" },
   { label: "Service Finder", to: "/service-finder" },
+  { label: "AI Booking Center", to: "/ai-booking" },
   { label: "Recycling Directory", to: "/recycling" },
   { label: "Recycling Assistant", to: "/recycling-assistant" },
   { label: "Software OS", to: "/software" },
