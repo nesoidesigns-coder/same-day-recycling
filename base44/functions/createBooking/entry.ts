@@ -37,7 +37,7 @@ export default async function(req) {
     if (!city || !isActiveCity(city)) {
       return Response.json({
         error: 'service_not_available',
-        message: 'Confirmed bookings are only available in active service territories. Please join the waitlist for your city.',
+        message: 'Confirmed direct bookings are only available in active service territories. Submit a nationwide service request and our dispatch team will confirm your local contractor, pricing and pickup window before anything is scheduled.',
       }, { status: 422 });
     }
     const booking = await base44.entities.Booking.create({

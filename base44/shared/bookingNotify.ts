@@ -10,6 +10,10 @@ export async function sendBookingNotifications(srole, b) {
   const preferred = `${b.preferred_date || 'any date'}${b.time_window ? ` · ${b.time_window}` : ''}`;
   const ownerText = `New booking: ${b.name}, ${b.phone}. ${b.address}${b.city ? ', ' + b.city : ''}. ${b.items_description}. Preferred: ${preferred}.${b.quote_estimate ? ` Quote: ${b.quote_estimate}.` : ''}${b.email ? ` Email: ${b.email}.` : ''}`;
 
+  // Declared before any try/catch that references it — an email failure must
+  // only mark the notification as failed, never break the booking itself.
+  const notified = { owner_email: 'failed', customer_email: 'skipped', errors: [] as string[] };
+
   let ownerEmail = 'failed';
   try {
     await srole.integrations.Core.SendEmail({
@@ -36,7 +40,7 @@ export async function sendBookingNotifications(srole, b) {
     notified.errors.push('owner: ' + msg);
   }
 
-  const notified = { owner_email: ownerEmail, customer_email: 'skipped', errors: [] as string[] };
+  notified.owner_email = ownerEmail;
 
   const customerHtml = `<div style="font-family:sans-serif;max-width:560px">
       <h2 style="color:#0c3b24">Your pickup is booked ✅</h2>
