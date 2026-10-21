@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { CITIES } from "@/lib/cities";
+import { CITIES, cityLabel } from "@/lib/cities";
 import { CheckCircle2, Loader2, CalendarCheck, Zap } from "lucide-react";
 
 export default function SubSignup() {
@@ -61,7 +61,7 @@ export default function SubSignup() {
         <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Primary city</span>
         <select value={form.city} onChange={set("city")} className="input">
           <option value="">Select a city</option>
-          {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
+          {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
         </select>
       </label>
       <button

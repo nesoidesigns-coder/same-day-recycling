@@ -1,105 +1,54 @@
-// National service cities — same-day network territories across Canada.
-export const CITIES = [
-  {
-    name: "Toronto",
-    slug: "toronto",
-    lat: 43.6532,
-    lng: -79.3832,
-    radius: 16000,
-    blurb: "Same-day junk removal in Toronto — furniture, appliances, mattresses, estate and condo cleanouts, renovation debris and scrap metal, picked up the day you book and sorted for recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Toronto",
-    seo_description: "Same-day junk removal in Toronto — furniture, appliance, mattress and estate cleanouts with upfront pricing and eco-friendly disposal. Book before noon for same-day pickup.",
-  },
-  {
-    name: "Montreal",
-    slug: "montreal",
-    lat: 45.5019,
-    lng: -73.5674,
-    radius: 14000,
-    blurb: "Same-day junk removal in Montreal — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, with upfront pricing and recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Montreal",
-    seo_description: "Same-day junk removal in Montreal — furniture, appliance and mattress removal plus cleanouts, upfront pricing and eco-friendly disposal. Book before noon for same-day pickup.",
-  },
-  {
-    name: "Ottawa",
-    slug: "ottawa",
-    lat: 45.4215,
-    lng: -75.6972,
-    radius: 12000,
-    blurb: "Same-day junk removal in Ottawa — furniture, appliances, mattresses, garage and estate cleanouts and yard waste, priced upfront and sorted for recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Ottawa",
-    seo_description: "Same-day junk removal in Ottawa — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Calgary",
-    slug: "calgary",
-    lat: 51.0447,
-    lng: -114.0719,
-    radius: 14000,
-    blurb: "Same-day junk removal in Calgary — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, priced upfront with recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Calgary",
-    seo_description: "Same-day junk removal in Calgary — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Edmonton",
-    slug: "edmonton",
-    lat: 53.5461,
-    lng: -113.4938,
-    radius: 14000,
-    blurb: "Same-day junk removal in Edmonton — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, priced upfront with recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Edmonton",
-    seo_description: "Same-day junk removal in Edmonton — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Winnipeg",
-    slug: "winnipeg",
-    lat: 49.8951,
-    lng: -97.1384,
-    radius: 12000,
-    blurb: "Same-day junk removal in Winnipeg — furniture, appliances, mattresses, garage and estate cleanouts and yard waste, priced upfront and sorted for recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Winnipeg",
-    seo_description: "Same-day junk removal in Winnipeg — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Hamilton",
-    slug: "hamilton",
-    lat: 43.2557,
-    lng: -79.8711,
-    radius: 10000,
-    blurb: "Same-day junk removal in Hamilton — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, priced upfront with recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Hamilton",
-    seo_description: "Same-day junk removal in Hamilton — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Mississauga",
-    slug: "mississauga",
-    lat: 43.589,
-    lng: -79.6441,
-    radius: 10000,
-    blurb: "Same-day junk removal in Mississauga — furniture, appliances, mattresses, condo cleanouts and renovation debris, priced upfront with recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Mississauga",
-    seo_description: "Same-day junk removal in Mississauga — furniture, appliance and mattress removal plus condo and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Halifax",
-    slug: "halifax",
-    lat: 44.6488,
-    lng: -63.5752,
-    radius: 10000,
-    blurb: "Same-day junk removal in Halifax — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, priced upfront with recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Halifax",
-    seo_description: "Same-day junk removal in Halifax — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-  {
-    name: "Quebec City",
-    slug: "quebec-city",
-    lat: 46.8139,
-    lng: -71.208,
-    radius: 10000,
-    blurb: "Same-day junk removal in Quebec City — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, priced upfront with recycling or donation first.",
-    seo_title: "Same-Day Junk Removal & Furniture Disposal in Quebec City",
-    seo_description: "Same-day junk removal in Quebec City — furniture, appliance and mattress removal plus garage and estate cleanouts, upfront pricing and eco-friendly disposal.",
-  },
-];
+// National service cities — derived from the coverage source of truth
+// (src/lib/coverage.js) so statuses, provinces and ordering can never drift.
+// Active cities are listed first; every customer-facing dropdown uses these,
+// with non-active cities labelled so nobody books into an unlaunched market.
+import { COVERAGE, cityByName } from "@/lib/coverage";
+
+// Per-city metadata: map location, marketing copy, slugs for deep links.
+const CITY_META = {
+  Vancouver: { slug: "vancouver", lat: 49.2827, lng: -123.1207, radius: 16000, blurb: "Same-day junk removal in Vancouver — furniture, appliances, mattresses, estate and condo cleanouts, renovation debris and scrap metal, picked up the day you book and sorted for recycling or donation first.", seo_title: "Same-Day Junk Removal & Furniture Disposal in Vancouver", seo_description: "Same-day junk removal in Vancouver — furniture, appliance, mattress and estate cleanouts with upfront pricing and eco-friendly disposal. Book before noon for same-day pickup." },
+  Burnaby: { slug: "burnaby", lat: 49.2488, lng: -122.9805, radius: 12000, blurb: "Same-day junk removal in Burnaby — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, sorted for recycling or donation first.", seo_title: "Same-Day Junk Removal & Furniture Disposal in Burnaby", seo_description: "Same-day junk removal in Burnaby — upfront pricing, book before noon for same-day pickup." },
+  Surrey: { slug: "surrey", lat: 49.1913, lng: -122.849, radius: 14000, blurb: "Same-day junk removal in Surrey — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, priced upfront and sorted for recycling or donation first.", seo_title: "Same-Day Junk Removal & Furniture Disposal in Surrey", seo_description: "Same-day junk removal in Surrey — upfront pricing, book before noon for same-day pickup." },
+  Richmond: { slug: "richmond", lat: 49.1668, lng: -123.1336, radius: 12000, blurb: "Same-day junk removal in Richmond — furniture, appliances, mattresses, condo cleanouts and renovation debris, sorted for recycling or donation first.", seo_title: "Same-Day Junk Removal & Furniture Disposal in Richmond", seo_description: "Same-day junk removal in Richmond — upfront pricing, book before noon for same-day pickup." },
+  Coquitlam: { slug: "coquitlam", lat: 49.2838, lng: -122.7932, radius: 12000, blurb: "Same-day junk removal in Coquitlam — furniture, appliances, mattresses, garage and estate cleanouts and renovation debris, sorted for recycling or donation first.", seo_title: "Same-Day Junk Removal & Furniture Disposal in Coquitlam", seo_description: "Same-day junk removal in Coquitlam — upfront pricing, book before noon for same-day pickup." },
+  Victoria: { slug: "victoria", lat: 48.4284, lng: -123.3656, radius: 10000, blurb: "Same-day junk removal coming to Victoria through our partner onboarding program.", seo_title: "Junk Removal in Victoria, BC | Same Day Recycling", seo_description: "Same-day junk removal in Victoria through the Same Day Recycling partner network — apply or join the waiting list." },
+  Calgary: { slug: "calgary", lat: 51.0447, lng: -114.0719, radius: 14000, blurb: "Same-day junk removal coming to Calgary through our partner onboarding program.", seo_title: "Junk Removal in Calgary, AB | Same Day Recycling", seo_description: "Same-day junk removal in Calgary through the Same Day Recycling partner network — apply or join the waiting list." },
+  Edmonton: { slug: "edmonton", lat: 53.5461, lng: -113.4938, radius: 14000, blurb: "Same-day junk removal coming to Edmonton through our partner onboarding program.", seo_title: "Junk Removal in Edmonton, AB | Same Day Recycling", seo_description: "Same-day junk removal in Edmonton through the Same Day Recycling partner network — apply or join the waiting list." },
+  Saskatoon: { slug: "saskatoon", lat: 52.1332, lng: -106.67, radius: 10000, blurb: "Same-day junk removal coming to Saskatoon through our partner onboarding program.", seo_title: "Junk Removal in Saskatoon, SK | Same Day Recycling", seo_description: "Same-day junk removal in Saskatoon through the Same Day Recycling partner network — apply or join the waiting list." },
+  Regina: { slug: "regina", lat: 50.4452, lng: -104.6189, radius: 10000, blurb: "Same-day junk removal coming to Regina through our partner onboarding program.", seo_title: "Junk Removal in Regina, SK | Same Day Recycling", seo_description: "Same-day junk removal in Regina through the Same Day Recycling partner network — apply or join the waiting list." },
+  Winnipeg: { slug: "winnipeg", lat: 49.8951, lng: -97.1384, radius: 12000, blurb: "Same-day junk removal coming to Winnipeg through our partner onboarding program.", seo_title: "Junk Removal in Winnipeg, MB | Same Day Recycling", seo_description: "Same-day junk removal in Winnipeg through the Same Day Recycling partner network — apply or join the waiting list." },
+  Toronto: { slug: "toronto", lat: 43.6532, lng: -79.3832, radius: 16000, blurb: "Same-day junk removal coming to Toronto through our partner onboarding program.", seo_title: "Junk Removal in Toronto, ON | Same Day Recycling", seo_description: "Same-day junk removal in Toronto through the Same Day Recycling partner network — apply or join the waiting list." },
+  Ottawa: { slug: "ottawa", lat: 45.4215, lng: -75.6972, radius: 12000, blurb: "Same-day junk removal coming to Ottawa through our partner onboarding program.", seo_title: "Junk Removal in Ottawa, ON | Same Day Recycling", seo_description: "Same-day junk removal in Ottawa through the Same Day Recycling partner network — apply or join the waiting list." },
+  Hamilton: { slug: "hamilton", lat: 43.2557, lng: -79.8711, radius: 10000, blurb: "Same-day junk removal coming to Hamilton through our partner onboarding program.", seo_title: "Junk Removal in Hamilton, ON | Same Day Recycling", seo_description: "Same-day junk removal in Hamilton through the Same Day Recycling partner network — apply or join the waiting list." },
+  Mississauga: { slug: "mississauga", lat: 43.589, lng: -79.6441, radius: 10000, blurb: "Same-day junk removal coming to Mississauga through our partner onboarding program.", seo_title: "Junk Removal in Mississauga, ON | Same Day Recycling", seo_description: "Same-day junk removal in Mississauga through the Same Day Recycling partner network — apply or join the waiting list." },
+  Montreal: { slug: "montreal", lat: 45.5019, lng: -73.5674, radius: 14000, blurb: "Same-day junk removal coming to Montreal through our partner onboarding program.", seo_title: "Junk Removal in Montreal, QC | Same Day Recycling", seo_description: "Same-day junk removal in Montreal through the Same Day Recycling partner network — apply or join the waiting list." },
+  "Quebec City": { slug: "quebec-city", lat: 46.8139, lng: -71.208, radius: 10000, blurb: "Same-day junk removal coming to Quebec City through our partner onboarding program.", seo_title: "Junk Removal in Quebec City, QC | Same Day Recycling", seo_description: "Same-day junk removal in Quebec City through the Same Day Recycling partner network — apply or join the waiting list." },
+  Moncton: { slug: "moncton", lat: 46.0878, lng: -64.7782, radius: 8000, blurb: "Same-day junk removal coming to Moncton through our partner onboarding program.", seo_title: "Junk Removal in Moncton, NB | Same Day Recycling", seo_description: "Same-day junk removal in Moncton through the Same Day Recycling partner network — apply or join the waiting list." },
+  "Saint John": { slug: "saint-john", lat: 45.2733, lng: -66.0633, radius: 8000, blurb: "Same-day junk removal coming to Saint John through our partner onboarding program.", seo_title: "Junk Removal in Saint John, NB | Same Day Recycling", seo_description: "Same-day junk removal in Saint John through the Same Day Recycling partner network — apply or join the waiting list." },
+  Halifax: { slug: "halifax", lat: 44.6488, lng: -63.5752, radius: 10000, blurb: "Same-day junk removal coming to Halifax through our partner onboarding program.", seo_title: "Junk Removal in Halifax, NS | Same Day Recycling", seo_description: "Same-day junk removal in Halifax through the Same Day Recycling partner network — apply or join the waiting list." },
+  "St. John's": { slug: "st-johns", lat: 47.5615, lng: -52.7126, radius: 8000, blurb: "Same-day junk removal coming to St. John's through our partner onboarding program.", seo_title: "Junk Removal in St. John's, NL | Same Day Recycling", seo_description: "Same-day junk removal in St. John's through the Same Day Recycling partner network — apply or join the waiting list." },
+  Charlottetown: { slug: "charlottetown", lat: 46.2382, lng: -63.1311, radius: 6000, blurb: "Same-day junk removal coming to Charlottetown — expansion planned.", seo_title: "Junk Removal in Charlottetown, PE | Same Day Recycling", seo_description: "Same-day junk removal in Charlottetown through the Same Day Recycling partner network — coming soon." },
+  Whitehorse: { slug: "whitehorse", lat: 60.7218, lng: -135.055, radius: 6000, blurb: "Same-day junk removal coming to Whitehorse — expansion planned.", seo_title: "Junk Removal in Whitehorse, YT | Same Day Recycling", seo_description: "Same-day junk removal in Whitehorse through the Same Day Recycling partner network — coming soon." },
+  Yellowknife: { slug: "yellowknife", lat: 62.454, lng: -114.3718, radius: 6000, blurb: "Same-day junk removal coming to Yellowknife — expansion planned.", seo_title: "Junk Removal in Yellowknife, NT | Same Day Recycling", seo_description: "Same-day junk removal in Yellowknife through the Same Day Recycling partner network — coming soon." },
+  Iqaluit: { slug: "iqaluit", lat: 63.749, lng: -68.5195, radius: 6000, blurb: "Same-day junk removal coming to Iqaluit — expansion planned.", seo_title: "Junk Removal in Iqaluit, NU | Same Day Recycling", seo_description: "Same-day junk removal in Iqaluit through the Same Day Recycling partner network — coming soon." },
+};
+
+const ORDER = { active: 0, partner_onboarding: 1, coming_soon: 2 };
+
+export const CITIES = COVERAGE
+  .slice()
+  .sort((a, b) => (ORDER[a.status] - ORDER[b.status]) || a.name.localeCompare(b.name))
+  .map((c) => ({
+    ...CITY_META[c.name],
+    name: c.name,
+    province: c.province,
+    status: c.status,
+  }));
 
 export const cityFromSlug = (slug) => CITIES.find((c) => c.slug === slug) || null;
+export const cityMeta = (name) => cityByName(name);
+
+// Label used in customer-facing dropdowns: active cities plain,
+// everything else marked so nobody books into an unlaunched market.
+export const cityLabel = (c) =>
+  c.status === "active" ? c.name : `${c.name} (${c.status === "coming_soon" ? "coming soon" : "onboarding"})`;

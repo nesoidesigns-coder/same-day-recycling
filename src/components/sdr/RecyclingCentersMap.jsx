@@ -166,7 +166,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
               ))}
             </div>
             {shown.length > 12 && (
-              <p className="text-center text-sm text-slate-500 mt-4">+ {shown.length - 12} more on the map</p>
+              <p className="text-center text-sm text-slate-500 mt-4">+ {shown.length - 12} more recycling centres on the map</p>
             )}
             {shown.length === 0 && (
               <p className="text-center text-sm text-slate-500 mt-4">

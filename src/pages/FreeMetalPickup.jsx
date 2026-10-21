@@ -3,6 +3,7 @@ import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
+import { CITIES, cityLabel } from "@/lib/cities";
 
 export default function FreeMetalPickup() {
   useSEO({
@@ -10,7 +11,7 @@ export default function FreeMetalPickup() {
     description: "Free scrap metal pickup — appliances, bikes, electronics and metal debris hauled at no cost where service is active. Book online in minutes.",
     path: "/free-metal-pickup",
   });
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "Toronto", metal: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "Vancouver", metal: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -93,7 +94,7 @@ export default function FreeMetalPickup() {
             <label className="block">
               <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">City</span>
               <select value={form.city} onChange={set("city")} className="input">
-                {["Toronto", "Montreal", "Ottawa", "Calgary", "Edmonton", "Winnipeg", "Hamilton", "Mississauga", "Halifax", "Quebec City", "Other city"].map((c) => (
+                {[...CITIES.map(cityLabel), "Other city"].map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>

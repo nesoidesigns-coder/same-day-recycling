@@ -52,7 +52,7 @@ const PLANS = [
   },
   {
     name: "Growth",
-    setup: "$5,000",
+    setup: "$4,500",
     monthly: "$399/mo",
     highlight: true,
     features: ["Everything in Starter", "City SEO pages per market", "Partner network admin", "Subscriptions module", "Lead follow-up automation"],

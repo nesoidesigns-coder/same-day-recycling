@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
-import { CITIES } from "@/lib/cities";
+import { CITIES, cityLabel } from "@/lib/cities";
 import ReviewInvite from "@/components/sdr/ReviewInvite";
 import PayPalButtons from "@/components/pay/PayPalButtons";
 
@@ -89,7 +89,7 @@ export default function BookingForm({ prefill }) {
         <Field label="Your city" required>
           <select value={form.city} onChange={update("city")} required className="input">
             <option value="" disabled>Select your city</option>
-            {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
+            {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
           </select>
         </Field>
         <div className="grid sm:grid-cols-2 gap-4">

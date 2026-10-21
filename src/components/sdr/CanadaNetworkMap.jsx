@@ -43,8 +43,8 @@ export default function CanadaNetworkMap() {
             One network, built for all of Canada
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            Same-day pickup is now live coast to coast to coast. Every green point is a verified recycling provider in
-            our network; regions still onboarding partner contractors are served through Network HQ dispatch.
+            Same-day pickup is live today across BC's Lower Mainland, with partner territories onboarding nationwide.
+            Every green point is a verified recycling provider in our network.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function CanadaNetworkMap() {
                       <div style={{ minWidth: 160 }}>
                         <strong style={{ color: "#102B2A" }}>{r.name}</strong>
                         <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
-                          Service live — provider applications open
+                          Partner onboarding — provider applications open
                         </div>
                       </div>
                     </Popup>
