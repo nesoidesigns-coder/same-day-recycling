@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
+import { CATEGORY_LABELS } from "@/lib/recyclingTaxonomy";
 
 const GREETING = "Hi! I'm the Same Day Recycling Assistant. Tell me what you need to recycle and where you are (city, province, or postal code), and I'll find the right rules and local options. I cite sources and tell you when I'm not sure.";
 
@@ -31,7 +32,15 @@ export default function RecyclingAssistant() {
       });
       setMessages([
         ...next,
-        { role: "assistant", content: res.data.reply, sources: res.data.sources || [], uncertainty: res.data.uncertainty || "", providers: res.data.local_providers || [] },
+        {
+          role: "assistant",
+          content: res.data.reply,
+          sources: res.data.sources || [],
+          uncertainty: res.data.uncertainty || "",
+          providers: res.data.local_providers || [],
+          dirQuery: text,
+          dirLoc: location || res.data.matched_location || "",
+        },
       ]);
     } catch (err) {
       setError(err?.message || "The assistant is unavailable right now. Please try again.");
@@ -87,12 +96,39 @@ export default function RecyclingAssistant() {
                         </div>
                       )}
                       {m.providers?.length > 0 && (
-                        <div className="mt-3 grid gap-2">
-                          {m.providers.map((p) => (
-                            <Link key={p.id} to={`/provider/${p.id}`} className="rounded-xl bg-white border border-emerald-100 px-3 py-2 text-xs font-bold text-slate-800 hover:border-emerald-400">
-                              {p.name} · {p.city || p.province || "Canada"}
-                            </Link>
-                          ))}
+                        <div className="mt-3">
+                          <div className="text-[11px] font-bold text-slate-500 mb-1.5">From our nationwide directory</div>
+                          <div className="grid gap-2">
+                            {m.providers.map((p) => (
+                              <div key={p.id} className="rounded-xl bg-white border border-emerald-100 px-3 py-2.5">
+                                <div className="flex items-start justify-between gap-2">
+                                  <Link to={`/provider/${p.id}`} className="text-xs font-bold text-slate-800 hover:text-emerald-600 leading-snug">{p.name}</Link>
+                                  {p.verification === "verified" && (
+                                    <span className="shrink-0 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[9px] font-bold">Verified</span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] text-slate-500 mt-0.5">{[p.city, p.province].filter(Boolean).join(", ") || "Canada"} · {p.service_type === "collection" ? "Collection" : p.service_type === "both" ? "Drop-off & collection" : "Drop-off"}</div>
+                                {p.accepted_categories?.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-1.5">
+                                    {p.accepted_categories.slice(0, 4).map((k) => (
+                                      <span key={k} className="rounded-full bg-[#f4f7f5] text-[#0c3b24] px-2 py-0.5 text-[9px] font-bold">{CATEGORY_LABELS[k] || k}</span>
+                                    ))}
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-3 mt-2 text-[10px] font-bold">
+                                  <Link to={`/provider/${p.id}`} className="text-emerald-600 hover:underline">View details</Link>
+                                  {p.website && <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-emerald-600">Website</a>}
+                                  {p.phone && <a href={`tel:${p.phone}`} className="text-slate-500 hover:text-emerald-600">{p.phone}</a>}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <Link
+                            to={`/recycling?q=${encodeURIComponent(m.dirQuery || "")}&loc=${encodeURIComponent(m.dirLoc || "")}`}
+                            className="inline-block mt-2 text-[10px] font-bold text-emerald-700 hover:underline"
+                          >
+                            Search the full recycling directory →
+                          </Link>
                         </div>
                       )}
                     </>
