@@ -75,6 +75,7 @@ import SameDayPickup from './pages/SameDayPickup';
 import AdminSearchIntelligence from './pages/AdminSearchIntelligence';
 import ExploreServices from './pages/ExploreServices';
 import RequestService from './pages/RequestService';
+import RequestStatus from './pages/RequestStatus';
 import AdminNational from './pages/AdminNational';
 import ServiceFinder from './pages/ServiceFinder';
 import AIBookingCenter from './pages/AIBookingCenter';
@@ -143,6 +144,7 @@ const AuthenticatedApp = () => {
       <Route path="/services" element={<ExploreServices />} />
       <Route path="/service-finder" element={<ServiceFinder />} />
       <Route path="/request-service" element={<RequestService />} />
+      <Route path="/request-status" element={<RequestStatus />} />
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />

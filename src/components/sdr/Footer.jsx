@@ -19,6 +19,7 @@ const links = [
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
   { label: "Coverage", to: "/coverage" },
   { label: "Request Service", to: "/request-service" },
+  { label: "Track Your Request", to: "/request-status" },
   { label: "Recycling Centers", to: "/recycling-centers" },
   { label: "Blog", to: "/blog" },
   { label: "Fleet Gallery", to: "/gallery" },
