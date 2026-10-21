@@ -99,28 +99,29 @@ export default function ReceptionistChat() {
 
   return (
     <>
-      <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-3">
+      <div className="fixed bottom-[calc(1.25rem_+_env(safe-area-inset-bottom))] right-4 z-[60] flex items-center gap-3">
         {showGreeting && !open && (
           <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="absolute bottom-full right-0 mb-4 w-64"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute bottom-full right-0 mb-3 w-56"
           >
-            <button
-              onClick={handleOpen}
-              className="block w-full text-left rounded-2xl rounded-br-md bg-white border border-[#1d9e56]/40 shadow-xl px-4 py-3 text-sm font-semibold text-[#0c3b24] leading-snug hover:border-[#1d9e56] transition-colors"
-            >
-              Hi, I'm Rex! Need something gone today? I can quote and book your pickup in under a minute.
-              <span className="mt-1 block text-xs font-black uppercase tracking-wider text-[#1d9e56]">Tap to chat →</span>
-            </button>
-            <button
-              onClick={() => setShowGreeting(false)}
-              aria-label="Dismiss greeting"
-              className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-white border border-slate-200 shadow flex items-center justify-center text-slate-400 hover:text-slate-600"
-            >
-              <X className="w-3 h-3" />
-            </button>
+            <div className="relative rounded-2xl rounded-br-md bg-white border border-[#1d9e56]/40 shadow-lg px-3.5 py-2.5 text-xs font-semibold text-[#0c3b24] leading-snug">
+              Hi, I'm Rex — ask me about recycling or book a pickup.
+              <button
+                onClick={handleOpen}
+                className="mt-1.5 block text-[11px] font-black uppercase tracking-wider text-[#1d9e56]"
+              >
+                Chat →
+              </button>
+              <button
+                onClick={() => setShowGreeting(false)}
+                aria-label="Dismiss greeting"
+                className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-white border border-slate-200 shadow flex items-center justify-center text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </div>
           </motion.div>
         )}
         <span className="hidden sm:inline-block rounded-full bg-white shadow-lg border border-slate-100 px-4 py-2 text-sm font-bold text-[#0c3b24]">Chat with us</span>
@@ -130,12 +131,12 @@ export default function ReceptionistChat() {
               <X className="w-6 h-6" />
             </span>
           ) : (
-            <AiMascotFull height={76} />
+            <AiMascotFull height={64} />
           )}
         </button>
       </div>
       {open && (
-        <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm h-[28rem] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+        <div className="fixed bottom-[calc(6rem_+_env(safe-area-inset-bottom))] right-4 z-[60] w-[calc(100vw-2rem)] max-w-sm h-[min(28rem,calc(100dvh-9.5rem))] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
           <div className="bg-[#0c3b24] text-white px-5 py-4 flex items-center gap-3">
             <AiMascot size={40} />
             <div>

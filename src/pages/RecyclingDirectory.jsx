@@ -70,11 +70,11 @@ export default function RecyclingDirectory() {
           >
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Material, product, or service (e.g. mattress, paint, e-waste)" className="input !bg-white" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Material, product, or service (e.g. mattress, paint, e-waste)" className="input !bg-white pl-10" />
             </div>
             <div className="relative sm:w-72">
               <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Postal code, city, or province" className="input !bg-white" />
+              <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Postal code, city, or province" className="input !bg-white pl-10" />
             </div>
             <button type="submit" className="rounded-xl bg-[#1d9e56] text-[#0c3b24] font-bold px-6 py-3 hover:bg-[#17a04c] transition-colors">Search</button>
           </form>
