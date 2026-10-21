@@ -17,7 +17,7 @@ const CONFIG = {
   faqs: [
     { q: "What electronics do you take?", a: "TVs, monitors, computers, laptops, printers, phones, AV equipment, cables and most office e-waste. If you're unsure, just ask." },
     { q: "Is my data safe?", a: "We recommend wiping devices before pickup. Devices we collect are routed to electronics recyclers — please remove storage media or wipe drives first for sensitive data." },
-    { q: "Can offices book bulk e-waste pickups?", a: "Yes — office and commercial cleanouts are a core service, and commercial clients receive a diversion-rate certificate with every completed job." },
+    { q: "Can offices book bulk e-waste pickups?", a: "Yes — office and commercial cleanouts are a core service, and commercial clients receive a diversion record with every completed job showing how the load was sorted." },
   ],
 };
 

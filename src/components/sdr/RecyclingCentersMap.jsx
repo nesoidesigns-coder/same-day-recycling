@@ -58,7 +58,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             Live recycling map
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">
-            {activeCity ? `Recycling centers in ${activeCity}` : "Recycling centers in every city we serve"}
+            {activeCity ? `Recycling centres in ${activeCity}` : "Recycling centres across Canada"}
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
             Real drop-off depots, transfer stations and recycling facilities across Canada — researched and kept up to date for you.
@@ -98,7 +98,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
 
         {centers === null ? (
           <div className="flex items-center justify-center py-20 text-slate-500">
-            <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading recycling centers…
+            <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading recycling centres…
           </div>
         ) : (
           <>
@@ -167,7 +167,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             </div>
             {shown.length === 0 && (
               <p className="text-center text-sm text-slate-500 mt-4">
-                No centers listed for this city yet — the map updates automatically every week.
+                No facilities listed for this city yet — listings are added as they're researched and confirmed.
               </p>
             )}
           </>

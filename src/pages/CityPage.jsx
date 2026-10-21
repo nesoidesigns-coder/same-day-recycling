@@ -15,6 +15,7 @@ import CityRulesBlock from "@/components/sdr/CityRulesBlock";
 import { Image } from "@/components/ui/image";
 import { cityFromSlug, CITIES } from "@/lib/cities";
 import { regionByCode } from "@/lib/regions";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
 
 const HERO_IMG = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png";
 
@@ -35,7 +36,7 @@ const FALLBACK_PRICES = {
 const TRUST_POINTS = [
   "Upfront pricing on every job, no hidden fees",
   "Recycling & donation first — never straight to landfill",
-  "Same-day dispatch on bookings made before noon",
+  "Every price approved by you before anything is loaded",
   "Trained crews for condo, strata and apartment move-outs",
 ];
 
@@ -44,7 +45,11 @@ export default function CityPage() {
   const prefix = "junk-removal-";
   const slug = pageSlug && pageSlug.startsWith(prefix) ? pageSlug.slice(prefix.length) : null;
   const city = slug ? cityFromSlug(slug) : null;
-  const isActive = city?.status === "active";
+  const { statusFor, loaded: coverageLoaded } = useCoverageStatus();
+  // Capacity-gated status from live contractor records — the direct-booking
+  // experience appears only while a verified partner is active in this city.
+  const cityStatus = city && coverageLoaded ? statusFor(city.name) : null;
+  const isActive = cityStatus === "same_day";
   const region = city ? regionByCode(city.province) : null;
 
   const [prices, setPrices] = useState(FALLBACK_PRICES);
@@ -53,10 +58,10 @@ export default function CityPage() {
   const [quotePrefill, setQuotePrefill] = useState(null);
 
   useSEO({
-    title: city ? (isActive ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : `${city.name} Recycling Coverage: ${city.status === "partner_onboarding" ? "Partner Onboarding" : "Planned Expansion"} | Same Day Recycling`) : "Page Not Found | Same Day Recycling",
-    description: city ? (isActive ? `Request furniture, appliance and junk removal in ${city.name}, ${city.province}. Check local pickup availability and get an upfront estimate before booking.` : `Same Day Recycling accepts same-day service requests in ${city.name}, ${city.province}. Our national dispatch team arranges a qualified local contractor — pickup is subject to contractor availability and confirmation.`) : "This page was not found. Browse recycling services, software or confirmed coverage.",
+    title: city ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : "Page Not Found | Same Day Recycling",
+    description: city ? `Request junk removal in ${city.name}, ${city.province}. Requests are accepted nationwide; same-day pickup depends on contractor availability and is confirmed with you before anything is scheduled or charged.` : "This page was not found. Browse recycling services, software or confirmed coverage.",
     path: pageSlug ? `/${pageSlug}` : "/",
-    robots: city && isActive ? "index, follow" : "noindex, follow",
+    robots: city ? "index, follow" : "noindex, follow",
   });
 
   useStructuredData("city-breadcrumb", city ? {
@@ -86,7 +91,7 @@ export default function CityPage() {
         if (!cancelled && res?.data?.prices) setPrices({ ...FALLBACK_PRICES, ...res.data.prices });
       } catch { /* fallback rates already set */ }
       try {
-        const c = await base44.entities.RecyclingCenter.filter({ city: city.name }, { limit: 12 });
+        const c = await base44.entities.Provider.filter({ city: city.name }, { limit: 12 });
         if (!cancelled) setCenters(Array.isArray(c) ? c : c.items || []);
       } catch { /* section hides itself */ }
       try {
@@ -139,7 +144,7 @@ export default function CityPage() {
               {city.name} &amp; area · Part of Canada's national partner network
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#102B2A]">
-              {city.seo_title} in {city.name}, {city.province}
+              Junk Removal in {city.name}, {city.province}
             </h1>
             <p className="mt-5 text-lg text-slate-600">{city.blurb}</p>
             {isActive ? (
@@ -149,7 +154,7 @@ export default function CityPage() {
                   <a href="#quote" className="rounded-full border-2 border-[#102B2A] text-[#102B2A] font-bold px-7 py-3.5 hover:bg-[#102B2A] hover:text-white transition-colors">Get a Free Quote</a>
                 </div>
                 <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-600">
-                  <span className="flex items-center gap-1.5 font-semibold"><CheckCircle2 className="w-4 h-4 text-[#187B65]" /> Same-day slots when booked before noon</span>
+                  <span className="flex items-center gap-1.5 font-semibold"><CheckCircle2 className="w-4 h-4 text-[#187B65]" /> Same-day availability when a contractor confirms your window</span>
                   <span className="flex items-center gap-1.5 font-semibold"><ShieldCheck className="w-4 h-4 text-[#187B65]" /> Upfront pricing from ${prices.minimum_pickup}</span>
                   <a href="tel:+16048491745" className="flex items-center gap-1.5 font-semibold text-[#102B2A] hover:text-[#187B65]"><Phone className="w-4 h-4 text-[#187B65]" /> (604) 849-1745</a>
                 </div>
@@ -218,6 +223,9 @@ export default function CityPage() {
               </div>
             ))}
           </div>
+          {prices.minimum_pickup !== 139 && (
+            <p className="mt-4 text-sm text-slate-500">Rates in {city.name} are set to local disposal costs, which differ from the national standard tier ($139 minimum). Your quote always shows your rate, and you approve the final price before anything is loaded.</p>
+          )}
           <p className="mt-4 text-sm text-slate-500 flex items-center gap-1.5"><Leaf className="w-4 h-4 text-[#187B65]" /> Recycling and donation are always included — you never pay extra for eco disposal.</p>
         </section>
       )}
@@ -227,14 +235,14 @@ export default function CityPage() {
         <section className="bg-[#f4f7f5]">
           <div className="max-w-7xl mx-auto px-4 py-14">
             <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Live recycling map</div>
-            <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Recycling centers in {city.name}</h2>
-            <p className="mt-3 text-slate-600">Real drop-off depots, transfer stations and recycling facilities — researched and kept up to date for you.</p>
+            <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Recycling centres in {city.name}</h2>
+            <p className="mt-3 text-slate-600">Independent drop-off depots, transfer stations and recycling facilities — listed from dated, sourced research. These facilities are not Same Day Recycling partners; confirm materials and fees before you go.</p>
             <div className="mt-8 grid md:grid-cols-2 gap-4">
               {centers.map((c) => (
                 <div key={c.id} className="rounded-2xl bg-white border border-slate-100 p-5">
                   <div className="font-bold text-[#102B2A]">{c.name}</div>
                   <div className="text-sm text-slate-500 mt-1">{c.address}</div>
-                  {c.accepts && <div className="text-sm text-slate-500 mt-2"><span className="font-semibold text-[#102B2A]">Accepts:</span> {c.accepts}</div>}
+                  {(c.materials_note || (c.accepted_categories || []).join(", ")) && <div className="text-sm text-slate-500 mt-2"><span className="font-semibold text-[#102B2A]">Accepts:</span> {c.materials_note || (c.accepted_categories || []).join(", ")}</div>}
                   <div className="mt-3 flex gap-4 text-sm font-semibold">
                     {c.phone && <a href={`tel:${c.phone}`} className="text-[#187B65] hover:underline">Call</a>}
                     {c.website && <a href={c.website} target="_blank" rel="noopener noreferrer" className="text-[#187B65] hover:underline">Website</a>}
@@ -280,7 +288,7 @@ export default function CityPage() {
           <section id="quote" className="bg-[#f4f7f5]">
             <div className="max-w-7xl mx-auto px-4 py-14">
               <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">No guesswork</div>
-              <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Get an instant {city.name} quote</h2>
+              <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">{city.name} quote calculator</h2>
               <p className="mt-3 text-slate-600">Pick your items or describe the job — see the price before you book.</p>
               <div className="mt-8"><QuoteCalculator onBook={bookFromQuote} city={city.name} /></div>
             </div>
@@ -294,8 +302,8 @@ export default function CityPage() {
         <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Junk removal in {city.name}, {city.province} — what locals should know</h2>
         <p className="mt-4 text-slate-600">
           {isActive
-            ? `Same-day pickup is live in ${city.name}: book before noon and a crew is usually there the same afternoon. Every load is sorted after pickup — furniture in good shape goes to donation partners, metal goes to recyclers, and the rest is disposed of responsibly rather than a straight-to-landfill run.`
-            : `Same Day Recycling is expanding across ${region?.name || "Canada"} through its partner network. Until a ${city.name} partner is verified, this page reflects planned coverage only — see our live coverage areas for same-day service today.`}
+            ? `Verified contractor capacity is active in ${city.name}. Same-day pickup is offered when a contractor confirms your window — book before noon for the best chance of a same-day slot. Every load is sorted after pickup: furniture in good shape goes to donation partners, metal goes to recyclers, and only the remainder is responsibly disposed.`
+            : `Service requests are accepted in ${city.name} and across ${region?.name || "Canada"}. Until a ${city.name} contractor is verified, our dispatch team matches and qualifies a local provider for each request — availability is confirmed with you before anything is scheduled.`}
         </p>
         <div className="mt-8">
           <CityRulesBlock city={city.name} province={city.province} />
@@ -319,7 +327,7 @@ export default function CityPage() {
 }
 
 const ACTIVE_FAQ = (city) => [
-  { q: `Do you really do same-day pickup in ${city.name}?`, a: "Yes — book before noon and we'll usually reach you the same afternoon. Afternoon bookings are typically next-day." },
+  { q: `Is same-day pickup available in ${city.name}?`, a: "Same-day pickup is offered when a verified local contractor confirms your window — book before noon for the best chance of a same-day slot. Your arrival window and price are always confirmed with you before anything is scheduled or charged." },
   { q: "What does junk removal cost here?", a: `Our ${city.name} rates start at $${FALLBACK_PRICES.minimum_pickup} for a minimum pickup and scale by truck space — see the pricing table above. You approve the final price before we lift anything.` },
   { q: "Do you take mattresses and appliances?", a: "Yes. Mattresses, fridges, washers and stoves all go out with the crew — appliances are recycled as scrap metal." },
   { q: "What happens to my junk?", a: "Every load is sorted: furniture in good shape is donated, metal and electronics are recycled, and only the true remainder is responsibly disposed." },

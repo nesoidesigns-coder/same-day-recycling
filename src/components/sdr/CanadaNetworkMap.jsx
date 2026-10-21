@@ -88,7 +88,7 @@ export default function CanadaNetworkMap() {
                       <div style={{ minWidth: 160 }}>
                         <strong style={{ color: "#102B2A" }}>{r.name}</strong>
                         <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
-                          Partner onboarding — provider applications open
+                          Directory listings researched — facility confirmation in progress · service requests open
                         </div>
                       </div>
                     </Popup>
@@ -132,7 +132,7 @@ export default function CanadaNetworkMap() {
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-slate-300 inline-block" />
-                <Rocket className="w-3.5 h-3.5 text-slate-500" /> {openRegions.length} regions onboarding providers
+                <Rocket className="w-3.5 h-3.5 text-slate-500" /> {openRegions.length} regions with researched listings awaiting confirmation
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-[#102B2A] inline-block" /> Network HQ — Canada

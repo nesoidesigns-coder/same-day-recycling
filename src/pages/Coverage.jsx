@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSEO } from "@/lib/seo";
-import { base44 } from "@/api/base44Client";
-import { MapPin, CheckCircle2, Rocket, ArrowRight, Phone, Hourglass } from "lucide-react";
+import { MapPin, CheckCircle2, ArrowRight, Phone, Hourglass, RefreshCw, UserSearch } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { COVERAGE } from "@/lib/coverage";
 import { REGIONS } from "@/lib/regions";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
 
-// Three honest availability states, per the national dispatch model:
-//   Same-Day Confirmed  — a verified contractor is active in the city (live data)
-//   Matching Contractor — request is open, the system is locating a contractor
-//   Recruiting Provider — no verified contractor yet; requests still accepted
+// Coverage page — driven entirely by the live status engine
+// (src/hooks/useCoverageStatus.js → coverageStatus endpoint). Three honest,
+// data-backed states, applied with the same labels on every public surface:
+//   Same-Day Availability                — verified contractor capacity exists
+//   Requests Open — Contractor Matching  — open requests are being matched
+//   Provider Recruitment                 — requests accepted, capacity recruiting
 export default function Coverage() {
   useSEO({
     title: "Pickup Coverage & Network Expansion | Same Day Recycling",
@@ -19,55 +20,61 @@ export default function Coverage() {
     path: "/coverage",
   });
 
-  // Same-day capacity is proven by verified contractor records, never assumed
-  // from request acceptance. Cities qualify only when an active partner exists.
-  const [confirmed, setConfirmed] = useState(null);
-  useEffect(() => {
-    (async () => {
-      const { items } = await base44.entities.Partner.filter({ active: true }, { limit: 200 });
-      const names = (items || [])
-        .filter((p) => String(p.name || "").toLowerCase() !== "test simulation contractor")
-        .map((p) => String(p.city || "").trim().toLowerCase())
-        .filter(Boolean);
-      setConfirmed(new Set(names));
-    })().catch(() => setConfirmed(new Set()));
-  }, []);
+  const { statusFor, loaded, verifiedCities, matchingCities } = useCoverageStatus();
 
-  const isConfirmed = (c) => confirmed !== null && confirmed.has(c.name.toLowerCase());
-  const confirmedCities = COVERAGE.filter(isConfirmed);
-  const matchingCities = COVERAGE.filter((c) => !isConfirmed(c));
-  const recruitingCities = []; // registry cities fall under matching; nationwide inquiries handle the rest
+  const registryByName = new Map(COVERAGE.map((c) => [c.name.toLowerCase(), c]));
+  const cityLink = (name) =>
+    registryByName.has(String(name).toLowerCase())
+      ? `/junk-removal-${registryByName.get(String(name).toLowerCase()).slug || ""}`
+      : `/request-service?city=${encodeURIComponent(name)}`;
+
+  const slugFor = (name) => {
+    const c = registryByName.get(String(name).toLowerCase());
+    return c ? `/junk-removal-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` : `/request-service?city=${encodeURIComponent(name)}`;
+  };
+
+  // Same-Day Availability: verified partner records (registry + partner cities).
+  const sameDayCitiesList = [...verifiedCities].map((name) => ({ name }));
+  // Matching: open requests awaiting contractor contact (live records).
+  const matchingList = matchingCities.map((name) => ({ name }));
+  // Recruiting: registry cities with no verified capacity and no open matching.
+  const recruitingList = COVERAGE
+    .filter((c) => statusFor(c.name) === "recruiting")
+    .map((c) => ({ name: c.name, province: c.province }));
 
   const SECTIONS = [
     {
-      title: "Same-Day Confirmed",
+      key: "same_day",
+      title: "Same-Day Availability",
       icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
       dot: "bg-[#187B65]",
       intro: "Cities where a verified contractor is active today. Even here, your exact pickup window and price are confirmed with you before anything is scheduled or charged.",
       cardLabel: "Verified contractor active — window confirmed per job",
-      cities: confirmedCities,
-      linkFor: () => "/#book",
+      cities: sameDayCitiesList,
       bg: "bg-white",
+      empty: 'No city currently shows same-day availability — this listing appears only when a verified contractor record is active in that city. Every request is still accepted and matched before anything is scheduled.',
     },
     {
-      title: "Matching Contractor",
-      icon: <MapPin className="w-5 h-5 text-[#187B65]" />,
+      key: "matching",
+      title: "Requests Open — Contractor Matching",
+      icon: <UserSearch className="w-5 h-5 text-[#187B65]" />,
       dot: "bg-gold",
-      intro: "Requests are open in these cities. The system is matching or recruiting a local contractor — availability, price and your arrival window are confirmed after your request, never before.",
-      cardLabel: "Request open — matching contractor",
-      cities: matchingCities,
-      linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
+      intro: "These cities have open service requests right now; the system is matching or recruiting a local contractor. Availability, price and your arrival window are confirmed after your request, never before.",
+      cardLabel: "Open request — contractor matching in progress",
+      cities: matchingList,
       bg: "bg-[#f4f7f5]",
+      empty: "No open matching requests right now — new requests appear here the moment they arrive.",
     },
     {
-      title: "Recruiting Provider",
+      key: "recruiting",
+      title: "Provider Recruitment",
       icon: <Hourglass className="w-5 h-5 text-slate-400" />,
       dot: "bg-slate-300",
-      intro: "These markets have no verified contractor yet — customer demand here drives contractor recruitment. Requests are still accepted nationwide and no same-day service is promised.",
-      cardLabel: "Inquiries open — recruiting provider",
-      cities: recruitingCities,
-      linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
+      intro: "Requests are open in these territories, but no verified contractor is active yet — customer demand here drives contractor recruitment. Requests are still accepted nationwide and no same-day service is promised.",
+      cardLabel: "Requests open — recruiting provider",
+      cities: recruitingList,
       bg: "bg-white",
+      empty: "Every registry territory currently has verified capacity or active matching.",
     },
   ];
 
@@ -92,34 +99,37 @@ export default function Coverage() {
               </span>
             ))}
           </div>
+          {!loaded && (
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-2 text-sm text-slate-200">
+              <RefreshCw className="w-4 h-4 animate-spin" /> Checking live network status…
+            </div>
+          )}
         </div>
       </section>
 
       {SECTIONS.map((s) => (
-        <section key={s.title} className={s.bg}>
+        <section key={s.key} className={s.bg}>
           <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
             <h2 className="text-3xl font-bold text-[#102B2A] flex items-center gap-3">
               <span className={`w-3 h-3 rounded-full ${s.dot}`} /> {s.title}
             </h2>
             <p className="mt-2 text-slate-600 max-w-2xl">{s.intro}</p>
-            {s.title === "Same-Day Confirmed" && s.cities.length === 0 && (
+            {loaded && s.cities.length === 0 && (
               <div className="mt-6 rounded-2xl border border-slate-100 bg-[#f4f7f5] p-5 max-w-2xl text-sm text-slate-600">
-                No city currently shows confirmed same-day capacity — a "Same-Day Confirmed" listing
-                appears here only once a verified contractor record is active in that city. Every
-                request is still accepted and matched before anything is scheduled.
+                {s.empty}
               </div>
             )}
             <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {s.cities.map((c) => (
                 <Link
                   key={c.name}
-                  to={s.linkFor(c)}
+                  to={slugFor(c.name)}
                   className="group rounded-2xl border border-slate-100 bg-white shadow-sm p-6 flex items-center justify-between hover:border-[#187B65] transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     {s.icon}
                     <div>
-                      <div className="font-bold text-[#102B2A]">{c.name}, {c.province}</div>
+                      <div className="font-bold text-[#102B2A]">{c.name}{c.province ? `, ${c.province}` : ""}</div>
                       <div className="text-xs text-slate-500">{s.cardLabel}</div>
                     </div>
                   </div>

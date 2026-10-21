@@ -17,7 +17,7 @@ const SERVICE_INFO = {
   furniture_removal: { label: "furniture removal", requirements: "Sofas, mattresses, dressers and tables are lifted out by the crew; reusable pieces go to donation partners and metal is recycled." },
   appliance_removal: { label: "appliance removal", requirements: "Fridges, washers, stoves and other appliances are carried out by the crew and recycled as scrap metal. Nothing needs to be disconnected in advance." },
   electronics_recycling: { label: "electronics recycling", requirements: "TVs, computers, printers and other e-waste are collected and routed to dedicated electronics recyclers — please wipe devices before pickup." },
-  office_commercial: { label: "a commercial or office cleanout", requirements: "Office furniture, e-waste and fit-out debris are hauled one-time or on a recurring schedule, with a diversion-rate certificate after each completed job." },
+  office_commercial: { label: "a commercial or office cleanout", requirements: "Office furniture, e-waste and fit-out debris are hauled one-time or on a recurring schedule, with a diversion record after each completed job showing how the load was sorted." },
   metal_pickup: { label: "scrap metal pickup", requirements: "Scrap metal pickup is free wherever a network partner is live — list or photograph the items and we'll confirm." },
   scheduled_pickup: { label: "a scheduled recycling pickup", requirements: "Recurring pickups can run weekly or per phase for homes, property managers and contractors." },
   other: { label: "a removal or recycling job", requirements: "Tell me the items or materials and I'll match them to the right service." },

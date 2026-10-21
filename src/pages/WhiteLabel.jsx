@@ -97,7 +97,7 @@ export default function WhiteLabel() {
 
       <section className="max-w-6xl mx-auto px-4 py-16 md:py-20">
         <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">What you get on day one</h2>
-        <p className="text-slate-600 mt-2 max-w-2xl">Everything below is already built, tested and earning jobs — not a blueprint, a running system.</p>
+        <p className="text-slate-600 mt-2 max-w-2xl">Everything below is built and running on our live platform — the same system that powers this site. Screens shown are illustrative examples, not customer results.</p>
         <div className="grid md:grid-cols-3 gap-4 mt-10">
           {INCLUDED.map((f) => (
             <div key={f.title} className="rounded-3xl bg-[#f4f7f5] p-6">

@@ -15,11 +15,11 @@ export default function FoundingPartnerOffer() {
             <span className="w-8 h-px bg-[#102B2A]" />
             Founding Partner Program
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Lock today's pricing. For life.</h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Lock today's pricing while you stay in the network.</h2>
           <p className="mt-5 text-[#102B2A]/80 leading-relaxed">
             The network is new, and we're honest about it: the first partners arrive before the case
-            studies exist. So the first five partners in Canada pay today's rate — locked for as long as
-            they stay in the network — no matter how much the machine proves itself later.
+            studies exist. Founding partners pay today's rate — locked for as long as they remain in
+            the network — no matter how much the machine proves itself later.
           </p>
           <p className="mt-3 text-[#102B2A]/80 leading-relaxed">
             In exchange, two things: you run the service standard, and you let us tell your numbers as a
@@ -36,14 +36,14 @@ export default function FoundingPartnerOffer() {
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-lg">{t.price}</div>
-                  <div className="text-xs text-gold font-bold">locked for life</div>
+                  <div className="text-xs text-gold font-bold">rate locked while you stay in the network</div>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <span className="inline-flex items-center gap-2 rounded-full bg-[#102B2A]/10 font-bold px-4 py-2 text-sm">
-              <BadgeCheck className="w-4 h-4" /> 5 founding slots — then pricing rises and the proof exists
+              <BadgeCheck className="w-4 h-4" /> Founding intake is capped by our verification team's capacity — current availability is confirmed during your application call
             </span>
             <a href="#apply" className="inline-flex items-center gap-2 font-bold hover:underline">
               Apply as a Founding Partner <ArrowRight className="w-4 h-4" />
