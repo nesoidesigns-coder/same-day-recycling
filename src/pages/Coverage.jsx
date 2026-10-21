@@ -46,12 +46,19 @@ export default function Coverage() {
       <section className="bg-[#102B2A] text-white">
         <div className="max-w-5xl mx-auto px-4 py-16 md:py-20">
           <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">Where we pick up</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Canada's Recycling Network. One Intelligent Platform.</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            One connected recycling and removal network across Canada. Same-day pickup is listed
-            <span className="text-white font-semibold"> only where coverage is confirmed</span> — every other
-            market shows its real status: partner onboarding or coming soon.
+            Request recycling, junk removal and material pickup services anywhere in Canada. Our platform
+            connects customers with local service providers as availability is confirmed — same-day pickup is
+            <span className="text-white font-semibold"> listed only where coverage is confirmed</span>.
           </p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
+            {["Requests accepted nationwide", "Verified service territories", "Provider matching in progress", "Confirmed service appointments"].map((t) => (
+              <span key={t} className="inline-flex items-center rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-slate-100">
+                {t}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -88,12 +95,12 @@ export default function Coverage() {
                   </Link>
                 ))}
                 <Link
-                  to="/contractors"
+                  to="/request-service"
                   className="rounded-2xl bg-[#102B2A] text-white p-6 flex items-center justify-between hover:bg-[#0a3020] transition-colors"
                 >
                   <div>
                     <div className="font-bold">Your city not listed?</div>
-                    <div className="text-xs text-slate-300 mt-1">Apply — territories open in order of application.</div>
+                    <div className="text-xs text-slate-300 mt-1">Request service anywhere in Canada — provider confirmation required.</div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#187B65]" />
                 </Link>

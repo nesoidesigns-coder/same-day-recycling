@@ -74,6 +74,8 @@ import CommercialRecycling from './pages/CommercialRecycling';
 import SameDayPickup from './pages/SameDayPickup';
 import AdminSearchIntelligence from './pages/AdminSearchIntelligence';
 import ExploreServices from './pages/ExploreServices';
+import RequestService from './pages/RequestService';
+import AdminNational from './pages/AdminNational';
 import ServiceFinder from './pages/ServiceFinder';
 import AIBookingCenter from './pages/AIBookingCenter';
 import CityPage from './pages/CityPage';
@@ -140,6 +142,7 @@ const AuthenticatedApp = () => {
       <Route path="/same-day-pickup" element={<SameDayPickup />} />
       <Route path="/services" element={<ExploreServices />} />
       <Route path="/service-finder" element={<ServiceFinder />} />
+      <Route path="/request-service" element={<RequestService />} />
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
@@ -174,6 +177,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/gallery" element={<AdminGallery />} />
         <Route path="/admin/marketing" element={<AdminMarketing />} />
         <Route path="/admin/software" element={<AdminSoftware />} />
+        <Route path="/admin/national" element={<AdminNational />} />
         <Route path="/company" element={<CompanyDashboard />} />
         <Route path="/partners" element={<PartnersDashboard />} />
         <Route path="/partner-register" element={<PartnerRegister />} />

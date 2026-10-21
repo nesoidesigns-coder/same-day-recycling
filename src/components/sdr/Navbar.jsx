@@ -13,6 +13,7 @@ const primaryLinks = [
 ];
 
 const moreLinks = [
+  { label: "Request Service (Nationwide)", to: "/request-service" },
   { label: "Explore Services", to: "/services" },
   { label: "Service Finder", to: "/service-finder" },
   { label: "AI Booking Center", to: "/ai-booking" },
@@ -43,7 +44,7 @@ export default function Navbar() {
           </span>
           <span className="leading-tight">
             <span className="block text-lg tracking-tight">Same Day Recycling</span>
-            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-400">Canada's Intelligent Recycling &amp; Removal Network</span>
+            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-400">Canada's Recycling Network. One Intelligent Platform.</span>
           </span>
         </Link>
         <div className="hidden md:flex items-center gap-8">

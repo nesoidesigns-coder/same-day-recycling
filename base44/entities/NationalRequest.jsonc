@@ -1,0 +1,146 @@
+{
+  "name": "NationalRequest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "default": ""
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string"
+    },
+    "province_code": {
+      "type": "string",
+      "default": ""
+    },
+    "postal_code": {
+      "type": "string",
+      "default": ""
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "junk_removal",
+        "furniture",
+        "appliances",
+        "electronics",
+        "metal_pickup",
+        "cleanouts",
+        "other"
+      ],
+      "default": "junk_removal"
+    },
+    "items_description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "preferred_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "coverage_status": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "onboarding",
+        "unverified"
+      ],
+      "default": "unverified"
+    },
+    "partner_id": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_name": {
+      "type": "string",
+      "default": ""
+    },
+    "recruitment_id": {
+      "type": "string",
+      "default": ""
+    },
+    "quote_amount": {
+      "type": "number"
+    },
+    "quote_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending_provider",
+        "sent",
+        "approved",
+        "declined"
+      ],
+      "default": "none"
+    },
+    "appointment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "provider_matching",
+        "recruiting",
+        "matched",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "new"
+    },
+    "followup_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_followup_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reference_code": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "name",
+    "phone",
+    "city",
+    "service_type",
+    "items_description"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "name": "ProviderRecruit",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string",
+      "default": ""
+    },
+    "email": {
+      "type": "string",
+      "default": ""
+    },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
+    "website": {
+      "type": "string",
+      "default": ""
+    },
+    "province_code": {
+      "type": "string"
+    },
+    "territory": {
+      "type": "string",
+      "default": ""
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "outreach_status": {
+      "type": "string",
+      "enum": [
+        "not_contacted",
+        "contacted",
+        "callback_scheduled",
+        "in_discussion",
+        "proposal_sent",
+        "no_response"
+      ],
+      "default": "not_contacted"
+    },
+    "partnership_status": {
+      "type": "string",
+      "enum": [
+        "prospect",
+        "applying",
+        "verifying",
+        "verified",
+        "declined"
+      ],
+      "default": "prospect"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "pricing_model": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    },
+    "capacity": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "verification_notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "assigned_lead_count": {
+      "type": "number",
+      "default": 0
+    },
+    "next_followup_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "followup_count": {
+      "type": "number",
+      "default": 0
+    },
+    "source": {
+      "type": "string",
+      "default": "admin"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "company",
+    "province_code"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

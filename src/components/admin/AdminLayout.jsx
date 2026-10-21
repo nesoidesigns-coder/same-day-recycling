@@ -5,10 +5,12 @@ import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart,
+  Globe2,
 } from "lucide-react";
 
 const OPS = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+  { to: "/admin/national", label: "National Ops", icon: Globe2 },
   { to: "/admin/jobs", label: "Jobs & Dispatch", icon: Truck },
   { to: "/admin/leads", label: "Leads", icon: UserPlus },
   { to: "/admin/assignments", label: "Assignments", icon: ClipboardList },

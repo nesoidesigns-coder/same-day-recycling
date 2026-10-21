@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
@@ -119,6 +120,9 @@ export default function BookingForm({ prefill }) {
         {notLive && (
           <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
             Service isn't live in {form.city} yet. Submitting this form joins the {form.city} waitlist — we'll contact you when a verified partner launches there.
+            <span className="mt-1 block font-normal text-amber-800/80">
+              Need service sooner? <Link to="/request-service" className="underline">Submit a national service request</Link> — we match local providers across Canada (provider confirmation required).
+            </span>
           </div>
         )}
         <div className="grid sm:grid-cols-2 gap-4">

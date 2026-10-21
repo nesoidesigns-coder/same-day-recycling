@@ -7,6 +7,10 @@ export const ACTIVE_CITIES = ['Vancouver', 'Burnaby', 'Surrey', 'Richmond', 'Coq
 // and checks it against the active list. Matched by inclusion so spoken or
 // extracted city values still resolve, but "North Vancouver" never matches
 // plain "Vancouver" wrongly — exact short names first, then inclusion.
+// Partner-onboarding and coming-soon markets — requests are accepted and
+// provider matching / recruitment starts, but no confirmed service is promised.
+export const ONBOARDING_CITIES = ['Victoria', 'Calgary', 'Edmonton', 'Saskatoon', 'Regina', 'Winnipeg', 'Toronto', 'Ottawa', 'Hamilton', 'Mississauga', 'Montreal', 'Quebec City', 'Moncton', 'Saint John', 'Halifax', 'St. John\'s'];
+
 export function isActiveCity(raw) {
   const value = String(raw || '').toLowerCase().trim();
   if (!value) return false;
