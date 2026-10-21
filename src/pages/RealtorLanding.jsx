@@ -5,6 +5,7 @@ import RexBanner from "@/components/sdr/RexBanner";
 import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import Footer from "@/components/sdr/Footer";
 import { Image } from "@/components/ui/image";
+import { useSEO } from "@/lib/seo";
 
 const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png";
 
@@ -23,6 +24,11 @@ const SCENARIOS = [
 ];
 
 export default function RealtorLanding() {
+  useSEO({
+    title: "Estate & Pre-Listing Cleanout Requests | Same Day Recycling",
+    description: "Request estate cleanouts, tenant turnovers and pre-listing junk removal. Review property-service options and confirm availability for your address.",
+    path: "/real-estate",
+  });
   return (
     <div className="bg-white">
       <TopBar />

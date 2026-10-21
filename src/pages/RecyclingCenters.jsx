@@ -9,7 +9,7 @@ import Footer from "@/components/sdr/Footer";
 export default function RecyclingCenters() {
   useSEO({
     title: "Recycling Centres Near You | Same Day Recycling",
-    description: "Find recycling centres and drop-off depots across Canada, with city filtering, contact details and map locations.",
+    description: "Explore listed recycling centres and drop-off depots by city. Check mapped locations and contact details, and confirm materials and fees before visiting.",
     path: "/recycling-centers",
   });
   return (

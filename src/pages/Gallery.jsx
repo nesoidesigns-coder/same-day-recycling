@@ -8,7 +8,7 @@ import PhotoGallery from "@/components/sdr/PhotoGallery";
 export default function Gallery() {
   useSEO({
     title: "Fleet Gallery — Trucks, Crews & Job Sites | Same Day Recycling",
-    description: "See the Same Day Recycling network in action — trucks, crews and recycling job sites across Canada.",
+    description: "Browse published photos of Same Day Recycling trucks, crews and job sites, organized in the fleet and recycling service gallery.",
     path: "/gallery",
   });
   return (

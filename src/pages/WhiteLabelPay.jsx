@@ -2,10 +2,17 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, Recycle, CreditCard, Repeat } from "lucide-react";
 import PayPalButtons from "@/components/pay/PayPalButtons";
+import { useSEO } from "@/lib/seo";
 
 const money = (n) => "$" + (Number(n) || 0).toLocaleString("en-CA");
 
 export default function WhiteLabelPay() {
+  useSEO({
+    title: "White-Label Setup & Subscription Payment | Same Day Recycling",
+    description: "Complete your white-label software setup fee and subscription through the secure payment flow.",
+    path: "/white-label-pay",
+    robots: "noindex, nofollow",
+  });
   const params = new URLSearchParams(window.location.search);
   const payToken = params.get("pay") || "";
   const subReturn = params.get("token") || "";

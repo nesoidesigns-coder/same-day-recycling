@@ -5,6 +5,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { REGIONS, regionByCode } from "@/lib/regions";
 import { base44 } from "@/api/base44Client";
+import { useSEO } from "@/lib/seo";
 
 const CITIES_BY_PROVINCE = {
   AB: ["Calgary", "Edmonton"],
@@ -19,8 +20,14 @@ export default function ProvincePage() {
   const region = regionByCode((code || "").toUpperCase());
   const [providers, setProviders] = useState(null);
 
+  useSEO({
+    title: region ? `${region.name} Recycling Listings & Coverage | Same Day Recycling` : "Region Not Found | Same Day Recycling",
+    description: region ? `Browse recycling listings and coverage information for ${region.name}. Listings appear where confirmed; check pickup availability before booking.` : "This region was not found. Browse the coverage page for available regions.",
+    path: `/region/${region?.code || code}`,
+    robots: region ? "index, follow" : "noindex, follow",
+  });
+
   useEffect(() => {
-    document.title = region ? `Recycling Services in ${region.name} | Same Day Recycling` : "Region not found";
     if (!region) return;
     (async () => {
       const { items } = await base44.entities.Provider.filter({ province: region.name }, { limit: 200 });

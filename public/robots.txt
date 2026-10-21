@@ -1,45 +1,29 @@
+# One shared group keeps the same public/private rules for search and AI crawlers.
 User-agent: *
-Allow: /
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: CCBot
+User-agent: Amazonbot
+User-agent: Applebot
+User-agent: Bytespider
 Disallow: /admin
 Disallow: /company
 Disallow: /partners
+Disallow: /partner-register
 Disallow: /realtor-dashboard
 Disallow: /software-pay
 Disallow: /white-label-pay
+Disallow: /software/start
 Disallow: /login
 Disallow: /register
 Disallow: /forgot-password
 Disallow: /reset-password
-
-# AI search assistants — full access so answers cite this site
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: Amazonbot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-User-agent: Bytespider
+Disallow: /functions/
+Disallow: /api/
 Allow: /
 
 Sitemap: https://samedayrecycling.ca/sitemap.xml

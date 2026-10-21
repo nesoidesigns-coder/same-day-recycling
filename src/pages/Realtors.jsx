@@ -23,7 +23,7 @@ const whyItems = [
 export default function Realtors() {
   useSEO({
     title: "Junk Removal for Realtors — Listing Cleanouts | Same Day Recycling",
-    description: "Pre-listing and closing cleanouts for realtors — fast junk removal, staging debris hauling and scrap metal pickup with partner rates.",
+    description: "Explore cleanout options for realtors, from pre-listing decluttering to closing-day removal. Request service and confirm coverage for the property.",
     path: "/realtors",
   });
   return (

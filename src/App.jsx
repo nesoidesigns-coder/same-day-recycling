@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import ReceptionistChat from '@/components/sdr/ReceptionistChat';
+import SearchIndexing from '@/components/seo/SearchIndexing';
 // Add page imports here
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -171,6 +172,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <SearchIndexing />
           <ScrollToTop />
           <GoogleAnalytics />
           <ReceptionistChat />

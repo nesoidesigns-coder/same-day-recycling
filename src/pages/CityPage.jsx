@@ -52,9 +52,10 @@ export default function CityPage() {
   const [quotePrefill, setQuotePrefill] = useState(null);
 
   useSEO({
-    title: city ? `${city.seo_title} | Same Day Recycling` : "Page Not Found",
-    description: city?.seo_description || "",
-    path: slug ? `/${prefix}${slug}` : "/",
+    title: city ? (isActive ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : `${city.name} Recycling Coverage: ${city.status === "partner_onboarding" ? "Partner Onboarding" : "Planned Expansion"} | Same Day Recycling`) : "Page Not Found | Same Day Recycling",
+    description: city ? (isActive ? `Request furniture, appliance and junk removal in ${city.name}, ${city.province}. Check local pickup availability and get an upfront estimate before booking.` : `Pickup service is not live in ${city.name}, ${city.province}. ${city.status === "partner_onboarding" ? "Partner recruitment or verification is underway." : "Expansion is planned."} Check confirmed areas or apply as a provider.`) : "This page was not found. Browse recycling services, software or confirmed coverage.",
+    path: pageSlug ? `/${pageSlug}` : "/",
+    robots: city ? "index, follow" : "noindex, follow",
   });
 
   useEffect(() => {
@@ -79,23 +80,15 @@ export default function CityPage() {
 
   // Structured data for search engines and AI answer engines
   useEffect(() => {
-    if (!city) return undefined;
+    if (!city || !isActive) return undefined;
     const ld = {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name: "Same Day Recycling",
-      image: HERO_IMG,
+      "@type": "Service",
+      name: `Junk removal in ${city.name}`,
+      provider: { "@id": "https://samedayrecycling.ca/#organization" },
       url: `https://samedayrecycling.ca/${prefix}${slug}`,
-      telephone: "+16048491745",
-      priceRange: "$$",
-      address: { "@type": "PostalAddress", addressLocality: city.name, addressRegion: city.province, addressCountry: "CA" },
       areaServed: { "@type": "City", name: city.name },
-      description: city.seo_description,
-      makesOffer: {
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name: `Same-day junk removal in ${city.name}` },
-        areaServed: { "@type": "City", name: city.name },
-      },
+      description: `Furniture, appliance and junk removal requests in ${city.name}, ${city.province}. Pickup availability is confirmed before booking.`,
     };
     const el = document.createElement("script");
     el.type = "application/ld+json";

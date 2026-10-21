@@ -13,7 +13,7 @@ const GREETING = "Hi! I'm the Same Day Recycling Assistant. Tell me what you nee
 export default function RecyclingAssistant() {
   useSEO({
     title: "AI Recycling Assistant — Ask How to Recycle Any Item",
-    description: "Ask our AI recycling assistant what to do with any item — furniture, electronics, mattresses, paint and more. Free guidance, available 24/7.",
+    description: "Ask about recyclable materials, disposal requirements and relevant directory listings. Confirm local acceptance rules and service availability with providers.",
     path: "/recycling-assistant",
   });
   const [messages, setMessages] = useState([{ role: "assistant", content: GREETING, sources: [], uncertainty: "", providers: [] }]);

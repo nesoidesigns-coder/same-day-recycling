@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import { MapPin, CheckCircle2, Rocket, Clock, ArrowRight, Phone, Hourglass } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -33,6 +34,11 @@ const SECTIONS = [
 ];
 
 export default function Coverage() {
+  useSEO({
+    title: "Pickup Coverage & Network Expansion | Same Day Recycling",
+    description: "Check confirmed pickup areas, partner-onboarding cities and planned expansion. Pickup service is offered only where operator coverage is confirmed.",
+    path: "/coverage",
+  });
   return (
     <div className="bg-white">
       <Navbar />

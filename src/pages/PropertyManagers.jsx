@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -17,11 +17,11 @@ const BENEFITS = [
 ];
 
 export default function PropertyManagers() {
-  useEffect(() => {
-    document.title = "Reliable Junk Removal for Property Managers | Same Day Recycling";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", "Streamline your waste management with our professional junk removal services for property managers. Fast, reliable, and scheduled pickups available.");
-  }, []);
+  useSEO({
+    title: "Property & Strata Cleanout Services | Same Day Recycling",
+    description: "Explore tenant-turnover cleanouts, bulk-item removal and recurring pickup options for property and strata managers. Confirm coverage before booking.",
+    path: "/property-managers",
+  });
 
   return (
     <div className="bg-white">

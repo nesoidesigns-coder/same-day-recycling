@@ -6,6 +6,7 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { CATEGORY_LABELS } from "@/lib/recyclingTaxonomy";
+import { useSEO } from "@/lib/seo";
 
 const TYPE_LABELS = { municipal: "Municipal service", public_facility: "Public facility", private_business: "Private business", independent: "Independent provider" };
 const SERVICE_LABELS = { drop_off: "Drop-off", collection: "Collection / pickup", both: "Drop-off & collection" };
@@ -19,6 +20,14 @@ export default function ProviderDetail() {
   const [reporting, setReporting] = useState(false);
   const [reportForm, setReportForm] = useState({ reason: "wrong_info", details: "", reporter_email: "" });
   const [reportSent, setReportSent] = useState(false);
+  const currentProvider = provider?.id === id ? provider : null;
+  const providerLocation = [currentProvider?.city, currentProvider?.province].filter(Boolean).join(", ");
+  useSEO({
+    title: currentProvider ? `${currentProvider.name}${providerLocation ? ` in ${providerLocation}` : ""} | Same Day Recycling` : `${notFound ? "Listing Not Found" : "Loading Recycling Listing"} | Same Day Recycling`,
+    description: currentProvider ? `View ${currentProvider.name}${providerLocation ? ` in ${providerLocation}` : ""}: reported materials, contact details and verification status. Confirm fees and availability with the provider.`.slice(0, 170) : "Browse recycling provider listings and confirm facility information before visiting.",
+    path: `/provider/${encodeURIComponent(id)}`,
+    robots: currentProvider ? "index, follow" : "noindex, follow",
+  });
 
   useEffect(() => {
     (async () => {

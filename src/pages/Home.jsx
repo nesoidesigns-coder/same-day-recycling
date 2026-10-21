@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import HomeHero from "@/components/sdr/HomeHero";
@@ -21,6 +22,11 @@ import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
 
 export default function Home() {
+  useSEO({
+    title: "Same Day Recycling | Recycling Services & Software in Canada",
+    description: "Find recycling and removal services, request pickups, and explore intelligent recycling management software with Same Day Recycling.",
+    path: "/",
+  });
   const [quotePrefill, setQuotePrefill] = useState(null);
   const bookFromQuote = (prefill) => {
     setQuotePrefill(prefill);

@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useSEO } from "@/lib/seo";
 import { Printer, Recycle, CalendarCheck, Home, Building2, DollarSign, ShieldCheck, Clock, Phone, Quote, Key, Sparkles, Timer } from "lucide-react";
 import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import RexBanner from "@/components/sdr/RexBanner";
 
-const SEO_TITLE = "Junk Removal Services for Real Estate Professionals | Realtor Partners";
-const SEO_DESCRIPTION = "Partner with Same Day Recycling to expedite your property sales. Fast, reliable junk removal for realtors and estate cleanouts across Canada.";
+const SEO_TITLE = "Realtor Partner Guide & Cleanout Rates | Same Day Recycling";
+const SEO_DESCRIPTION = "View the printable realtor partner guide, cleanout rates and referral information. Request a property cleanout and confirm local service availability.";
 
 const BENEFITS = [
   {
@@ -37,15 +37,7 @@ const SCENARIOS = [
 ];
 
 export default function RealtorOnePager() {
-  useEffect(() => {
-    document.title = SEO_TITLE;
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", SEO_DESCRIPTION);
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute("content", SEO_TITLE);
-    const ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) ogDesc.setAttribute("content", SEO_DESCRIPTION);
-  }, []);
+  useSEO({ title: SEO_TITLE, description: SEO_DESCRIPTION, path: "/realtor-partners" });
 
   return (
     <div className="min-h-screen bg-[#f4f7f5] print:bg-white">

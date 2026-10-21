@@ -8,7 +8,7 @@ import { CITIES, cityLabel } from "@/lib/cities";
 export default function FreeMetalPickup() {
   useSEO({
     title: "Free Scrap Metal Pickup | Same Day Recycling",
-    description: "Free scrap metal pickup — appliances, bikes, electronics and metal debris hauled at no cost where service is active. Book online in minutes.",
+    description: "Check free scrap metal pickup in confirmed service areas. Describe your metal items, request collection and confirm eligibility with the team.",
     path: "/free-metal-pickup",
   });
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "Vancouver", metal: "" });

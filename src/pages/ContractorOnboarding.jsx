@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSEO } from "@/lib/seo";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
@@ -30,6 +31,11 @@ const DOC_FIELDS = [
 ];
 
 export default function ContractorOnboarding() {
+  useSEO({
+    title: "Contractor Application & Verification | Same Day Recycling",
+    description: "Apply to the recycling contractor network. Submit your company, equipment and verification documents for review before partner approval.",
+    path: "/contractor-onboarding",
+  });
   const [form, setForm] = useState({
     company: "",
     owner_name: "",

@@ -14,7 +14,7 @@ const PERKS = [
 export default function Subscriptions() {
   useSEO({
     title: "Recurring Cleanout Subscriptions | Same Day Recycling",
-    description: "Scheduled junk removal and cleanout subscriptions for property managers, stratas and businesses. Predictable pricing and priority scheduling.",
+    description: "Review recurring cleanout pickup plans for property managers, stratas and businesses. Compare plan details and confirm coverage before signing up.",
     path: "/subscriptions",
   });
   return (

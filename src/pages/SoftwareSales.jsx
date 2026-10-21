@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "@/lib/seo";
 import {
   Users, CalendarDays, Truck, Receipt, BarChart3,
   ShieldCheck, Globe2, CheckCircle2, Database, RefreshCcw, CreditCard, Lock,
@@ -34,6 +35,11 @@ const TIERS = [
 ];
 
 export default function SoftwareSales() {
+  useSEO({
+    title: "Recycling Business Software & Licensing | Same Day Recycling",
+    description: "Manage customers, pickup scheduling, dispatch, invoicing and analytics. Compare Same Day Recycling software licenses, setup fees, onboarding and support.",
+    path: "/software",
+  });
   return (
     <div className="min-h-screen bg-white">
       <Navbar />

@@ -22,6 +22,14 @@
   <url><loc>https://samedayrecycling.ca/junk-removal-saint-john</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://samedayrecycling.ca/junk-removal-halifax</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://samedayrecycling.ca/junk-removal-st-johns</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-kamloops</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-kelowna</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-maple-ridge</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-pitt-meadows</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-charlottetown</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-whitehorse</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-yellowknife</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://samedayrecycling.ca/junk-removal-iqaluit</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://samedayrecycling.ca/pricing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://samedayrecycling.ca/real-estate</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://samedayrecycling.ca/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -55,7 +63,6 @@
   <url><loc>https://samedayrecycling.ca/region/NU</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
   <url><loc>https://samedayrecycling.ca/review</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://samedayrecycling.ca/contractor-onboarding</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://samedayrecycling.ca/software/start</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://samedayrecycling.ca/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://samedayrecycling.ca/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

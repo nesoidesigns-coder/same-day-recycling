@@ -7,11 +7,19 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
+import { useSEO } from "@/lib/seo";
 
 export default function BlogPost() {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const currentPost = post?.slug === slug ? post : null;
+  useSEO({
+    title: currentPost ? `${currentPost.title} | Same Day Recycling` : `${notFound ? "Guide Not Found" : "Loading Recycling Guide"} | Same Day Recycling`,
+    description: currentPost ? (currentPost.excerpt || `Read ${currentPost.title}, a recycling and disposal guide from Same Day Recycling.`).replace(/\s+/g, " ").slice(0, 160) : "Browse published recycling and disposal guides from Same Day Recycling.",
+    path: `/blog/${encodeURIComponent(slug)}`,
+    robots: currentPost ? "index, follow" : "noindex, follow",
+  });
 
   useEffect(() => {
     (async () => {
@@ -19,7 +27,6 @@ export default function BlogPost() {
         const { items } = await base44.entities.ContentPost.filter({ slug, status: "published" }, { limit: 1 });
         if (items.length) {
           setPost(items[0]);
-          document.title = `${items[0].title} | Same Day Recycling`;
         } else {
           setNotFound(true);
         }

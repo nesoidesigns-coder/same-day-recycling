@@ -14,7 +14,7 @@ const SERVICE_LABELS = { drop_off: "Drop-off", collection: "Collection", both: "
 export default function RecyclingDirectory() {
   useSEO({
     title: "Recycling Directory — Verified Services Across Canada",
-    description: "Search a national directory of verified recycling providers — electronics, furniture, appliances, paint, metal and more, across Canada.",
+    description: "Search recycling listings by material or location. View provider verification status, accepted items and contact details; availability varies by area.",
     path: "/recycling",
   });
   const navigate = useNavigate();

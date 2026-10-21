@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { useSEO } from '@/lib/seo';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 
@@ -6,6 +7,12 @@ import { useQuery } from '@tanstack/react-query';
 export default function NotFoundPage({}) {
     const location = useLocation();
     const pageName = location.pathname.substring(1);
+    useSEO({
+        title: 'Page Not Found | Same Day Recycling',
+        description: 'This page could not be found. Browse recycling services, confirmed coverage and recycling business software.',
+        path: location.pathname,
+        robots: 'noindex, follow',
+    });
 
     const { data: authData, isFetched } = useQuery({
         queryKey: ['user'],
