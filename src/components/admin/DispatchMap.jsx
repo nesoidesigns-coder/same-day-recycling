@@ -47,7 +47,7 @@ export default function DispatchMap({ bookings, onSelectCity, height = 320 }) {
           </span>
         )}
       </div>
-      <div style={{ height }} className="rounded-xl overflow-hidden border border-slate-100">
+      <div style={{ height }} className="rounded-xl overflow-hidden border border-slate-100 relative z-0 isolate">
         <MapContainer center={[49.25, -123.0]} zoom={9} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
