@@ -1,36 +1,19 @@
 import { useState } from "react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
-import Hero from "@/components/sdr/Hero";
-import TrustBar from "@/components/sdr/TrustBar";
-import LocallyOwned from "@/components/sdr/LocallyOwned";
+import HomeHero from "@/components/sdr/HomeHero";
+import TrustGauges from "@/components/sdr/TrustGauges";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
-import CitySelector from "@/components/sdr/CitySelector";
-import LoadEstimator from "@/components/sdr/LoadEstimator";
-import Reviews from "@/components/sdr/Reviews";
-import SubTeaser from "@/components/sdr/SubTeaser";
+import TransparentPricing from "@/components/sdr/TransparentPricing";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import ServiceArea from "@/components/sdr/ServiceArea";
 import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
+import Reviews from "@/components/sdr/Reviews";
 import FAQ from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
-import FacebookFeed from "@/components/sdr/FacebookFeed";
-import HologramFeed from "@/components/sdr/HologramFeed";
 import Footer from "@/components/sdr/Footer";
-import StickyCTA from "@/components/sdr/StickyCTA";
-import ExitIntentOffer from "@/components/sdr/ExitIntentOffer";
-import PhotoQuote from "@/components/sdr/PhotoQuote";
-import TextPhotoQuote from "@/components/sdr/TextPhotoQuote";
-import CurbsideDiscount from "@/components/sdr/CurbsideDiscount";
-import CondoStrata from "@/components/sdr/CondoStrata";
-import EcoReceipt from "@/components/sdr/EcoReceipt";
-import TransparentPricing from "@/components/sdr/TransparentPricing";
-import WeightCalculator from "@/components/sdr/WeightCalculator";
-import CoverageStrip from "@/components/sdr/CoverageStrip";
-import NationalSearchBand from "@/components/sdr/NationalSearchBand";
-import MetalPickupBand from "@/components/sdr/MetalPickupBand";
 
 export default function Home() {
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -42,36 +25,19 @@ export default function Home() {
     <div className="bg-white pb-20 md:pb-0">
       <TopBar />
       <Navbar />
-      <Hero />
-      <TrustBar />
-      <NationalSearchBand />
-      <LoadEstimator onBook={bookFromQuote} />
+      <HomeHero />
+      <TrustGauges />
       <Services />
       <HowItWorks />
-      <CurbsideDiscount />
       <TransparentPricing />
-      <WeightCalculator onBook={bookFromQuote} />
-      <TextPhotoQuote />
-      <PhotoQuote onBook={bookFromQuote} />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
       <ServiceArea />
-      <CoverageStrip />
-      <CitySelector />
       <RecyclingCentersMap showSelector />
-      <SubTeaser />
-      <CondoStrata />
-      <MetalPickupBand />
-      <EcoReceipt />
       <Reviews />
-      <LocallyOwned />
-      <HologramFeed />
-      <FacebookFeed />
       <FAQ />
       <FinalCTA />
       <Footer />
-      <StickyCTA />
-      <ExitIntentOffer />
     </div>
   );
 }
