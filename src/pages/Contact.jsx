@@ -88,8 +88,8 @@ export default function Contact() {
               Same-day pickup is live today in Vancouver, Burnaby, Surrey, Richmond and Coquitlam — BC's Lower Mainland.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed mt-2">
-              We're a Canadian platform expanding city by city through verified local partners: {onboardingCount} cities are in partner onboarding and {soonCount} more are planned. Not live in your city yet?{" "}
-              <Link to="/coverage" className="font-semibold text-[#187B65] hover:underline">See full coverage and join the waitlist</Link>.
+              Now accepting recycling and junk removal inquiries across Canada — customer demand drives local provider recruitment. {onboardingCount} cities are matching providers and {soonCount} more are in recruitment. Anywhere else in Canada?{" "}
+              <Link to="/request-service" className="font-semibold text-[#187B65] hover:underline">Submit a nationwide inquiry</Link> — availability and scheduling are confirmed after your request.
             </p>
           </div>
           <div className="rounded-2xl bg-[#102B2A] p-6 text-white">

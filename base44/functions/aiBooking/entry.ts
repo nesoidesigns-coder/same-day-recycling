@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { sendBookingNotifications } from '../../shared/bookingNotify.ts';
 import { isActiveCity } from '../../shared/coverageStatus.ts';
+import { submitNationalInquiry } from '../../shared/nationalInquiry.ts';
 
 // Self-driven AI booking engine. The customer chats; the AI extracts booking
 // details one message at a time. The SERVER — never the model — decides when
@@ -46,7 +47,8 @@ export default async function(req) {
         'You are Rex, the self-driven booking engine for Same Day Recycling, a Canadian junk removal and recycling company. ' +
         'Your only job is to collect the details needed to book a pickup by chatting with the customer.\n' +
         'Required details: name, phone, address, the city the pickup is in, and a short description of the items. ' +
-        'Active service cities right now: Vancouver, Burnaby, Surrey, Richmond and Coquitlam (BC). ' +
+        'Confirmed same-day operator cities: Vancouver, Burnaby, Surrey, Richmond and Coquitlam (BC). ' +
+        'Customer inquiries are accepted from EVERY Canadian city — never refuse or turn away a customer because of their city. ' +
         'Optional: email, preferred date, preferred time window.\n' +
         'Details already collected (JSON): ' + JSON.stringify(have) + '\n' +
         'Conversation so far:\n' + (transcript || '(just started)') + '\n' +
@@ -94,25 +96,29 @@ export default async function(req) {
       return Response.json({ reply, collected, missing });
     }
 
-    // Booking integrity: confirmed bookings are only created in active service
-    // territories. Anything else becomes a waitlist entry — never a Booking.
+    // Nationwide inquiry model: never waitlist or discard an inquiry. Only
+    // operator cities get a confirmed Booking; every other Canadian market
+    // becomes a national inquiry (provider matching / contractor recruitment).
     if (!isActiveCity(collected.city)) {
-      await base44.entities.ServiceWaitlist.create({
+      const inquiry = await submitNationalInquiry(base44, {
         name: collected.name,
         phone: collected.phone,
         ...(collected.email ? { email: collected.email } : {}),
-        city: collected.city,
         address: collected.address,
-        notes: collected.items_description,
-        source: 'ai_booking',
+        city: collected.city,
+        items_description: collected.items_description,
+        ...(collected.preferred_date ? { preferred_date: collected.preferred_date } : {}),
+        service_type: 'other',
+        notes: 'Submitted via the AI booking assistant (Rex).',
       });
       return Response.json({
-        reply:
-          `To be upfront with you: we're not running confirmed pickups in ${collected.city} yet. ` +
-          `I've added you to the service waitlist for ${collected.city} — we'll reach out the moment a verified partner launches there.`,
+        reply: inquiry.ok
+          ? (inquiry.message ||
+            `Your inquiry is saved. Local service availability and scheduling are confirmed after your request — we'll be in touch.`)
+          : `I couldn't save your inquiry just now — please call (604) 849-1745 and the team will take it directly.`,
         collected,
         missing: [],
-        waitlisted: true,
+        inquiry: inquiry.ok,
       });
     }
 

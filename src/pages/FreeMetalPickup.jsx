@@ -25,19 +25,19 @@ export default function FreeMetalPickup() {
     setSaving(true);
     setError("");
     try {
-      // Same availability rule as every other booking surface: only active
-      // territories confirm a booking — the rest join the waitlist.
+      // Nationwide inquiry model: only operator cities confirm a booking;
+      // every other market becomes a national inquiry (never discarded).
       if (!isCityActive(form.city)) {
-        await base44.entities.ServiceWaitlist.create({
+        await base44.functions.invoke('nationalRequest', {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          city: form.city,
           address: form.address,
-          notes: `FREE METAL PICKUP — ${form.metal}`,
-          source: "metal_pickup",
+          city: form.city,
+          service_type: 'metal_pickup',
+          items_description: `FREE METAL PICKUP — ${form.metal}`,
         });
-        base44.analytics.track({ eventName: "service_waitlist_joined", properties: { city: form.city } });
+        base44.analytics.track({ eventName: "national_request_submitted", properties: { city: form.city, service: "metal_pickup" } });
         setWaitlisted(true);
         setDone(true);
         return;
@@ -92,10 +92,10 @@ export default function FreeMetalPickup() {
         {done ? (
           <div className="rounded-3xl bg-[#f4f7f5] border border-slate-100 p-8 text-center">
             <CheckCircle2 className="w-12 h-12 text-[#187B65] mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-[#102B2A]">{waitlisted ? "You're on the waitlist!" : "You're booked!"}</h3>
+            <h3 className="text-2xl font-bold text-[#102B2A]">{waitlisted ? "Inquiry received!" : "You're booked!"}</h3>
             <p className="mt-3 text-slate-600">
               {waitlisted
-                ? `Free metal pickup isn't live in ${form.city} yet — we've saved your request and will contact you when service launches there.`
+                ? `Free metal pickup eligibility in ${form.city} is confirmed after your request — we've saved your inquiry and will contact you once a local provider is matched.`
                 : "We'll text or call you shortly to confirm your free pickup."}
             </p>
           </div>

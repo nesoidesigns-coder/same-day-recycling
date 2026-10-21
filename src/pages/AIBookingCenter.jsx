@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Bot, Send, CheckCircle2, Circle, Sparkles, Phone, Loader2 } from "lucide-react";
 
 const OPENING =
-  "Hi, I'm Rex — the Same Day Recycling booking engine. Same-day pickup is live in Vancouver, Burnaby, Surrey, Richmond and Coquitlam. Tell me what you need picked up and where — I'll book it, or add you to the waitlist if we're not there yet. What are we clearing out today?";
+  "Hi, I'm Rex — the Same Day Recycling booking engine. Same-day pickup is confirmed in Vancouver, Burnaby, Surrey, Richmond and Coquitlam, and I accept inquiries from every city in Canada. Tell me what you need picked up and where. What are we clearing out today?";
 
 const FIELD_ROWS = [
   ["name", "Name", true],
@@ -27,7 +27,7 @@ export default function AIBookingCenter() {
   const [messages, setMessages] = useState([{ role: "assistant", content: OPENING }]);
   const [collected, setCollected] = useState({});
   const [booked, setBooked] = useState(null);
-  const [waitlisted, setWaitlisted] = useState(false);
+  const [inquiry, setInquiry] = useState(false);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef(null);
@@ -38,7 +38,7 @@ export default function AIBookingCenter() {
 
   const send = async (text) => {
     const msg = (typeof text === "string" ? text : input).trim();
-    if (!msg || sending || booked || waitlisted) return;
+    if (!msg || sending || booked || inquiry) return;
     setInput("");
     const nextMessages = [...messages, { role: "user", content: msg }];
     setMessages(nextMessages);
@@ -53,7 +53,7 @@ export default function AIBookingCenter() {
       if (data.collected) setCollected(data.collected);
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply || "Sorry, say that once more?" }]);
       if (data.booked) setBooked(data.booked);
-      if (data.waitlisted) setWaitlisted(true);
+      if (data.inquiry) setInquiry(true);
     } catch (e) {
       setMessages((prev) => [
         ...prev,
@@ -78,9 +78,9 @@ export default function AIBookingCenter() {
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#102B2A] tracking-tight">AI Booking Center</h1>
           <p className="mt-2 text-slate-600 max-w-xl mx-auto">
-            Book your pickup in one conversation. Rex collects the details, confirms availability for your city and
-            schedules the job — no forms, no waiting. Same-day booking is live in our five active BC cities; other
-            cities join the waitlist until a verified partner launches.
+            Book your pickup in one conversation. Rex collects the details and schedules the job — no forms, no
+            waiting. Confirmed same-day booking in our five operator cities; every other Canadian city submits an
+            inquiry — local service availability and scheduling are confirmed after your request.
           </p>
         </div>
 
@@ -120,17 +120,17 @@ export default function AIBookingCenter() {
               )}
             </div>
 
-            {booked || waitlisted ? (
+            {booked || inquiry ? (
               <div className="border-t border-slate-100 p-4 sm:p-6 bg-[#f4f7f5]">
                 <div className="flex items-start gap-3 rounded-2xl bg-white border border-[#187B65]/30 p-4">
                   <CheckCircle2 className="w-6 h-6 text-[#187B65] shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-bold text-[#102B2A]">{booked ? "Pickup booked — status: Confirmed" : "You're on the waitlist"}</div>
+                    <div className="font-bold text-[#102B2A]">{booked ? "Pickup booked — status: Confirmed" : "Inquiry received"}</div>
                     <p className="text-sm text-slate-600 mt-1">
                       {booked ? (
                         <>Dispatch locks in the exact arrival window and updates you at every step.{!collected.email && " Add an email next time to get instant confirmations."}</>
                       ) : (
-                        <>Confirmed pickup isn't available in {collected.city} yet — we've saved your request and will contact you when a verified partner launches there.</>
+                        <>Same-day booking isn't confirmed in {collected.city} yet — your nationwide inquiry is saved, and local service availability and scheduling are confirmed after your request.</>
                       )}
                     </p>
                     <Link to="/" className="inline-block mt-2 text-sm font-bold text-[#187B65] hover:underline">
@@ -159,13 +159,13 @@ export default function AIBookingCenter() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && send()}
-                    placeholder={booked ? "This booking is confirmed" : waitlisted ? "You're on the waitlist" : "Type your reply…"}
-                    disabled={!!booked || waitlisted}
+                    placeholder={booked ? "This booking is confirmed" : inquiry ? "Inquiry received" : "Type your reply…"}
+                    disabled={!!booked || inquiry}
                     className="input flex-1"
                   />
                   <button
                     onClick={() => send()}
-                    disabled={sending || !input.trim() || booked || waitlisted}
+                    disabled={sending || !input.trim() || booked || inquiry}
                     className="rounded-xl bg-[#187B65] text-white px-4 flex items-center justify-center hover:bg-[#125C4E] transition-colors disabled:opacity-50"
                     aria-label="Send"
                   >
