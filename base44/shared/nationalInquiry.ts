@@ -50,7 +50,17 @@ export async function submitNationalInquiry(base44, input) {
   let recruitment_id = '';
   let message = '';
 
+  let needsRecruitAlert = false;
   if (coverage_status === 'verified') {
+    // Operator-run city: warn admins when the verified contractor network is
+    // empty, so dispatch still has people to assign when the window opens.
+    try {
+      const [pc, rc] = await Promise.all([
+        srole.entities.Partner.count({ active: true }),
+        srole.entities.ProviderRecruit.count({ verified: true }),
+      ]);
+      if (((pc || 0) + (rc || 0)) === 0) needsRecruitAlert = true;
+    } catch { /* counts are best-effort */ }
     // Confirmed operational capacity — dispatch confirms the same-day window.
     status = 'provider_matching';
     message = `Request received for ${city}. We operate nationwide — our dispatch team is arranging your local contractor and will call you at ${phone} to confirm pricing and your arrival window before the appointment is guaranteed.`;
@@ -97,6 +107,9 @@ export async function submitNationalInquiry(base44, input) {
         });
         recruitment_id = rec.id;
       }
+      // No contractor available in this market — admins must recruit or
+      // manually assign one before anything is promised to the customer.
+      needsRecruitAlert = true;
       message = `Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
     }
   }
@@ -142,6 +155,20 @@ export async function submitNationalInquiry(base44, input) {
     dispatch_task_id: dispatch.id,
     dispatch_status: 'awaiting_contractor',
   });
+
+  // Admin alert: no verified contractor available for this request.
+  if (needsRecruitAlert) {
+    try {
+      await srole.integrations.Core.SendEmail({
+        to: 'samedayrecycling@gmail.com',
+        from_name: 'Same Day Recycling',
+        subject: `Dispatch needed: ${city}${province_code ? ', ' + province_code : ''} — no verified contractor`,
+        text: `Request ${reference_code} from ${city}${province_code ? ', ' + province_code : ''} has no verified contractor available. Recruit or manually assign a contractor in the dispatch center (/admin/national). Customer: ${name}, ${phone}. Nothing is promised to the customer until a contractor accepts.`,
+      });
+    } catch (e) {
+      console.error('Admin dispatch alert failed:', (e && e.message) || e);
+    }
+  }
 
   return {
     ok: true,

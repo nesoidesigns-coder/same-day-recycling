@@ -28,6 +28,9 @@ export const ITEM_WEIGHTS = {
   "bags/boxes of junk": 0.15,
 };
 
+// Advertised curbside discount: customer stages items curbside, $25 off.
+export const CURBSIDE_DISCOUNT = 25;
+
 const round5 = (n) => Math.round(n / 5) * 5;
 
 export function tierFor(eighths) {
@@ -47,15 +50,29 @@ const NEXT_KEY = {
   three_quarter_truck: "full_truck",
 };
 
-export function computeQuote(eighths, prices) {
+export function computeQuote(eighths, prices, opts) {
   const p = { ...DEFAULT_PRICES, ...(prices || {}) };
   const { key, label } = tierFor(eighths);
-  const low = p[key];
+  let low = p[key];
   const nextKey = NEXT_KEY[key];
-  const high = nextKey
+  let high = nextKey
     ? round5(low + 0.4 * (p[nextKey] - low))
     : round5(low + 0.4 * (p.full_truck - p.three_quarter_truck));
-  return { label, low, high, range: "$" + low + " \u2013 $" + high };
+  // Curbside discount: $25 off the range, applied once per job. The low
+  // bound never drops below $50 so tiny loads stay viable to serve.
+  let discount = 0;
+  if (opts && opts.curbside) {
+    discount = CURBSIDE_DISCOUNT;
+    low = Math.max(50, low - discount);
+    high = Math.max(low + 5, high - discount);
+  }
+  return {
+    label,
+    low,
+    high,
+    discount,
+    range: "$" + low + " \u2013 $" + high + (discount ? " ($" + discount + " curbside discount applied)" : ""),
+  };
 }
 
 export function itemsToEighths(items) {

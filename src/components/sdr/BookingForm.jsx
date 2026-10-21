@@ -4,11 +4,12 @@ import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
 import { cityByName, isCityActive } from "@/lib/coverage";
+import { provinceForCity, taxFor } from "@/lib/canadaTax";
 import ReviewInvite from "@/components/sdr/ReviewInvite";
 import PayPalButtons from "@/components/pay/PayPalButtons";
 
 export default function BookingForm({ prefill }) {
-  const [form, setForm] = useState({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" });
+  const [form, setForm] = useState({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false });
   const [photo, setPhoto] = useState(null);
   const [quoteNote, setQuoteNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -60,7 +61,7 @@ export default function BookingForm({ prefill }) {
         const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: photo });
         photo_uri = file_uri;
       }
-      const res = await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri });
+      const res = await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside });
       setBookingId(res?.data?.booking_id || null);
       base44.analytics.track({ eventName: 'booking_submitted' });
       if (typeof window.gtag === "function") {
@@ -86,19 +87,31 @@ export default function BookingForm({ prefill }) {
             ? `We've saved your request for ${form.city} and we'll contact you as soon as a verified partner launches there.`
             : "We'll call you within 30 minutes to confirm your pickup window."}
         </p>
-        {!waitlisted && bookingId && !payDone && quoteAmount > 0 && (
-          <div className="mt-6 rounded-2xl bg-[#f4f7f5] border border-slate-100 p-5 text-left">
-            <div className="text-sm font-bold text-[#102B2A]">Pay your estimated quote now</div>
-            <p className="text-xs text-slate-500 mt-1 mb-3">Secure payment through PayPal. The final price is confirmed by the crew on arrival.</p>
-            <PayPalButtons createPayload={{ kind: 'booking', booking_id: bookingId }} onPaid={() => setPayDone(true)} />
-          </div>
-        )}
+        {!waitlisted && bookingId && !payDone && quoteAmount > 0 && (() => {
+          // Province-appropriate tax breakdown, shown before payment. The
+          // server applies the same rate at order creation (authoritative).
+          const discount = form.curbside ? 25 : 0;
+          const subtotal = Math.max(0, quoteAmount - discount);
+          const tax = taxFor(provinceForCity(form.city), subtotal);
+          return (
+            <div className="mt-6 rounded-2xl bg-[#f4f7f5] border border-slate-100 p-5 text-left">
+              <div className="text-sm font-bold text-[#102B2A]">Pay your estimated quote now</div>
+              <p className="text-xs text-slate-500 mt-1 mb-3">Secure payment through PayPal. The final price is confirmed by the crew on arrival.</p>
+              <div className="rounded-xl bg-white border border-slate-100 px-4 py-3 mb-3 text-sm space-y-1">
+                <div className="flex justify-between"><span className="text-slate-500">Subtotal{discount ? " (incl. $25 curbside discount)" : ""}</span><span className="font-semibold text-[#102B2A]">${subtotal.toFixed(2)}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Estimated taxes{tax.estimated ? " (estimate)" : ""} — {tax.label}</span><span className="font-semibold text-[#102B2A]">${tax.tax.toFixed(2)}</span></div>
+                <div className="flex justify-between border-t border-slate-100 pt-1"><span className="font-bold text-[#102B2A]">Total</span><span className="font-bold text-[#102B2A]">${tax.total.toFixed(2)} CAD</span></div>
+              </div>
+              <PayPalButtons createPayload={{ kind: 'booking', booking_id: bookingId }} onPaid={() => setPayDone(true)} />
+            </div>
+          );
+        })()}
         {payDone && (
           <p className="mt-6 font-semibold text-[#187B65] flex items-center justify-center gap-1.5">
             <CheckCircle2 className="w-4 h-4" /> Payment received — thank you!
           </p>
         )}
-        <button onClick={() => { setDone(false); setWaitlisted(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
+        <button onClick={() => { setDone(false); setWaitlisted(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false }); setPhoto(null); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
           Book another pickup
         </button>
         <ReviewInvite />
@@ -147,6 +160,18 @@ export default function BookingForm({ prefill }) {
             Instant quote: {quoteNote} — final price confirmed on arrival.
           </div>
         )}
+        <label className="flex items-start gap-3 rounded-xl bg-[#f4f7f5] border border-[#187B65]/30 px-4 py-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={form.curbside}
+            onChange={(e) => setForm((f) => ({ ...f, curbside: e.target.checked }))}
+            className="mt-0.5 accent-[#187B65] w-4 h-4"
+          />
+          <span className="text-sm text-[#102B2A]">
+            <span className="font-semibold">Leave it curbside — save $25.</span>{" "}
+            Stage your items in the driveway, lane or garage front; no need to be home. Applied once per job to your final invoice.
+          </span>
+        </label>
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="Preferred pickup date">
             <input value={form.preferred_date} onChange={update("preferred_date")} type="date" className="input" />

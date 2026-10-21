@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { sendBookingNotifications } from '../../shared/bookingNotify.ts';
 import { isActiveCity } from '../../shared/coverageStatus.ts';
+import { provinceForCity } from '../../shared/canadaTax.ts';
 
 export default async function(req) {
   try {
@@ -24,6 +25,11 @@ export default async function(req) {
     const time_window = str(body?.time_window, 40);
     const quote_estimate = str(body?.quote_estimate, 120);
     const photo_uri = str(body?.photo_uri, 500);
+    // Advertised $25 curbside discount: one per job, applied at creation and
+    // recorded on the booking so payment and pricing always see it.
+    const curbside = body?.curbside === true;
+    const discount_amount = curbside ? 25 : 0;
+    const province_code = provinceForCity(city);
 
     // Booking integrity: confirmed bookings are only accepted in active service
     // territories. The frontend routes non-live cities to the ServiceWaitlist;
@@ -46,6 +52,8 @@ export default async function(req) {
       ...(time_window ? { time_window } : {}),
       ...(quote_estimate ? { quote_estimate } : {}),
       ...(photo_uri ? { photo_uri } : {}),
+      ...(curbside ? { curbside_discount: true, discount_amount: 25 } : {}),
+      ...(province_code ? { province_code } : {}),
     });
 
     const notified = await sendBookingNotifications(base44.asServiceRole, {
@@ -59,6 +67,15 @@ export default async function(req) {
       time_window,
       quote_estimate,
     });
+
+    // Persist the delivery outcome on the booking for system-health reporting.
+    if (booking?.id) {
+      await base44.entities.Booking.update(booking.id, {
+        notified,
+        ...(province_code ? { province_code } : {}),
+        ...(curbside ? { discount_amount: 25 } : {}),
+      }).catch((e) => console.error('Failed to record notification status:', e.message));
+    }
 
     return Response.json({ ok: true, booking_id: booking?.id, notified });
   } catch (error) {

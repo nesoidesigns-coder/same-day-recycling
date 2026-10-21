@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 import { paypal, paypalAppOrigin as appOrigin, parseQuoteAmount, CURRENCY, ensureLicenseInvite } from '../../shared/paypal.ts';
+import { taxFor, provinceForCity } from '../../shared/canadaTax.ts';
 
 export default async function(req) {
   try {
@@ -87,7 +88,7 @@ export default async function(req) {
 
     if (action === 'create_order') {
       const kind = String(body.kind || '');
-      let amount = 0, description = '', refId = '', refLabel = '', purpose = '', customerEmail = '';
+      let amount = 0, description = '', refId = '', refLabel = '', purpose = '', customerEmail = '', taxInfo = null;
       if (kind === 'booking') {
         const bookingId = String(body.booking_id || '').trim();
         if (!bookingId) return Response.json({ error: 'Missing booking.' }, { status: 400 });
@@ -97,6 +98,17 @@ export default async function(req) {
         if (!amount) {
           return Response.json({ error: "The final price is confirmed by the crew on arrival, so there's nothing to pay yet. Call (604) 849-1745 to pay after your pickup." }, { status: 422 });
         }
+        // One-per-job curbside discount ($25) is enforced server-side from the
+        // booking record — the client can never inflate it.
+        const discount = Math.min(25, Number(b.discount_amount) || 0);
+        amount = Math.max(0, Math.round((amount - discount) * 100) / 100);
+        if (!amount) {
+          return Response.json({ error: 'After the curbside discount this quote has nothing to charge yet. Call (604) 849-1745 to pay after your pickup.' }, { status: 422 });
+        }
+        // Province-appropriate sales tax (GST/HST/PST) at final quote approval.
+        const province = (b.province_code || provinceForCity(b.city) || '').toUpperCase();
+        taxInfo = taxFor(province, amount);
+        amount = taxInfo.total;
         purpose = 'booking_quote';
         refId = b.id;
         refLabel = b.name + (b.city ? ' - ' + b.city : '');
@@ -150,6 +162,12 @@ export default async function(req) {
         currency: CURRENCY,
         paypal_order_id: order.id,
         status: 'created',
+        ...(taxInfo ? {
+          subtotal_amount: Math.round((amount - taxInfo.tax) * 100) / 100,
+          tax_amount: taxInfo.tax,
+          tax_label: taxInfo.label + (taxInfo.estimated ? ' (estimate)' : ''),
+          note: taxInfo.estimated ? 'Tax estimated at GST 5% - province could not be determined' : '',
+        } : {}),
       });
       return Response.json({ orderId: order.id, amount });
     }
@@ -169,9 +187,11 @@ export default async function(req) {
         cap = ord;
       }
       const payerEmail = (cap.payer && cap.payer.email_address) || '';
+      const captureId = ((cap.purchase_units || [])[0] && (cap.purchase_units[0].payments || {}).captures
+        && cap.purchase_units[0].payments.captures[0] && cap.purchase_units[0].payments.captures[0].id) || '';
       const { items } = await srole.entities.PaypalTransaction.filter({ paypal_order_id: orderId }, { limit: 1 });
       if (items && items.length) {
-        await srole.entities.PaypalTransaction.update(items[0].id, { status: 'paid', paypal_payer_email: payerEmail });
+        await srole.entities.PaypalTransaction.update(items[0].id, { status: 'paid', paypal_payer_email: payerEmail, capture_id: captureId });
         if (items[0].purpose === 'license_setup' && items[0].ref_id) {
           const lic = await srole.entities.SoftwareLicense.get(items[0].ref_id).catch(() => null);
           if (lic && lic.id && lic.status === 'provisioning') {
@@ -315,6 +335,29 @@ export default async function(req) {
         }
       }
       return Response.json({ ok: true });
+    }
+
+    if (action === 'refund') {
+      // Admin-only refund of a captured one-time payment.
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') return Response.json({ error: 'Admins only.' }, { status: 403 });
+      const orderId = String(body.order_id || '').trim();
+      if (!orderId) return Response.json({ error: 'Missing order.' }, { status: 400 });
+      const { items } = await srole.entities.PaypalTransaction.filter({ paypal_order_id: orderId }, { limit: 1 });
+      const tx = items && items.length ? items[0] : null;
+      if (!tx || tx.status !== 'paid' || tx.kind !== 'order') {
+        return Response.json({ error: 'Only paid one-time orders can be refunded.' }, { status: 422 });
+      }
+      if (!tx.capture_id) {
+        return Response.json({ error: 'Missing capture reference on this transaction - refund must be issued in PayPal.' }, { status: 422 });
+      }
+      const ref = await paypal('/v2/payments/captures/' + tx.capture_id + '/refund', 'POST', {});
+      const refundStatus = ((ref && ref.status) || 'REFUNDED').toLowerCase();
+      await srole.entities.PaypalTransaction.update(tx.id, {
+        status: 'refunded',
+        note: ('Refunded via admin panel on ' + new Date().toISOString() + ' (PayPal status: ' + refundStatus + ')').slice(0, 1000),
+      });
+      return Response.json({ ok: true, refund_status: refundStatus });
     }
 
     return Response.json({ error: 'Unknown action.' }, { status: 400 });

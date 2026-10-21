@@ -1,4 +1,7 @@
-export const OWNER_EMAIL = 'nesoidesigns@gmail.com';
+// Business owner address — the one shown on the live site footer and used
+// by sendCustomerEmail. Credentials are the built-in Base44 SendEmail
+// integration (server-side only, never exposed to the frontend).
+export const OWNER_EMAIL = 'samedayrecycling@gmail.com';
 export const BUSINESS_PHONE = '(604) 849-1745';
 
 // Sends the owner alert and the customer confirmation for a new booking.
@@ -28,9 +31,12 @@ export async function sendBookingNotifications(srole, b) {
     ownerEmail = 'sent';
   } catch (e) {
     ownerEmail = 'failed';
+    const msg = String((e && e.message) || e);
+    console.error('Owner alert email failed:', msg);
+    notified.errors.push('owner: ' + msg);
   }
 
-  const notified = { owner_email: ownerEmail, customer_email: 'skipped' };
+  const notified = { owner_email: ownerEmail, customer_email: 'skipped', errors: [] as string[] };
 
   const customerHtml = `<div style="font-family:sans-serif;max-width:560px">
       <h2 style="color:#0c3b24">Your pickup is booked ✅</h2>
@@ -53,9 +59,12 @@ export async function sendBookingNotifications(srole, b) {
         html: customerHtml,
       });
       notified.customer_email = 'sent';
-    } catch (e) {
+      } catch (e) {
       notified.customer_email = 'failed';
-    }
+      const msg = String((e && e.message) || e);
+      console.error('Customer confirmation email failed:', msg);
+      notified.errors.push('customer: ' + msg);
+      }
   }
 
   return notified;

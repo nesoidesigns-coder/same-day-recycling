@@ -36,6 +36,16 @@
     "amount": {
       "type": "number"
     },
+    "subtotal_amount": {
+      "type": "number"
+    },
+    "tax_amount": {
+      "type": "number"
+    },
+    "tax_label": {
+      "type": "string",
+      "default": ""
+    },
     "currency": {
       "type": "string",
       "default": "CAD"
@@ -52,6 +62,10 @@
       "type": "string",
       "default": ""
     },
+    "capture_id": {
+      "type": "string",
+      "default": ""
+    },
     "status": {
       "type": "string",
       "enum": [
@@ -59,7 +73,8 @@
         "paid",
         "active",
         "failed",
-        "cancelled"
+        "cancelled",
+        "refunded"
       ],
       "default": "created"
     },

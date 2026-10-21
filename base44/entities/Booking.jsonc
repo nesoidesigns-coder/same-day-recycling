@@ -19,6 +19,10 @@
       "type": "string",
       "default": ""
     },
+    "province_code": {
+      "type": "string",
+      "default": ""
+    },
     "items_description": {
       "type": "string"
     },
@@ -35,6 +39,18 @@
     "photo_uri": {
       "type": "string",
       "format": "uri"
+    },
+    "curbside_discount": {
+      "type": "boolean",
+      "default": false
+    },
+    "discount_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "notified": {
+      "type": "object",
+      "default": {}
     },
     "status": {
       "type": "string",

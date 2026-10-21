@@ -78,8 +78,10 @@ export default async function(req) {
       return Response.json({ error: 'Provide items, a description, or photos.' }, { status: 400 });
     }
 
-    const quote = computeQuote(eighths, prices);
-    return Response.json({ ...quote, eighths, city, items: estimateItems });
+    // Curbside discount: only applies when the customer explicitly opts in.
+    const curbside = body?.curbside === true;
+    const quote = computeQuote(eighths, prices, { curbside });
+    return Response.json({ ...quote, eighths, city, items: estimateItems, curbside });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

@@ -14,6 +14,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
   const [qty, setQty] = useState({});
   const [description, setDescription] = useState("");
   const [city, setCity] = useState(fixedCity || "");
+  const [curbside, setCurbside] = useState(false);
   const [loading, setLoading] = useState(false);
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState("");
@@ -28,6 +29,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
     try {
       const payload = items.length ? { items } : { description: description.trim() };
       if (city) payload.city = city;
+      payload.curbside = curbside;
       const res = await base44.functions.invoke("quoteEstimate", payload);
       setQuote(res.data);
       base44.analytics.track({ eventName: "quote_calculated", properties: { city: city || "", items: items.length } });
@@ -100,7 +102,19 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                 placeholder="e.g. old couch, a mini fridge and about ten boxes from the garage"
               />
             </label>
-            <button onClick={calculate} disabled={loading} className="mt-4 w-full rounded-full bg-[#102B2A] text-white font-bold px-7 py-3.5 hover:bg-[#0a3020] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+            <label className="flex items-start gap-3 mt-4 mb-4 rounded-xl bg-white border border-[#187B65]/30 px-4 py-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={curbside}
+                onChange={(e) => setCurbside(e.target.checked)}
+                className="mt-0.5 accent-[#187B65] w-4 h-4"
+              />
+              <span className="text-sm text-[#102B2A]">
+                <span className="font-semibold">Leave it curbside — save $25.</span>{" "}
+                Stage your items in the driveway, lane or garage front; no need to be home.
+              </span>
+            </label>
+            <button onClick={calculate} disabled={loading} className="w-full rounded-full bg-[#102B2A] text-white font-bold px-7 py-3.5 hover:bg-[#0a3020] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Calculator className="w-5 h-5" />}
               {loading ? "Calculating…" : "Calculate my estimate"}
             </button>
