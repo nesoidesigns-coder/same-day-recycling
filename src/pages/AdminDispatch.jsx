@@ -140,7 +140,7 @@ export default function AdminDispatch() {
     await base44.entities.Booking.update(b.id, withHistory(b, { assignment_status: "assigned", ...payload }));
     setBusy(false);
     closeModal();
-    flash(`Assigned to ${payload.partner_name}${payload.referred_by_admin ? ` · referral commission ${payload.commission_rate}%` : ""}`);
+    flash(`Assigned to ${payload.partner_name}${payload.referred_by_admin ? ` · personal referral commission ${payload.commission_rate}%` : ""}`);
     refresh();
   };
 
@@ -170,9 +170,28 @@ export default function AdminDispatch() {
       status: "completed",
       ...payload,
     }));
+    // Mirror each earned fee into the revenue ledger (one row per category,
+    // never both — a referral commission and an agreement fee never coexist).
+    const today = new Date().toISOString().slice(0, 10);
+    const ledgerRows = [];
+    if (payload.commission_earned > 0) {
+      ledgerRows.push({
+        category: "job_commission", direction: "revenue", amount: payload.commission_earned,
+        ref_type: "booking", ref_id: b.id, ref_label: `Referral commission — ${b.name}`,
+        partner_id: b.partner_id || "", partner_name: b.partner_name || "", occurred_date: today,
+      });
+    }
+    if (payload.platform_fee_amount > 0) {
+      ledgerRows.push({
+        category: "job_commission", direction: "revenue", amount: payload.platform_fee_amount,
+        ref_type: "booking", ref_id: b.id, ref_label: `Platform fee — ${b.name}`,
+        partner_id: b.partner_id || "", partner_name: b.partner_name || "", occurred_date: today,
+      });
+    }
+    if (ledgerRows.length) await base44.entities.RevenueLedger.bulkCreate(ledgerRows);
     setBusy(false);
     closeModal();
-    flash(`Job completed · invoice ${money(payload.final_invoice)}${payload.commission_earned ? ` · commission ${money(payload.commission_earned)} earned` : ""}`);
+    flash(`Job completed · invoice ${money(payload.final_invoice)}${payload.commission_earned ? ` · commission ${money(payload.commission_earned)} earned` : ""}${payload.platform_fee_amount ? ` · platform fee ${money(payload.platform_fee_amount)} earned` : ""}`);
     refresh();
   };
 
@@ -326,6 +345,9 @@ export default function AdminDispatch() {
   };
 
   const commissionCell = (b) => {
+    if (Number(b.platform_fee_amount) > 0) {
+      return <span className="text-xs font-semibold text-[#102B2A]">{money(b.platform_fee_amount)} <span className="text-[10px] font-bold text-slate-400 uppercase">agreement fee</span></span>;
+    }
     if (!b.referred_by_admin) return <span className="text-slate-300">—</span>;
     const outstanding = Math.max(0, (Number(b.commission_earned) || 0) - (Number(b.commission_paid) || 0));
     return (

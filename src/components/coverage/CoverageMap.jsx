@@ -1,14 +1,15 @@
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Map, Loader2, ShieldCheck, UserSearch, Hourglass } from "lucide-react";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import { COVERAGE } from "@/lib/coverage";
 import { REGIONS } from "@/lib/regions";
+import { Map, Loader2, ShieldCheck, UserSearch, Hourglass } from "lucide-react";
 
-// Live national coverage map. Marker state comes from the coverage status
-// engine (verified partner capacity / open matching requests), never from
-// facility-directory counts. Coordinates come from the coverage registry
-// and province fallbacks — nothing is hardcoded as active.
+// Live national coverage map driven by the same verified-partner status feed as
+// the rest of the Coverage page. Nothing on the map is derived from the
+// directory research database (recycling facilities), and requests remain open
+// nationwide regardless of marker colour.
+
 const FALLBACK_COORDS = {
   "North Vancouver": { lat: 49.3113, lng: -123.0696, province: "BC" },
 };

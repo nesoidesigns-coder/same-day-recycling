@@ -13,6 +13,7 @@ import RoiCalculator from "@/components/software/RoiCalculator";
 import IndustryIntelligence from "@/components/software/IndustryIntelligence";
 import RevenueCalculator from "@/components/software/RevenueCalculator";
 import PlatformChat from "@/components/software/PlatformChat";
+import LicenseClarity from "@/components/software/LicenseClarity";
 
 const FEATURES = [
   { icon: Users, title: "Customer CRM", desc: "Every commercial and residential customer, notes, contact history and service preferences in one clean record." },
@@ -147,6 +148,8 @@ export default function SoftwareSales() {
           </div>
         </div>
 
+        <LicenseClarity />
+
         <RevenueCalculator />
 
         {/* ROI calculator */}
@@ -214,7 +217,7 @@ export default function SoftwareSales() {
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { icon: Database, t: "Company-level isolation", d: "Row-level security walls off every company's customers, jobs and invoices. No business can ever see another's data." },
+              { icon: Database, t: "Company-level isolation", d: "Row-level security walls off every licensed company's customers, job records, employees, schedules and financials. Same Day Recycling touches tenant data only for authorized platform operations, and no business can see another's records." },
               { icon: RefreshCcw, t: "Verified provisioning", d: "Your account is provisioned only after PayPal verifies your subscription payment. Test mode until you flip it live." },
               { icon: Lock, t: "You control access", d: "Pause, resume or cancel from the national console. Cancelling ends the PayPal billing and locks the dashboard." },
             ].map((c) => (

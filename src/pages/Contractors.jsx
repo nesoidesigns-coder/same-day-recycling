@@ -136,6 +136,35 @@ export default function Contractors() {
         </div>
       </section>
 
+      {/* Your revenue, your terms */}
+      <section className="bg-white">
+        <div className="max-w-4xl mx-auto px-4 py-16 md:py-20 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Your Business. Your Customers. Your Revenue.</h2>
+          <p className="mt-5 text-lg text-slate-600">
+            Same Day Recycling provides professional software and network opportunities for independent
+            recycling and junk removal companies. Keep the revenue from customers you acquire yourself.
+            Pay only the fees agreed to under your selected services.
+          </p>
+          <div className="mt-10 grid sm:grid-cols-3 gap-4 text-left">
+            {[
+              { t: "Join the contractor network", d: "You receive platform-generated job opportunities in your city, run them with your crew, and keep the job revenue. Your monthly membership is the agreed cost; any separately disclosed dispatch or referral fee on platform-generated opportunities is shown to you before you accept each job." },
+              { t: "Buy the standalone software", d: "License the operating system on its own and manage your own customers, dispatch, scheduling, quotes, invoices, payments and analytics. You keep 100% of revenue from customers you acquire yourself — no commission on independently sourced jobs." },
+              { t: "Negotiate a referral agreement", d: "Some partners choose an individually negotiated referral or commission arrangement. These are separate written agreements with disclosed terms — never a default charge, and never applied to jobs you source yourself." },
+            ].map((c) => (
+              <div key={c.t} className="rounded-3xl border border-slate-100 bg-white shadow-sm p-6">
+                <h3 className="font-bold text-[#102B2A]">{c.t}</h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">{c.d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-sm text-slate-500 max-w-2xl mx-auto">
+            Network access provides opportunities, not guarantees: we do not promise a number of jobs, specific earnings,
+            exclusive territories, or any particular operational result. All applicable fees are disclosed in writing before
+            you accept any agreement.
+          </p>
+        </div>
+      </section>
+
       <FoundingPartnerOffer />
 
       {/* THE ADMIN */}
@@ -224,9 +253,9 @@ export default function Contractors() {
           <div className="mt-8 max-w-2xl mx-auto text-center space-y-3">
             <p className="inline-flex items-center gap-2 rounded-full bg-[#102B2A] text-white font-bold px-6 py-3 text-sm">
               <BadgeCheck className="w-4 h-4 text-[#187B65]" />
-              Exclusive territory — one partner per metro market. When your market is taken, it's taken.
+              Membership plans are capped per market to keep job flow healthy for every member.
             </p>
-            <p className="text-slate-600 font-semibold">You spend $0 on ads, $0 on a website, $0 on an office.</p>
+            <p className="text-slate-600 font-semibold">No hidden charges: every fee is disclosed in your agreement before you sign.</p>
           </div>
         </div>
       </section>
@@ -277,8 +306,8 @@ export default function Contractors() {
       {/* FINAL CTA */}
       <section className="bg-[#187B65] text-[#102B2A]">
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold">Your city is open — for now.</h2>
-          <p className="mt-3 font-semibold">One partner per metro market, in order of application.</p>
+          <h2 className="text-3xl md:text-4xl font-bold">Your Business. Your Customers. Your Revenue.</h2>
+          <p className="mt-3 font-semibold">Apply today — a real person reviews every application and calls you back.</p>
           <a href="#apply" className="mt-8 inline-block rounded-full bg-[#102B2A] text-white font-bold px-8 py-4 hover:bg-[#0a3020] transition-colors">
             Apply for Your Territory
           </a>

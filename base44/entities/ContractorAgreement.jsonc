@@ -1,0 +1,124 @@
+{
+  "name": "ContractorAgreement",
+  "type": "object",
+  "properties": {
+    "partner_id": {
+      "type": "string"
+    },
+    "partner_name": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_email": {
+      "type": "string",
+      "default": ""
+    },
+    "agreement_type": {
+      "type": "string",
+      "enum": [
+        "private_commission",
+        "network_membership",
+        "software_license_only"
+      ],
+      "default": "network_membership"
+    },
+    "fee_model": {
+      "type": "string",
+      "enum": [
+        "none",
+        "percentage",
+        "fixed"
+      ],
+      "default": "none"
+    },
+    "fee_percent": {
+      "type": "number",
+      "default": 0
+    },
+    "fee_fixed_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "applies_to_sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "platform_generated",
+          "personal_referral",
+          "other_referral"
+        ]
+      },
+      "default": []
+    },
+    "membership_fee_monthly": {
+      "type": "number",
+      "default": 0
+    },
+    "fee_disclosure": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_contractor_acceptance",
+        "active",
+        "ended"
+      ],
+      "default": "draft"
+    },
+    "approved_by": {
+      "type": "string",
+      "default": ""
+    },
+    "accepted_by_contractor_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "partner_id",
+    "agreement_type"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.partner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

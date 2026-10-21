@@ -65,11 +65,72 @@ export default async function(req) {
       { sort: '-created_date', limit: 50 }
     );
 
+    // Only fields a contractor may see about their own jobs: financial terms are
+    // shown before acceptance, and no other company's data is ever included.
+    const withTerms = (b) => ({
+      ...b,
+      fee_disclosure: (b.fee_terms_snapshot && b.fee_terms_snapshot.disclosure)
+        || 'No platform fee applies to this job.',
+    });
+
     if (action === 'data') {
       const [{ items: jobs }, { items: history }, { items: requests }] = await Promise.all([
         loadBookings(), loadHistory(), loadRequests(),
       ]);
-      return Response.json({ partner: publicPartner, jobs, history, requests });
+      return Response.json({
+        partner: publicPartner,
+        jobs: jobs.map(withTerms),
+        history: history.map(withTerms),
+        requests,
+      });
+    }
+
+    // Contractor financial transparency: scoped to this partner's own jobs only.
+    if (action === 'earnings') {
+      const [{ items: done }, { items: agreementItems }] = await Promise.all([
+        base44.asServiceRole.entities.Booking.filter(
+          { partner_id: partner.id, assignment_status: { $in: ['completed', 'paid'] }, record_type: { $ne: 'internal_test' } },
+          { sort: '-updated_date', limit: 500 },
+        ),
+        base44.asServiceRole.entities.ContractorAgreement.filter({ partner_id: partner.id }, { limit: 20 }),
+      ]);
+      const sum = (arr, f) => arr.reduce((s, b) => s + (Number(f(b)) || 0), 0);
+      const own = done.filter((b) => b.job_source === 'contractor_generated' || b.job_source === 'repeat_customer');
+      const platform = done.filter((b) => b.job_source === 'platform_generated');
+      const other = done.filter((b) => !['contractor_generated', 'repeat_customer', 'platform_generated'].includes(b.job_source));
+      const invoice = (b) => b.final_invoice || b.job_value;
+      const fees = sum(done, (b) => b.platform_fee_amount);
+      const agreement = agreementItems.find((a) => a.status === 'active') || null;
+      const membership = agreement ? Number(agreement.membership_fee_monthly) || 0 : 0;
+      return Response.json({
+        partner: publicPartner,
+        completed_jobs: done.length,
+        revenue_independent: sum(own, invoice),
+        revenue_platform_generated: sum(platform, invoice),
+        revenue_other_referrals: sum(other, invoice),
+        platform_fees: fees,
+        membership_charges_monthly: membership,
+        refunds: sum(done, (b) => b.refund_amount),
+        net_earnings: sum(done, invoice) - fees - sum(done, (b) => b.refund_amount),
+        agreement: agreement && {
+          type: agreement.agreement_type,
+          fee_model: agreement.fee_model,
+          fee_percent: agreement.fee_percent,
+          fee_fixed_amount: agreement.fee_fixed_amount,
+          applies_to_sources: agreement.applies_to_sources,
+          disclosure: agreement.fee_disclosure,
+        },
+        payments: done.slice(0, 50).map((b) => ({
+          id: b.id,
+          date: b.preferred_date,
+          customer: b.name,
+          source: b.job_source || 'unspecified',
+          invoice: invoice(b) || 0,
+          platform_fee: b.platform_fee_amount || 0,
+          net: (invoice(b) || 0) - (b.platform_fee_amount || 0) - (b.refund_amount || 0),
+          paid: b.assignment_status === 'paid' || !!b.payout_paid,
+        })),
+      });
     }
 
     // Territory overview: bookings, quotes and estimated revenue for this partner's city.
@@ -119,7 +180,7 @@ export default async function(req) {
     await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
 
     const [{ items: jobs }, { items: history }] = await Promise.all([loadBookings(), loadHistory()]);
-    return Response.json({ ok: true, partner: publicPartner, jobs, history });
+    return Response.json({ ok: true, partner: publicPartner, jobs: jobs.map(withTerms), history: history.map(withTerms) });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

@@ -170,6 +170,49 @@
       "type": "string",
       "default": "",
       "maxLength": 1000
+    },
+    "customer_origin_source": {
+      "type": "string",
+      "enum": [
+        "contractor_generated",
+        "platform_generated",
+        "personal_referral",
+        "other_referral"
+      ],
+      "description": "How the customer was FIRST acquired. Set once, never rewritten."
+    },
+    "job_source": {
+      "type": "string",
+      "enum": [
+        "contractor_generated",
+        "platform_generated",
+        "personal_referral",
+        "repeat_customer",
+        "other_referral"
+      ],
+      "description": "Where THIS job came from (can differ from the customer's original source)."
+    },
+    "agreement_id": {
+      "type": "string",
+      "default": "",
+      "description": "ContractorAgreement applied to this job at assignment time."
+    },
+    "fee_terms_snapshot": {
+      "type": "object",
+      "default": {},
+      "description": "Fee terms disclosed to the contractor when the job was assigned."
+    },
+    "platform_fee_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "contractor_net_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "refund_amount": {
+      "type": "number",
+      "default": 0
     }
   },
   "required": [

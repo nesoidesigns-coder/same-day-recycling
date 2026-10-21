@@ -1,0 +1,98 @@
+{
+  "name": "RevenueLedger",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "job_commission",
+        "membership",
+        "software_subscription",
+        "software_setup",
+        "other"
+      ],
+      "default": "other"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "revenue",
+        "payout",
+        "refund",
+        "adjustment"
+      ],
+      "default": "revenue"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "ref_type": {
+      "type": "string",
+      "enum": [
+        "booking",
+        "contractor_agreement",
+        "software_license",
+        "paypal_transaction",
+        "manual"
+      ],
+      "default": "manual"
+    },
+    "ref_id": {
+      "type": "string",
+      "default": ""
+    },
+    "ref_label": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_id": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_name": {
+      "type": "string",
+      "default": ""
+    },
+    "license_email": {
+      "type": "string",
+      "default": ""
+    },
+    "occurred_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "category",
+    "direction",
+    "amount",
+    "occurred_date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

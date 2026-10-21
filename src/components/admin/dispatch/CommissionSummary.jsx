@@ -4,6 +4,7 @@ export default function CommissionSummary({ bookings }) {
   const referralJobs = bookings.filter((b) => b.referred_by_admin);
   const estimated = bookings.reduce((s, b) => s + (Number(b.job_value) || 0), 0);
   const invoiced = bookings.reduce((s, b) => s + (Number(b.final_invoice) || 0), 0);
+  const platformFees = bookings.reduce((s, b) => s + (Number(b.platform_fee_amount) || 0), 0);
   const earned = bookings.reduce((s, b) => s + (Number(b.commission_earned) || 0), 0);
   const paid = bookings.reduce((s, b) => s + (Number(b.commission_paid) || 0), 0);
   const outstanding = Math.max(0, earned - paid);
@@ -12,6 +13,7 @@ export default function CommissionSummary({ bookings }) {
     { label: "Estimated value", value: money(estimated), sub: `${bookings.length} jobs listed` },
     { label: "Final invoices", value: money(invoiced), sub: "completed jobs" },
     { label: "Commission earned", value: money(earned), sub: `${referralJobs.length} referral job${referralJobs.length === 1 ? "" : "s"}` },
+    { label: "Agreement fees", value: money(platformFees), sub: "per-contractor agreements" },
     { label: "Commission paid", value: money(paid), sub: "paid out" },
     { label: "Outstanding", value: money(outstanding), sub: "earned − paid" },
   ];

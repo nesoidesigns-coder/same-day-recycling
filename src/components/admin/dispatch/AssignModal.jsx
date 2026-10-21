@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { X, ShieldCheck, TriangleAlert } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, ShieldCheck, TriangleAlert, Scale } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { JOB_SOURCE_OPTIONS, previewFee } from "@/lib/feeRules";
 
 const REFERRAL_COMMISSION_DEFAULT = 25;
+const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
 
 export default function AssignModal({ booking, partners, onClose, onAssign }) {
   const verified = partners.filter((p) => p.verified && p.active !== false);
@@ -10,9 +13,22 @@ export default function AssignModal({ booking, partners, onClose, onAssign }) {
   const ordered = [...verified].sort((a, b) => (cityMatches(b) ? 1 : 0) - (cityMatches(a) ? 1 : 0));
   const [partnerSel, setPartnerSel] = useState("");
   const [value, setValue] = useState(booking.job_value ? String(booking.job_value) : "");
-  const [referral, setReferral] = useState(false);
+  const [jobSource, setJobSource] = useState(booking.job_source || "platform_generated");
   const [rate, setRate] = useState(String(REFERRAL_COMMISSION_DEFAULT));
+  const [agreement, setAgreement] = useState(null);
   const [busy, setBusy] = useState(false);
+
+  // The fee comes only from this contractor's active agreement.
+  useEffect(() => {
+    setAgreement(null);
+    if (!partnerSel) return;
+    base44.entities.ContractorAgreement
+      .filter({ partner_id: partnerSel, status: "active" }, { limit: 1 })
+      .then((page) => setAgreement((page.items || [])[0] || null));
+  }, [partnerSel]);
+
+  const isPersonalReferral = jobSource === "personal_referral";
+  const fee = previewFee(agreement, jobSource, Number(value) || 0);
 
   const submit = async () => {
     const p = partners.find((x) => String(x.id) === partnerSel);
@@ -22,8 +38,14 @@ export default function AssignModal({ booking, partners, onClose, onAssign }) {
       partner_id: p.id,
       partner_name: p.name,
       job_value: Number(value) || 0,
-      referred_by_admin: referral,
-      commission_rate: referral ? Math.min(100, Math.max(0, Number(rate) || 0)) : 0,
+      job_source: jobSource,
+      // Original customer source is set once and never rewritten.
+      customer_origin_source: booking.customer_origin_source || (jobSource === "repeat_customer" ? undefined : jobSource),
+      agreement_id: agreement?.id || "",
+      fee_terms_snapshot: { disclosure: fee.disclosure, rule: fee.rule, agreement_id: agreement?.id || null },
+      // Existing personal referral arrangement, applied only where chosen.
+      referred_by_admin: isPersonalReferral,
+      commission_rate: isPersonalReferral ? Math.min(100, Math.max(0, Number(rate) || 0)) : 0,
     });
     setBusy(false);
   };
@@ -60,18 +82,29 @@ export default function AssignModal({ booking, partners, onClose, onAssign }) {
             <span className="block text-xs font-semibold text-[#102B2A] mb-1">Estimated job value $</span>
             <input type="number" min="0" value={value} onChange={(e) => setValue(e.target.value)} className="input py-2.5" />
           </label>
-          <label className="flex items-start gap-2 rounded-xl bg-[#f6f8f7] p-3 cursor-pointer">
-            <input type="checkbox" checked={referral} onChange={(e) => setReferral(e.target.checked)} className="mt-0.5" />
-            <span className="text-xs font-semibold text-[#102B2A]">
-              Referral — I originated this job and am referring it to this partner
-              <span className="block text-[11px] font-normal text-slate-500">Earns commission on the final invoice when the job completes.</span>
-            </span>
+          <label className="block">
+            <span className="block text-xs font-semibold text-[#102B2A] mb-1">Job source</span>
+            <select value={jobSource} onChange={(e) => setJobSource(e.target.value)} className="input py-2.5">
+              {JOB_SOURCE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+            <span className="block text-[11px] text-slate-400 mt-1">The source is a record. Fees apply only under the contractor's active agreement.</span>
           </label>
-          {referral && (
+          {isPersonalReferral && (
             <label className="block">
-              <span className="block text-xs font-semibold text-[#102B2A] mb-1">Commission rate %</span>
+              <span className="block text-xs font-semibold text-[#102B2A] mb-1">Personal referral commission % (this job only)</span>
               <input type="number" min="0" max="100" value={rate} onChange={(e) => setRate(e.target.value)} className="input py-2.5" />
+              <span className="block text-[11px] text-slate-400 mt-1">Your existing referral arrangement. Earned when the job completes; never applied to other jobs.</span>
             </label>
+          )}
+          {partnerSel && (
+            <div className="rounded-xl border border-[#187B65]/30 bg-[#f4f7f5] p-3">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#102B2A] mb-1">
+                <Scale className="w-3.5 h-3.5 text-[#187B65]" /> Fee terms the contractor will see
+              </div>
+              <p className="text-xs text-slate-600">{fee.disclosure}</p>
+              {fee.fee > 0 && <p className="text-xs font-bold text-[#187B65] mt-1">Estimated platform fee: {money(fee.fee)}</p>}
+              {!agreement && <p className="text-[11px] text-slate-400 mt-1">No active agreement on file for this contractor.</p>}
+            </div>
           )}
           <div className="flex gap-2 pt-1">
             <button onClick={submit} disabled={busy || !partnerSel} className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 disabled:opacity-50">

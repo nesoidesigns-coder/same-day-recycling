@@ -3,9 +3,20 @@ import { base44 } from "@/api/base44Client";
 import { Loader2, Truck, CheckCircle2, XCircle, DollarSign, LogOut, MapPin, Phone, PackageCheck, Radio } from "lucide-react";
 import TerritoryCard from "@/components/partner/TerritoryCard";
 import IncomingRequests from "@/components/partner/IncomingRequests";
+import Financials from "@/components/partner/Financials";
 
-const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
+
+// Payout math follows the job's own recorded fee terms — no global share.
+const jobNet = (b) => {
+  const v = Number(b.job_value) || 0;
+  const rule = String(b.fee_terms_snapshot?.rule || "");
+  let fee = 0;
+  if (rule.startsWith("percentage_")) fee = (v * (Number(rule.split("_")[1]) || 0)) / 100;
+  else if (rule.startsWith("fixed_")) fee = Number(rule.split("_")[1]) || 0;
+  else if (b.referred_by_admin) fee = (v * (Number(b.commission_rate) || 0)) / 100;
+  return Math.max(0, v - fee - (Number(b.refund_amount) || 0));
+};
 
 const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm";
 const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]/90";
@@ -83,8 +94,8 @@ export default function PartnersDashboard() {
     );
   }
 
-  const pending = history.filter((h) => !h.payout_paid).reduce((s, h) => s + (Number(h.job_value) || 0), 0) * PARTNER_SHARE;
-  const paid = history.filter((h) => h.payout_paid).reduce((s, h) => s + (Number(h.job_value) || 0), 0) * PARTNER_SHARE;
+  const pending = history.filter((h) => !h.payout_paid).reduce((s, h) => s + jobNet(h), 0);
+  const paid = history.filter((h) => h.payout_paid).reduce((s, h) => s + jobNet(h), 0);
 
   return (
     <div className="min-h-screen bg-[#051511] text-emerald-50">
@@ -111,7 +122,7 @@ export default function PartnersDashboard() {
             <div className="text-3xl font-bold text-[#187B65] holo-glow-text flex items-center gap-2 mt-3 tabular-nums">
               <DollarSign className="w-6 h-6" />{money(pending)}
             </div>
-            <p className="text-xs text-emerald-100/40 mt-2">75% of completed, unpaid jobs</p>
+            <p className="text-xs text-emerald-100/40 mt-2">Net of agreed fees on completed, unpaid jobs</p>
           </div>
           <div className={`${panel} p-6`}>
             <div className={label}>Paid to date</div>
@@ -121,6 +132,8 @@ export default function PartnersDashboard() {
             <p className="text-xs text-emerald-100/40 mt-2">Payouts already marked paid</p>
           </div>
         </div>
+
+        <Financials />
 
         <div className="mb-10">
           <TerritoryCard />
@@ -152,9 +165,14 @@ export default function PartnersDashboard() {
                   </div>
                   <div className="text-right shrink-0">
                     <div className={label}>Your payout</div>
-                    <div className="text-xl font-bold text-[#187B65] holo-glow-text mt-1 tabular-nums">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</div>
+                    <div className="text-xl font-bold text-[#187B65] holo-glow-text mt-1 tabular-nums">{money(jobNet(b))}</div>
                     <div className="text-[11px] text-emerald-100/40 mt-1 tabular-nums">of {money(b.job_value)} job</div>
                   </div>
+                </div>
+                <div className="mt-3 rounded-xl border border-[#187B65]/25 bg-[#0a2b1e]/50 px-3 py-2 text-[11px] text-emerald-100/70">
+                  <span className="font-bold text-[#187B65] uppercase tracking-[0.15em] text-[10px]">Financial terms · </span>
+                  {b.fee_disclosure || "No platform fee applies to this job."}
+                  {b.referred_by_admin && Number(b.commission_rate) > 0 ? ` Referral commission: ${b.commission_rate}%.` : ""}
                 </div>
                 <div className="mt-4 flex gap-2 flex-wrap">
                   {b.assignment_status === "assigned" && (
@@ -190,7 +208,7 @@ export default function PartnersDashboard() {
                   <div className="text-[11px] text-emerald-100/40 mt-0.5">{b.items_description}</div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="font-bold text-[#187B65] text-sm tabular-nums">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</div>
+                  <div className="font-bold text-[#187B65] text-sm tabular-nums">{money(jobNet(b))}</div>
                   <div className={`text-[10px] font-bold uppercase tracking-[0.15em] ${b.payout_paid ? "text-[#187B65]" : "text-amber-300"}`}>{b.payout_paid ? "Paid" : "Unpaid"}</div>
                 </div>
               </div>
