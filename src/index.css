@@ -240,3 +240,37 @@ html {
   animation-delay: 0.8s, 4.6s;
   transform-origin: 70% 90%;
 }
+
+/* ---- Global mobile readability safeguards (apply to every page) ---- */
+
+/* Never let a single wide element force sideways scrolling */
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Long words, emails and URLs wrap instead of overflowing their container */
+h1, h2, h3, h4, p, a, span, li, button {
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  /* Scale oversized headings down so they stay readable, not cramped */
+  .text-7xl { font-size: 2.75rem !important; line-height: 1.05 !important; }
+  .text-6xl { font-size: 2.5rem !important; line-height: 1.1 !important; }
+  .text-5xl { font-size: 2.125rem !important; line-height: 1.15 !important; }
+  .text-4xl { font-size: 1.75rem !important; line-height: 1.2 !important; }
+  .text-3xl { font-size: 1.5rem !important; line-height: 1.25 !important; }
+
+  /* Keep form controls at 16px so phones don't auto-zoom on focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Tables and wide content scroll inside their own container, not the page */
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
