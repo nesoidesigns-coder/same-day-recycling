@@ -98,8 +98,14 @@ export default function BookingForm({ prefill }) {
       }
       let photo_uri = "";
       if (photo) {
-        const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: photo });
-        photo_uri = file_uri;
+        try {
+          const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: photo });
+          photo_uri = file_uri;
+        } catch (uploadErr) {
+          // A photo attachment must never block the booking itself.
+          console.error("Photo upload failed, submitting without it:", uploadErr);
+          setQuoteNote((q) => q || "");
+        }
       }
       const res = await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside });
       setBookingId(res?.data?.booking_id || null);
@@ -109,7 +115,15 @@ export default function BookingForm({ prefill }) {
       }
       setDone(true);
     } catch (err) {
-      setError("Something went wrong. Please call (604) 849-1745 and we'll take your booking over the phone.");
+      // Surface the actual failure (rate limit, auth, validation, network)
+      // instead of a generic message, so failed submissions are diagnosable.
+      console.error("Booking submission failed:", err);
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message;
+      setError(
+        serverMsg
+          ? `Your booking wasn't submitted: ${serverMsg}. Please call (604) 849-1745 and we'll take it over the phone.`
+          : "Something went wrong. Please call (604) 849-1745 and we'll take your booking over the phone."
+      );
     } finally {
       setSubmitting(false);
     }
