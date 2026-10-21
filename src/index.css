@@ -218,6 +218,15 @@ html {
   box-shadow: inset 0 0 40px rgba(29, 158, 86, 0.08), 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
+@keyframes network-pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.45; }
+}
+
+.network-pulse {
+  animation: network-pulse 3s ease-in-out infinite;
+}
+
 @keyframes mascot-idle {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(1.5deg); }

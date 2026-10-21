@@ -35,7 +35,10 @@ export default function Navbar() {
           <span className="w-9 h-9 rounded-xl bg-[#0c3b24] text-[#1d9e56] flex items-center justify-center">
             <Recycle className="w-5 h-5" />
           </span>
-          <span className="text-lg tracking-tight">Same Day Recycling</span>
+          <span className="leading-tight">
+            <span className="block text-lg tracking-tight">Same Day Recycling</span>
+            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-400">Canada's Recycling Services Network</span>
+          </span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
           {primaryLinks.map((l) => (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Phone, ShieldCheck, Clock, Tag } from "lucide-react";
+import { Search, MapPin, Phone, ShieldCheck, Network, ArrowRight } from "lucide-react";
 
 const POPULAR = [
   { label: "Electronics", q: "electronics" },
@@ -28,56 +28,60 @@ export default function HomeHero() {
   return (
     <section id="top" className="relative bg-[#0c3b24] text-white overflow-hidden">
       <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#1d9e56]/20 blur-3xl pointer-events-none" />
-      <div className="relative max-w-5xl mx-auto px-4 py-10 md:py-16 text-center">
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
-          Canada's Smarter Way to Recycle.
+      <div className="relative max-w-5xl mx-auto px-4 py-12 md:py-20 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-xs font-bold tracking-[0.14em] uppercase text-emerald-100/90">
+          <Network className="w-3.5 h-3.5 text-[#1d9e56]" />
+          Canada's Recycling Services Network
+        </div>
+        <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
+          Recycling Services. Connected Across Canada.
         </h1>
-        <p className="mt-3 text-base md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-          Find recycling options, compare removal services, and give unwanted materials a better destination.
+        <p className="mt-4 text-base md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
+          Find recycling services, discover material recovery options, and connect with providers serving your community.
         </p>
 
-        {/* Primary: search */}
-        <form onSubmit={searchDirectory} className="mt-6 max-w-2xl mx-auto" aria-label="Search the recycling directory">
+        {/* Primary: national search */}
+        <form onSubmit={searchDirectory} className="mt-7 max-w-2xl mx-auto" aria-label="Search the national recycling directory">
           <div className="grid gap-3">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <label htmlFor="hero-material" className="sr-only">What do you need removed or recycled?</label>
+              <label htmlFor="hero-material" className="sr-only">What do you need recycled or recovered?</label>
               <input
                 id="hero-material"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="What do you need removed or recycled?"
+                placeholder="Material, product, or service (e.g. mattress, paint, e-waste)"
                 className="input !bg-white pl-10"
               />
             </div>
             <div className="relative">
               <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <label htmlFor="hero-location" className="sr-only">Enter your city or postal code</label>
+              <label htmlFor="hero-location" className="sr-only">Enter your postal code or city</label>
               <input
                 id="hero-location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Enter your city or postal code"
+                placeholder="Enter your postal code or city, anywhere in Canada"
                 className="input !bg-white pl-10"
               />
             </div>
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#1d9e56] text-[#0c3b24] font-bold text-base px-6 py-3.5 hover:bg-[#25b96b] transition-colors"
+              className="w-full rounded-xl bg-[#1d9e56] text-[#0c3b24] font-bold text-base uppercase tracking-wide px-6 py-3.5 hover:bg-[#25b96b] transition-colors"
             >
-              Find Recycling Options
+              Find Recycling Services
             </button>
           </div>
         </form>
 
-        {/* Secondary / tertiary actions */}
-        <div className="mt-4 flex flex-col sm:flex-row justify-center gap-3">
-          <a href="#book" className="rounded-full bg-white text-[#0c3b24] font-bold px-6 py-3 hover:bg-emerald-50 transition-colors">
-            Request a Pickup
-          </a>
-          <a href="#services" className="rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors">
-            Explore Services
-          </a>
+        {/* Secondary action */}
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={() => navigate("/coverage")}
+            className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors"
+          >
+            Explore the National Network <ArrowRight className="w-4 h-4 text-[#1d9e56]" />
+          </button>
         </div>
 
         <div className="mt-7">
@@ -96,13 +100,12 @@ export default function HomeHero() {
         </div>
 
         <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-semibold text-emerald-100/75">
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#1d9e56]" /> Verified directory listings only</span>
-          <span className="inline-flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-[#1d9e56]" /> Same-day pickup — book before noon</span>
-          <span className="inline-flex items-center gap-1.5"><Tag className="w-3.5 h-3.5 text-[#1d9e56]" /> Upfront pricing</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#1d9e56]" /> Verified providers only</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#1d9e56]" /> Coverage shown only where confirmed</span>
         </div>
 
         <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-2 text-sm text-emerald-100/75">
-          <span>Serving Metro Vancouver and the BC Interior</span>
+          <span>One Country. One Network. A Smarter Way to Recycle.</span>
           <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 font-semibold text-white hover:text-[#1d9e56] transition-colors">
             <Phone className="w-4 h-4 text-[#1d9e56]" /> (604) 849-1745
           </a>

@@ -8,7 +8,9 @@ import HowItWorks from "@/components/sdr/HowItWorks";
 import TransparentPricing from "@/components/sdr/TransparentPricing";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
-import ServiceArea from "@/components/sdr/ServiceArea";
+import CanadaNetworkMap from "@/components/sdr/CanadaNetworkMap";
+import FeaturedProviders from "@/components/sdr/FeaturedProviders";
+import NationalCoverage from "@/components/sdr/NationalCoverage";
 import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import Reviews from "@/components/sdr/Reviews";
 import FAQ from "@/components/sdr/FAQ";
@@ -27,12 +29,14 @@ export default function Home() {
       <Navbar />
       <HomeHero />
       <TrustGauges />
+      <CanadaNetworkMap />
       <Services />
       <HowItWorks />
       <TransparentPricing />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
-      <ServiceArea />
+      <FeaturedProviders />
+      <NationalCoverage />
       <RecyclingCentersMap showSelector />
       <Reviews />
       <FAQ />

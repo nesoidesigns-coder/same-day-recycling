@@ -44,6 +44,7 @@ export default function Footer() {
             <Recycle className="w-4 h-4" />
           </span>
           <span>© 2026 Same Day Recycling — samedayrecycling.ca</span>
+          <span className="block text-xs font-semibold tracking-wide text-emerald-100/60">One Country. One Network. A Smarter Way to Recycle.</span>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           {isAdmin && (
