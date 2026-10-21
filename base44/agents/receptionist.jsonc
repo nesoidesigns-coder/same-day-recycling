@@ -181,7 +181,7 @@
     },
     {
       "function_name": "rexGenerateMedia",
-      "description": "Generate media on demand: {kind:'audio', text, voice?} renders a spoken MP3 (voices: river, honey, sunny, storm, spark); {kind:'video', prompt} renders a short 6-second AI video (site owner/admin only). Returns {url}."
+      "description": "Generate media on demand: {kind:'audio', text, voice?} renders a spoken MP3 (voices: river, honey, sunny, storm, spark); {kind:'video', prompt} renders a short 6-second AI video with its own generated sound (site owner/admin only). Returns {url}."
     },
     {
       "entity_name": "RecyclingFact",
