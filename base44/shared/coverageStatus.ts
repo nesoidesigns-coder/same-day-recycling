@@ -1,20 +1,21 @@
 // Server-side source of truth for which cities have confirmed, bookable
 // service. Mirrors src/lib/coverage.js on the frontend — update both when a
-// territory goes live. Confirmed bookings may only ever be created for these.
+// territory changes. Confirmed bookings may only ever be created for these.
 //
-// BUSINESS MODEL: market activation and provider verification are separate.
-// EVERY Canadian municipality is active for customer inquiries — customer
-// demand drives contractor recruitment. ACTIVE_CITIES is the narrower list
-// of guaranteed same-day booking capacity only; it never restricts inquiries.
-export const ACTIVE_CITIES = ['Vancouver', 'Burnaby', 'Surrey', 'Richmond', 'Coquitlam'];
+// Same-day pickup is available across ALL cities and territories in the
+// network — every listed market is active with confirmed capacity. Customer
+// inquiries are likewise open to every Canadian municipality, always.
+export const ACTIVE_CITIES = [
+  'Vancouver', 'Burnaby', 'Surrey', 'Richmond', 'Coquitlam', 'Victoria', 'Kamloops', 'Kelowna',
+  'Maple Ridge', 'Pitt Meadows', 'Calgary', 'Edmonton', 'Saskatoon', 'Regina', 'Winnipeg',
+  'Toronto', 'Ottawa', 'Hamilton', 'Mississauga', 'Montreal', 'Quebec City', 'Moncton',
+  'Saint John', 'Halifax', 'Charlottetown', "St. John's", 'Whitehorse', 'Yellowknife', 'Iqaluit',
+];
 
 // Normalizes raw user input ("Vancouver, BC", "vancouver", "North Vancouver")
 // and checks it against the active list. Matched by inclusion so spoken or
-// extracted city values still resolve, but "North Vancouver" never matches
-// plain "Vancouver" wrongly — exact short names first, then inclusion.
-// Partner-onboarding and coming-soon markets — requests are accepted and
-// provider matching / recruitment starts, but no confirmed service is promised.
-export const ONBOARDING_CITIES = ['Victoria', 'Calgary', 'Edmonton', 'Saskatoon', 'Regina', 'Winnipeg', 'Toronto', 'Ottawa', 'Hamilton', 'Mississauga', 'Montreal', 'Quebec City', 'Moncton', 'Saint John', 'Halifax', 'St. John\'s'];
+// extracted city values still resolve.
+export const ONBOARDING_CITIES = [];
 
 export function isActiveCity(raw) {
   const value = String(raw || '').toLowerCase().trim();

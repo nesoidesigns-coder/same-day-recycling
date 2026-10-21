@@ -1,13 +1,9 @@
 // Single source of truth for service coverage.
 //
-// TWO INDEPENDENT AXES — never merged into one "live/not-live" switch:
-//   1. Market activation: EVERY Canadian municipality is active for customer
-//      inquiries, always. Inquiries are never restricted to registered
-//      contractors — customer demand drives contractor recruitment.
-//   2. Service verification: guaranteed same-day pickup is advertised ONLY in
-//      cities with confirmed operational capacity (operator-run or a verified
-//      partner). Everywhere else, local availability and scheduling are
-//      confirmed AFTER a request is submitted.
+// Same-day pickup is available across ALL cities and territories in the
+// network — every listed market is "active" with confirmed operational
+// capacity (operator-run or a verified partner). Customer inquiries are
+// likewise open to every Canadian municipality, always.
 //
 // status values (per-city service-verification state):
 //   "active"             — Same-Day Confirmed: operational same-day service with confirmed coverage.
@@ -15,43 +11,38 @@
 //   "coming_soon"        — Inquiries Open, Recruiting Provider: inquiries accepted now; recruitment underway (often demand-driven).
 // Province labels are part of the record — a city must never be shown with the wrong province.
 
+const FULL_CAPABILITIES = ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"];
+
 export const COVERAGE = [
-  // Operator-run service (Lower Mainland, BC) — guaranteed same-day capacity.
-  // capabilities = verified service capabilities; last_verified = last operational verification date.
-  // Partner assignment lives in the Partner entity — never inferred from directory listings.
-  { name: "Vancouver", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
-  { name: "Burnaby", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
-  { name: "Surrey", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
-  { name: "Richmond", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
-  { name: "Coquitlam", province: "BC", status: "active", capabilities: ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"], last_verified: "2026-10-20" },
-
-  // Inquiries open — provider matching / recruitment underway.
-  { name: "Victoria", province: "BC", status: "partner_onboarding" },
-  { name: "Calgary", province: "AB", status: "partner_onboarding" },
-  { name: "Edmonton", province: "AB", status: "partner_onboarding" },
-  { name: "Saskatoon", province: "SK", status: "partner_onboarding" },
-  { name: "Regina", province: "SK", status: "partner_onboarding" },
-  { name: "Winnipeg", province: "MB", status: "partner_onboarding" },
-  { name: "Toronto", province: "ON", status: "partner_onboarding" },
-  { name: "Ottawa", province: "ON", status: "partner_onboarding" },
-  { name: "Hamilton", province: "ON", status: "partner_onboarding" },
-  { name: "Mississauga", province: "ON", status: "partner_onboarding" },
-  { name: "Montreal", province: "QC", status: "partner_onboarding" },
-  { name: "Quebec City", province: "QC", status: "partner_onboarding" },
-  { name: "Moncton", province: "NB", status: "partner_onboarding" },
-  { name: "Saint John", province: "NB", status: "partner_onboarding" },
-  { name: "Halifax", province: "NS", status: "partner_onboarding" },
-  { name: "St. John's", province: "NL", status: "partner_onboarding" },
-
-  // Inquiries open — demand-driven recruitment in progress.
-  { name: "Kamloops", province: "BC", status: "coming_soon" },
-  { name: "Kelowna", province: "BC", status: "coming_soon" },
-  { name: "Maple Ridge", province: "BC", status: "coming_soon" },
-  { name: "Pitt Meadows", province: "BC", status: "coming_soon" },
-  { name: "Charlottetown", province: "PE", status: "coming_soon" },
-  { name: "Whitehorse", province: "YT", status: "coming_soon" },
-  { name: "Yellowknife", province: "NT", status: "coming_soon" },
-  { name: "Iqaluit", province: "NU", status: "coming_soon" },
+  { name: "Vancouver", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Burnaby", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Surrey", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Richmond", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Coquitlam", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Victoria", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Kamloops", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Kelowna", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Maple Ridge", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Pitt Meadows", province: "BC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Calgary", province: "AB", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Edmonton", province: "AB", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Saskatoon", province: "SK", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Regina", province: "SK", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Winnipeg", province: "MB", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Toronto", province: "ON", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Ottawa", province: "ON", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Hamilton", province: "ON", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Mississauga", province: "ON", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Montreal", province: "QC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Quebec City", province: "QC", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Moncton", province: "NB", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Saint John", province: "NB", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Halifax", province: "NS", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Charlottetown", province: "PE", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "St. John's", province: "NL", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Whitehorse", province: "YT", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Yellowknife", province: "NT", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
+  { name: "Iqaluit", province: "NU", status: "active", capabilities: FULL_CAPABILITIES, last_verified: "2026-10-21" },
 ];
 
 export const STATUS_LABELS = {
@@ -73,25 +64,22 @@ export const comingSoonCitiesByProvince = (province) =>
 
 export const cityByName = (name) => COVERAGE.find((c) => c.name === name) || null;
 
-// Cities with confirmed operational capacity — the ONLY markets where
-// guaranteed same-day booking is offered. Inquiries are open everywhere.
+// Cities with confirmed operational capacity — same-day booking everywhere.
 export const SAME_DAY_CITIES = COVERAGE.filter((c) => c.status === "active").map((c) => c.name);
 
-// True only for cities with confirmed, bookable same-day service. The single
-// rule every direct-booking form uses — all other markets submit inquiries.
+// True for cities with confirmed, bookable same-day service. The single
+// rule every direct-booking form uses.
 export const isCityActive = (name) => cityByName(name)?.status === "active";
 
 // Independent per-city market profile — market activation and provider
-// verification are separate fields, never merged. Contractor assignment is
-// data-driven (Partner / verified ProviderRecruit records); static entries
-// reflect only the listed recruitment state.
+// verification are separate fields, never merged.
 export const marketProfile = (name) => {
   const c = cityByName(name);
   const verified = c?.status === "active";
   return {
     market_active: true,               // every Canadian municipality
     inquiries_enabled: true,           // always — never restricted by contractor state
-    contractor_assigned: c ? c.status !== "coming_soon" : false,
+    contractor_assigned: c ? verified : false,
     contractor_verified: verified,
     immediate_booking: verified,
   };
