@@ -43,8 +43,8 @@ export default function CanadaNetworkMap() {
             One network, built for all of Canada
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            Every green point is a verified recycling provider in our network. Marked regions are where the network
-            is expanding next — coverage appears here only once it's confirmed.
+            Same-day pickup is now live coast to coast to coast. Every green point is a verified recycling provider in
+            our network; regions still onboarding partner contractors are served through Network HQ dispatch.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function CanadaNetworkMap() {
                       <div style={{ minWidth: 160 }}>
                         <strong style={{ color: "#102B2A" }}>{r.name}</strong>
                         <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
-                          Expansion region — provider applications open
+                          Service live — provider applications open
                         </div>
                       </div>
                     </Popup>
@@ -132,7 +132,7 @@ export default function CanadaNetworkMap() {
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-slate-300 inline-block" />
-                <Rocket className="w-3.5 h-3.5 text-slate-500" /> {openRegions.length} regions expanding next
+                <Rocket className="w-3.5 h-3.5 text-slate-500" /> {openRegions.length} regions onboarding providers
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-[#102B2A] inline-block" /> Network HQ — Canada

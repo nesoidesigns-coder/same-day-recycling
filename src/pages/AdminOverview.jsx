@@ -5,6 +5,7 @@ import RingGauge from "@/components/admin/RingGauge";
 import AlertCentre from "@/components/admin/AlertCentre";
 import AdminTrendChart from "@/components/admin/AdminTrendChart";
 import StatusBar from "@/components/admin/StatusBar";
+import CoveragePanel from "@/components/admin/CoveragePanel";
 import { Loader2 } from "lucide-react";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
@@ -102,6 +103,8 @@ export default function AdminOverview() {
         <AdminTrendChart bookings={bookings} />
         <StatusBar bookings={bookings} />
       </div>
+
+      <CoveragePanel />
     </div>
   );
 }

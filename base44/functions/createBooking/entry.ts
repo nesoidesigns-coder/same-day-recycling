@@ -23,19 +23,7 @@ export default async function(req) {
     const quote_estimate = str(body?.quote_estimate, 120);
     const photo_uri = str(body?.photo_uri, 500);
 
-    // Booking stays closed in territories with no signed partner yet
-    const LIVE_CITIES = ['toronto', 'montreal', 'ottawa', 'calgary', 'edmonton', 'winnipeg', 'hamilton', 'mississauga', 'halifax', 'quebec city'];
-    if (city) {
-      const norm = city.toLowerCase().replace(/\s+/g, ' ').trim();
-      const live = LIVE_CITIES.some((c) => norm === c || norm.includes(c));
-      if (!live) {
-        return Response.json({
-          error: `We don't have a partner serving ${city} yet, so booking is closed there. Call (604) 849-1745 and we'll take your details for when the territory opens.`,
-          code: 'territory_not_live',
-        }, { status: 422 });
-      }
-    }
-
+    // Same-day booking is live Canada-wide
     const booking = await base44.entities.Booking.create({
       status_history: [{ status: 'new', date: new Date().toISOString() }],
       name,

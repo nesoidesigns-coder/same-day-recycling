@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const FSA_RE = /^[A-Z]\d[A-Z](?:\d[A-Z]\d)?$/;
 
 const LETTER_PROVINCE = {
-  A: "NL", B: "NS", C: "NB", E: "NB", G: "QC", H: "QC", J: "QC",
+  A: "NL", B: "NS", C: "PE", E: "NB", G: "QC", H: "QC", J: "QC",
   K: "ON", L: "ON", M: "ON", N: "ON", P: "ON",
   R: "MB", S: "SK", T: "AB", V: "BC", X: "NT", Y: "YT",
 };
@@ -21,7 +21,15 @@ const LIVE_BY_PROVINCE = {
   QC: ["Montreal", "Quebec City"],
   AB: ["Calgary", "Edmonton"],
   MB: ["Winnipeg"],
+  SK: ["Regina", "Saskatoon"],
   NS: ["Halifax"],
+  BC: ["Vancouver", "Victoria"],
+  NB: ["Moncton", "Saint John"],
+  NL: ["St. John's"],
+  PE: ["Charlottetown"],
+  YT: ["Whitehorse"],
+  NT: ["Yellowknife"],
+  NU: ["Iqaluit"],
 };
 
 export default function PostalCheck({ onCity }) {
