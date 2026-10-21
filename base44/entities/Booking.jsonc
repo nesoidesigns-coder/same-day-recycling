@@ -48,6 +48,15 @@
       "type": "number",
       "default": 0
     },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "paid",
+        "refunded"
+      ],
+      "default": "none"
+    },
     "notified": {
       "type": "object",
       "default": {}

@@ -28,6 +28,27 @@ export default function BookingForm({ prefill }) {
   const [error, setError] = useState("");
   const [waitlisted, setWaitlisted] = useState(false);
 
+  // Pay-an-existing-booking mode (?pay_booking=<id>): loads the booking so the
+  // PayPal button can run for it. Read access is admin-only, so this surface
+  // is only reachable for the owner/admin.
+  useEffect(() => {
+    const payId = new URLSearchParams(window.location.search).get('pay_booking');
+    if (!payId) return;
+    (async () => {
+      try {
+        const b = await base44.entities.Booking.get(payId);
+        if (!b || !b.id) return;
+        setBookingId(b.id);
+        setQuoteNote(b.quote_estimate || '');
+        setForm((f) => ({ ...f, city: b.city || '', email: b.email || '', curbside: !!b.curbside_discount }));
+        setPayDone(b.payment_status === 'paid');
+        setDone(true);
+      } catch {
+        // Not readable (non-admin or bad id): fall through to the normal form.
+      }
+    })();
+  }, []);
+
   const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   // Availability rule shared by every booking surface: coverage is

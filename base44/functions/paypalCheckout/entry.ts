@@ -191,11 +191,39 @@ export default async function(req) {
         && cap.purchase_units[0].payments.captures[0] && cap.purchase_units[0].payments.captures[0].id) || '';
       const { items } = await srole.entities.PaypalTransaction.filter({ paypal_order_id: orderId }, { limit: 1 });
       if (items && items.length) {
+        const wasPaid = items[0].status === 'paid';
         await srole.entities.PaypalTransaction.update(items[0].id, { status: 'paid', paypal_payer_email: payerEmail, capture_id: captureId });
         if (items[0].purpose === 'license_setup' && items[0].ref_id) {
           const lic = await srole.entities.SoftwareLicense.get(items[0].ref_id).catch(() => null);
           if (lic && lic.id && lic.status === 'provisioning') {
             await srole.entities.SoftwareLicense.update(lic.id, { status: 'setup_paid' });
+          }
+        }
+        // Booking payments: mark the booking paid and email the customer a
+        // confirmation — only after PayPal confirmed COMPLETED server-side,
+        // and only on the first successful capture (idempotent on retries).
+        if (!wasPaid && items[0].purpose === 'booking_quote' && items[0].ref_id) {
+          const b = await srole.entities.Booking.get(items[0].ref_id).catch(() => null);
+          if (b && b.id) {
+            await srole.entities.Booking.update(b.id, { payment_status: 'paid' }).catch(() => {});
+            if (b.email) {
+              const tx = items[0];
+              const money = (n) => '$' + Number(n || 0).toFixed(2);
+              await srole.integrations.Core.SendEmail({
+                to: b.email,
+                subject: 'Payment received - Same Day Recycling',
+                html: '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#102b2a">' +
+                  '<h2 style="color:#187b65;margin:0 0 12px">Payment received</h2>' +
+                  '<p>Thank you, ' + (b.name || 'there') + '. Your pickup payment has been processed.</p>' +
+                  '<table style="width:100%;border-collapse:collapse;margin:16px 0">' +
+                  '<tr><td style="padding:6px 0;color:#475569">Reference</td><td style="text-align:right;font-weight:bold">' + (tx.ref_label || '') + '</td></tr>' +
+                  '<tr><td style="padding:6px 0;color:#475569">Amount</td><td style="text-align:right;font-weight:bold">' + money(tx.amount) + ' CAD</td></tr>' +
+                  (tx.tax_amount ? '<tr><td style="padding:6px 0;color:#475569">Includes ' + (tx.tax_label || 'tax') + '</td><td style="text-align:right">' + money(tx.tax_amount) + '</td></tr>' : '') +
+                  '</table>' +
+                  '<p style="color:#475569">PayPal reference: ' + orderId + '</p>' +
+                  '<p style="color:#475569">Questions? Call (604) 849-1745.</p></div>',
+              }).catch(() => {});
+            }
           }
         }
       }
@@ -357,6 +385,9 @@ export default async function(req) {
         status: 'refunded',
         note: ('Refunded via admin panel on ' + new Date().toISOString() + ' (PayPal status: ' + refundStatus + ')').slice(0, 1000),
       });
+      if (tx.purpose === 'booking_quote' && tx.ref_id) {
+        await srole.entities.Booking.update(tx.ref_id, { payment_status: 'refunded' }).catch(() => {});
+      }
       return Response.json({ ok: true, refund_status: refundStatus });
     }
 
