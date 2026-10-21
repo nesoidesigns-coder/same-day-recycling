@@ -1,5 +1,6 @@
 import { normalizePostal, provinceFromFsa } from './geo.ts';
 import { isActiveCity } from './coverageStatus.ts';
+import { startMatching } from './dispatchEngine.ts';
 
 const SERVICE_TYPES = ['junk_removal', 'furniture', 'appliances', 'electronics', 'metal_pickup', 'cleanouts', 'other'];
 
@@ -155,6 +156,16 @@ export async function submitNationalInquiry(base44, input) {
     dispatch_task_id: dispatch.id,
     dispatch_status: 'awaiting_contractor',
   });
+
+  // Hybrid intelligent dispatch: immediately offer the request to eligible
+  // verified contractors (territory subscribers get priority). If no
+  // contractor is available the request stays in the matching queue and the
+  // admin alert above still fires — nothing is promised to the customer.
+  try {
+    await startMatching(srole, record);
+  } catch (e) {
+    console.error('Auto-match failed:', (e && e.message) || e);
+  }
 
   // Admin alert: no verified contractor available for this request.
   if (needsRecruitAlert) {

@@ -95,6 +95,17 @@ export default function AdminPartners() {
                       <Power className="w-3 h-3" /> {p.active !== false ? "Pause" : "Reactivate"}
                     </button>
                   </div>
+                  <label className="flex items-center justify-between gap-2 mt-3 text-xs font-semibold text-slate-500">
+                    Auto-dispatch
+                    <select
+                      value={p.dispatch_mode === "manual_only" ? "manual_only" : "auto"}
+                      onChange={(e) => base44.entities.Partner.update(p.id, { dispatch_mode: e.target.value }).then(load)}
+                      className="text-xs font-semibold border border-slate-200 rounded-lg px-2 py-1.5 bg-white"
+                    >
+                      <option value="auto">Auto — receive job offers</option>
+                      <option value="manual_only">Manual only — admin assigns</option>
+                    </select>
+                  </label>
                 </div>
               );
             })

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { provinceName, SERVICE_TYPES } from "@/lib/geo";
+import DispatchSettingsCard from "@/components/admin/nat/DispatchSettingsCard";
 
 const STATUSES = ["new", "provider_matching", "recruiting", "matched", "confirmed", "completed", "cancelled"];
 
@@ -30,6 +31,23 @@ export default function RequestsTab() {
   const [edit, setEdit] = useState({});
   const [saving, setSaving] = useState(false);
   const [tasks, setTasks] = useState({});
+  const [offers, setOffers] = useState({});
+  const [matching, setMatching] = useState(false);
+
+  const loadOffers = async (id) => {
+    const page = await base44.entities.LeadOffer.filter({ request_id: id }, { sort: "-created_date", limit: 20 });
+    setOffers((o) => ({ ...o, [id]: page.items || page }));
+  };
+
+  const runMatch = async (r) => {
+    setMatching(true);
+    try {
+      await base44.functions.invoke("dispatchEngine", { action: "admin_match", request_id: r.id });
+      await Promise.all([load(), loadOffers(r.id)]);
+    } finally {
+      setMatching(false);
+    }
+  };
 
   const load = async () => {
     const query = filter === "all" ? {} : filter === "open" ? { status: { $in: ["new", "provider_matching", "recruiting", "matched"] } } : { status: filter };
@@ -118,6 +136,7 @@ export default function RequestsTab() {
         </select>
         {saving && <Loader2 className="w-4 h-4 animate-spin text-[#187B65] self-center" />}
       </div>
+      <DispatchSettingsCard />
 
       {requests === null ? (
         <div className="flex items-center gap-2 text-slate-500 py-10"><Loader2 className="w-5 h-5 animate-spin" /> Loading requests…</div>
@@ -143,7 +162,7 @@ export default function RequestsTab() {
                   <select value={r.status} onChange={(e) => setStatus(r.id, e.target.value)} className="text-xs font-semibold border border-slate-200 rounded-lg px-2 py-1.5 bg-white">
                     {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
                   </select>
-                  <button onClick={() => { setOpenId(openId === r.id ? null : r.id); setEdit({ partner_id: r.partner_id, quote_amount: r.quote_amount ?? "", appointment_date: r.appointment_date || "", dispatch_status: r.dispatch_status || "awaiting_contractor", contacted_contractor: r.contacted_contractor || "" }); }} className="p-1.5 text-slate-400 hover:text-[#187B65]">
+                  <button onClick={() => { const next = openId === r.id ? null : r.id; setOpenId(next); if (next) loadOffers(r.id); setEdit({ partner_id: r.partner_id, quote_amount: r.quote_amount ?? "", appointment_date: r.appointment_date || "", dispatch_status: r.dispatch_status || "awaiting_contractor", contacted_contractor: r.contacted_contractor || "" }); }} className="p-1.5 text-slate-400 hover:text-[#187B65]">
                     {openId === r.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
                 </div>
@@ -179,6 +198,28 @@ export default function RequestsTab() {
                     <button onClick={() => quoteSent(r)} disabled={saving} className="rounded-full border border-[#187B65] text-[#187B65] text-xs font-bold px-4 py-2 hover:bg-[#187B65]/10">Mark quote sent</button>
                   </div>
                   <p className="text-[11px] text-slate-500">Confirm an appointment only after the contractor accepts the job — the system never auto-confirms.</p>
+                  <div className="pt-3 border-t border-slate-200/70">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <div className="text-xs font-bold text-[#102B2A]">Lead offers (auto-dispatch)</div>
+                      <button onClick={() => runMatch(r)} disabled={matching} className="rounded-full border border-[#187B65] text-[#187B65] text-xs font-bold px-4 py-2 hover:bg-[#187B65]/10 flex items-center gap-1.5">
+                        {matching && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Run smart match now
+                      </button>
+                    </div>
+                    {((offers[r.id] || [])).length === 0 ? (
+                      <p className="text-[11px] text-slate-500">No offers yet. Run smart match, or assign manually above.</p>
+                    ) : (
+                      <ul className="space-y-1">
+                        {(offers[r.id] || []).map((o) => (
+                          <li key={o.id} className="text-[11px] text-slate-600">
+                            Round {o.round} · {o.partner_name} — <span className="font-bold">{o.status}</span>
+                            {o.fee_amount ? ` · fee $${o.fee_amount}` : ""}
+                            {o.expires_at && o.status === "offered" ? ` · expires ${String(o.expires_at).slice(0, 16).replace("T", " ")}` : ""}
+                            {o.notes ? ` · ${o.notes}` : ""}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                   <div className="pt-3 border-t border-slate-200/70">
                     <div className="text-xs font-bold text-[#102B2A] mb-2">Dispatch fulfilment</div>
                     <div className="grid sm:grid-cols-2 gap-3">

@@ -1,0 +1,53 @@
+{
+  "name": "DispatchSettings",
+  "type": "object",
+  "properties": {
+    "response_window_minutes": {
+      "type": "number",
+      "default": 45,
+      "description": "How long an offered contractor has to accept before the offer expires and the next wave is offered."
+    },
+    "max_offers_per_round": {
+      "type": "number",
+      "default": 3,
+      "description": "How many contractors receive the offer in each wave."
+    },
+    "auto_escalate": {
+      "type": "boolean",
+      "default": true,
+      "description": "When true, expired offers automatically escalate to the next eligible contractors; when false, expired requests wait for admin action."
+    },
+    "admin_email": {
+      "type": "string",
+      "default": "samedayrecycling@gmail.com",
+      "description": "Administrator notified when no contractor accepts a request."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

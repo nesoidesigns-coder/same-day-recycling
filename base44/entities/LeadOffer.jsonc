@@ -1,0 +1,110 @@
+{
+  "name": "LeadOffer",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "booking_id": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "partner_name": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_email": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "service_type": {
+      "type": "string",
+      "default": ""
+    },
+    "round": {
+      "type": "number",
+      "default": 1,
+      "description": "Escalation round: 1 is the first wave of offers, later rounds are offers made after earlier contractors did not respond."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "offered",
+        "accepted",
+        "declined",
+        "expired",
+        "superseded"
+      ],
+      "default": "offered",
+      "description": "superseded = the admin manually reassigned this job elsewhere."
+    },
+    "offered_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "responded_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "fee_disclosure": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Fee terms disclosed to the contractor at offer time, before they accept."
+    },
+    "fee_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "created_by": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "admin"
+      ],
+      "default": "auto"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "request_id",
+    "partner_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

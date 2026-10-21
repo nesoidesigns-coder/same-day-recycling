@@ -1,0 +1,47 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "dispatch_escalation_sweep",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "escalate": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "dispatchEngine",
+            "args": {
+              "action": "escalate"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Escalate expired offers",
+            "description": "Expired offers move to the next wave or alert the admin"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Dispatch Escalation Sweep",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": 15,
+      "interval_unit": "minutes",
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every 15 minutes: expires lead offers past their response window, offers the job to the next wave of eligible contractors, and alerts the administrator when no contractor is left for a request."
+}

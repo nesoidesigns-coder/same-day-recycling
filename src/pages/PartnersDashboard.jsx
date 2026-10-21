@@ -6,6 +6,7 @@ import IncomingRequests from "@/components/partner/IncomingRequests";
 import Financials from "@/components/partner/Financials";
 import Performance from "@/components/partner/Performance";
 import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
+import LeadOffers from "@/components/partner/LeadOffers";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -30,6 +31,7 @@ export default function PartnersDashboard() {
   const [jobs, setJobs] = useState([]);
   const [history, setHistory] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [offers, setOffers] = useState([]);
 
   const load = useCallback(async () => {
     const res = await base44.functions.invoke("partnerPortal", { action: "data" });
@@ -38,6 +40,12 @@ export default function PartnersDashboard() {
     setJobs(d.jobs || []);
     setHistory(d.history || []);
     setRequests(d.requests || []);
+    try {
+      const o = await base44.functions.invoke("dispatchEngine", { action: "offers" });
+      setOffers(o.data.offers || []);
+    } catch {
+      setOffers([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -144,6 +152,8 @@ export default function PartnersDashboard() {
         <div className="mb-10">
           <TerritoryCard />
         </div>
+
+        <LeadOffers offers={offers} onChanged={load} />
 
         <IncomingRequests requests={requests} city={partner.city} />
 

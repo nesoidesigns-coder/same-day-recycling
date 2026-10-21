@@ -22,6 +22,23 @@
       },
       "default": []
     },
+    "service_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Job types this contractor handles (junk_removal, furniture, appliances, electronics, metal_pickup, cleanouts, other). Empty means they handle every type."
+    },
+    "dispatch_mode": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "manual_only"
+      ],
+      "default": "auto",
+      "description": "auto = the dispatcher automatically offers matching jobs; manual_only = only the admin assigns jobs."
+    },
     "active": {
       "type": "boolean",
       "default": true
