@@ -1,0 +1,115 @@
+{
+  "name": "ContractorApplication",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "owner_name": {
+      "type": "string",
+      "default": ""
+    },
+    "email": {
+      "type": "string",
+      "default": ""
+    },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "fleet_description": {
+      "type": "string",
+      "default": ""
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "business_license_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "insurance_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "wcb_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "vehicle_registration_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "drivers_license_uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "ai_reviewed",
+        "approved",
+        "declined"
+      ],
+      "default": "new"
+    },
+    "ai_verdict": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "needs_attention",
+        "fail"
+      ],
+      "default": "needs_attention"
+    },
+    "ai_summary": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000
+    },
+    "ai_issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "reviewed_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "company",
+    "owner_name",
+    "email",
+    "city"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

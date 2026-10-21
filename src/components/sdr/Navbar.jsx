@@ -16,6 +16,7 @@ const moreLinks = [
   { label: "Recycling Assistant", to: "/recycling-assistant" },
   { label: "Realtors", to: "/realtors" },
   { label: "Contractors", to: "/contractors" },
+  { label: "Partner Onboarding", to: "/contractor-onboarding" },
   { label: "Coverage", to: "/coverage" },
   { label: "Free Metal Pickup", to: "/free-metal-pickup" },
   { label: "About", to: "/about" },

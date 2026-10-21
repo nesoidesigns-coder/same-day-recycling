@@ -1,13 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Paperclip } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Paperclip, FileText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
 import AiMascotFull from "./AiMascotFull";
 import ChatMedia from "./ChatMedia";
 
 const AGENT_NAME = "receptionist";
+
+function ChatAttachment({ url }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <a href={url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 rounded-lg bg-white/15 px-2.5 py-2 text-xs font-semibold text-white underline">
+        <FileText className="w-3.5 h-3.5" /> Document
+      </a>
+    );
+  }
+  return <img src={url} alt="Attachment" onError={() => setFailed(true)} className="w-24 h-24 object-cover rounded-lg border border-white/20" />;
+}
 
 export default function ReceptionistChat() {
   const [open, setOpen] = useState(false);
@@ -57,7 +69,7 @@ export default function ReceptionistChat() {
   const pickFiles = () => fileInputRef.current?.click();
 
   const handleFiles = async (e) => {
-    const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith("image/")).slice(0, 3);
+    const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith("image/") || f.type === "application/pdf").slice(0, 3);
     if (!files.length) return;
     setUploading(true);
     try {
@@ -172,7 +184,7 @@ export default function ReceptionistChat() {
                       {m.file_urls?.length ? (
                         <div className="flex flex-wrap gap-1.5 mb-1.5">
                           {m.file_urls.map((u, j) => (
-                            <img key={j} src={u} alt="Junk photo" className="w-24 h-24 object-cover rounded-lg border border-white/20" />
+                            <ChatAttachment key={j} url={u} />
                           ))}
                         </div>
                       ) : null}
@@ -198,7 +210,7 @@ export default function ReceptionistChat() {
             </div>
           )}
           <div className="border-t border-slate-100 p-3 flex gap-2 items-center">
-            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFiles} />
+            <input ref={fileInputRef} type="file" accept="image/*,application/pdf" multiple className="hidden" onChange={handleFiles} />
             <button onClick={pickFiles} disabled={uploading || attached.length >= 3} aria-label="Attach photos" className="w-10 h-10 rounded-full border border-slate-200 text-[#0c3b24] flex items-center justify-center hover:border-[#1d9e56] transition-colors disabled:opacity-50 shrink-0">
               {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
             </button>

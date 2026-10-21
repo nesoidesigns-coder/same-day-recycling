@@ -36,6 +36,8 @@ import RecyclingAssistant from './pages/RecyclingAssistant';
 import AdminDirectory from './pages/AdminDirectory';
 import PartnersDashboard from './pages/PartnersDashboard';
 import PartnerRegister from './pages/PartnerRegister';
+import ContractorOnboarding from './pages/ContractorOnboarding';
+import AdminApplications from './pages/AdminApplications';
 import Subscriptions from './pages/Subscriptions';
 import FreeMetalPickup from './pages/FreeMetalPickup';
 import About from './pages/About';
@@ -102,6 +104,7 @@ const AuthenticatedApp = () => {
       <Route path="/review" element={<ReviewPage />} />
       <Route path="/realtors" element={<Realtors />} />
       <Route path="/contractors" element={<Contractors />} />
+      <Route path="/contractor-onboarding" element={<ContractorOnboarding />} />
       <Route path="/coverage" element={<Coverage />} />
       <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/white-label" element={<WhiteLabel />} />
@@ -121,6 +124,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/leads" element={<AdminLeads />} />
           <Route path="/admin/assignments" element={<AdminAssignments />} />
           <Route path="/admin/partners" element={<AdminPartners />} />
+          <Route path="/admin/applications" element={<AdminApplications />} />
           <Route path="/admin/payouts" element={<AdminPayouts />} />
           <Route path="/admin/cities" element={<AdminCities />} />
           <Route path="/admin/reviews" element={<AdminReviews />} />
