@@ -1,9 +1,12 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
 import { computeQuote, itemsToEighths, DEFAULT_PRICES } from '../../shared/pricing.ts';
+import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
+    const limited = await checkRateLimit(base44, req, 'quoteEstimate', 30);
+    if (!limited.allowed) return rateLimitedResponse();
     const body = await req.json();
     const items = Array.isArray(body?.items) ? body.items.slice(0, 50) : null;
     const description = typeof body?.description === 'string' ? body.description.slice(0, 1000) : '';

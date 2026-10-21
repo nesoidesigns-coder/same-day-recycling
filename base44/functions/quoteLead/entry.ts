@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
+import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 
 const OWNER_EMAIL = 'nesoidesigns@gmail.com';
 
@@ -7,6 +8,8 @@ const OWNER_EMAIL = 'nesoidesigns@gmail.com';
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
+    const limited = await checkRateLimit(base44, req, 'quoteLead', 5);
+    if (!limited.allowed) return rateLimitedResponse();
     const body = await req.json().catch(() => ({}));
     const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 

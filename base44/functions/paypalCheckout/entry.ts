@@ -239,35 +239,19 @@ export default async function(req) {
     if (action === 'verify_subscription') {
       const subId = String(body.subscription_id || '').trim();
       if (!subId) return Response.json({ error: 'Missing subscription.' }, { status: 400 });
+      // Verified server-side against PayPal. Activation requires the subscription to be
+      // in ACTIVE state (money committed) — APPROVED alone (agreement not yet billed) never activates.
       const sub = await paypal('/v1/billing/subscriptions/' + subId);
       const status = (sub.status || '').toUpperCase();
       const { items } = await srole.entities.PaypalTransaction.filter({ paypal_subscription_id: subId }, { limit: 1 });
-      if ((status === 'ACTIVE' || status === 'APPROVED') && items && items.length) {
+      if (status === 'ACTIVE' && items && items.length) {
+        // Idempotent: skip entirely when this subscription is already marked active
+        if (items[0].status === 'active') return Response.json({ status: 'active', already_active: true });
         await srole.entities.PaypalTransaction.update(items[0].id, {
           status: 'active',
           paypal_payer_email: (sub.subscriber && sub.subscriber.email_address) || '',
         });
-        if (items[0].ref_id) {
-          if (items[0].purpose === 'license_subscription') {
-            const lic = await srole.entities.SoftwareLicense.get(items[0].ref_id).catch(() => null);
-            if (lic && lic.id && lic.status !== 'cancelled') {
-              const today = new Date().toISOString().slice(0, 10);
-              await srole.entities.SoftwareLicense.update(lic.id, {
-                status: 'active',
-                paypal_subscription_id: subId,
-                started_date: lic.started_date || today,
-                provisioned_date: today,
-              });
-              try {
-                await srole.users.inviteUser(lic.email, 'user');
-              } catch (e) {
-                await srole.entities.SoftwareLicense.update(lic.id, { notes: ('Account invite: ' + (e.message || 'failed')).slice(0, 1000) });
-              }
-            }
-          } else {
-            await srole.entities.WhiteLabelClient.update(items[0].ref_id, { status: 'active' });
-          }
-        }
+        await applySubscriptionState(srole, items[0].purpose, items[0].ref_id, 'active');
         return Response.json({ status: 'active' });
       }
       return Response.json({ status: status.toLowerCase() });

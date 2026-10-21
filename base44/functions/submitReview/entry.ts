@@ -1,8 +1,11 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
+import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
+    const limited = await checkRateLimit(base44, req, 'submitReview', 3);
+    if (!limited.allowed) return rateLimitedResponse();
     const body = await req.json();
     const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 

@@ -75,8 +75,17 @@ export default function ReceptionistChat() {
     try {
       const urls = [];
       for (const file of files) {
-        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
-        if (file_url) urls.push(file_url);
+        // Private storage: photos are not world-readable; access is via short-lived signed URLs
+        const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+        if (file_uri) {
+          let signed_url = file_uri;
+          try {
+            signed_url = (await base44.integrations.Core.CreateFileSignedUrl({ file_uri, expires_in: 604800 })).signed_url;
+          } catch {
+            signed_url = (await base44.integrations.Core.CreateFileSignedUrl({ file_uri })).signed_url;
+          }
+          urls.push(signed_url || file_uri);
+        }
       }
       setAttached((a) => [...a, ...urls].slice(0, 3));
     } finally {

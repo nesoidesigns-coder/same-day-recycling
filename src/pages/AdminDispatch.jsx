@@ -140,6 +140,9 @@ export default function AdminDispatch() {
   const updateStatus = async (b, status) => {
     const history = [...(b.status_history || []), { status, date: new Date().toISOString() }];
     await base44.entities.Booking.update(b.id, { status, status_history: history });
+    if (status === "completed" && b.status !== status) {
+      base44.analytics.track({ eventName: "job_completed", properties: { booking_id: b.id } });
+    }
     if ((status === "confirmed" || status === "scheduled") && b.status !== status) {
       try {
         await base44.functions.invoke("addBookingToCalendar", { booking_id: b.id });

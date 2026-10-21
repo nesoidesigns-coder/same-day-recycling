@@ -1,0 +1,59 @@
+{
+  "name": "PaypalWebhookEvent",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "subscription_id": {
+      "type": "string",
+      "default": ""
+    },
+    "target": {
+      "type": "string",
+      "default": ""
+    },
+    "license_ref": {
+      "type": "string",
+      "default": ""
+    },
+    "handled": {
+      "type": "boolean",
+      "default": false
+    },
+    "detail": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

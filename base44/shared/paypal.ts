@@ -48,6 +48,45 @@ export function paypalAppOrigin(req) {
   return new URL(req.url).origin;
 }
 
+// Apply a subscription lifecycle state to the owning license or white-label record.
+// state: 'active' | 'paused' | 'cancelled'. Idempotent — no-ops when already in the target state.
+export async function applySubscriptionState(srole, purpose, refId, state) {
+  if (!refId) return;
+  const today = new Date().toISOString().slice(0, 10);
+  if (purpose === 'license_subscription') {
+    const lic = await srole.entities.SoftwareLicense.get(refId).catch(() => null);
+    if (!lic || !lic.id) return;
+    if (state === 'cancelled') {
+      if (lic.status !== 'cancelled') {
+        await srole.entities.SoftwareLicense.update(lic.id, { status: 'cancelled' });
+      }
+      return;
+    }
+    if (state === 'paused') {
+      if (['active', 'setup_paid'].includes(lic.status)) {
+        await srole.entities.SoftwareLicense.update(lic.id, { status: 'paused' });
+      }
+      return;
+    }
+    if (lic.status === 'cancelled') return;
+    await srole.entities.SoftwareLicense.update(lic.id, {
+      status: 'active',
+      started_date: lic.started_date || today,
+      provisioned_date: lic.provisioned_date || today,
+    });
+    if (!lic.provisioned_date) {
+      try {
+        await srole.users.inviteUser(lic.email, 'user');
+      } catch (e) {
+        await srole.entities.SoftwareLicense.update(lic.id, { notes: ('Account invite: ' + (e.message || 'failed')).slice(0, 1000) });
+      }
+    }
+  } else {
+    const map = { active: 'active', paused: 'paused', cancelled: 'churned' };
+    await srole.entities.WhiteLabelClient.update(refId, { status: map[state] }).catch(() => {});
+  }
+}
+
 export function parseQuoteAmount(text) {
   const m = String(text || '').replace(/,/g, '').match(/\$\s?(\d+(?:\.\d{1,2})?)/);
   if (!m) return 0;

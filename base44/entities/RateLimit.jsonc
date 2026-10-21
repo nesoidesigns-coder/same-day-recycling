@@ -1,0 +1,38 @@
+{
+  "name": "RateLimit",
+  "type": "object",
+  "properties": {
+    "ip_hash": {
+      "type": "string"
+    },
+    "route": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "ip_hash",
+    "route"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
