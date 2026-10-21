@@ -5,6 +5,17 @@ import { provinceName, SERVICE_TYPES } from "@/lib/geo";
 
 const STATUSES = ["new", "provider_matching", "recruiting", "matched", "confirmed", "completed", "cancelled"];
 
+const DISPATCH_STATUSES = ["awaiting_contractor", "contractor_contacted", "contractor_accepted", "pickup_scheduled", "job_completed", "unable_to_fulfill"];
+
+const DISPATCH_LABEL = {
+  awaiting_contractor: "Awaiting contractor",
+  contractor_contacted: "Contractor contacted",
+  contractor_accepted: "Contractor accepted",
+  pickup_scheduled: "Pickup scheduled",
+  job_completed: "Job completed",
+  unable_to_fulfill: "Unable to fulfill",
+};
+
 const STATUS_STYLE = {
   verified: "bg-[#187B65]/10 text-[#187B65]",
   onboarding: "bg-amber-50 text-amber-700",
@@ -18,6 +29,7 @@ export default function RequestsTab() {
   const [openId, setOpenId] = useState(null);
   const [edit, setEdit] = useState({});
   const [saving, setSaving] = useState(false);
+  const [tasks, setTasks] = useState({});
 
   const load = async () => {
     const query = filter === "all" ? {} : filter === "open" ? { status: { $in: ["new", "provider_matching", "recruiting", "matched"] } } : { status: filter };
@@ -25,6 +37,10 @@ export default function RequestsTab() {
     setRequests(page.items || page);
     const provPage = await base44.entities.ProviderRecruit.filter({ verified: true }, { limit: 200 });
     setProviders((provPage.items || provPage));
+    const taskPage = await base44.entities.DispatchTask.filter({}, { limit: 500 });
+    const byRequest = {};
+    ((taskPage.items || taskPage) || []).forEach((t) => { byRequest[t.request_id] = t; });
+    setTasks(byRequest);
   };
 
   useEffect(() => { load(); }, [filter]);
@@ -46,6 +62,40 @@ export default function RequestsTab() {
         quote_amount: edit.quote_amount !== undefined && edit.quote_amount !== "" ? Number(edit.quote_amount) : r.quote_amount,
         appointment_date: edit.appointment_date || r.appointment_date || "",
       });
+      setOpenId(null);
+      await load();
+    } finally { setSaving(false); }
+  };
+
+  const setDispatch = async (r, dispatch_status) => {
+    setSaving(true);
+    try {
+      const task = tasks[r.id];
+      await base44.entities.NationalRequest.update(r.id, { dispatch_status });
+      if (task) await base44.entities.DispatchTask.update(task.id, { status: dispatch_status });
+      await load();
+    } finally { setSaving(false); }
+  };
+
+  const saveDispatch = async (r) => {
+    setSaving(true);
+    try {
+      const logEntry = (edit.contact || edit.note)
+        ? { date: new Date().toISOString(), contact: String(edit.contact || "").slice(0, 80), note: String(edit.note || "").slice(0, 300) }
+        : null;
+      const payload = {
+        dispatch_status: edit.dispatch_status || r.dispatch_status || "awaiting_contractor",
+        contacted_contractor: String(edit.contacted_contractor ?? r.contacted_contractor ?? "").slice(0, 200),
+      };
+      if (logEntry) payload.dispatch_contact_log = [...(r.dispatch_contact_log || []), logEntry];
+      const task = tasks[r.id];
+      if (task) {
+        const taskUpdate = { status: payload.dispatch_status };
+        if (payload.contacted_contractor) taskUpdate.assigned_provider = payload.contacted_contractor;
+        if (logEntry) taskUpdate.contact_log = [...(task.contact_log || []), logEntry];
+        await base44.entities.DispatchTask.update(task.id, taskUpdate);
+      }
+      await base44.entities.NationalRequest.update(r.id, payload);
       setOpenId(null);
       await load();
     } finally { setSaving(false); }
@@ -87,10 +137,13 @@ export default function RequestsTab() {
                   <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${STATUS_STYLE[r.coverage_status] || ""}`}>
                     {r.coverage_status === "verified" ? "Verified" : "Confirmation required"}
                   </span>
+                  <select value={r.dispatch_status || "awaiting_contractor"} onChange={(e) => setDispatch(r, e.target.value)} className="text-xs font-semibold border border-[#187B65]/40 rounded-lg px-2 py-1.5 bg-[#f4f7f5] text-[#102B2A]">
+                    {DISPATCH_STATUSES.map((s) => <option key={s} value={s}>{DISPATCH_LABEL[s]}</option>)}
+                  </select>
                   <select value={r.status} onChange={(e) => setStatus(r.id, e.target.value)} className="text-xs font-semibold border border-slate-200 rounded-lg px-2 py-1.5 bg-white">
                     {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
                   </select>
-                  <button onClick={() => { setOpenId(openId === r.id ? null : r.id); setEdit({ partner_id: r.partner_id, quote_amount: r.quote_amount ?? "", appointment_date: r.appointment_date || "" }); }} className="p-1.5 text-slate-400 hover:text-[#187B65]">
+                  <button onClick={() => { setOpenId(openId === r.id ? null : r.id); setEdit({ partner_id: r.partner_id, quote_amount: r.quote_amount ?? "", appointment_date: r.appointment_date || "", dispatch_status: r.dispatch_status || "awaiting_contractor", contacted_contractor: r.contacted_contractor || "" }); }} className="p-1.5 text-slate-400 hover:text-[#187B65]">
                     {openId === r.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
                 </div>
@@ -125,7 +178,40 @@ export default function RequestsTab() {
                     <button onClick={() => saveMatch(r)} disabled={saving} className="rounded-full bg-[#187B65] text-[#102B2A] text-xs font-bold px-4 py-2 hover:bg-[#125C4E]">Save match</button>
                     <button onClick={() => quoteSent(r)} disabled={saving} className="rounded-full border border-[#187B65] text-[#187B65] text-xs font-bold px-4 py-2 hover:bg-[#187B65]/10">Mark quote sent</button>
                   </div>
-                  <p className="text-[11px] text-slate-500">Confirm an appointment only after the provider accepts the job — the system never auto-confirms.</p>
+                  <p className="text-[11px] text-slate-500">Confirm an appointment only after the contractor accepts the job — the system never auto-confirms.</p>
+                  <div className="pt-3 border-t border-slate-200/70">
+                    <div className="text-xs font-bold text-[#102B2A] mb-2">Dispatch fulfilment</div>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <label className="block">
+                        <span className="block text-xs font-semibold text-[#102B2A] mb-1">Contacted contractor (registered or newly sourced)</span>
+                        <input value={edit.contacted_contractor || ""} onChange={(e) => setEdit((p) => ({ ...p, contacted_contractor: e.target.value }))} className="input text-sm" placeholder="e.g. NorthStar Hauling — 604-555-0123" />
+                      </label>
+                      <label className="block">
+                        <span className="block text-xs font-semibold text-[#102B2A] mb-1">Dispatch status</span>
+                        <select value={edit.dispatch_status || "awaiting_contractor"} onChange={(e) => setEdit((p) => ({ ...p, dispatch_status: e.target.value }))} className="input text-sm">
+                          {DISPATCH_STATUSES.map((s) => <option key={s} value={s}>{DISPATCH_LABEL[s]}</option>)}
+                        </select>
+                      </label>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                      <label className="block">
+                        <span className="block text-xs font-semibold text-[#102B2A] mb-1">Contacted by</span>
+                        <input value={edit.contact || ""} onChange={(e) => setEdit((p) => ({ ...p, contact: e.target.value }))} className="input text-sm" placeholder="Your name" />
+                      </label>
+                      <label className="block">
+                        <span className="block text-xs font-semibold text-[#102B2A] mb-1">Contact note</span>
+                        <input value={edit.note || ""} onChange={(e) => setEdit((p) => ({ ...p, note: e.target.value }))} className="input text-sm" placeholder="Outcome of the call, pricing discussed…" />
+                      </label>
+                    </div>
+                    <button onClick={() => saveDispatch(r)} disabled={saving} className="mt-3 rounded-full bg-[#187B65] text-[#102B2A] text-xs font-bold px-4 py-2 hover:bg-[#125C4E]">Log contact &amp; save dispatch</button>
+                    {((r.dispatch_contact_log?.length || 0) + (tasks[r.id]?.contact_log?.length || 0)) > 0 && (
+                      <ul className="mt-3 space-y-1 text-[11px] text-slate-500">
+                        {[...(r.dispatch_contact_log || []), ...((tasks[r.id]?.contact_log) || [])].map((c, i) => (
+                          <li key={i}>{String(c.date || "").slice(0, 10)}{c.contact ? ` · ${c.contact}` : ""} — {c.note}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

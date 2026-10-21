@@ -74,6 +74,45 @@
       "type": "string",
       "default": ""
     },
+    "dispatch_task_id": {
+      "type": "string",
+      "default": ""
+    },
+    "dispatch_status": {
+      "type": "string",
+      "enum": [
+        "awaiting_contractor",
+        "contractor_contacted",
+        "contractor_accepted",
+        "pickup_scheduled",
+        "job_completed",
+        "unable_to_fulfill"
+      ],
+      "default": "awaiting_contractor"
+    },
+    "contacted_contractor": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "dispatch_contact_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
     "quote_amount": {
       "type": "number"
     },

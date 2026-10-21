@@ -53,7 +53,7 @@ export async function submitNationalInquiry(base44, input) {
   if (coverage_status === 'verified') {
     // Confirmed operational capacity — dispatch confirms the same-day window.
     status = 'provider_matching';
-    message = `Same-day service is confirmed in ${city}. Our dispatch team will contact you at ${phone} to confirm your pickup window and final price on arrival.`;
+    message = `Request received for ${city}. Our dispatch team is arranging a qualified local contractor — same-day pickup is subject to contractor availability, location and confirmation. We'll call you at ${phone} to confirm pricing and your arrival window before the appointment is guaranteed.`;
   } else {
     // Match against verified partners (city) and verified recruits (territory).
     const [partnerPage, recruitPage] = await Promise.all([
@@ -68,7 +68,7 @@ export async function submitNationalInquiry(base44, input) {
       partner_name = matched.name || matched.company;
       status = 'matched';
       quote_status = 'pending_provider';
-      message = `Your inquiry is saved. We've matched it with a verified local provider in ${city} — they'll confirm availability and pricing, then you receive a confirmed quote and appointment. Local service availability and scheduling are confirmed after your request.`;
+      message = `Your request is saved. Our dispatch team is confirming a local contractor in ${city} — pricing, pickup availability and your arrival window are confirmed before any appointment is guaranteed. We'll contact you at ${phone}.`;
     } else {
       // No contractor in this market yet — keep the inquiry and open a
       // recruitment task: demand here drives contractor recruitment.
@@ -97,7 +97,7 @@ export async function submitNationalInquiry(base44, input) {
         });
         recruitment_id = rec.id;
       }
-      message = `Your inquiry is saved. ${city} is active for customer inquiries — local service availability and scheduling are confirmed after your request. We'll contact you at ${phone} as soon as a local provider is matched or recruitment in ${city} completes. Nothing is scheduled or charged before a provider accepts.`;
+      message = `Your request is saved. Our dispatch team sources and contacts local contractors for every job — registered partners and newly sourced providers in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
     }
   }
 
@@ -124,6 +124,25 @@ export async function submitNationalInquiry(base44, input) {
     reference_code,
   });
 
+  // Rule 5: EVERY new request automatically opens a dispatch task, so
+  // fulfillment is tracked from contractor sourcing through payment — no
+  // market ever waits on a pre-enrolled contractor to accept a request.
+  const dispatch = await srole.entities.DispatchTask.create({
+    request_id: record.id,
+    reference_code,
+    city,
+    province_code,
+    customer_name: name,
+    service_type,
+    status: 'awaiting_contractor',
+    assigned_provider: partner_name,
+    notes: 'Auto-created when the request arrived. Search, contact and qualify local contractors (registered or newly sourced), confirm pricing and the arrival window, then assign and schedule.',
+  });
+  await srole.entities.NationalRequest.update(record.id, {
+    dispatch_task_id: dispatch.id,
+    dispatch_status: 'awaiting_contractor',
+  });
+
   return {
     ok: true,
     request_id: record.id,
@@ -131,6 +150,8 @@ export async function submitNationalInquiry(base44, input) {
     coverage_status,
     province_code,
     reference_code,
+    dispatch_task_id: dispatch.id,
+    dispatch_status: 'awaiting_contractor',
     message,
   };
 }

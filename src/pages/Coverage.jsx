@@ -11,8 +11,8 @@ const SECTIONS = [
     status: "active",
     icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
     dot: "bg-[#187B65]",
-    intro: "Confirmed coverage — a confirmed operator or verified partner runs same-day pickup here today. Book straight from a city card.",
-    cardLabel: "Same-day pickups live",
+    intro: "Confirmed dispatch capacity — requests are open here and in every Canadian city. Our dispatch team confirms pricing, pickup availability and your arrival window before issuing a guaranteed appointment.",
+    cardLabel: "Requests open — same-day confirmed",
     linkFor: () => "/#book",
   },
   {
@@ -36,7 +36,7 @@ const SECTIONS = [
 export default function Coverage() {
   useSEO({
     title: "Pickup Coverage & Network Expansion | Same Day Recycling",
-    description: "Check confirmed pickup areas, partner-onboarding cities and planned expansion. Pickup service is offered only where operator coverage is confirmed.",
+    description: "Request same-day recycling and junk removal nationwide. Our dispatch team arranges a qualified local contractor — pricing and arrival windows are confirmed before each guaranteed appointment.",
     path: "/coverage",
   });
   return (
@@ -48,12 +48,13 @@ export default function Coverage() {
           <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Canada's Recycling Network. One Intelligent Platform.</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Now accepting recycling and junk removal inquiries across Canada. Local service availability
-            and scheduling are confirmed after your request — guaranteed same-day pickup is
-            <span className="text-white font-semibold"> listed only where operational capacity is confirmed</span>.
+            Same Day Recycling is a Canadian same-day recycling and junk removal coordination service.
+            Customers can request service nationwide — our dispatch team works to arrange a qualified
+            local contractor for each job. Same-day pickup is
+            <span className="text-white font-semibold"> subject to contractor availability, location, and confirmation</span>.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
-            {["Requests accepted nationwide", "Verified service territories", "Provider matching in progress", "Confirmed service appointments"].map((t) => (
+            {["Requests accepted nationwide", "Dispatch-led fulfillment", "Pricing & availability confirmed before pickup", "Every job tracked to completion"].map((t) => (
               <span key={t} className="inline-flex items-center rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-slate-100">
                 {t}
               </span>

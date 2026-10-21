@@ -21,8 +21,8 @@ export default function AdminNational() {
           <Globe2 className="w-5 h-5" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold text-[#102B2A] leading-tight">National Operations</h1>
-          <p className="text-sm text-slate-500">Every Canadian market — requests, provider matching and recruitment in one place.</p>
+          <h1 className="text-2xl font-bold text-[#102B2A] leading-tight">National Dispatch Control Centre</h1>
+          <p className="text-sm text-slate-500">Incoming requests, city &amp; province identification, contractor sourcing, negotiation, dispatch status and payments — nationwide.</p>
         </div>
       </div>
 

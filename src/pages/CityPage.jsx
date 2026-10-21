@@ -54,7 +54,7 @@ export default function CityPage() {
 
   useSEO({
     title: city ? (isActive ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : `${city.name} Recycling Coverage: ${city.status === "partner_onboarding" ? "Partner Onboarding" : "Planned Expansion"} | Same Day Recycling`) : "Page Not Found | Same Day Recycling",
-    description: city ? (isActive ? `Request furniture, appliance and junk removal in ${city.name}, ${city.province}. Check local pickup availability and get an upfront estimate before booking.` : `Pickup service is not live in ${city.name}, ${city.province}. ${city.status === "partner_onboarding" ? "Partner recruitment or verification is underway." : "Expansion is planned."} Check confirmed areas or apply as a provider.`) : "This page was not found. Browse recycling services, software or confirmed coverage.",
+    description: city ? (isActive ? `Request furniture, appliance and junk removal in ${city.name}, ${city.province}. Check local pickup availability and get an upfront estimate before booking.` : `Same Day Recycling accepts same-day service requests in ${city.name}, ${city.province}. Our national dispatch team arranges a qualified local contractor — pickup is subject to contractor availability and confirmation.`) : "This page was not found. Browse recycling services, software or confirmed coverage.",
     path: pageSlug ? `/${pageSlug}` : "/",
     robots: city && isActive ? "index, follow" : "noindex, follow",
   });
@@ -172,12 +172,15 @@ export default function CityPage() {
       {!isActive && (
         <section className="max-w-7xl mx-auto px-4 py-12">
           <div className="rounded-3xl bg-[#f4f7f5] border border-[#187B65]/20 p-8 max-w-2xl">
-            <div className="flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3"><MapPin className="w-4 h-4" /> {city.status === "coming_soon" ? "Coming Soon" : "Partner Onboarding"}</div>
-            <h2 className="text-2xl font-bold text-[#102B2A]">Service in {city.name} is not live yet</h2>
+            <div className="flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3"><MapPin className="w-4 h-4" /> Dispatch coordination</div>
+            <h2 className="text-2xl font-bold text-[#102B2A]">Requests accepted in {city.name} — nationwide</h2>
             <p className="mt-3 text-slate-600">
-              We only advertise same-day service where operator coverage is confirmed — and {city.name} hasn't reached that bar yet.
-              {city.status === "partner_onboarding" ? " A partner is being recruited or verified for this territory right now." : " Expansion here is planned."}
+              Same Day Recycling is a national dispatch and service-coordination platform. We accept same-day service requests in every Canadian municipality — including {city.name} — and our dispatch team sources and qualifies a local contractor for each job. Same-day pickup is subject to contractor availability, location, and confirmation.
             </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to={`/request-service?city=${encodeURIComponent(city.name)}`} className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-3.5 hover:bg-[#125C4E] transition-colors">Request service in {city.name}</Link>
+              <Link to="/contractors" className="rounded-full border-2 border-[#102B2A] text-[#102B2A] font-bold px-7 py-3.5 hover:bg-[#102B2A] hover:text-white transition-colors">Apply as a contractor</Link>
+            </div>
           </div>
         </section>
       )}
@@ -323,7 +326,7 @@ const ACTIVE_FAQ = (city) => [
 ];
 
 const OFFBOARD_FAQ = (city) => [
-  { q: `Is same-day service live in ${city.name} yet?`, a: "Not yet. This page reflects planned or onboarding coverage only — we list a city as live only once a partner is verified." },
-  { q: "When will service start?", a: "Territories open as verified partners come on board. Contractors and haulers in the area can apply through our partner program today." },
-  { q: "Where is service live right now?", a: "See the coverage page for the current list of Active & Verified cities — new territories are added as partners are verified." },
+  { q: `Is same-day service available in ${city.name}?`, a: "Same Day Recycling accepts service requests in every Canadian city. Same-day pickup is subject to contractor availability, location, and confirmation — our dispatch team arranges a qualified local contractor for each request." },
+  { q: "How does fulfillment work?", a: "When your request arrives, our dispatch team contacts available local contractors — registered partners and newly sourced providers — and confirms pricing, pickup availability and your arrival window before any appointment is guaranteed." },
+  { q: "Where is same-day pickup confirmed today?", a: "See the coverage page. Requests are accepted nationwide, and same-day pickup is confirmed per job once a contractor accepts." },
 ];

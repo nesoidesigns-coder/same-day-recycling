@@ -1,10 +1,11 @@
-// Server-side source of truth for which cities have confirmed, bookable
-// service. Mirrors src/lib/coverage.js on the frontend — update both when a
-// territory changes. Confirmed bookings may only ever be created for these.
-//
-// Same-day pickup is available across ALL cities and territories in the
-// network — every listed market is active with confirmed capacity. Customer
-// inquiries are likewise open to every Canadian municipality, always.
+// National dispatch model — server side:
+//   1. Customer request availability: OPEN NATIONWIDE. Every Canadian
+//      municipality can submit a request, always. No city is ever "closed".
+//   2. Dispatch fulfillment: per job, not per city. Cities in this list have
+//      confirmed same-day dispatch capacity (operator-run or a verified
+//      contractor). Requests outside this list are still accepted — the
+//      dispatch team sources contractors dynamically in response to demand.
+// Mirrors src/lib/coverage.js on the frontend.
 export const ACTIVE_CITIES = [
   'Vancouver', 'Burnaby', 'Surrey', 'Richmond', 'Coquitlam', 'Victoria', 'Kamloops', 'Kelowna',
   'Maple Ridge', 'Pitt Meadows', 'Calgary', 'Edmonton', 'Saskatoon', 'Regina', 'Winnipeg',

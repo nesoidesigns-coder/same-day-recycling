@@ -1,0 +1,101 @@
+{
+  "name": "DispatchTask",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "reference_code": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "province_code": {
+      "type": "string",
+      "default": ""
+    },
+    "customer_name": {
+      "type": "string",
+      "default": ""
+    },
+    "service_type": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "awaiting_contractor",
+        "contractor_contacted",
+        "contractor_accepted",
+        "pickup_scheduled",
+        "job_completed",
+        "unable_to_fulfill"
+      ],
+      "default": "awaiting_contractor"
+    },
+    "assigned_provider": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "quoted_amount": {
+      "type": "number"
+    },
+    "arrival_window": {
+      "type": "string",
+      "default": ""
+    },
+    "contact_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "request_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

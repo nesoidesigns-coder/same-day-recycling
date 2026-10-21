@@ -1,14 +1,17 @@
-// Single source of truth for service coverage.
+// Single source of truth for the national dispatch model.
 //
-// Same-day pickup is available across ALL cities and territories in the
-// network — every listed market is "active" with confirmed operational
-// capacity (operator-run or a verified partner). Customer inquiries are
-// likewise open to every Canadian municipality, always.
+// Two independent operational statuses, never merged:
+//   1. Customer request availability — OPEN NATIONWIDE. Every Canadian
+//      municipality can submit a same-day service request, always. The
+//      absence of a registered contractor never blocks an inquiry.
+//   2. Dispatch fulfillment status — per JOB, not per city (see
+//      DISPATCH_STATUS_LABELS below): awaiting_contractor, contractor_contacted,
+//      contractor_accepted, pickup_scheduled, job_completed, unable_to_fulfill.
 //
-// status values (per-city service-verification state):
-//   "active"             — Same-Day Confirmed: operational same-day service with confirmed coverage.
-//   "partner_onboarding" — Inquiries Open, Matching Provider: inquiries accepted now; a partner is being matched/verified.
-//   "coming_soon"        — Inquiries Open, Recruiting Provider: inquiries accepted now; recruitment underway (often demand-driven).
+// The per-city registry below marks markets with confirmed same-day dispatch
+// capacity (operator-run or a verified contractor) — these get the fastest
+// fulfillment. Requests in every other municipality are still accepted and
+// dispatched via dynamically sourced local contractors.
 // Province labels are part of the record — a city must never be shown with the wrong province.
 
 const FULL_CAPABILITIES = ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"];
@@ -49,6 +52,18 @@ export const STATUS_LABELS = {
   active: "Same-Day Confirmed",
   partner_onboarding: "Inquiries Open — Matching Provider",
   coming_soon: "Inquiries Open — Recruiting Provider",
+};
+
+// Dispatch fulfillment status — tracked per job on each request, never per
+// city. Sourcing a contractor is the dispatch team's job; a market never
+// blocks a customer request.
+export const DISPATCH_STATUS_LABELS = {
+  awaiting_contractor: "Awaiting contractor",
+  contractor_contacted: "Contractor contacted",
+  contractor_accepted: "Contractor accepted",
+  pickup_scheduled: "Pickup scheduled",
+  job_completed: "Job completed",
+  unable_to_fulfill: "Unable to fulfill",
 };
 
 export const coverageByStatus = (status) => COVERAGE.filter((c) => c.status === status);
