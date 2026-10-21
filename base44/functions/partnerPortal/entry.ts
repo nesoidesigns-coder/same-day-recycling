@@ -54,9 +54,21 @@ export default async function(req) {
       { sort: '-created_date', limit: 50 }
     );
 
+    // Incoming national inquiries in this partner's city, still open for
+    // intake (not yet matched, confirmed, completed or cancelled).
+    const loadRequests = () => base44.asServiceRole.entities.NationalRequest.filter(
+      {
+        city: { $regex: '^\\s*' + String(partner.city || '').trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', $options: 'i' },
+        status: { $in: ['new', 'provider_matching'] },
+      },
+      { sort: '-created_date', limit: 50 }
+    );
+
     if (action === 'data') {
-      const [{ items: jobs }, { items: history }] = await Promise.all([loadBookings(), loadHistory()]);
-      return Response.json({ partner: publicPartner, jobs, history });
+      const [{ items: jobs }, { items: history }, { items: requests }] = await Promise.all([
+        loadBookings(), loadHistory(), loadRequests(),
+      ]);
+      return Response.json({ partner: publicPartner, jobs, history, requests });
     }
 
     // Territory overview: bookings, quotes and estimated revenue for this partner's city.

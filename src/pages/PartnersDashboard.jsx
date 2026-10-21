@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Truck, CheckCircle2, XCircle, DollarSign, LogOut, MapPin, Phone, PackageCheck, Radio } from "lucide-react";
 import TerritoryCard from "@/components/partner/TerritoryCard";
+import IncomingRequests from "@/components/partner/IncomingRequests";
 
 const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
@@ -15,6 +16,7 @@ export default function PartnersDashboard() {
   const [me, setMe] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [history, setHistory] = useState([]);
+  const [requests, setRequests] = useState([]);
 
   const load = useCallback(async () => {
     const res = await base44.functions.invoke("partnerPortal", { action: "data" });
@@ -22,6 +24,7 @@ export default function PartnersDashboard() {
     setPartner(d.partner);
     setJobs(d.jobs || []);
     setHistory(d.history || []);
+    setRequests(d.requests || []);
   }, []);
 
   useEffect(() => {
@@ -122,6 +125,8 @@ export default function PartnersDashboard() {
         <div className="mb-10">
           <TerritoryCard />
         </div>
+
+        <IncomingRequests requests={requests} city={partner.city} />
 
         <h2 className="text-xl font-bold text-white tracking-tight mb-4">Your jobs</h2>
         {jobs.length === 0 ? (
