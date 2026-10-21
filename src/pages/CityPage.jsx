@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Phone, CheckCircle2, ShieldCheck, Leaf, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useSEO } from "@/lib/seo";
+import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -57,6 +57,24 @@ export default function CityPage() {
     path: pageSlug ? `/${pageSlug}` : "/",
     robots: city ? "index, follow" : "noindex, follow",
   });
+
+  useStructuredData("city-breadcrumb", city ? {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://samedayrecycling.ca/" },
+      { "@type": "ListItem", position: 2, name: region?.name || "Canada", item: region ? `https://samedayrecycling.ca/region/${region.code}` : "https://samedayrecycling.ca/coverage" },
+      { "@type": "ListItem", position: 3, name: city.name, item: `https://samedayrecycling.ca/${prefix}${slug}` },
+    ],
+  } : null);
+
+  useStructuredData("city-faq", city ? {
+    "@type": "FAQPage",
+    mainEntity: (isActive ? ACTIVE_FAQ(city) : OFFBOARD_FAQ(city)).map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  } : null);
 
   useEffect(() => {
     if (!city) return undefined;

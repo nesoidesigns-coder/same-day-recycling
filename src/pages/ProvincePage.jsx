@@ -5,7 +5,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { REGIONS, regionByCode } from "@/lib/regions";
 import { base44 } from "@/api/base44Client";
-import { useSEO } from "@/lib/seo";
+import { useSEO, useStructuredData } from "@/lib/seo";
 
 const CITIES_BY_PROVINCE = {
   AB: ["Calgary", "Edmonton"],
@@ -26,6 +26,15 @@ export default function ProvincePage() {
     path: `/region/${region?.code || code}`,
     robots: region ? "index, follow" : "noindex, follow",
   });
+
+  useStructuredData("region-breadcrumb", region ? {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://samedayrecycling.ca/" },
+      { "@type": "ListItem", position: 2, name: "Coverage", item: "https://samedayrecycling.ca/coverage" },
+      { "@type": "ListItem", position: 3, name: region.name, item: `https://samedayrecycling.ca/region/${region.code}` },
+    ],
+  } : null);
 
   useEffect(() => {
     if (!region) return;

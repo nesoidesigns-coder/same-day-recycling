@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSEO } from "@/lib/seo";
+import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import HomeHero from "@/components/sdr/HomeHero";
@@ -17,7 +17,7 @@ import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
 import Reviews from "@/components/sdr/Reviews";
 import EnvironmentalImpact from "@/components/sdr/EnvironmentalImpact";
 import BusinessSolutions from "@/components/sdr/BusinessSolutions";
-import FAQ from "@/components/sdr/FAQ";
+import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
 import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
 
@@ -26,6 +26,14 @@ export default function Home() {
     title: "Same Day Recycling | Recycling Services & Software in Canada",
     description: "Find recycling and removal services, request pickups, and explore intelligent recycling management software with Same Day Recycling.",
     path: "/",
+  });
+  useStructuredData("home-faq", {
+    "@type": "FAQPage",
+    mainEntity: HOME_FAQS.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   });
   const [quotePrefill, setQuotePrefill] = useState(null);
   const bookFromQuote = (prefill) => {

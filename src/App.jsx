@@ -66,6 +66,12 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import AdminSoftware from './pages/AdminSoftware';
 import SoftwareOnboarding from './pages/SoftwareOnboarding';
 import Gallery from './pages/Gallery';
+import FurnitureRemoval from './pages/FurnitureRemoval';
+import ApplianceRemoval from './pages/ApplianceRemoval';
+import ElectronicsRecycling from './pages/ElectronicsRecycling';
+import CommercialRecycling from './pages/CommercialRecycling';
+import SameDayPickup from './pages/SameDayPickup';
+import AdminSearchIntelligence from './pages/AdminSearchIntelligence';
 import CityPage from './pages/CityPage';
 import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
@@ -122,6 +128,11 @@ const AuthenticatedApp = () => {
       <Route path="/software" element={<SoftwareSales />} />
       <Route path="/software-pay" element={<SoftwarePay />} />
       <Route path="/software/start" element={<SoftwareOnboarding />} />
+      <Route path="/furniture-removal" element={<FurnitureRemoval />} />
+      <Route path="/appliance-removal" element={<ApplianceRemoval />} />
+      <Route path="/electronics-recycling" element={<ElectronicsRecycling />} />
+      <Route path="/commercial-recycling" element={<CommercialRecycling />} />
+      <Route path="/same-day-pickup" element={<SameDayPickup />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />
@@ -144,6 +155,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/keywords" element={<AdminKeywords />} />
           <Route path="/admin/system" element={<AdminSystem />} />
+          <Route path="/admin/search-intelligence" element={<AdminSearchIntelligence />} />
           <Route path="/admin/routes" element={<AdminRoutes />} />
         </Route>
         <Route path="/admin/pricing" element={<AdminPricing />} />

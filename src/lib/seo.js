@@ -49,4 +49,22 @@ export function useSEO({ title, description = "", path, robots } = {}) {
   }, [title, description, path, robots]);
 }
 
+// Renders page-specific Schema.org structured data (Service, BreadcrumbList, FAQPage, ...).
+// Multiple objects are emitted as one @graph block; cleanup removes the tag on unmount.
+export function useStructuredData(id, data) {
+  const serialized = data ? JSON.stringify(data) : "";
+  useEffect(() => {
+    if (!serialized) return undefined;
+    const existing = document.getElementById(`ld-${id}`);
+    if (existing) existing.remove();
+    const el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = `ld-${id}`;
+    const parsed = JSON.parse(serialized);
+    el.text = JSON.stringify(Array.isArray(parsed) ? { "@context": "https://schema.org", "@graph": parsed } : parsed);
+    document.head.appendChild(el);
+    return () => { el.remove(); };
+  }, [id, serialized]);
+}
+
 export default useSEO;
