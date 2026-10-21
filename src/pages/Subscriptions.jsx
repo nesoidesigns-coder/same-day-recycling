@@ -27,7 +27,7 @@ export default function Subscriptions() {
             Junk removal, on retainer.
           </h1>
           <p className="mt-6 text-lg text-slate-300 max-w-xl leading-relaxed">
-            The Same Day Recycling Plan keeps your properties clear: $299/month covers up to 4 pickups with priority same-day slots. Perfect for turnovers, evictions and ongoing cleanouts.
+            The Same Day Recycling Plan keeps your properties clear: $299/month covers up to 4 pickups with priority dispatch. Perfect for turnovers, evictions and ongoing cleanouts. Extra pickups beyond the 4 included in a month are scheduled at standard tier rates, quoted and approved with you before each pickup.
           </p>
           <div className="mt-8 inline-flex items-baseline gap-2">
             <span className="text-6xl font-bold">$299</span>

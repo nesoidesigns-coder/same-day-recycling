@@ -63,6 +63,7 @@ const SECTIONS = [
     h: "Governing law",
     p: [
       "These terms are governed by the laws of Canada and the applicable province or territory. Questions about these terms? Call us at (604) 849-1745 or use our <contact>contact form</contact>.",
+      "Governing-law note: our Software License Agreement names the laws of the Province of British Columbia, while these terms reference Canada and the applicable province or territory. Aligning the two is pending Canadian legal review; the applicable clause will be confirmed before any agreement is signed.",
       "These terms are provided for general information and are not legal advice; wording that carries legal or financial consequence should be reviewed by a qualified professional before being relied on.",
     ],
   },
@@ -92,7 +93,7 @@ export default function Terms() {
             <h2 className="text-xl font-bold text-[#102B2A] mb-2">{s.h}</h2>
             {s.p.map((para, i) => (
               <p key={i} className="text-slate-600 mb-3">
-                {para.split("<contact>").map((part, j) =>
+                {para.split(/<contact>|<\/contact>/).map((part, j) =>
                   j === 1 ? (
                     <Link key={j} to="/contact" className="font-semibold text-[#187B65] hover:underline">{part}</Link>
                   ) : (

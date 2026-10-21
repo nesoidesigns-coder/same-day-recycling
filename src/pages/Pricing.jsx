@@ -63,7 +63,7 @@ export default function Pricing() {
 
       <section className="max-w-5xl mx-auto px-4 py-14">
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#102B2A] text-center">What each price tier covers</h2>
-        <p className="text-center text-slate-600 mt-2 text-sm">Standard rates shown (exact city pricing varies slightly — your quote always shows your rate).</p>
+        <p className="text-center text-slate-600 mt-2 text-sm">Standard rates shown (exact city pricing varies slightly — your quote always shows your rate). Tier prices are the base rate for the band: a load near the top of the band prices toward the next tier, which is why instant estimates can show a range above the base price.</p>
         <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {TIERS.map((t) => (
             <div key={t.label} className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-6">
@@ -71,7 +71,7 @@ export default function Pricing() {
                 <Truck className="w-4 h-4 text-[#187B65]" />
                 <span className="font-bold text-sm uppercase tracking-wide">{t.label}</span>
               </div>
-              <div className="mt-3 text-3xl font-extrabold text-[#102B2A] tabular-nums">${t.price}</div>
+              <div className="mt-3 text-3xl font-extrabold text-[#102B2A] tabular-nums">from ${t.price}</div>
               <div className="mt-1 text-sm font-bold text-[#187B65]">{t.weight}</div>
               <p className="mt-2 text-sm text-slate-600">{t.example}</p>
             </div>

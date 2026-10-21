@@ -138,7 +138,7 @@ export default function SoftwareSales() {
               <HoloGauge value={99.9} label="Uptime target" sub="Design commitment" />
               <HoloGauge value={100} label="Data isolation" sub="Company-level RLS by design" />
               <HoloGauge value={100} label="Automated workflows" sub="Quote, dispatch and invoicing tools" />
-              <HoloGauge value={100} label="Same-day dispatch" sub="Book before noon, where service is live" />
+              <HoloGauge value={100} label="Same-day dispatch target" sub="Book before noon, where contractor capacity is live — confirmed per job" />
             </div>
           </div>
         </div>

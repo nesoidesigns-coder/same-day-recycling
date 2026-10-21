@@ -219,7 +219,7 @@ export default function CityPage() {
               <div key={b.key} className="rounded-2xl border border-slate-100 bg-white p-5">
                 <div className="font-bold text-[#102B2A]">{b.size}</div>
                 <div className="text-sm text-slate-500">{b.weight}</div>
-                <div className="mt-2 text-2xl font-bold text-[#187B65]">${prices[b.key]}</div>
+                <div className="mt-2 text-2xl font-bold text-[#187B65]">from ${prices[b.key]}</div>
               </div>
             ))}
           </div>

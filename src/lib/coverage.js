@@ -78,6 +78,11 @@ export const DISPATCH_STATUS_LABELS = {
 export const coverageByStatus = (status) => COVERAGE.filter((c) => c.status === status);
 export const activeCitiesByProvince = (province) => COVERAGE.filter((c) => c.province === province).map((c) => c.name);
 
+// Legacy helpers kept for compatibility: onboarding/coming-soon buckets no
+// longer exist in the registry (capacity is derived live, not hardcoded).
+export const onboardingCitiesByProvince = () => [];
+export const comingSoonCitiesByProvince = () => [];
+
 // Cities with LIVE verified contractor capacity — pass the capacity set from
 // useCoverageStatus(). Never assumed from the registry alone.
 export const sameDayCities = (verifiedCitySet) =>

@@ -131,7 +131,9 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                 <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Your estimate</div>
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{quote.range}</div>
                 <div className="mt-3 inline-block rounded-full bg-[#187B65]/20 text-[#187B65] font-semibold px-4 py-1.5 text-sm">{quote.label}</div>
-                <p className="mt-5 text-slate-300 text-sm">Final price confirmed on arrival before we lift a thing.</p>
+                <p className="mt-5 text-slate-300 text-sm">
+                  What's in this estimate: the base service price for your tier band, less any curbside discount — no extra fees are added online. Applicable taxes (GST and/or PST) are added only when you approve the final price before payment. Volume is estimated in eighths of a truck from the items you gave; extra or heavier items found on arrival change the final amount, which you approve before we lift a thing.
+                </p>
                 <button
                   onClick={() => onBook({ items_text: itemsText, estimate_text: `${quote.range} (${quote.label})`, city })}
                   className="mt-8 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors flex items-center justify-center gap-2"
