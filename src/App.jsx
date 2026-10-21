@@ -28,6 +28,7 @@ import AdminCities from './pages/AdminCities';
 import AdminReviews from './pages/AdminReviews';
 import AdminKeywords from './pages/AdminKeywords';
 import AdminSystem from './pages/AdminSystem';
+import AdminRoutes from './pages/AdminRoutes';
 import AdminAnalytics from './pages/AdminAnalytics';
 import RecyclingDirectory from './pages/RecyclingDirectory';
 import ProviderDetail from './pages/ProviderDetail';
@@ -132,6 +133,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/keywords" element={<AdminKeywords />} />
           <Route path="/admin/system" element={<AdminSystem />} />
+          <Route path="/admin/routes" element={<AdminRoutes />} />
         </Route>
         <Route path="/admin/pricing" element={<AdminPricing />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
