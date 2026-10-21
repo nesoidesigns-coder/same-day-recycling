@@ -18,6 +18,11 @@
     "synced_date": {
       "type": "string",
       "format": "date"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
     }
   },
   "required": [
