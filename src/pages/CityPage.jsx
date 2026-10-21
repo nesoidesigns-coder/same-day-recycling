@@ -11,6 +11,7 @@ import Services from "@/components/sdr/Services";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import NotFoundPage from "@/lib/NotFoundPage";
+import CityRulesBlock from "@/components/sdr/CityRulesBlock";
 import { Image } from "@/components/ui/image";
 import { cityFromSlug, CITIES } from "@/lib/cities";
 import { regionByCode } from "@/lib/regions";
@@ -293,6 +294,9 @@ export default function CityPage() {
             ? `Same-day pickup is live in ${city.name}: book before noon and a crew is usually there the same afternoon. Every load is sorted after pickup — furniture in good shape goes to donation partners, metal goes to recyclers, and the rest is disposed of responsibly rather than a straight-to-landfill run.`
             : `Same Day Recycling is expanding across ${region?.name || "Canada"} through its partner network. Until a ${city.name} partner is verified, this page reflects planned coverage only — see our live coverage areas for same-day service today.`}
         </p>
+        <div className="mt-8">
+          <CityRulesBlock city={city.name} province={city.province} />
+        </div>
         <div className="mt-8 space-y-3">
           {(isActive ? ACTIVE_FAQ(city) : OFFBOARD_FAQ(city)).map((f) => (
             <details key={f.q} className="rounded-2xl border border-slate-200 bg-white p-5" open={false}>
