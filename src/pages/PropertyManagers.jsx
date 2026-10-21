@@ -49,7 +49,7 @@ export default function PropertyManagers() {
       <TrustBar />
       <section className="bg-[#f4f7f5] border-y border-slate-100">
         <div className="max-w-3xl mx-auto px-4 py-16">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Case study</div>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Illustrative example</div>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#102B2A]">
             40 units turned over in one downtown high-rise
           </h2>
@@ -60,7 +60,7 @@ export default function PropertyManagers() {
             <p className="text-[#102B2A] font-medium leading-relaxed">
               "Our loading bay used to fill up with tenant junk between council meetings. Now one call clears it the same day, and I get a receipt I can put in the strata file."
             </p>
-            <footer className="mt-3 text-sm font-bold text-[#187B65]">Strata manager, downtown high-rise</footer>
+            <footer className="mt-3 text-sm font-bold text-[#187B65]">Illustrative scenario — not a named customer</footer>
           </blockquote>
         </div>
       </section>
