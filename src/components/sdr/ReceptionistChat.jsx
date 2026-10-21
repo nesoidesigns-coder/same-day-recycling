@@ -128,7 +128,7 @@ export default function ReceptionistChat() {
             className="hidden sm:block absolute bottom-full right-0 mb-3 w-56"
           >
             <div className="relative rounded-2xl rounded-br-md bg-white border border-[#187B65]/40 shadow-lg px-3.5 py-2.5 text-xs font-semibold text-[#102B2A] leading-snug">
-              Hi, I'm Rex — instant quotes across Canada, recycling answers worldwide.
+              Hi, I'm Rex — instant quotes in our active service areas, recycling answers worldwide.
               <button
                 onClick={handleOpen}
                 className="mt-1.5 block text-[11px] font-black uppercase tracking-wider text-[#187B65]"
@@ -173,7 +173,7 @@ export default function ReceptionistChat() {
               <div className="flex justify-start items-end gap-2">
                 <AiMascotFull height={64} />
                 <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[75%]">
-                  Welcome to Same Day Recycling. I can quote and book pickups across Canada — and answer recycling questions from anywhere in the world. What do you need removed?
+                  Welcome to Same Day Recycling. I can quote and book pickups in our active service areas — and answer recycling questions from anywhere in the world. What do you need removed?
                 </div>
               </div>
             )}

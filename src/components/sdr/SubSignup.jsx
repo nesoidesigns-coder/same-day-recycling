@@ -59,8 +59,8 @@ export default function SubSignup() {
       </div>
       <label className="block">
         <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Primary city</span>
-        <select value={form.city} onChange={set("city")} className="input">
-          <option value="">Select a city</option>
+        <select value={form.city} onChange={set("city")} required className="input">
+          <option value="" disabled>Select a city</option>
           {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
         </select>
       </label>

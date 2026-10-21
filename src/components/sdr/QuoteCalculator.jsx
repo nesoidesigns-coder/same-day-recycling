@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calculator, Loader2, Plus, Minus, ArrowRight } from "lucide-react";
-import { CITIES } from "@/lib/cities";
+import { CITIES, cityLabel } from "@/lib/cities";
 import QuoteLeadCapture from "@/components/sdr/QuoteLeadCapture";
 
 const CATALOG = [
@@ -60,8 +60,8 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
               <label className="block mb-6">
                 <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Your city</span>
                 <select value={city} onChange={(e) => setCity(e.target.value)} className="input">
-                  <option value="">Standard rates (any city)</option>
-                  {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
+                  <option value="">Standard rates (active cities)</option>
+                  {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
                 </select>
               </label>
             )}

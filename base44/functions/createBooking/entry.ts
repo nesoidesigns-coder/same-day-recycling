@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { sendBookingNotifications } from '../../shared/bookingNotify.ts';
+import { isActiveCity } from '../../shared/coverageStatus.ts';
 
 export default async function(req) {
   try {
@@ -24,7 +25,15 @@ export default async function(req) {
     const quote_estimate = str(body?.quote_estimate, 120);
     const photo_uri = str(body?.photo_uri, 500);
 
-    // Same-day booking is live Canada-wide
+    // Booking integrity: confirmed bookings are only accepted in active service
+    // territories. The frontend routes non-live cities to the ServiceWaitlist;
+    // this guard enforces the same rule server-side.
+    if (!city || !isActiveCity(city)) {
+      return Response.json({
+        error: 'service_not_available',
+        message: 'Confirmed bookings are only available in active service territories. Please join the waitlist for your city.',
+      }, { status: 422 });
+    }
     const booking = await base44.entities.Booking.create({
       status_history: [{ status: 'new', date: new Date().toISOString() }],
       name,

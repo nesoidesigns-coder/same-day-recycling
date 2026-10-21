@@ -6,7 +6,7 @@ import { Phone, Mail, Clock, Send, Loader2, CheckCircle2, MapPin } from "lucide-
 import Navbar from "@/components/sdr/Navbar";
 import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
-import { CITIES } from "@/lib/cities";
+import { coverageByStatus } from "@/lib/coverage";
 
 export default function Contact() {
   useSEO({
@@ -20,6 +20,8 @@ export default function Contact() {
   const [error, setError] = useState("");
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const onboardingCount = coverageByStatus("partner_onboarding").length;
+  const soonCount = coverageByStatus("coming_soon").length;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -83,7 +85,11 @@ export default function Contact() {
               <MapPin className="w-5 h-5 text-[#187B65]" /> Service area
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Same-day service across major Canadian cities, including{" "}{CITIES.map((c) => c.name).join(", ")}.
+              Same-day pickup is live today in Vancouver, Burnaby, Surrey, Richmond and Coquitlam — BC's Lower Mainland.
+            </p>
+            <p className="text-sm text-slate-600 leading-relaxed mt-2">
+              We're a Canadian platform expanding city by city through verified local partners: {onboardingCount} cities are in partner onboarding and {soonCount} more are planned. Not live in your city yet?{" "}
+              <Link to="/coverage" className="font-semibold text-[#187B65] hover:underline">See full coverage and join the waitlist</Link>.
             </p>
           </div>
           <div className="rounded-2xl bg-[#102B2A] p-6 text-white">

@@ -13,7 +13,7 @@ const SERVICE_LABELS = { drop_off: "Drop-off", collection: "Collection", both: "
 
 export default function RecyclingDirectory() {
   useSEO({
-    title: "Recycling Directory — Verified Services Across Canada",
+    title: "Recycling Directory — Verified Listings in British Columbia",
     description: "Search recycling listings by material or location. View provider verification status, accepted items and contact details; availability varies by area.",
     path: "/recycling",
   });
@@ -63,9 +63,9 @@ export default function RecyclingDirectory() {
       <Navbar />
       <div className="bg-[#102B2A] text-white">
         <div className="max-w-5xl mx-auto px-4 py-10">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Recycling services across Canada</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Recycling directory — verified listings in British Columbia</h1>
           <p className="text-emerald-100/70 mt-2 max-w-2xl text-sm leading-relaxed">
-            Search by material, product, or service — then by postal code, city, or province. Accepted materials are set by each facility or program; always confirm restrictions before you go.
+            Verified listings currently cover British Columbia, expanding nationally as partners are confirmed. Search by material, product, or service — then by postal code, city, or province. Accepted materials are set by each facility or program; always confirm restrictions before you go.
           </p>
           <form
             className="mt-6 flex flex-col sm:flex-row gap-3"

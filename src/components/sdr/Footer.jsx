@@ -86,7 +86,7 @@ export default function Footer() {
             <Mail className="w-4 h-4 text-gold" />
             samedayrecycling@gmail.com
           </a>
-          <div className="text-emerald-200/50">Open 24 hours · Coast-to-coast recycling network</div>
+          <div className="text-emerald-200/50">Open 24 hours · A Canadian platform expanding through verified partners</div>
         </div>
       </div>
       <VisitTracker />

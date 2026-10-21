@@ -61,3 +61,8 @@ export const comingSoonCitiesByProvince = (province) =>
   COVERAGE.filter((c) => c.province === province && c.status === "coming_soon").map((c) => c.name);
 
 export const cityByName = (name) => COVERAGE.find((c) => c.name === name) || null;
+
+// True only for cities with confirmed, bookable service. The single
+// availability rule every booking, subscription, quote and metal-pickup
+// form must use — non-active cities get the waitlist flow instead.
+export const isCityActive = (name) => cityByName(name)?.status === "active";

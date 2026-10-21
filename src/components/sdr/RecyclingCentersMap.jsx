@@ -165,9 +165,6 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                 </div>
               ))}
             </div>
-            {shown.length > 12 && (
-              <p className="text-center text-sm text-slate-500 mt-4">+ {shown.length - 12} more recycling centres on the map</p>
-            )}
             {shown.length === 0 && (
               <p className="text-center text-sm text-slate-500 mt-4">
                 No centers listed for this city yet — the map updates automatically every week.

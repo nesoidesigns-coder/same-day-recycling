@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
+import { isCityActive } from "@/lib/coverage";
 
 export default function FreeMetalPickup() {
   useSEO({
@@ -15,6 +16,7 @@ export default function FreeMetalPickup() {
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [waitlisted, setWaitlisted] = useState(false);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -23,11 +25,29 @@ export default function FreeMetalPickup() {
     setSaving(true);
     setError("");
     try {
+      // Same availability rule as every other booking surface: only active
+      // territories confirm a booking — the rest join the waitlist.
+      if (!isCityActive(form.city)) {
+        await base44.entities.ServiceWaitlist.create({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          city: form.city,
+          address: form.address,
+          notes: `FREE METAL PICKUP — ${form.metal}`,
+          source: "metal_pickup",
+        });
+        base44.analytics.track({ eventName: "service_waitlist_joined", properties: { city: form.city } });
+        setWaitlisted(true);
+        setDone(true);
+        return;
+      }
       await base44.functions.invoke('createBooking', {
         name: form.name,
         email: form.email,
         phone: form.phone,
         address: form.address,
+        city: form.city,
         items_description: `FREE METAL PICKUP — ${form.metal}`,
         quote_estimate: "Free",
       });
@@ -72,9 +92,11 @@ export default function FreeMetalPickup() {
         {done ? (
           <div className="rounded-3xl bg-[#f4f7f5] border border-slate-100 p-8 text-center">
             <CheckCircle2 className="w-12 h-12 text-[#187B65] mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-[#102B2A]">You're booked!</h3>
+            <h3 className="text-2xl font-bold text-[#102B2A]">{waitlisted ? "You're on the waitlist!" : "You're booked!"}</h3>
             <p className="mt-3 text-slate-600">
-              We'll text or call you shortly to confirm your free pickup.
+              {waitlisted
+                ? `Free metal pickup isn't live in ${form.city} yet — we've saved your request and will contact you when service launches there.`
+                : "We'll text or call you shortly to confirm your free pickup."}
             </p>
           </div>
         ) : (
@@ -94,9 +116,8 @@ export default function FreeMetalPickup() {
             <label className="block">
               <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">City</span>
               <select value={form.city} onChange={set("city")} className="input">
-                {[...CITIES.map(cityLabel), "Other city"].map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
+                {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
+                <option value="Other city">Other city (not listed yet)</option>
               </select>
             </label>
             <label className="block">

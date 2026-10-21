@@ -1,0 +1,70 @@
+{
+  "name": "ServiceWaitlist",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "default": ""
+    },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    },
+    "source": {
+      "type": "string",
+      "default": "waitlist_form"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "contacted",
+        "converted",
+        "closed"
+      ],
+      "default": "waiting"
+    },
+    "converted_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "name",
+    "city"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
