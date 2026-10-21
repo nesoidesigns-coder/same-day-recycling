@@ -14,6 +14,7 @@ const primaryLinks = [
 
 const moreLinks = [
   { label: "Request Service (Nationwide)", to: "/request-service" },
+  { label: "Track Your Request", to: "/request-status" },
   { label: "Explore Services", to: "/services" },
   { label: "Service Finder", to: "/service-finder" },
   { label: "AI Booking Center", to: "/ai-booking" },

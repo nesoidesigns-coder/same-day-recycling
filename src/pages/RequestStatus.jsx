@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Navbar from "@/components/sdr/Navbar";
 import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
-import { Search, Loader2, CheckCircle2, MapPin, CalendarDays, Wrench, SearchX } from "lucide-react";
+import { Search, Loader2, CheckCircle2, MapPin, CalendarDays, Clock, Wrench, SearchX } from "lucide-react";
 
 const STATUS_META = {
   new: { label: "Received", tone: "bg-sky-500/15 text-sky-300 border-sky-400/30", copy: "We've received your request and our national dispatch team is taking it from here." },
@@ -13,7 +13,21 @@ const STATUS_META = {
   matched: { label: "Contractor matched", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "A local contractor has been matched. They'll confirm scheduling and pricing with you directly." },
   confirmed: { label: "Confirmed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is confirmed. Dispatch has locked in your appointment." },
   completed: { label: "Completed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "This request is complete. Thanks for recycling with the network!" },
+  confirmed: { label: "Confirmed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is confirmed." },
+  contacted: { label: "Contacted", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Our team has contacted you to confirm your pickup details." },
+  scheduled: { label: "Scheduled", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is scheduled. Have your items ready for the arrival window." },
   cancelled: { label: "Cancelled", tone: "bg-red-500/10 text-red-300 border-red-400/30", copy: "This request was cancelled. Submit a new request any time." },
+};
+
+// Direct (active-city) bookings follow the classic booking flow rather than
+// the nationwide dispatch flow, so they get their own status copy.
+const BOOKING_COPY = {
+  new: "We've received your booking and will call you shortly to confirm your pickup window.",
+  confirmed: "Your pickup is confirmed. We'll see you at the scheduled time.",
+  contacted: "Our team has contacted you to confirm your pickup details.",
+  scheduled: "Your pickup is scheduled — have your items ready for the arrival window.",
+  completed: "This booking is complete. Thanks for recycling with us!",
+  cancelled: "This booking was cancelled. Submit a new request any time.",
 };
 
 const SERVICE_LABELS = {
@@ -51,6 +65,7 @@ export default function RequestStatus() {
   };
 
   const meta = result ? STATUS_META[result.status] : null;
+  const copy = result?.kind === "booking" ? (BOOKING_COPY[result.status] || meta?.copy) : meta?.copy;
 
   return (
     <div className="bg-white">
@@ -110,7 +125,7 @@ export default function RequestStatus() {
                 {meta.label}
               </span>
             </div>
-            <p className="mt-5 text-sm text-emerald-100/80 leading-relaxed">{meta.copy}</p>
+            <p className="mt-5 text-sm text-emerald-100/80 leading-relaxed">{copy}</p>
             <div className="mt-6 pt-6 border-t border-[#187B65]/20 grid sm:grid-cols-2 gap-4 text-sm">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
@@ -124,6 +139,12 @@ export default function RequestStatus() {
                 <div className="flex items-start gap-2">
                   <CalendarDays className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
                   <div><span className="text-emerald-100/50">Preferred date:</span> <span className="font-semibold text-white">{result.preferred_date}</span></div>
+                </div>
+              )}
+              {result.time_window && (
+                <div className="flex items-start gap-2">
+                  <Clock className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
+                  <div><span className="text-emerald-100/50">Arrival window:</span> <span className="font-semibold text-white">{result.time_window}</span></div>
                 </div>
               )}
               {result.appointment_date && (

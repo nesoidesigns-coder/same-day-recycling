@@ -40,7 +40,11 @@ export default async function(req) {
         message: 'Confirmed direct bookings are only available in active service territories. Submit a nationwide service request and our dispatch team will confirm your local contractor, pricing and pickup window before anything is scheduled.',
       }, { status: 422 });
     }
+    // Public tracking code: shown to the customer so they can look up their
+    // own booking status without an account (see requestLookup).
+    const reference_code = crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase();
     const booking = await base44.entities.Booking.create({
+      reference_code,
       status_history: [{ status: 'new', date: new Date().toISOString() }],
       name,
       phone,
@@ -77,7 +81,7 @@ export default async function(req) {
       }).catch((e) => console.error('Failed to record notification status:', e.message));
     }
 
-    return Response.json({ ok: true, booking_id: booking?.id, notified });
+    return Response.json({ ok: true, booking_id: booking?.id, reference_code, notified });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

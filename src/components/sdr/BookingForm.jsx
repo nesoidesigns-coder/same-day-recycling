@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera, Lock } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
@@ -24,6 +25,7 @@ export default function BookingForm({ prefill }) {
   }, [prefill]);
   const [done, setDone] = useState(false);
   const [bookingId, setBookingId] = useState(null);
+  const [refCode, setRefCode] = useState("");
   const [payDone, setPayDone] = useState(false);
   const [error, setError] = useState("");
   const [waitlisted, setWaitlisted] = useState(false);
@@ -80,7 +82,7 @@ export default function BookingForm({ prefill }) {
     setSubmitting(true);
     try {
       if (notLive) {
-        await base44.functions.invoke('nationalRequest', {
+        const natRes = await base44.functions.invoke('nationalRequest', {
           name: form.name,
           email: form.email,
           phone: form.phone,
@@ -91,6 +93,7 @@ export default function BookingForm({ prefill }) {
           preferred_date: form.preferred_date,
           notes: form.curbside ? "Customer requested curbside pickup ($25 discount)." : "",
         });
+        setRefCode(natRes?.data?.reference_code || "");
         base44.analytics.track({ eventName: "national_request_submitted", properties: { city: form.city, source: "booking_form" } });
         setWaitlisted(true);
         setDone(true);
@@ -109,6 +112,7 @@ export default function BookingForm({ prefill }) {
       }
       const res = await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside });
       setBookingId(res?.data?.booking_id || null);
+      setRefCode(res?.data?.reference_code || "");
       base44.analytics.track({ eventName: 'booking_submitted' });
       if (typeof window.gtag === "function") {
         window.gtag("event", "booking_submitted", { city: form.city, currency: "CAD", value: 1 });
@@ -164,6 +168,16 @@ export default function BookingForm({ prefill }) {
           <p className="mt-6 font-semibold text-[#187B65] flex items-center justify-center gap-1.5">
             <CheckCircle2 className="w-4 h-4" /> Payment received — thank you!
           </p>
+        )}
+        {refCode && (
+          <div className="mt-6 rounded-2xl bg-[#f4f7f5] border border-slate-100 px-5 py-4">
+            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]">Your reference code</div>
+            <div className="font-mono text-xl font-bold tracking-[0.2em] text-[#102B2A] mt-1">{refCode}</div>
+            <p className="text-xs text-slate-500 mt-1.5">Save this code to check your status any time.</p>
+            <Link to="/request-status" className="mt-3 inline-block rounded-full bg-[#187B65] text-white font-bold px-5 py-2 text-sm hover:bg-[#125C4E] transition-colors">
+              Track your request
+            </Link>
+          </div>
         )}
         <button onClick={() => { setDone(false); setWaitlisted(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false }); setPhoto(null); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
           Book another pickup

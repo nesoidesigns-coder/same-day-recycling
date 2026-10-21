@@ -96,6 +96,11 @@
       },
       "default": []
     },
+    "reference_code": {
+      "type": "string",
+      "default": "",
+      "description": "8-character public tracking code shown to the customer for status lookup."
+    },
     "assignment_status": {
       "type": "string",
       "enum": [

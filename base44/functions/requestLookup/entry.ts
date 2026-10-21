@@ -22,7 +22,32 @@ export default async function (req) {
       { limit: 1 }
     );
     const r = items && items[0];
-    if (!r) return Response.json({ found: false });
+    if (!r) {
+      // Fallback: direct (active-city) bookings carry their own reference code.
+      const { items: bItems } = await base44.asServiceRole.entities.Booking.filter(
+        { reference_code: code },
+        { limit: 1 }
+      );
+      const b = bItems && bItems[0];
+      if (!b) return Response.json({ found: false });
+      return Response.json({
+        found: true,
+        request: {
+          kind: 'booking',
+          reference_code: b.reference_code,
+          name: b.name,
+          city: b.city || '',
+          service_type: 'junk_removal',
+          items_description: b.items_description,
+          status: b.status,
+          partner_name: b.partner_name || '',
+          preferred_date: b.preferred_date || '',
+          appointment_date: '',
+          time_window: b.time_window || '',
+          created_date: b.created_date,
+        },
+      });
+    }
 
     return Response.json({
       found: true,
