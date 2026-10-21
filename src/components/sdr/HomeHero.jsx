@@ -35,10 +35,10 @@ export default function HomeHero({ onCity }) {
           Canada's Intelligent Recycling &amp; Removal Network
         </div>
         <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
-          Canada's Intelligent Recycling &amp; Removal Network.
+          Canada's Recycling Network. One Intelligent Platform.
         </h1>
         <p className="mt-4 text-base md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-          One connected platform for recycling, junk removal, commercial cleanouts, and intelligent service coordination across Canada.
+          Discover recycling services, coordinate pickups, connect with service providers, and power your recycling business through one intelligent system.
         </p>
 
         {/* Primary: postal-code service discovery */}
@@ -83,16 +83,16 @@ export default function HomeHero({ onCity }) {
         {/* Secondary actions */}
         <div className="mt-4 flex flex-wrap justify-center gap-3">
           <button
-            onClick={() => document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() => document.getElementById("book")?.scrollIntoView({ behavior: "smooth" })}
             className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors"
           >
-            Get a Quote
+            Request a Pickup
           </button>
           <button
             onClick={() => navigate("/software")}
             className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 text-white font-bold px-6 py-3 hover:bg-white/10 transition-colors"
           >
-            Explore Business Solutions <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
+            Explore the Platform <ArrowRight className="w-4 h-4 text-[#54D9AE]" />
           </button>
         </div>
 
