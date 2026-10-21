@@ -3,11 +3,13 @@ import { Globe2, Loader2 } from "lucide-react";
 import OverviewTab from "@/components/admin/nat/OverviewTab";
 import RequestsTab from "@/components/admin/nat/RequestsTab";
 import RecruitmentTab from "@/components/admin/nat/RecruitmentTab";
+import SalesIntelligenceTab from "@/components/admin/nat/SalesIntelligenceTab";
 
 const TABS = [
   { key: "overview", label: "Overview" },
   { key: "requests", label: "Requests" },
   { key: "recruitment", label: "Provider Recruitment" },
+  { key: "intelligence", label: "Sales Intelligence" },
 ];
 
 export default function AdminNational() {
@@ -41,6 +43,7 @@ export default function AdminNational() {
       {tab === "overview" && <OverviewTab />}
       {tab === "requests" && <RequestsTab />}
       {tab === "recruitment" && <RecruitmentTab />}
+      {tab === "intelligence" && <SalesIntelligenceTab />}
 
       <div className="mt-6 text-xs text-slate-400 flex items-center gap-1.5">
         <Loader2 className="w-3 h-3" /> Counts and lists load from live records — never estimated.

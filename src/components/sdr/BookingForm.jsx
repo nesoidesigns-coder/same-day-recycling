@@ -119,9 +119,9 @@ export default function BookingForm({ prefill }) {
         </Field>
         {notLive && (
           <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
-            Service isn't live in {form.city} yet. Submitting this form joins the {form.city} waitlist — we'll contact you when a verified partner launches there.
+            Same-day booking is only confirmed in our operator cities (Vancouver, Burnaby, Surrey, Richmond, Coquitlam). {form.city} is active for inquiries — local service availability and scheduling are confirmed after your request.
             <span className="mt-1 block font-normal text-amber-800/80">
-              Need service sooner? <Link to="/request-service" className="underline">Submit a national service request</Link> — we match local providers across Canada (provider confirmation required).
+              <Link to={`/request-service?city=${encodeURIComponent(form.city)}`} className="underline font-semibold">Submit a nationwide inquiry</Link> — your request drives local provider matching and keeps your job in our system.
             </span>
           </div>
         )}

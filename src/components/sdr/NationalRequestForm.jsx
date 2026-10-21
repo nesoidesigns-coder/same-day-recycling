@@ -9,10 +9,14 @@ import { CITIES } from "@/lib/cities";
 // Nationwide service-request form. Any municipality and any valid postal
 // code can submit — nothing is represented as confirmed service until a
 // provider accepts. Verified territories show a direct-booking shortcut.
-export default function NationalRequestForm({ prefill }) {
+// Accepts ?city= and ?service= params so other forms can hand off inquiries.
+export default function NationalRequestForm() {
+  const params = new URLSearchParams(window.location.search);
+  const prefillCity = (params.get("city") || "").slice(0, 120);
+  const prefillService = SERVICE_TYPES.some((s) => s.value === params.get("service")) ? params.get("service") : "junk_removal";
   const [form, setForm] = useState({
-    name: "", phone: "", email: "", city: "", province_code: "",
-    postal_code: "", service_type: "junk_removal", items_description: "",
+    name: "", phone: "", email: "", city: prefillCity, province_code: "",
+    postal_code: "", service_type: prefillService, items_description: "",
     preferred_date: "", notes: "",
   });
   const [submitting, setSubmitting] = useState(false);

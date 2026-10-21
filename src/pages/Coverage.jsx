@@ -19,17 +19,17 @@ const SECTIONS = [
     status: "partner_onboarding",
     icon: <Rocket className="w-5 h-5 text-[#187B65]" />,
     dot: "bg-[#102B2A]",
-    intro: "A partner is being recruited or verified for these cities. Same-day pickup is not confirmed here yet — service opens once a partner is verified.",
-    cardLabel: "Applications open",
-    linkFor: (c) => `/contractors?city=${encodeURIComponent(c.name)}`,
+    intro: "Inquiries are open in these cities today. A local provider is being matched or verified — service availability and scheduling are confirmed after your request.",
+    cardLabel: "Inquiries open — matching provider",
+    linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
   },
   {
     status: "coming_soon",
     icon: <Hourglass className="w-5 h-5 text-slate-400" />,
     dot: "bg-slate-300",
-    intro: "Expansion is planned in these markets. No pickup service is available yet, and no same-day service is promised.",
-    cardLabel: "Planned expansion",
-    linkFor: () => "/contractors",
+    intro: "These markets are active for inquiries — customer demand here drives contractor recruitment. Local availability is confirmed after your request, and no same-day service is promised.",
+    cardLabel: "Inquiries open — recruiting provider",
+    linkFor: (c) => `/request-service?city=${encodeURIComponent(c.name)}`,
   },
 ];
 
@@ -48,9 +48,9 @@ export default function Coverage() {
           <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Canada's Recycling Network. One Intelligent Platform.</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Request recycling, junk removal and material pickup services anywhere in Canada. Our platform
-            connects customers with local service providers as availability is confirmed — same-day pickup is
-            <span className="text-white font-semibold"> listed only where coverage is confirmed</span>.
+            Now accepting recycling and junk removal inquiries across Canada. Local service availability
+            and scheduling are confirmed after your request — guaranteed same-day pickup is
+            <span className="text-white font-semibold"> listed only where operational capacity is confirmed</span>.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
             {["Requests accepted nationwide", "Verified service territories", "Provider matching in progress", "Confirmed service appointments"].map((t) => (
@@ -100,7 +100,7 @@ export default function Coverage() {
                 >
                   <div>
                     <div className="font-bold">Your city not listed?</div>
-                    <div className="text-xs text-slate-300 mt-1">Request service anywhere in Canada — provider confirmation required.</div>
+                    <div className="text-xs text-slate-300 mt-1">Inquiries accepted in every Canadian city — availability and scheduling confirmed after your request.</div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#187B65]" />
                 </Link>

@@ -1,14 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { normalizePostal, provinceFromFsa } from '../../shared/geo.ts';
-import { isActiveCity, ONBOARDING_CITIES } from '../../shared/coverageStatus.ts';
+import { isActiveCity } from '../../shared/coverageStatus.ts';
 
 const SERVICE_TYPES = ['junk_removal', 'furniture', 'appliances', 'electronics', 'metal_pickup', 'cleanouts', 'other'];
 
-// National service-request intake: accepts requests from every Canadian
-// province and territory, matches verified local partners, and creates a
-// provider recruitment task when no partner covers the market. Never
-// guarantees a pickup before a provider (or dispatch) accepts the job.
+// Nationwide inquiry intake — the heart of the business model:
+//   customer demand -> contractor recruitment -> software sales -> expansion.
+// EVERY Canadian municipality is active for inquiries. Nothing is discarded
+// for lacking a contractor, and nothing is guaranteed before a provider
+// accepts. Markets with confirmed operational capacity keep direct booking.
 export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
@@ -45,14 +46,11 @@ export default async function (req) {
       }
     }
 
-    // Coverage status from the server-side source of truth — never invented.
+    // Service-verification state (never blocks the inquiry): operator cities
+    // have guaranteed same-day capacity; everyone else is matched or recruited.
     const cityNorm = city.toLowerCase().replace(/,\s*(bc|b\.c\.|on|qc|ab|sk|mb|ns|nb|pe|nl|yt|nt|nu).*$/, '').trim();
     let coverage_status = 'unverified';
-    if (isActiveCity(city)) {
-      coverage_status = 'verified';
-    } else if (ONBOARDING_CITIES.some((c) => c.toLowerCase() === cityNorm)) {
-      coverage_status = 'onboarding';
-    }
+    if (isActiveCity(city)) coverage_status = 'verified';
 
     const srole = base44.asServiceRole;
     let status = 'recruiting';
@@ -63,25 +61,29 @@ export default async function (req) {
     let message = '';
 
     if (coverage_status === 'verified') {
-      // Verified operator territory — same-day service is live; dispatch confirms the window.
+      // Confirmed operational capacity — dispatch confirms the same-day window.
       status = 'provider_matching';
-      message = `Same-day service is live in ${city}. Our dispatch team will contact you at ${phone} to confirm your pickup window and final price on arrival.`;
+      message = `Same-day service is confirmed in ${city}. Our dispatch team will contact you at ${phone} to confirm your pickup window and final price on arrival.`;
     } else {
-      // Provider matching against the verified partner database (city match first).
-      const partnerPage = await srole.entities.Partner.filter({ active: true }, { limit: 200 });
-      const items = partnerPage.items || [];
-      const partner = items.find((p) => String(p.city || '').toLowerCase().trim() === cityNorm) || null;
-      if (partner) {
-        partner_id = partner.id;
-        partner_name = partner.name;
+      // Match against verified partners (city) and verified recruits (territory).
+      const [partnerPage, recruitPage] = await Promise.all([
+        srole.entities.Partner.filter({ active: true }, { limit: 200 }),
+        srole.entities.ProviderRecruit.filter({ verified: true }, { limit: 500 }),
+      ]);
+      const partner = (partnerPage.items || []).find((p) => String(p.city || '').toLowerCase().trim() === cityNorm) || null;
+      const recruit = (recruitPage.items || []).find((r) => String(r.territory || '').toLowerCase().trim() === cityNorm) || null;
+      const matched = partner || recruit;
+      if (matched) {
+        partner_id = matched.id;
+        partner_name = matched.name || matched.company;
         status = 'matched';
         quote_status = 'pending_provider';
-        message = `We've matched your request with a verified local provider in ${city}. They'll confirm availability and pricing, then you receive a confirmed quote and appointment. Nothing is scheduled until the provider accepts.`;
+        message = `Your inquiry is saved. We've matched it with a verified local provider in ${city} — they'll confirm availability and pricing, then you receive a confirmed quote and appointment. Local service availability and scheduling are confirmed after your request.`;
       } else {
-        // No partner available — create or update a provider recruitment task
-        // for this market (deduped per province + city).
-        const recruitPage = await srole.entities.ProviderRecruit.filter({ source: 'recruitment_task' }, { limit: 200 });
-        const existing = (recruitPage.items || []).find(
+        // No contractor in this market yet — keep the inquiry and open a
+        // recruitment task: demand here drives contractor recruitment.
+        const taskPage = await srole.entities.ProviderRecruit.filter({ source: 'recruitment_task' }, { limit: 200 });
+        const existing = (taskPage.items || []).find(
           (r) => (r.territory || '').toLowerCase().trim() === cityNorm
             && (!province_code || r.province_code === province_code)
             && r.partnership_status !== 'declined'
@@ -93,7 +95,7 @@ export default async function (req) {
           });
         } else {
           const rec = await srole.entities.ProviderRecruit.create({
-            company: `Local provider recruitment — ${city}${province_code ? ', ' + province_code : ''}`,
+            company: `Contractor opportunity — ${city}${province_code ? ', ' + province_code : ''}`,
             province_code,
             territory: city,
             services: [service_type],
@@ -101,11 +103,11 @@ export default async function (req) {
             partnership_status: 'prospect',
             source: 'recruitment_task',
             assigned_lead_count: 1,
-            notes: 'Auto-created from a national service request. Customer contact is on the linked request record.',
+            notes: 'Auto-created from a national customer inquiry. Contact the customer and recruit a local contractor for this demand.',
           });
           recruitment_id = rec.id;
         }
-        message = `No verified provider is confirmed in ${city} yet. Your request created a recruitment task for this market — our team contacts local recycling and removal companies directly. You'll receive a confirmed quote and appointment once a provider accepts. Nothing is scheduled or charged until then.`;
+        message = `Your inquiry is saved. ${city} is active for customer inquiries — local service availability and scheduling are confirmed after your request. We'll contact you at ${phone} as soon as a local provider is matched or recruitment in ${city} completes. Nothing is scheduled or charged before a provider accepts.`;
       }
     }
 

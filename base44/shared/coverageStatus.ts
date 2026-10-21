@@ -1,6 +1,11 @@
 // Server-side source of truth for which cities have confirmed, bookable
 // service. Mirrors src/lib/coverage.js on the frontend — update both when a
 // territory goes live. Confirmed bookings may only ever be created for these.
+//
+// BUSINESS MODEL: market activation and provider verification are separate.
+// EVERY Canadian municipality is active for customer inquiries — customer
+// demand drives contractor recruitment. ACTIVE_CITIES is the narrower list
+// of guaranteed same-day booking capacity only; it never restricts inquiries.
 export const ACTIVE_CITIES = ['Vancouver', 'Burnaby', 'Surrey', 'Richmond', 'Coquitlam'];
 
 // Normalizes raw user input ("Vancouver, BC", "vancouver", "North Vancouver")

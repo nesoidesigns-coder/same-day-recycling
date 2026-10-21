@@ -36,8 +36,8 @@ export default function RequestService() {
             Canada's Recycling Network. One Intelligent Platform.
           </h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Request recycling, junk removal, and material pickup services anywhere in Canada. Our platform
-            connects customers with local service providers as availability is confirmed.
+            Now accepting recycling and junk removal inquiries across Canada. Local service availability
+            and scheduling are confirmed after your request.
           </p>
           <div className="mt-7 flex flex-wrap gap-2">
             {DISTINCTIONS.map((d) => (
