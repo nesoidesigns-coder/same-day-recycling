@@ -1,0 +1,97 @@
+{
+  "name": "PaypalTransaction",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "order",
+        "subscription"
+      ],
+      "default": "order"
+    },
+    "purpose": {
+      "type": "string",
+      "enum": [
+        "booking_quote",
+        "white_label_setup",
+        "white_label_subscription"
+      ],
+      "default": "white_label_setup"
+    },
+    "ref_id": {
+      "type": "string",
+      "default": ""
+    },
+    "ref_label": {
+      "type": "string",
+      "default": ""
+    },
+    "customer_email": {
+      "type": "string",
+      "default": ""
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "CAD"
+    },
+    "paypal_order_id": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_subscription_id": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_payer_email": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "paid",
+        "active",
+        "failed",
+        "cancelled"
+      ],
+      "default": "created"
+    },
+    "note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "kind",
+    "purpose",
+    "amount"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

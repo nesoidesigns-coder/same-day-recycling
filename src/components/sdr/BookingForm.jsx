@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
 import { CITIES } from "@/lib/cities";
 import ReviewInvite from "@/components/sdr/ReviewInvite";
+import PayPalButtons from "@/components/pay/PayPalButtons";
 
 export default function BookingForm({ prefill }) {
   const [form, setForm] = useState({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" });
@@ -20,6 +21,8 @@ export default function BookingForm({ prefill }) {
     }
   }, [prefill]);
   const [done, setDone] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
+  const [payDone, setPayDone] = useState(false);
   const [error, setError] = useState("");
 
   const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -34,7 +37,8 @@ export default function BookingForm({ prefill }) {
         const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: photo });
         photo_uri = file_uri;
       }
-      await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri });
+      const res = await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri });
+      setBookingId(res?.data?.booking_id || null);
       base44.analytics.track({ eventName: 'booking_submitted' });
       if (typeof window.gtag === "function") {
         window.gtag("event", "booking_submitted", { city: form.city, currency: "CAD", value: 1 });
@@ -48,6 +52,8 @@ export default function BookingForm({ prefill }) {
   };
 
   if (done) {
+    const m = String(quoteNote || '').replace(/,/g, '').match(/\$\s?(\d+(?:\.\d{1,2})?)/);
+    const quoteAmount = m ? parseFloat(m[1]) : 0;
     return (
       <div className="rounded-3xl bg-white p-10 border border-slate-100 text-center">
         <CheckCircle2 className="w-14 h-14 text-[#1d9e56] mx-auto mb-4" />
@@ -55,6 +61,18 @@ export default function BookingForm({ prefill }) {
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           We'll call you within 30 minutes to confirm your pickup window.
         </p>
+        {bookingId && !payDone && quoteAmount > 0 && (
+          <div className="mt-6 rounded-2xl bg-[#f4f7f5] border border-slate-100 p-5 text-left">
+            <div className="text-sm font-bold text-[#0c3b24]">Pay your estimated quote now</div>
+            <p className="text-xs text-slate-500 mt-1 mb-3">Secure payment through PayPal. The final price is confirmed by the crew on arrival.</p>
+            <PayPalButtons createPayload={{ kind: 'booking', booking_id: bookingId }} onPaid={() => setPayDone(true)} />
+          </div>
+        )}
+        {payDone && (
+          <p className="mt-6 font-semibold text-[#1d9e56] flex items-center justify-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4" /> Payment received — thank you!
+          </p>
+        )}
         <button onClick={() => { setDone(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "" }); setPhoto(null); }} className="mt-6 text-[#1d9e56] font-semibold hover:underline">
           Book another pickup
         </button>

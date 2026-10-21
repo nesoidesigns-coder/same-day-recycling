@@ -59,6 +59,14 @@
       ],
       "default": "onboarding"
     },
+    "pay_token": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_plan_id": {
+      "type": "string",
+      "default": ""
+    },
     "notes": {
       "type": "string",
       "default": "",

@@ -57,6 +57,7 @@ import Coverage from './pages/Coverage';
 import PropertyManagers from './pages/PropertyManagers';
 import WhiteLabel from './pages/WhiteLabel';
 import AdminWhiteLabel from './pages/AdminWhiteLabel';
+import WhiteLabelPay from './pages/WhiteLabelPay';
 import Gallery from './pages/Gallery';
 import Pricing from './pages/Pricing';
 import AdminGallery from './pages/AdminGallery';
@@ -108,6 +109,7 @@ const AuthenticatedApp = () => {
       <Route path="/coverage" element={<Coverage />} />
       <Route path="/property-managers" element={<PropertyManagers />} />
       <Route path="/white-label" element={<WhiteLabel />} />
+      <Route path="/white-label-pay" element={<WhiteLabelPay />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />
