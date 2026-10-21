@@ -1,0 +1,41 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "SoftwareInquiry",
+      "events": [
+        "create"
+      ]
+    }
+  },
+  "description": "The moment a software inquiry lands, the AI drafts a personalized first-touch reply, emails it instantly, marks the lead contacted and alerts the owner",
+  "name": "Software Inquiry Chase",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "software_inquiry_chase",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "chase_lead": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "leadChase",
+            "args": {
+              "kind": "software_inquiry",
+              "id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "AI chases the software inquiry",
+            "description": "Instant personalized first-touch email + owner alert"
+          }
+        }
+      }
+    ]
+  }
+}
