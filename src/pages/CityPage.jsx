@@ -197,7 +197,7 @@ export default function CityPage() {
         <div className="max-w-7xl mx-auto px-4 py-14">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Service area</div>
           <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">We cover {city.name} — and our partner cities across {region?.name || "Canada"}</h2>
-          <p className="mt-3 text-slate-600 max-w-2xl">Our trucks run same-day routes across the region, and our national partner network keeps adding cities — so a pickup is never far away.</p>
+          <p className="mt-3 text-slate-600 max-w-2xl">{isActive ? "Our trucks run same-day routes across the region, and our national partner network keeps adding cities — so a pickup is never far away." : `Service requests are accepted in ${city.name} nationwide — once a ${city.name} contractor is verified, same-day routes start here. Availability is confirmed with you before anything is scheduled.`}</p>
           <div className="mt-6 flex flex-wrap gap-2">
             {neighbours.map((c) => (
               <Link key={c.slug} to={`/${prefix}${c.slug}`} className="rounded-full bg-white border border-slate-200 px-4 py-2 text-sm font-semibold text-[#102B2A] hover:border-[#187B65] hover:text-[#187B65] transition-colors">
