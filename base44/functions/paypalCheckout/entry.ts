@@ -157,7 +157,17 @@ export default async function(req) {
     if (action === 'capture') {
       const orderId = String(body.order_id || '').trim();
       if (!orderId) return Response.json({ error: 'Missing order.' }, { status: 400 });
-      const cap = await paypal('/v2/checkout/orders/' + orderId + '/capture', 'POST');
+      // Capture the approved order; on a retry after the payment already went
+      // through, fall back to a read of the order so the records still update.
+      let cap;
+      try {
+        cap = await paypal('/v2/checkout/orders/' + orderId + '/capture', 'POST');
+      } catch (e) {
+        if (!/already captured/i.test(String(e.message || ''))) throw e;
+        const ord = await paypal('/v2/checkout/orders/' + orderId);
+        if (ord.status !== 'COMPLETED') return Response.json({ error: 'Payment not completed.' }, { status: 422 });
+        cap = ord;
+      }
       const payerEmail = (cap.payer && cap.payer.email_address) || '';
       const { items } = await srole.entities.PaypalTransaction.filter({ paypal_order_id: orderId }, { limit: 1 });
       if (items && items.length) {
