@@ -25,7 +25,7 @@ const FAQS = [
   { q: "How do I know what I'll pay before the crew arrives?", a: "Get an instant estimate with our online quote tool or from a photo, or call for a free no-obligation estimate. You approve the final price on arrival before we lift a thing — no surprise hikes." },
   { q: "Are there extra fees like fuel or dumping charges?", a: "No. Labor, loading, transport, sorting and disposal are all included in the tier price. No hidden fees, no scale surprises." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Everything else that fits in a truck, we can usually take." },
-  { q: "Which cities do you serve?", a: "We're a nationwide agency — service requests are accepted in every Canadian city. Our dispatch team arranges a qualified local contractor for each job, and the recycling directory covers every province and territory. Exact city pricing varies slightly; every quote shows your rate." },
+  { q: "Which cities do you serve?", a: "We're a nationwide agency — we operate in every Canadian city, and the recycling directory covers every province and territory. Exact city pricing varies slightly; every quote shows your rate." },
   { q: "Are prices in CAD? Is tax included?", a: "All prices are in Canadian dollars (CAD). GST and/or PST — depending on the pickup address — are added when you approve the final price, and the full amount is shown before you pay." },
   { q: "Can I combine discounts?", a: "One discount per job: the Self-Load Discount (10%), the curbside staging discount ($25) and subscription member rates don't stack — we apply whichever saves you the most." },
 ];

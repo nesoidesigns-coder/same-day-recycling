@@ -119,9 +119,9 @@ export default function BookingForm({ prefill }) {
         </Field>
         {notLive && (
           <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
-            Requests from {form.city} are accepted nationwide — same-day pickup is subject to contractor availability, location, and confirmation, and scheduling is confirmed after your request.
+            Requests from {form.city} are confirmed nationwide — we operate in every Canadian city. Same-day pickup is subject to daily availability, and scheduling is confirmed after your request.
             <span className="mt-1 block font-normal text-amber-800/80">
-              <Link to={`/request-service?city=${encodeURIComponent(form.city)}`} className="underline font-semibold">Submit a nationwide request</Link> — our dispatch team arranges a qualified local contractor and keeps your job in our system.
+              <Link to={`/request-service?city=${encodeURIComponent(form.city)}`} className="underline font-semibold">Submit a nationwide request</Link> — our dispatch team arranges your local contractor and keeps your job in our system.
             </span>
           </div>
         )}

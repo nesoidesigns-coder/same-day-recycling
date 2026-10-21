@@ -11,8 +11,8 @@ const SECTIONS = [
     status: "active",
     icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
     dot: "bg-[#187B65]",
-    intro: "Confirmed dispatch capacity — requests are open here and in every Canadian city. Our dispatch team confirms pricing, pickup availability and your arrival window before issuing a guaranteed appointment.",
-    cardLabel: "Requests open — same-day confirmed",
+    intro: "Operating nationwide — every Canadian city is covered. Our dispatch team confirms pricing, pickup availability and your arrival window before issuing a guaranteed appointment.",
+    cardLabel: "Same-day pickup — nationwide",
     linkFor: () => "/#book",
   },
   {
@@ -36,7 +36,7 @@ const SECTIONS = [
 export default function Coverage() {
   useSEO({
     title: "Pickup Coverage & Network Expansion | Same Day Recycling",
-    description: "Request same-day recycling and junk removal nationwide. Our dispatch team arranges a qualified local contractor — pricing and arrival windows are confirmed before each guaranteed appointment.",
+    description: "Same-day recycling and junk removal in every Canadian city. Nationwide dispatch network, upfront pricing and arrival windows confirmed before each appointment.",
     path: "/coverage",
   });
   return (
@@ -48,13 +48,13 @@ export default function Coverage() {
           <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Canada's Recycling Network. One Intelligent Platform.</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Same Day Recycling is a Canadian same-day recycling and junk removal coordination service.
-            Customers can request service nationwide — our dispatch team works to arrange a qualified
-            local contractor for each job. Same-day pickup is
-            <span className="text-white font-semibold"> subject to contractor availability, location, and confirmation</span>.
+            Same Day Recycling is a nationwide recycling and junk removal agency.
+            We operate in every Canadian city — same-day pickup runs through our
+            <span className="text-white font-semibold"> local contractor network nationwide</span>,
+            with pricing and arrival windows confirmed before each appointment.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
-            {["Requests accepted nationwide", "Dispatch-led fulfillment", "Pricing & availability confirmed before pickup", "Every job tracked to completion"].map((t) => (
+            {["Operating in every Canadian city", "Nationwide dispatch network", "Pricing & arrival window confirmed before pickup", "Every job tracked to completion"].map((t) => (
               <span key={t} className="inline-flex items-center rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-slate-100">
                 {t}
               </span>

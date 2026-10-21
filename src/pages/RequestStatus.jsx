@@ -8,8 +8,8 @@ import { Search, Loader2, CheckCircle2, MapPin, CalendarDays, Wrench, SearchX } 
 
 const STATUS_META = {
   new: { label: "Received", tone: "bg-sky-500/15 text-sky-300 border-sky-400/30", copy: "We've received your request and our national dispatch team is taking it from here." },
-  provider_matching: { label: "Arranging a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Our dispatch team is arranging a qualified local contractor for your request — nationwide." },
-  recruiting: { label: "Sourcing a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Your request is saved. Our dispatch team sources and contacts local contractors for every job, anywhere in Canada — we'll contact you as soon as one accepts. Nothing is scheduled or charged before a contractor accepts." },
+  provider_matching: { label: "Arranging a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "We operate nationwide — our dispatch team is arranging your local contractor." },
+  recruiting: { label: "Sourcing a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor and will contact you as soon as one accepts. Nothing is scheduled or charged before a contractor accepts." },
   matched: { label: "Contractor matched", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "A local contractor has been matched. They'll confirm scheduling and pricing with you directly." },
   confirmed: { label: "Confirmed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is confirmed. Dispatch has locked in your appointment." },
   completed: { label: "Completed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "This request is complete. Thanks for recycling with the network!" },

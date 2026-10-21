@@ -85,11 +85,11 @@ export default function Contact() {
               <MapPin className="w-5 h-5 text-[#187B65]" /> Service area
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              We're a nationwide agency — service requests are accepted in every Canadian city.
+              We're a nationwide agency — we operate in every Canadian city.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed mt-2">
-              Our dispatch team arranges a qualified local contractor for each job — same-day pickup is subject to contractor availability, location, and confirmation. Anywhere in Canada?{" "}
-              <Link to="/request-service" className="font-semibold text-[#187B65] hover:underline">Submit a nationwide request</Link> and dispatch takes it from there.
+              Same-day pickup runs nationwide through our local contractor network. Anywhere in Canada?{" "}
+              <Link to="/request-service" className="font-semibold text-[#187B65] hover:underline">Submit a request</Link> and dispatch takes it from there.
             </p>
           </div>
           <div className="rounded-2xl bg-[#102B2A] p-6 text-white">

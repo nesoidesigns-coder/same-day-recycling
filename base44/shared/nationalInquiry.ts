@@ -53,7 +53,7 @@ export async function submitNationalInquiry(base44, input) {
   if (coverage_status === 'verified') {
     // Confirmed operational capacity — dispatch confirms the same-day window.
     status = 'provider_matching';
-    message = `Request received for ${city}. Our dispatch team is arranging a qualified local contractor — same-day pickup is subject to contractor availability, location and confirmation. We'll call you at ${phone} to confirm pricing and your arrival window before the appointment is guaranteed.`;
+    message = `Request received for ${city}. We operate nationwide — our dispatch team is arranging your local contractor and will call you at ${phone} to confirm pricing and your arrival window before the appointment is guaranteed.`;
   } else {
     // Match against verified partners (city) and verified recruits (territory).
     const [partnerPage, recruitPage] = await Promise.all([
@@ -68,7 +68,7 @@ export async function submitNationalInquiry(base44, input) {
       partner_name = matched.name || matched.company;
       status = 'matched';
       quote_status = 'pending_provider';
-      message = `Your request is saved. Our dispatch team is confirming a local contractor in ${city} — pricing, pickup availability and your arrival window are confirmed before any appointment is guaranteed. We'll contact you at ${phone}.`;
+      message = `Your request is saved. We operate nationwide — our dispatch team is confirming your local contractor in ${city}. Pricing, pickup availability and your arrival window are confirmed before any appointment is guaranteed. We'll contact you at ${phone}.`;
     } else {
       // No contractor in this market yet — keep the inquiry and open a
       // recruitment task: demand here drives contractor recruitment.
@@ -97,7 +97,7 @@ export async function submitNationalInquiry(base44, input) {
         });
         recruitment_id = rec.id;
       }
-      message = `Your request is saved. Our dispatch team sources and contacts local contractors for every job — registered partners and newly sourced providers in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
+      message = `Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
     }
   }
 
