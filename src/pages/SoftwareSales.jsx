@@ -9,6 +9,7 @@ import Footer from "@/components/sdr/Footer";
 import HoloGauge from "@/components/software/HoloGauge";
 import PreviewImg from "@/components/software/PreviewImg";
 import EnterpriseInquiryForm from "@/components/software/EnterpriseInquiryForm";
+import RoiCalculator from "@/components/software/RoiCalculator";
 
 const FEATURES = [
   { icon: Users, title: "Customer CRM", desc: "Every commercial and residential customer, notes, contact history and service preferences in one clean record." },
@@ -136,6 +137,11 @@ export default function SoftwareSales() {
               <HoloGauge value={100} label="Same-day dispatch" sub="Book before noon, where service is live" />
             </div>
           </div>
+        </div>
+
+        {/* ROI calculator */}
+        <div id="roi-calculator">
+          <RoiCalculator />
         </div>
 
         {/* Licensing */}
