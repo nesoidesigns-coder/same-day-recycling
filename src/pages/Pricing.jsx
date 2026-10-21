@@ -24,7 +24,7 @@ const FAQS = [
   { q: "How do I know what I'll pay before the crew arrives?", a: "Get an instant estimate with our online quote tool or from a photo, or call for a free no-obligation estimate. The price we quote is the price you pay — guaranteed." },
   { q: "Are there extra fees like fuel or dumping charges?", a: "No. Labor, loading, transport, sorting and disposal are all included in the tier price. No hidden fees, no scale surprises." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Everything else that fits in a truck, we can usually take." },
-  { q: "Do you serve cities outside Vancouver?", a: "Yes — Burnaby, Richmond, Surrey, Coquitlam (plus Port Coquitlam and Port Moody), Kamloops, Kelowna and the wider Lower Mainland. Exact city pricing varies slightly; every quote shows your rate." },
+  { q: "Do you serve cities outside Vancouver?", a: "Yes — Same Day Recycling is a national agency. Same-day service is live today in Vancouver, Burnaby, Richmond, Surrey, Coquitlam, Kamloops and Kelowna, with partner territories opening Canada-wide. The recycling directory covers every province, and exact city pricing varies slightly; every quote shows your rate." },
 ];
 
 export default function Pricing() {

@@ -7,7 +7,7 @@ export default function ServiceArea() {
         <div className="max-w-2xl mb-10">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Where we work</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Service area</h2>
-          <p className="mt-4 text-slate-600">Across Vancouver and the Lower Mainland — same-day, every day.</p>
+          <p className="mt-4 text-slate-600">A national agency — same-day trucks live across the Lower Mainland today, with partner territories opening Canada-wide.</p>
         </div>
         <div className="flex flex-wrap gap-3">
           {cities.map((c) => (
