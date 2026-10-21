@@ -2,7 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import {
   Loader2, Recycle, Users, CalendarDays, Truck, Receipt, BarChart3,
-  ShieldCheck, Globe2, Zap, CheckCircle2, Database, RefreshCcw, CreditCard,
+  ShieldCheck, Globe2, CheckCircle2, Database, RefreshCcw, CreditCard, Lock,
 } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
