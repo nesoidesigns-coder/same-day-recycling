@@ -79,7 +79,7 @@ export default function LoadEstimator({ onBook }) {
               <span>Full truck</span>
             </div>
             <p className="mt-6 text-sm text-slate-500">
-              That's about <span className="font-bold text-[#0c3b24]">{fillPercent(load)}%</span> of a full truck. Adjust it if you're unsure — the estimate updates as you slide.
+              That's about{" "}<span className="font-bold text-[#0c3b24]">{fillPercent(load)}%</span>{" "}of a full truck. Adjust it if you're unsure — the estimate updates as you slide.
             </p>
           </div>
           <div className="rounded-3xl bg-[#0c3b24] text-white p-8 md:p-10">

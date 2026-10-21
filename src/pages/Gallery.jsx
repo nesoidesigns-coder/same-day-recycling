@@ -20,8 +20,8 @@ export default function Gallery() {
             The fleet &amp; the crew
           </h1>
           <p className="mt-5 text-lg text-slate-300 max-w-xl leading-relaxed">
-            Real trucks, real crews, real pickups — every load sorted for maximum recovery
-            across the cities we serve.
+            The trucks, crews, and job sites behind every pickup — each load sorted for
+            maximum recovery across the cities we serve.
           </p>
         </div>
       </section>
@@ -31,7 +31,7 @@ export default function Gallery() {
           <PhotoGallery />
           <div className="mt-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-500">
             <Recycle className="w-4 h-4 text-[#1d9e56]" />
-            Every gallery photo is from a live Same Day Recycling pickup
+            Gallery imagery represents our network's fleet, crews, and job sites
           </div>
         </div>
       </section>

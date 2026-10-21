@@ -64,7 +64,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             Real drop-off depots, transfer stations and recycling facilities across BC — researched and kept up to date for you.
           </p>
           {lastResearched && (
-            <p className="mt-1 text-xs text-slate-400">Last updated: {lastResearched}</p>
+            <p className="mt-1 text-xs text-slate-400">Last updated:{" "}{lastResearched}</p>
           )}
         </div>
 

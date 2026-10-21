@@ -4,7 +4,6 @@ import { Image } from "@/components/ui/image";
 
 const HERO_IMAGES = [
   "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png",
-  "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/a48cd7a97_generated_image.png",
   "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/a8257e5b7_generated_image.png",
 ];
 
@@ -32,6 +31,9 @@ export default function Hero() {
             Your Space.<br />Reclaimed.
           </h1>
           <p className="mt-4 text-xl md:text-2xl font-bold text-emerald-100 tracking-tight">
+            Canada&rsquo;s Same-Day Recycling Network.
+          </p>
+          <p className="mt-2 text-base font-semibold text-[#22d3ee] tracking-tight">
             Junk Removal, Without the Guesswork.
           </p>
           <p className="mt-4 text-lg text-emerald-100/80 max-w-md leading-relaxed">
