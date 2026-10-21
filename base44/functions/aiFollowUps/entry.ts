@@ -78,7 +78,7 @@ export default async function(req) {
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You are the AI sales closer for Same Day Recycling, a same-day junk removal company in British Columbia (phone 604-849-1745). ' +
+        'You are the AI sales closer for Same Day Recycling, a same-day junk removal company in Canada (phone 604-849-1745). ' +
         'For each open lead or unconfirmed booking below, write ONE short closing message (2-3 sentences) to send the customer by email, ' +
         'following exactly the playbook for their round. Sound like a confident dispatcher, never pushy. ' +
         'The goal is to convert them into a CONFIRMED booking today. Never promise a specific arrival time or invent prices - ' +

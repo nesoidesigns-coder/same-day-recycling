@@ -14,10 +14,10 @@ export default async function(req) {
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You are a research analyst for Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling service in British Columbia, Canada, serving Vancouver, Burnaby, Richmond, Surrey, Coquitlam, Kamloops and Kelowna.\n\n' +
+        'You are a research analyst for Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling service in Canada, serving major Canadian cities.\n\n' +
         'Research this topic using live web sources and turn it into insightful, actionable knowledge for the business owner:\n\n' +
         '"' + topic + '"\n\n' +
-        'Focus on facts specific to British Columbia and Canada where relevant (regulations, bylaws, prices in CAD, local rules). ' +
+        'Focus on facts specific to Canada where relevant (regulations, bylaws, prices in CAD, local rules). ' +
         'Be concrete, cite which source each insight comes from, and prioritize what the owner can actually act on. No fluff.',
       add_context_from_internet: true,
       response_json_schema: {

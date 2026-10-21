@@ -114,7 +114,7 @@ export default function CompetitorPricing() {
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <p className="font-bold text-[#0c3b24] text-sm">{c.name}</p>
                 <span className="text-[11px] font-bold text-[#1d9e56] bg-white border border-[#1d9e56]/30 rounded-full px-2.5 py-1">
-                  {c.city || "Metro Vancouver"}
+                  {c.city || "National"}
                 </span>
               </div>
               {c.price_range && (

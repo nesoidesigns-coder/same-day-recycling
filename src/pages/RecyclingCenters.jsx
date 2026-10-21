@@ -10,7 +10,7 @@ export default function RecyclingCenters() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
-      <RexBanner message="I've mapped every drop-off spot in the Lower Mainland — tap away." />
+      <RexBanner message="I've mapped drop-off spots across Canada — tap away." />
       <RecyclingCentersMap showSelector />
       <FinalCTA />
       <Footer />

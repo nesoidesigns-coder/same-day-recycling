@@ -40,7 +40,7 @@ export default function RealtorLanding() {
               Same-Day House Cleanouts for Your Listings
             </h1>
             <p className="mt-6 text-lg text-slate-600 max-w-md leading-relaxed">
-              Estate cleanouts, tenant turnovers and pre-listing junk removal — done the same day, with upfront flat pricing and one simple invoice. Serving Vancouver, Burnaby, Richmond, Surrey, Coquitlam, Kamloops and Kelowna.
+              Estate cleanouts, tenant turnovers and pre-listing junk removal — done the same day, with upfront flat pricing and one simple invoice. Serving Canada's major cities.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <a href="#book" className="rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-4 text-center hover:bg-[#17a04c] transition-colors">

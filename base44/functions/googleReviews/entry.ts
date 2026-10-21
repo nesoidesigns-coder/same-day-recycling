@@ -1,21 +1,21 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 
-// Cities we serve — most specific names first so e.g. "North Vancouver"
-// matches before the generic "Vancouver" when attributing a review.
+// Cities we serve — used when attributing a review to a city.
 const CITY_NAMES = [
-  "North Vancouver",
-  "West Vancouver",
-  "Vancouver",
-  "Burnaby",
-  "Richmond",
-  "Surrey",
-  "Coquitlam",
-  "Kamloops",
-  "Kelowna",
+  "Toronto",
+  "Montreal",
+  "Ottawa",
+  "Calgary",
+  "Edmonton",
+  "Winnipeg",
+  "Hamilton",
+  "Mississauga",
+  "Halifax",
+  "Quebec City",
 ];
 
-const SEARCH_QUERY = "Same Day Recycling Vancouver BC";
+const SEARCH_QUERY = "Same Day Recycling";
 
 export default async function(req) {
   try {

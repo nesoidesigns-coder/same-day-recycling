@@ -141,7 +141,7 @@ export default function RecyclingAssistant() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="e.g. How do I recycle a mattress in Kelowna?"
+              placeholder="e.g. How do I recycle a mattress in Halifax?"
               className="input !py-2.5"
               disabled={loading}
             />

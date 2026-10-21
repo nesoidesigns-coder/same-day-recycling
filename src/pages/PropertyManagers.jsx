@@ -18,9 +18,9 @@ const BENEFITS = [
 
 export default function PropertyManagers() {
   useEffect(() => {
-    document.title = "Reliable Junk Removal for BC Property Managers | Same Day Recycling";
+    document.title = "Reliable Junk Removal for Property Managers | Same Day Recycling";
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", "Streamline your waste management with our professional junk removal services for BC property managers. Fast, reliable, and scheduled pickups available.");
+    if (meta) meta.setAttribute("content", "Streamline your waste management with our professional junk removal services for property managers. Fast, reliable, and scheduled pickups available.");
   }, []);
 
   return (
@@ -51,7 +51,7 @@ export default function PropertyManagers() {
         <div className="max-w-3xl mx-auto px-4 py-16">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Case study</div>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#0c3b24]">
-            40 units turned over in one Downtown Vancouver high-rise
+            40 units turned over in one downtown high-rise
           </h2>
           <p className="mt-4 text-slate-600 leading-relaxed">
             A Downtown strata manager had a burst of lease turnovers and a pile-up of tenant bulk items in the loading bay. We scheduled recurring pickups around the elevator calendar, staged everything curbside for a discount, and cleared all 40 units over three afternoons — with a recycling receipt for each load filed with the building's records.
@@ -60,7 +60,7 @@ export default function PropertyManagers() {
             <p className="text-[#0c3b24] font-medium leading-relaxed">
               "Our loading bay used to fill up with tenant junk between council meetings. Now one call clears it the same day, and I get a receipt I can put in the strata file."
             </p>
-            <footer className="mt-3 text-sm font-bold text-[#1d9e56]">Strata manager, Downtown Vancouver high-rise</footer>
+            <footer className="mt-3 text-sm font-bold text-[#1d9e56]">Strata manager, downtown high-rise</footer>
           </blockquote>
         </div>
       </section>

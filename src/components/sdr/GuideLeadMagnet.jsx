@@ -3,11 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { Download, Loader2, BookOpen, ChevronDown } from "lucide-react";
 
 const GUIDE = [
-  ["Know what's banned", "Metro Vancouver bans mattresses, appliances (fridges, washers, stoves), drywall and tires from regular garbage. Plan for special handling of these items in every turnover — they need separate drop-offs or a hauler who sorts them properly."],
+  ["Know what's banned", "Many municipalities ban mattresses, appliances (fridges, washers, stoves), drywall and tires from regular garbage. Plan for special handling of these items in every turnover — they need separate drop-offs or a hauler who sorts them properly."],
   ["Schedule around move-out dates", "Book junk removal for the day after key return, before the unit is repainted or listed. A same-day pickup keeps vacant units rent-ready instead of sitting with a pile at the curb."],
   ["Book elevators early", "High-rise buildings usually require an elevator reservation and floor protection for any move-out. Put the pickup window on your building calendar at the same time as the elevator booking so the crew and the elevator arrive together."],
   ["Stage curbside to save money", "Items staged in the loading bay, carport or lane (not inside the unit) can qualify for a curbside discount — the crew loads straight from the curb with a shorter on-site time."],
-  ["Track your diversion", "Ask for a recycling receipt for every load. It shows what was donated, recycled or disposed of — useful records for strata minutes, council reporting and BC green-building requirements."],
+  ["Track your diversion", "Ask for a recycling receipt for every load. It shows what was donated, recycled or disposed of — useful records for strata minutes, council reporting and green-building requirements."],
   ["Use a standing plan for bulk weeks", "Lease turnovers and spring cleanouts cluster. A monthly plan with reserved pickup slots beats scrambling for a truck every time three units clear at once."],
 ];
 
@@ -50,7 +50,7 @@ export default function GuideLeadMagnet() {
           Building Waste Disposal Guide
         </h2>
         <p className="mt-3 text-slate-600">
-          The six rules every BC building manager should know — disposal bans, elevator scheduling, curbside staging and turnover timing.
+          The six rules every building manager should know — disposal bans, elevator scheduling, curbside staging and turnover timing.
         </p>
 
         {!unlocked ? (

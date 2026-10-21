@@ -115,7 +115,7 @@ export default function AdminGallery() {
             </div>
             <div>
               <label className={`${label} block mb-2`}>Title</label>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. New fleet truck in Vancouver" className={inputCls} />
+              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. New network truck in Calgary" className={inputCls} />
             </div>
             <div>
               <label className={`${label} block mb-2`}>Caption (optional)</label>

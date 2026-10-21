@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 
-const BIZ_FACTS = `Same Day Recycling — same-day junk removal, furniture/appliance removal, estate & rental cleanouts, renovation debris, office cleanouts, curbside pickup and free metal pickup (free within Vancouver city limits only, minimum charge elsewhere). Pricing is by truck space: minimum pickup ~$149 up to full truck ~$649. Serves Vancouver, Burnaby, Richmond, Surrey, Coquitlam/Tri-Cities, North & West Vancouver, New Westminster, Delta, Langley, Kamloops and Kelowna. Book before noon for same-day service. Eco disposal: loads sorted to recycle or donate first. Phone (604) 849-1745, website samedayrecycling.ca. Cannot take hazardous materials (paint, chemicals, asbestos, fuel, solvents, propane tanks).`;
+const BIZ_FACTS = `Same Day Recycling — same-day junk removal, furniture/appliance removal, estate & rental cleanouts, renovation debris, office cleanouts, curbside pickup and free metal pickup (free nationwide where partners operate). Pricing is by truck space: minimum pickup ~$149 up to full truck ~$649. Serves major Canadian cities nationwide, expanding coast to coast. Book before noon for same-day service. Eco disposal: loads sorted to recycle or donate first. Phone (604) 849-1745, website samedayrecycling.ca. Cannot take hazardous materials (paint, chemicals, asbestos, fuel, solvents, propane tanks).`;
 
 export default async function(req) {
   try {

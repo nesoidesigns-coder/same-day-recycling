@@ -171,7 +171,7 @@ export default function AdminFacebook() {
           <div className="flex flex-col sm:flex-row gap-3 mb-3">
             <input
               className="input flex-1"
-              placeholder="Post topic, e.g. we cleared a 3-bedroom estate in Burnaby today"
+              placeholder="Post topic, e.g. we cleared a 3-bedroom estate in North York today"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
             />

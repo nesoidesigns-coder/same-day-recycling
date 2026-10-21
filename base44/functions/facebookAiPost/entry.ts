@@ -27,7 +27,7 @@ export default async function(req) {
       const topic = String(body.topic || '').slice(0, 500);
       if (!topic) return Response.json({ error: 'Describe the post topic first' }, { status: 400 });
       const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
-        prompt: `You write Facebook posts for "Same Day Recycling", a junk removal and same-day recycling service in Metro Vancouver, BC. Tone: friendly, local, energetic. They offer same-day junk and furniture removal, free metal pickup, eco-friendly disposal, and a $299/month subscription for property managers.\n\n${FB_MARKETING_PLAYBOOK}\n\nWrite 3 short Facebook post variations (2-4 sentences each, max 80 words) about this topic: "${topic}". Return them as variations.`,
+        prompt: `You write Facebook posts for "Same Day Recycling", a junk removal and same-day recycling service across Canada. Tone: friendly, local, energetic. They offer same-day junk and furniture removal, free metal pickup, eco-friendly disposal, and a $299/month subscription for property managers.\n\n${FB_MARKETING_PLAYBOOK}\n\nWrite 3 short Facebook post variations (2-4 sentences each, max 80 words) about this topic: "${topic}". Return them as variations.`,
         response_json_schema: {
           type: 'object',
           properties: { variations: { type: 'array', items: { type: 'string' } } },
@@ -45,7 +45,7 @@ export default async function(req) {
       let imageUrl = null;
       try {
         const img = await base44.asServiceRole.integrations.Core.GenerateImage({
-          prompt: `Realistic, bright, professional photo for a Facebook post by "Same Day Recycling", a junk removal and recycling company in Vancouver BC, matching this post: "${message.slice(0, 300)}". Show a tidy green-branded truck or crew loading furniture, appliances or scrap metal outdoors in a sunny BC neighbourhood, no text or words in the image.`,
+          prompt: `Realistic, bright, professional photo for a Facebook post by "Same Day Recycling", a junk removal and recycling company in Canada, matching this post: "${message.slice(0, 300)}". Show a tidy green-branded truck or crew loading furniture, appliances or scrap metal outdoors in a sunny Canadian neighbourhood, no text or words in the image.`,
         });
         imageUrl = (img && img.url) || null;
       } catch {}

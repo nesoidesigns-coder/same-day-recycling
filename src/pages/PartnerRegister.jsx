@@ -13,13 +13,13 @@ const EQUIPMENT_OPTIONS = [
 ];
 
 const CITY_OPTIONS = [
-  "Vancouver",
-  "Burnaby",
-  "Richmond",
-  "Surrey",
-  "Coquitlam",
-  "Kelowna",
-  "Kamloops",
+  "Toronto",
+  "Montreal",
+  "Ottawa",
+  "Calgary",
+  "Edmonton",
+  "Winnipeg",
+  "Halifax",
   "Edmonton",
   "Calgary",
 ];
@@ -101,7 +101,7 @@ export default function PartnerRegister() {
           </div>
           <div>
             <label htmlFor="reg-city" className="block text-sm font-semibold text-white mb-1.5">Service city <span className="text-[#1d9e56]">*</span></label>
-            <input id="reg-city" className="input !bg-white" value={form.city} onChange={set("city")} placeholder="Vancouver" list="reg-cities" />
+            <input id="reg-city" className="input !bg-white" value={form.city} onChange={set("city")} placeholder="Toronto" list="reg-cities" />
             <datalist id="reg-cities">
               {CITY_OPTIONS.map((c) => <option key={c} value={c} />)}
             </datalist>

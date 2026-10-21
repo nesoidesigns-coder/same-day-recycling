@@ -34,9 +34,6 @@ import RecyclingDirectory from './pages/RecyclingDirectory';
 import ProviderDetail from './pages/ProviderDetail';
 import RecyclingAssistant from './pages/RecyclingAssistant';
 import AdminDirectory from './pages/AdminDirectory';
-import CityPage from './pages/CityPage';
-import CityRedirect from './pages/CityRedirect';
-import { CITIES } from '@/lib/cities';
 import PartnersDashboard from './pages/PartnersDashboard';
 import PartnerRegister from './pages/PartnerRegister';
 import Subscriptions from './pages/Subscriptions';
@@ -95,10 +92,6 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/city/:slug" element={<CityRedirect />} />
-      {CITIES.map((c) => (
-        <Route key={c.slug} path={`/junk-removal-${c.slug}`} element={<CityPage slugParam={c.slug} />} />
-      ))}
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/subscriptions" element={<Subscriptions />} />
       <Route path="/free-metal-pickup" element={<FreeMetalPickup />} />

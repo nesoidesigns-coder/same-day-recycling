@@ -3,8 +3,8 @@ import { Printer, Recycle, CalendarCheck, Home, Building2, DollarSign, ShieldChe
 import RealtorLeadForm from "@/components/sdr/RealtorLeadForm";
 import RexBanner from "@/components/sdr/RexBanner";
 
-const SEO_TITLE = "Junk Removal Services for Real Estate Professionals | BC Realtor Partners";
-const SEO_DESCRIPTION = "Partner with Same Day Recycling to expedite your property sales. Fast, reliable junk removal for realtors and estate cleanouts in British Columbia.";
+const SEO_TITLE = "Junk Removal Services for Real Estate Professionals | Realtor Partners";
+const SEO_DESCRIPTION = "Partner with Same Day Recycling to expedite your property sales. Fast, reliable junk removal for realtors and estate cleanouts across Canada.";
 
 const BENEFITS = [
   {
@@ -75,7 +75,7 @@ export default function RealtorOnePager() {
               Junk gone the same day your listing needs it gone.
             </h1>
             <p className="mt-2 text-white/80 text-sm md:text-base">
-              Same-day junk removal &amp; furniture disposal for realtors across Vancouver, Burnaby, Richmond, Surrey, Coquitlam, Kamloops and Kelowna.
+              Same-day junk removal &amp; furniture disposal for realtors across Canada's major cities.
             </p>
           </div>
 
@@ -141,7 +141,7 @@ export default function RealtorOnePager() {
                 "I called at 9am about a hoarder-condition condo in Mount Pleasant, had the cleanout quote by 9:40 and the whole unit cleared by 3 the same afternoon. Photos were staged the next morning. I've stopped using anyone else for pre-listing cleanouts."
               </p>
               <p className="text-xs font-bold text-[#0c3b24] mt-3">
-                Melissa C. — REALTOR®, Vancouver
+                Melissa C. — REALTOR®
               </p>
               <p className="text-xs text-slate-500">Same-day turnaround, pre-listing cleanout</p>
             </section>
@@ -198,7 +198,7 @@ export default function RealtorOnePager() {
                 </table>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                Flat rates by truck space, confirmed before we lift anything. Scrap metal picked up free. Rates shown are Metro Vancouver pricing — Kamloops and Kelowna may differ slightly. Realtor referral credit applies to every completed job.
+                Flat rates by truck space, confirmed before we lift anything. Scrap metal picked up free. Rates shown are national network pricing. Realtor referral credit applies to every completed job.
               </p>
             </section>
 

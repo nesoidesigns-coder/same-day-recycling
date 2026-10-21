@@ -12,10 +12,10 @@ export default async function(req) {
     const [aiRes, kwRes] = await Promise.allSettled([
       base44.asServiceRole.integrations.Core.InvokeLLM({
         prompt:
-          'You are a lead-hunting scout for Same Day Recycling (samedayrecycling.ca), a same-day junk removal, furniture removal, appliance removal, estate cleanout and FREE metal pickup service in British Columbia, serving Vancouver, Burnaby, Richmond, Surrey, Coquitlam (Tri-Cities), Kamloops and Kelowna.\n\n' +
-          'Search the live web for REAL, recent posts where people in these cities are ASKING about or looking for these services: Reddit (r/vancouver, r/burnaby, r/kamloops, r/kelowna and similar), Kijiji and Craigslist job boards, Facebook community groups, local forums, Nextdoor, question sites. ' +
+          'You are a lead-hunting scout for Same Day Recycling (samedayrecycling.ca), a same-day junk removal, furniture removal, appliance removal, estate cleanout and FREE metal pickup service in Canada, serving major Canadian cities.\n\n' +
+          'Search the live web for REAL, recent posts where people in these cities are ASKING about or looking for these services: Reddit (city and regional subreddits across Canada), Kijiji and Craigslist job boards, Facebook community groups, local forums, Nextdoor, question sites. ' +
           'Look for people asking where to dump a sofa, who picks up junk today, appliance disposal, mattress removal, garage cleanout help, scrap metal pickup, etc.\n\n' +
-          'Return up to 10 real, specific queries found. For each give: query_text (what they asked, close to verbatim), platform (e.g. "Reddit r/vancouver", "Kijiji", "Facebook group: [name]"), city, service (junk removal / furniture / appliance / metal / cleanout / other), asker_or_url (username or link), intent (what they want and how hot a lead they are, under 25 words). ' +
+          'Return up to 10 real, specific queries found. For each give: query_text (what they asked, close to verbatim), platform (e.g. "Reddit r/toronto", "Kijiji", "Facebook group: [name]"), city, service (junk removal / furniture / appliance / metal / cleanout / other), asker_or_url (username or link), intent (what they want and how hot a lead they are, under 25 words). ' +
           'If you cannot find enough real recent posts, return fewer. NEVER invent posts, usernames or links.',
         add_context_from_internet: true,
         response_json_schema: {

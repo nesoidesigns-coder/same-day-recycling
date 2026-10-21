@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { MapPin, ShieldCheck, Rocket, ArrowRight, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { REGIONS } from "@/lib/regions";
-import { CITIES } from "@/lib/cities";
 
 export default function NationalCoverage() {
   const [counts, setCounts] = useState(null);
@@ -67,20 +66,6 @@ export default function NationalCoverage() {
                       </span>
                     )}
                   </div>
-
-                  {r.code === "BC" && n > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {CITIES.slice(0, 5).map((c) => (
-                        <Link
-                          key={c.slug}
-                          to={`/junk-removal-${c.slug}`}
-                          className="rounded-full bg-[#f4f7f5] text-[#0c3b24] px-2.5 py-1 text-[10px] font-bold hover:bg-[#1d9e56]/10 transition-colors"
-                        >
-                          {c.name} · same-day
-                        </Link>
-                      ))}
-                    </div>
-                  )}
 
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span className="text-slate-500">

@@ -55,11 +55,11 @@ export default function Privacy() {
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Legal</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Privacy Policy</h1>
-          <p className="mt-4 text-slate-300">Same Day Recycling &middot; Vancouver, British Columbia &middot; Last updated October 2026</p>
+          <p className="mt-4 text-slate-300">Same Day Recycling &middot; Canada &middot; Last updated October 2026</p>
         </div>
       </section>
       <section className="max-w-3xl mx-auto px-4 py-12 md:py-16 space-y-8">
-        <p className="text-slate-600">Same Day Recycling provides same-day junk removal, furniture removal and recycling services across Vancouver and the Lower Mainland. This policy explains what personal information we collect, why, and how you can control it. Questions? Call us at (604) 849-1745 or use our <Link to="/contact" className="font-semibold text-[#1d9e56] hover:underline">contact form</Link>.</p>
+        <p className="text-slate-600">Same Day Recycling provides same-day junk removal, furniture removal and recycling services across Canada. This policy explains what personal information we collect, why, and how you can control it. Questions? Call us at (604) 849-1745 or use our <Link to="/contact" className="font-semibold text-[#1d9e56] hover:underline">contact form</Link>.</p>
         {SECTIONS.map((s) => (
           <div key={s.h}>
             <h2 className="text-xl font-bold text-[#0c3b24] mb-2">{s.h}</h2>

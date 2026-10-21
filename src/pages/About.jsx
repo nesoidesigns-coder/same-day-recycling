@@ -35,7 +35,7 @@ export default function About() {
         <div>
           <h2 className="text-2xl font-bold text-[#0c3b24] mb-3">Built with local partners across Canada</h2>
           <p>
-            Founded in Vancouver, expanding city by city across Canada through local contractor partners who
+            Built on a simple promise, expanding city by city across Canada through local contractor partners who
             own their territories. Each partner runs their own trucks and crews; the network supplies the pages,
             the ads, a 24/7 receptionist that answers in five languages, and the booking machine that keeps
             every city filled.

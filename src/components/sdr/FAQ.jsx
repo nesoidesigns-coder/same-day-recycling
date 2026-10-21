@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 
 const faqs = [
-  { q: "What areas do you serve?", a: "We cover Metro Vancouver and the BC Interior — Vancouver, Burnaby, Richmond, Surrey, Coquitlam (including Port Coquitlam and Port Moody), Kamloops and Kelowna. See the service area list above for neighbourhoods covered in each city." },
+  { q: "What areas do you serve?", a: "We're a national agency: same-day service in major Canadian cities — Toronto, Montreal, Ottawa, Calgary, Edmonton, Winnipeg, Hamilton, Mississauga, Halifax and Quebec City — with new partner territories opening coast to coast. The recycling directory covers every province and territory." },
   { q: "How fast is same-day furniture removal?", a: "Book before noon and your furniture removal or junk disposal happens the same afternoon. Later bookings are scheduled for the next available slot." },
   { q: "How does pricing work?", a: "Pricing is based on the truck space your items take up. Pickups start at $139 for small loads and top out at $649 for a full truck, depending on your city. We give you a free on-site estimate and you approve the price before we lift a thing — no hidden fees." },
-  { q: "What junk items do you take?", a: "Almost everything — furniture removal and sofa or mattress disposal, appliance pickup, electronics, hot tubs, yard waste, construction and renovation debris, garage and estate cleanout contents. We also pick up scrap metal for free within Vancouver (our minimum charge applies in other cities). If you're unsure, just ask." },
+  { q: "What junk items do you take?", a: "Almost everything — furniture removal and sofa or mattress disposal, appliance pickup, electronics, hot tubs, yard waste, construction and renovation debris, garage and estate cleanout contents. We also pick up scrap metal for free across Canada wherever a network partner is live. If you're unsure, just ask." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, and fuel. Anything else, just ask." },
   { q: "What happens to my stuff?", a: "We sort every load: reusable furniture and household items go to donation partners, metal is recycled, and the rest is disposed of responsibly. Most loads avoid the landfill entirely." },
   { q: "Do I need to be home?", a: "Not for curbside pickup. Stage items in your driveway, lane or garage front and take $25 off with our Curbside Discount — no need to be home, and we text you the arrival window." },

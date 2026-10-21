@@ -174,7 +174,7 @@ export default function Contractors() {
               maintained, and kept ranking by us. You just answer the jobs it books.
             </p>
             <Link
-              to="/junk-removal-vancouver"
+              to="/coverage"
               className="mt-6 inline-flex items-center gap-2 font-bold text-[#1d9e56] hover:underline"
             >
               See a live territory page <ArrowRight className="w-4 h-4" />

@@ -42,7 +42,7 @@ export default function SubSignup() {
       <div className="grid sm:grid-cols-2 gap-4">
         <label className="block">
           <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Company / property</span>
-          <input required value={form.company} onChange={set("company")} className="input" placeholder="Maple Ridge Living Ltd." />
+          <input required value={form.company} onChange={set("company")} className="input" placeholder="Brampton Living Ltd." />
         </label>
         <label className="block">
           <span className="block text-sm font-semibold text-[#0c3b24] mb-1.5">Your name</span>

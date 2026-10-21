@@ -16,7 +16,7 @@
       "ends_after_count": null
     }
   },
-  "description": "Every day at 6pm Vancouver time, emails the owner a summary of all new bookings and realtor lead submissions from the past 24 hours",
+  "description": "Every day at 6pm local time, emails the owner a summary of all new bookings and realtor lead submissions from the past 24 hours",
   "name": "Daily Submissions Report",
   "definition": {
     "document": {

@@ -34,7 +34,7 @@ async function categorizeLoad(base44, itemsText) {
   try {
     const res = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You are the disposal coordinator for Same Day Recycling, a junk removal company in British Columbia. ' +
+        'You are the disposal coordinator for Same Day Recycling, a junk removal company in Canada. ' +
         'A customer\'s load contained: "' + itemsText + '". ' +
         'Split that load into categories. Each list item is one item or item group, using the customer\'s own words where possible. ' +
         'donated = furniture and household goods in reusable condition. recycled = metal and appliances. ' +
@@ -76,7 +76,7 @@ function buildImpactPdf(opts) {
   doc.text('SAME DAY RECYCLING', margin, 13);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text('Same-day junk removal & recycling - Vancouver, BC - Open 24 hours', margin, 22);
+  doc.text('Same-day junk removal & recycling - Canada-wide - Open 24 hours', margin, 22);
 
   y = 48;
   doc.setTextColor(DARK[0], DARK[1], DARK[2]);
@@ -190,7 +190,7 @@ export default async function (req) {
       return Response.json({ sent: false, reason: 'Booking has no customer email' });
     }
 
-    const city = booking.city || 'Metro Vancouver';
+    const city = booking.city || 'Canada';
     const pickupDate = booking.preferred_date || new Date().toISOString().slice(0, 10);
     const items = (booking.items_description || '').slice(0, 400) || 'Your load';
 

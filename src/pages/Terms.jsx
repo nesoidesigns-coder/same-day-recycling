@@ -7,7 +7,7 @@ const SECTIONS = [
   {
     h: "Our services",
     p: [
-      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup across Vancouver, the Lower Mainland and other BC cities we serve. Booking by phone, text, website form or through our online booking assistant creates a service request.",
+      "Same Day Recycling provides same-day junk removal, furniture and appliance removal, estate and rental cleanouts, renovation debris hauling and free metal pickup in major Canadian cities and partner territories across Canada. Booking by phone, text, website form or through our online booking assistant creates a service request.",
     ],
   },
   {
@@ -61,7 +61,7 @@ const SECTIONS = [
   {
     h: "Governing law",
     p: [
-      "These terms are governed by the laws of the Province of British Columbia and Canada. Questions about these terms? Call us at (604) 849-1745 or use our <contact>contact form</contact>.",
+      "These terms are governed by the laws of Canada and the applicable province or territory. Questions about these terms? Call us at (604) 849-1745 or use our <contact>contact form</contact>.",
     ],
   },
 ];
@@ -75,7 +75,7 @@ export default function Terms() {
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20">
           <div className="text-xs font-bold tracking-[0.2em] text-[#1d9e56] uppercase mb-3">Legal</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Terms of Service</h1>
-          <p className="mt-4 text-slate-300">Same Day Recycling &middot; Vancouver, British Columbia &middot; Last updated October 2026</p>
+          <p className="mt-4 text-slate-300">Same Day Recycling &middot; Canada &middot; Last updated October 2026</p>
         </div>
       </section>
       <section className="max-w-3xl mx-auto px-4 py-12 md:py-16 space-y-8">

@@ -6,15 +6,14 @@ const TRUCK_SIZES = ["Pickup truck", "Pickup + trailer", "1-ton + dump trailer",
 const CITY_OPTIONS = [
   "Edmonton",
   "Calgary",
-  "Kelowna",
-  "Kamloops",
-  "Vancouver",
-  "Burnaby",
-  "Richmond",
-  "Surrey",
-  "Coquitlam",
-  "Maple Ridge",
-  "Pitt Meadows",
+  "Halifax",
+  "Quebec City",
+  "Toronto",
+  "Mississauga",
+  "Hamilton",
+  "Winnipeg",
+  "Ottawa",
+
   "Other city (tell us below)",
 ];
 

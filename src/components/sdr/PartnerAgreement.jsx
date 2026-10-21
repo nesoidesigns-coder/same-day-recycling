@@ -4,7 +4,7 @@ const terms = [
   {
     icon: MapPin,
     title: "Exclusivity is metro, not a city line",
-    text: "The Lower Mainland is one market — one partner serves it. Edmonton is one market; Calgary is another. The agreement defines exclusivity by market boundaries, not by municipal lines.",
+    text: "Every metro is one market — one partner serves it. Edmonton is one market; Calgary is another. The agreement defines exclusivity by market boundaries, not by municipal lines.",
   },
   {
     icon: Users,

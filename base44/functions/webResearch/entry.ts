@@ -12,9 +12,9 @@ export default async function(req) {
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You help the AI receptionist of Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling company in British Columbia, Canada. ' +
+        'You help the AI receptionist of Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling company in Canada. ' +
         'A visitor asked something that needs current, verifiable information. Research it on the web and answer in under 120 words, plain text, ' +
-        'specific to British Columbia or Canada where relevant. If you cannot verify the answer, say so honestly. Never quote prices for our own services.\n\nQuestion: "' + question + '"',
+        'specific to Canada where relevant. If you cannot verify the answer, say so honestly. Never quote prices for our own services.\n\nQuestion: "' + question + '"',
       add_context_from_internet: true,
     });
 

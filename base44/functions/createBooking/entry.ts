@@ -24,7 +24,7 @@ export default async function(req) {
     const photo_uri = str(body?.photo_uri, 500);
 
     // Booking stays closed in territories with no signed partner yet
-    const LIVE_CITIES = ['vancouver', 'burnaby', 'richmond', 'surrey', 'coquitlam', 'maple ridge', 'pitt meadows', 'kelowna', 'kamloops'];
+    const LIVE_CITIES = ['toronto', 'montreal', 'ottawa', 'calgary', 'edmonton', 'winnipeg', 'hamilton', 'mississauga', 'halifax', 'quebec city'];
     if (city) {
       const norm = city.toLowerCase().replace(/\s+/g, ' ').trim();
       const live = LIVE_CITIES.some((c) => norm === c || norm.includes(c));

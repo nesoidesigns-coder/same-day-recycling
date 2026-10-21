@@ -61,7 +61,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
             {activeCity ? `Recycling centers in ${activeCity}` : "Recycling centers in every city we serve"}
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
-            Real drop-off depots, transfer stations and recycling facilities across BC — researched and kept up to date for you.
+            Real drop-off depots, transfer stations and recycling facilities across Canada — researched and kept up to date for you.
           </p>
           {lastResearched && (
             <p className="mt-1 text-xs text-slate-400">Last updated:{" "}{lastResearched}</p>

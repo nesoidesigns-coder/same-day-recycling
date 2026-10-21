@@ -5,7 +5,7 @@ import { Network, Loader2, ShieldCheck, Rocket } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { REGIONS } from "@/lib/regions";
 
-const HUB = { lat: 49.2827, lng: -123.1207, label: "Network HQ — Vancouver, BC" };
+const HUB = { lat: 49.2827, lng: -123.1207, label: "Network HQ — Canada" };
 
 export default function CanadaNetworkMap() {
   const [providers, setProviders] = useState(null);
@@ -135,7 +135,7 @@ export default function CanadaNetworkMap() {
                 <Rocket className="w-3.5 h-3.5 text-slate-500" /> {openRegions.length} regions expanding next
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#0c3b24] inline-block" /> Network HQ — Vancouver, BC
+                <span className="w-3 h-3 rounded-full bg-[#0c3b24] inline-block" /> Network HQ — Canada
               </span>
             </div>
           </>

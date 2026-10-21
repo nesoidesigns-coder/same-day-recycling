@@ -38,7 +38,7 @@ async function runDigest(base44: any) {
   if (transcript) {
     ai = await svc.integrations.Core.InvokeLLM({
       prompt:
-        'You analyze Facebook Messenger conversations for Same Day Recycling, a same-day junk removal service in British Columbia, Canada. ' +
+        'You analyze Facebook Messenger conversations for Same Day Recycling, a same-day junk removal service across Canada. ' +
         'Below are the last 24 hours of conversations (customer message + the AI receptionist reply). ' +
         'Produce: 1) a 2-3 sentence summary of the day\u2019s chats; 2) hot_leads (0-3 people showing clear buying intent who are NOT yet booked as a customer, with what they want and urgency); ' +
         '3) follow_ups (0-3 short concrete actions, e.g. who to call and why).\n\nConversations:\n' + transcript +

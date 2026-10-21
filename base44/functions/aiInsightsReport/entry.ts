@@ -34,7 +34,7 @@ export default async function(req) {
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You are the growth analyst for Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling service in British Columbia, Canada, serving 7 cities (Vancouver, Burnaby, Richmond, Surrey, Coquitlam, Kamloops, Kelowna).\n\n' +
+        'You are the growth analyst for Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling service in Canada, serving major Canadian cities.\n\n' +
         'Last 7 days of real data:\n' + traffic + '\nNew realtor leads: ' + leads7d + '\n' +
         'Top Google search queries: ' + (compactKw || 'no search data yet') + '\n\n' +
         'Briefly scan the live web for anything new that affects local junk removal demand (seasonal trends, competitor moves, city disposal changes), ' +

@@ -40,6 +40,6 @@
       }
     ]
   },
-  "description": "Once a day (11:30am Vancouver time): AI writes one Facebook post (seeded by recent jobs, no customer details) and publishes it to the page",
+  "description": "Once a day (11:30am local time): AI writes one Facebook post (seeded by recent jobs, no customer details) and publishes it to the page",
   "name": "Facebook AI Auto Post"
 }

@@ -4,19 +4,19 @@ import { base44 } from "@/api/base44Client";
 
 const COMPETITORS = [
   {
-    name: "1-800-GOT-JUNK? Vancouver Downtown",
+    name: "1-800-GOT-JUNK?",
     url: "https://www.1800gotjunk.com/ca_en/locations/junk-removal-vancouver/ca04009",
     angle: "National franchise with established brand recognition and multi-city coverage.",
     gap: "No subscription service for recurring property manager cleanups; no multi-city pricing automation.",
   },
   {
-    name: "JUSTJUNK Vancouver",
+    name: "JUSTJUNK",
     url: "https://justjunk.com/junk-removal-vancouver",
     angle: "Established local player with same-day service and transparent pricing model.",
     gap: "No AI receptionist or automated booking platform; partner dispatch network not visible.",
   },
   {
-    name: "Removerz Junk Removal Vancouver",
+    name: "Removerz Junk Removal",
     url: "https://removerz.ca/",
     angle: "Local service focused on fast, affordable junk removal.",
     gap: "No multi-city marketing site or subscription service for property managers; limited booking automation.",
@@ -39,7 +39,7 @@ export default function CompetitorsTab() {
     setError("");
     try {
       const res = await base44.functions.invoke("aiResearch", {
-        topic: "Competitor analysis: junk removal and hauling services in Vancouver and the Lower Mainland, BC (1-800-GOT-JUNK, JUSTJUNK, Removerz, Joey's Junk Removal) — their current pricing, service guarantees, ad positioning and what they do NOT offer, so Same Day Recycling can target the gaps.",
+        topic: "Competitor analysis: junk removal and hauling services in major Canadian metros (1-800-GOT-JUNK, JUSTJUNK, Removerz, Joey's Junk Removal) — their current pricing, service guarantees, ad positioning and what they do NOT offer, so Same Day Recycling can target the gaps.",
       });
       setReport(res.data);
     } catch {

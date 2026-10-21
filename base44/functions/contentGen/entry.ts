@@ -38,13 +38,13 @@ export default async function(req) {
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You are the content writer for Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling service in British Columbia, Canada, serving Vancouver, Burnaby, Richmond, Surrey, Coquitlam, Kamloops and Kelowna.\n\n' +
+        'You are the content writer for Same Day Recycling (samedayrecycling.ca), a same-day junk removal and recycling service in Canada, serving major Canadian cities.\n\n' +
         'Articles already on the blog (do NOT repeat these topics): ' + existingTitles + '\n\n' +
         (topic
           ? 'Write an article about: "' + topic + '"'
-          : 'Pick a fresh, genuinely useful topic for homeowners, realtors, property managers or contractors in BC that is not already covered. If real customer questions or top searches are provided below, prefer a topic that answers them.') +
+          : 'Pick a fresh, genuinely useful topic for homeowners, realtors, property managers or contractors in Canada that is not already covered. If real customer questions or top searches are provided below, prefer a topic that answers them.') +
         (insights ? '\n\nLive research insights from the site (weave answers to these real questions and searches into the article):\n' + insights : '') +
-        '\n\nResearch current facts on the web first (BC and Canada specific: bylaws, disposal rules, recycling programs, prices in CAD, seasonal advice). ' +
+        '\n\nResearch current facts on the web first (Canada specific: bylaws, disposal rules, recycling programs, prices in CAD, seasonal advice). ' +
         'Then write an original article of 500-700 words in clean markdown: one H1-style title, H2/H3 subheadings, short paragraphs, and bullet lists where helpful. ' +
         'End with one short practical paragraph and mention that Same Day Recycling offers same-day pickup (no heavy sales pitch, at most one soft mention).',
       add_context_from_internet: true,

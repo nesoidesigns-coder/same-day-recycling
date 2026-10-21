@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 
-// Admin tool: pulls current competitor pricing and service data for Metro Vancouver
-// junk removal from the web (AI + internet), stores it in CompetitorPricing.
+// Admin tool: pulls current competitor pricing and service data for major Canadian
+// metros (junk removal) from the web (AI + internet), stores it in CompetitorPricing.
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
@@ -11,7 +11,7 @@ export default async function(req) {
 
     const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
       add_context_from_internet: true,
-      prompt: `Research CURRENT published pricing and services for junk removal companies serving Metro Vancouver, BC (Vancouver, Burnaby, Surrey, Richmond, Coquitlam). Cover these known competitors: 1-800-GOT-JUNK, JUSTJUNK, Removerz, Joey's Junk Removal, plus up to 3 more major local players you find.\n\nFor EACH company return: name; city/area served; typical price range in CAD for a truck load (e.g. "$250-$800 depending on volume"); minimum charge or minimum load price in CAD if published (junk removal minimums are usually $100-$200); services offered (junk removal, furniture, appliance, demolition, metal, estate cleanouts, etc.); the source URL you based it on; and a short note on their positioning (franchise scale, eco claims, subscription offerings, free estimates, etc.).\n\nAlso return a one-paragraph market summary: typical minimums, typical full-load prices, and where a premium same-day service with upfront pricing fits.\n\nUse real, current figures from their sites or review pages where possible; mark estimates clearly in the note when pricing is not published.`,
+      prompt: `Research CURRENT published pricing and services for junk removal companies serving major Canadian metros (Toronto, Montreal, Ottawa, Calgary, Edmonton). Cover these known competitors: 1-800-GOT-JUNK, JUSTJUNK, Removerz, Joey's Junk Removal, plus up to 3 more major local players you find.\n\nFor EACH company return: name; city/area served; typical price range in CAD for a truck load (e.g. "$250-$800 depending on volume"); minimum charge or minimum load price in CAD if published (junk removal minimums are usually $100-$200); services offered (junk removal, furniture, appliance, demolition, metal, estate cleanouts, etc.); the source URL you based it on; and a short note on their positioning (franchise scale, eco claims, subscription offerings, free estimates, etc.).\n\nAlso return a one-paragraph market summary: typical minimums, typical full-load prices, and where a premium same-day service with upfront pricing fits.\n\nUse real, current figures from their sites or review pages where possible; mark estimates clearly in the note when pricing is not published.`,
       response_json_schema: {
         type: 'object',
         properties: {
@@ -41,7 +41,7 @@ export default async function(req) {
     const summary = String(llm.market_summary || '').slice(0, 950);
     const records = comps.map((c) => ({
       name: String(c.name).slice(0, 120),
-      city: String(c.city || 'Metro Vancouver').slice(0, 80),
+      city: String(c.city || 'Canada').slice(0, 80),
       price_range: String(c.price_range || '').slice(0, 200),
       minimum: String(c.minimum || '').slice(0, 120),
       services: String(c.services || '').slice(0, 500),

@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
-const CITIES = ['Vancouver', 'Burnaby', 'Richmond', 'Surrey', 'Coquitlam', 'Kamloops', 'Kelowna'];
+const CITIES = ['Toronto', 'Montreal', 'Ottawa', 'Calgary', 'Edmonton', 'Winnipeg', 'Hamilton', 'Mississauga', 'Halifax', 'Quebec City'];
 
 export default async function(req) {
   try {
@@ -49,8 +49,8 @@ export default async function(req) {
           batch.map((city) =>
             svc.integrations.Core.InvokeLLM({
               prompt:
-                `Research real recycling centers, depots, transfer stations and public drop-off facilities in ${city}, British Columbia, Canada. ` +
-                'Use current web sources (municipal websites, Recycle BC, Google Maps listings). ' +
+                `Research real recycling centers, depots, transfer stations and public drop-off facilities in ${city}, Canada, Canada. ` +
+                'Use current web sources (municipal websites, provincial recycling programs, Google Maps listings). ' +
                 'Return up to 8 real, verifiable facilities. For each give: exact name, full street address, latitude, longitude, ' +
                 'phone number if known, website if known, main materials accepted (comma separated, e.g. cardboard, scrap metal, appliances, electronics, yard waste, paint), ' +
                 'and a short note (e.g. drop-off only, fees may apply, residential only). ' +

@@ -92,7 +92,7 @@ export default function Realtors() {
             fields={[
               { name: "name", label: "Your name", required: true, placeholder: "Jane Realtor" },
               { name: "phone", label: "Phone", type: "tel", required: true, placeholder: "(604) 555-1234" },
-              { name: "address", label: "Property address", required: true, placeholder: "123 Main St, Vancouver", full: true },
+              { name: "address", label: "Property address", required: true, placeholder: "123 Main St, Toronto", full: true },
               { name: "items_description", label: "What needs clearing", type: "textarea", required: true, placeholder: "Whole house: furniture, garage, yard debris", full: true },
               { name: "preferred_date", label: "Needed by", type: "date" },
             ]}

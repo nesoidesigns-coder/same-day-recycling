@@ -30,7 +30,7 @@ export default function FacebookNewspaper({ posts }) {
           The Recycling Times
         </h2>
         <p className="mt-1 text-[11px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#0c3b24]">
-          Same Day Recycling — Vancouver, BC · Real hauls, real cleanouts
+          Same Day Recycling · Real hauls, real cleanouts
         </p>
         <div className="mt-3 flex justify-center">
           <div className="flex gap-1">

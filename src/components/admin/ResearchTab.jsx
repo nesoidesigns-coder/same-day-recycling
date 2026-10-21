@@ -84,7 +84,7 @@ export default function ResearchTab() {
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && research()}
-            placeholder="e.g. How do Vancouver residents dispose of mattresses?"
+            placeholder="e.g. How do residents in my city dispose of mattresses?"
             className="input flex-1"
           />
           <button

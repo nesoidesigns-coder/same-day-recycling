@@ -129,7 +129,7 @@ export default function Reviews() {
             <a
               href={placeId
                 ? `https://search.google.com/local/reviews?placeid=${placeId}`
-                : "https://www.google.com/search?q=Same+Day+Recycling+Vancouver+reviews"}
+                : "https://www.google.com/search?q=Same+Day+Recycling+reviews"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1d9e56] hover:underline"

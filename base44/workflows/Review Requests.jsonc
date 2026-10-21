@@ -16,7 +16,7 @@
       "ends_after_count": null
     }
   },
-  "description": "Every day at 10:31am Vancouver time, emails customers via Gmail a review request three days after their pickup",
+  "description": "Every day at 10:31am local time, emails customers via Gmail a review request three days after their pickup",
   "name": "Review Requests",
   "definition": {
     "document": {

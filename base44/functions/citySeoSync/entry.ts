@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 // Scheduled by the "Auto SEO" workflow: researches the best local keywords and
 // AI-writes optimized meta tags + hero copy for every city landing page, then
 // saves them so the pages apply them automatically. Admin-only.
-const CITIES = ['Vancouver', 'Burnaby', 'Richmond', 'Surrey', 'Coquitlam', 'Kamloops', 'Kelowna'];
+const CITIES = ['Toronto', 'Montreal', 'Ottawa', 'Calgary', 'Edmonton', 'Winnipeg', 'Hamilton', 'Mississauga', 'Halifax', 'Quebec City'];
 
 export default async function(req) {
   try {
@@ -26,10 +26,10 @@ export default async function(req) {
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
-        'You are an SEO copywriter for Same Day Recycling (samedayrecycling.ca), a same-day junk removal, furniture removal and recycling service in British Columbia. ' +
+        'You are an SEO copywriter for Same Day Recycling (samedayrecycling.ca), a same-day junk removal, furniture removal and recycling service in Canada. ' +
         'Write optimized page meta and hero copy for each of its city landing pages. Facts: same-day service (book before noon, crew arrives same afternoon), upfront pricing approved on-site before anything is lifted, eco disposal (recycle/donate, receipts), phone (604) 849-1745.\n\n' +
         'For EACH city below return: ' +
-        'seo_title (max 60 characters, unique per city, includes the city name and BC, front-loads the main keyword like "Same Day Junk Removal {City} BC", do not repeat the same title pattern word-for-word across cities), ' +
+        'seo_title (max 60 characters, unique per city, includes the city name, front-loads the main keyword like "Same Day Junk Removal {City}", do not repeat the same title pattern word-for-word across cities), ' +
         'seo_description (max 155 characters, includes the city, mentions same-day service and upfront pricing, ends with a reason to click), ' +
         'hero_intro (1-2 sentences of unique, natural-sounding page copy for the hero of that city\'s page that references the city and its local character - no fluff, no keyword stuffing), ' +
         'keywords (2-4 comma-separated local search terms for that city, e.g. "junk removal {City}, furniture disposal {City}").\n\n' +

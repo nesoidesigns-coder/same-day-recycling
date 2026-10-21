@@ -67,7 +67,7 @@ export default function BlogPost() {
 
               <div className="mt-10 rounded-3xl bg-[#0c3b24] text-white p-8 text-center">
                 <h2 className="text-xl md:text-2xl font-bold">Need it hauled instead?</h2>
-                <p className="mt-2 text-slate-300 text-sm">Same-day junk removal and recycling across British Columbia.</p>
+                <p className="mt-2 text-slate-300 text-sm">Same-day junk removal and recycling across Canada.</p>
                 <a href="tel:+16048491745" className="mt-5 inline-block rounded-full bg-[#1d9e56] text-[#0c3b24] font-bold px-7 py-3 hover:bg-[#17a04c] transition-colors">
                   Call or text (604) 849-1745
                 </a>

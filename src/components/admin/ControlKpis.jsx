@@ -18,7 +18,7 @@ export default function ControlKpis({ bookings, quoteNew, clients }) {
   const mrr = clients.filter((c) => c.status === "active").reduce((s, c) => s + (Number(c.monthly_fee) || 0), 0);
 
   const gauges = [
-    { icon: CalendarClock, label: "Bookings today", value: String(todayCount), sub: "Vancouver time", glow: false },
+    { icon: CalendarClock, label: "Bookings today", value: String(todayCount), sub: "Local time", glow: false },
     { icon: BellRing, label: "New (unactioned)", value: String(newCount), sub: "Need a call or confirm", glow: false },
     { icon: MapPinned, label: "Awaiting dispatch", value: String(unassigned), sub: "No partner assigned", glow: false },
     { icon: DollarSign, label: "Job value, last 7 days", value: money(weekValue), sub: "Across all cities", glow: true },

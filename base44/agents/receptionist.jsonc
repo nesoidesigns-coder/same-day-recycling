@@ -44,7 +44,7 @@
     },
     {
       "function_name": "webResearch",
-      "description": "Research a visitor's question on the live web (BC recycling rules, municipal disposal regulations, current facts) and return a concise answer. Pass {question}."
+      "description": "Research a visitor's question on the live web (recycling rules, municipal disposal regulations, current facts) and return a concise answer. Pass {question}."
     },
     {
       "function_name": "recyclingCenters",

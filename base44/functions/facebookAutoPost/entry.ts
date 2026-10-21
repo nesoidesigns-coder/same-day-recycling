@@ -37,12 +37,12 @@ export default async function(req) {
     );
     const jobs = (recent.items || [])
       .slice(0, 5)
-      .map((b) => ({ city: b.city || 'Metro Vancouver', load: String(b.items_description || '').slice(0, 80) }));
+      .map((b) => ({ city: b.city || 'Canada', load: String(b.items_description || '').slice(0, 80) }));
 
     const angle = ANGLES[Math.floor(Math.random() * ANGLES.length)];
 
     const llm = await svc.integrations.Core.InvokeLLM({
-      prompt: `You write Facebook posts for "Same Day Recycling", a junk removal and same-day recycling service in Metro Vancouver, BC (Vancouver, Burnaby, Surrey, Richmond, Coquitlam, Kamloops, Kelowna). Tone: friendly, local, energetic.\n\n${FB_MARKETING_PLAYBOOK}\n\nWrite ONE short Facebook post about: ${angle}.${jobs.length ? ` Use these recent real jobs for color, but NEVER mention customer names, phone numbers or street addresses: ${JSON.stringify(jobs)}.` : ''}`,
+      prompt: `You write Facebook posts for "Same Day Recycling", a junk removal and same-day recycling service across Canada. Tone: friendly, local, energetic.\n\n${FB_MARKETING_PLAYBOOK}\n\nWrite ONE short Facebook post about: ${angle}.${jobs.length ? ` Use these recent real jobs for color, but NEVER mention customer names, phone numbers or street addresses: ${JSON.stringify(jobs)}.` : ''}`,
       response_json_schema: {
         type: 'object',
         properties: { post: { type: 'string' } },
@@ -56,7 +56,7 @@ export default async function(req) {
     let imageUrl = null;
     try {
       const img = await svc.integrations.Core.GenerateImage({
-        prompt: `Realistic, bright, professional photo for a Facebook post by "Same Day Recycling", a junk removal and recycling company in Vancouver BC. Theme: ${angle}. Show a tidy green-branded truck and crew loading clean furniture, appliances or scrap metal outdoors in a sunny BC neighbourhood, daylight, no text or words in the image.`,
+        prompt: `Realistic, bright, professional photo for a Facebook post by "Same Day Recycling", a junk removal and recycling company in Canada. Theme: ${angle}. Show a tidy green-branded truck and crew loading clean furniture, appliances or scrap metal outdoors in a sunny Canadian neighbourhood, daylight, no text or words in the image.`,
       });
       imageUrl = (img && img.url) || null;
     } catch {}

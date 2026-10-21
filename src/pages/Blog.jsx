@@ -35,7 +35,7 @@ export default function Blog() {
           </div>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-[#0c3b24]">Recycling &amp; junk removal guides</h1>
           <p className="mt-3 text-slate-600 max-w-xl">
-            Practical, current advice for BC homeowners, realtors, property managers and contractors — researched and written by our team.
+            Practical, current advice for Canadian homeowners, realtors, property managers and contractors — researched and written by our team.
           </p>
         </div>
       </section>
