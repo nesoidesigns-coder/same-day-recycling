@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Upload, Loader2, CheckCircle2, Camera } from "lucide-react";
+import { Upload, Loader2, CheckCircle2, Camera, Lock } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
 import { isCityActive } from "@/lib/coverage";
 import { provinceForCity, taxFor } from "@/lib/canadaTax";
@@ -27,6 +27,7 @@ export default function BookingForm({ prefill }) {
   const [payDone, setPayDone] = useState(false);
   const [error, setError] = useState("");
   const [waitlisted, setWaitlisted] = useState(false);
+  const [payNeedsLogin, setPayNeedsLogin] = useState(false);
 
   // Pay-an-existing-booking mode (?pay_booking=<id>): loads the booking so the
   // PayPal button can run for it. Read access is admin-only, so this surface
@@ -34,20 +35,37 @@ export default function BookingForm({ prefill }) {
   useEffect(() => {
     const payId = new URLSearchParams(window.location.search).get('pay_booking');
     if (!payId) return;
+    document.getElementById('book')?.scrollIntoView({ behavior: 'smooth' });
     (async () => {
       try {
         const b = await base44.entities.Booking.get(payId);
-        if (!b || !b.id) return;
+        if (!b || !b.id) { setPayNeedsLogin(true); return; }
         setBookingId(b.id);
         setQuoteNote(b.quote_estimate || '');
         setForm((f) => ({ ...f, city: b.city || '', email: b.email || '', curbside: !!b.curbside_discount }));
         setPayDone(b.payment_status === 'paid');
         setDone(true);
       } catch {
-        // Not readable (non-admin or bad id): fall through to the normal form.
+        // Not readable (non-admin or bad id): explain instead of silently
+        // falling through to the normal form.
+        setPayNeedsLogin(true);
       }
     })();
   }, []);
+
+  if (payNeedsLogin) {
+    const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+    return (
+      <div className="rounded-3xl bg-white p-8 border border-slate-100 text-center">
+        <Lock className="w-10 h-10 text-[#187B65] mx-auto mb-3" />
+        <h3 className="text-xl font-bold text-[#102B2A]">Payment link</h3>
+        <p className="mt-2 text-slate-600 text-sm">This payment link can only be opened while logged in to the admin account.</p>
+        <a href={`/login?returnTo=${returnTo}`} className="mt-5 inline-block rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#125C4E] transition-colors">
+          Log in to continue
+        </a>
+      </div>
+    );
+  }
 
   const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
