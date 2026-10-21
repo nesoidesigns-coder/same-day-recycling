@@ -4,8 +4,14 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { useSEO, useStructuredData, PRODUCTION_URL } from "@/lib/seo";
+import { CITIES } from "@/lib/cities";
 
 const BASE = PRODUCTION_URL;
+
+// Only claim service areas that are actually confirmed live — never "all of Canada".
+const ACTIVE_CITIES = CITIES
+  .filter((c) => c.status === "active")
+  .map((c) => ({ "@type": "City", name: c.name }));
 
 export default function ServiceLanding({ config }) {
   const { slug, name, eyebrow, h1, title, description, intro, items, steps, faqs } = config;
@@ -19,7 +25,7 @@ export default function ServiceLanding({ config }) {
     provider: { "@id": `${BASE}/#organization` },
     url,
     description,
-    areaServed: { "@type": "Country", name: "Canada" },
+    areaServed: ACTIVE_CITIES,
   });
   useStructuredData(`${slug}-breadcrumb`, {
     "@type": "BreadcrumbList",
