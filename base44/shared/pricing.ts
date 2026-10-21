@@ -4,7 +4,7 @@
 export const DEFAULT_PRICES = {
   minimum_pickup: 139,
   eighth_truck: 189,
-  quarter_truck: 299,
+  quarter_truck: 269,
   half_truck: 419,
   three_quarter_truck: 549,
   full_truck: 649,

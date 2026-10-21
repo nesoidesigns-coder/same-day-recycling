@@ -21,7 +21,7 @@ export default function CoveragePanel() {
         <MapPin className="w-4 h-4 text-[#187B65]" />
         <h2 className="font-bold text-[#102B2A]">Coverage demand by city</h2>
       </div>
-      <p className="text-xs text-slate-500 mb-4">All-time bookings per city · live Canada-wide</p>
+      <p className="text-xs text-slate-500 mb-4">All-time bookings per city · all markets</p>
       {rows === null ? (
         <div className="flex items-center justify-center py-8 text-slate-400">
           <Loader2 className="w-5 h-5 animate-spin" />

@@ -13,7 +13,7 @@ const perks = [
   {
     icon: ShieldCheck,
     title: "Guaranteed pricing",
-    text: "The price we quote is the price you pay. If your load takes less truck space than estimated, you pay less — you'll never get a surprise hike when the crew arrives.",
+    text: "You pay the price you approve before we lift anything. If your load takes less truck space than estimated, you pay less — you'll never get a surprise hike when the crew arrives.",
   },
   {
     icon: Users,

@@ -202,9 +202,9 @@ export default function CityPage() {
       {/* City pricing */}
       {isActive && (
         <section id="pricing" className="max-w-7xl mx-auto px-4 py-14">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Upfront, guaranteed</div>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Upfront, approved by you</div>
           <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Junk removal prices in {city.name}</h2>
-          <p className="mt-3 text-slate-600 max-w-2xl">You pay by truck space, not by the hour — the price we quote is the price you pay. Book before noon for same-day pickup.</p>
+          <p className="mt-3 text-slate-600 max-w-2xl">You pay by truck space, not by the hour — and you approve the price before we lift anything. Book before noon for same-day pickup.</p>
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {BANDS.map((b) => (
               <div key={b.key} className="rounded-2xl border border-slate-100 bg-white p-5">
@@ -313,7 +313,7 @@ export default function CityPage() {
 
 const ACTIVE_FAQ = (city) => [
   { q: `Do you really do same-day pickup in ${city.name}?`, a: "Yes — book before noon and we'll usually reach you the same afternoon. Afternoon bookings are typically next-day." },
-  { q: "What does junk removal cost here?", a: `Our ${city.name} rates start at $${FALLBACK_PRICES.minimum_pickup} for a minimum pickup and scale by truck space — see the pricing table above. The price we quote is the price you pay.` },
+  { q: "What does junk removal cost here?", a: `Our ${city.name} rates start at $${FALLBACK_PRICES.minimum_pickup} for a minimum pickup and scale by truck space — see the pricing table above. You approve the final price before we lift anything.` },
   { q: "Do you take mattresses and appliances?", a: "Yes. Mattresses, fridges, washers and stoves all go out with the crew — appliances are recycled as scrap metal." },
   { q: "What happens to my junk?", a: "Every load is sorted: furniture in good shape is donated, metal and electronics are recycled, and only the true remainder is responsibly disposed." },
 ];

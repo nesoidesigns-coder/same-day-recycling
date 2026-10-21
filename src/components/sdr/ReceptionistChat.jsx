@@ -153,7 +153,7 @@ export default function ReceptionistChat() {
             <AiMascot size={40} />
             <div>
               <div className="font-bold leading-tight">Rex · Same Day Recycling</div>
-              <div className="flex items-center gap-1.5 text-xs text-[#187B65] font-semibold"><span className="w-1.5 h-1.5 rounded-full bg-[#187B65]" />Online · Canada-wide &amp; worldwide</div>
+              <div className="flex items-center gap-1.5 text-xs text-[#187B65] font-semibold"><span className="w-1.5 h-1.5 rounded-full bg-[#187B65]" />Online · 24/7 booking assistant</div>
             </div>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">

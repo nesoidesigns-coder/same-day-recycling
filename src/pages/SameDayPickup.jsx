@@ -6,7 +6,7 @@ const CONFIG = {
   eyebrow: "Same-day service · Canada",
   h1: "Book before noon — picked up the same afternoon",
   title: "Same-Day Junk & Furniture Pickup | Same Day Recycling",
-  description: "Same-day junk, furniture and appliance pickup in confirmed service areas across Canada. Book before noon for same-afternoon service, with upfront guaranteed pricing.",
+  description: "Same-day junk, furniture and appliance pickup in confirmed service areas across Canada. Book before noon for same-afternoon service, with upfront pricing approved before loading.",
   intro: "When junk has to go today, the cutoff matters: bookings made before noon usually get a crew the same afternoon. Later bookings are scheduled for the next available slot. Every price is approved by you before anything is lifted.",
   items: ["Book before noon → same afternoon", "Curbside Discount: $25 off, no need to be home", "Upfront pricing from $139", "Price approved before we lift anything", "Every load sorted for recycling & donation", "Recycling Impact Report for your records"],
   steps: [

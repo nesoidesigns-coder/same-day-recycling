@@ -22,7 +22,7 @@ const GUARANTEES = [
 
 const FAQS = [
   { q: "How much does junk removal cost?", a: "Pricing is based on the truck space your load fills, from a $139 minimum pickup up to about $649 for a full truck. The exact price depends on volume and weight, and the final price is confirmed on arrival before we lift anything." },
-  { q: "How do I know what I'll pay before the crew arrives?", a: "Get an instant estimate with our online quote tool or from a photo, or call for a free no-obligation estimate. The price we quote is the price you pay — guaranteed." },
+  { q: "How do I know what I'll pay before the crew arrives?", a: "Get an instant estimate with our online quote tool or from a photo, or call for a free no-obligation estimate. You approve the final price on arrival before we lift a thing — no surprise hikes." },
   { q: "Are there extra fees like fuel or dumping charges?", a: "No. Labor, loading, transport, sorting and disposal are all included in the tier price. No hidden fees, no scale surprises." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Everything else that fits in a truck, we can usually take." },
   { q: "Which cities do you serve?", a: "Same-day service is live today across BC's Lower Mainland — Vancouver, Burnaby, Surrey, Richmond and Coquitlam — with partner territories onboarding nationwide (Toronto, Calgary, Montreal and more). The recycling directory covers every province, and exact city pricing varies slightly; every quote shows your rate." },
@@ -46,7 +46,7 @@ export default function Pricing() {
             How Much Does Junk Removal Cost?
           </h1>
           <p className="mt-4 text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-            You pay for the truck space your load actually fills — nothing more. Every tier maps to a real weight band, the price is approved by you before we lift a thing, and it's guaranteed.
+            You pay for the truck space your load actually fills — nothing more. Every tier maps to a real weight band, the price is approved by you before we lift a thing.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
             <Link to="/#book" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-3 hover:bg-[#1FA184] transition-colors">

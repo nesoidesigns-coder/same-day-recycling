@@ -16,7 +16,7 @@ const CONFIG = {
   ],
   faqs: [
     { q: "Do you take mattresses and box springs?", a: "Yes. Mattresses and box springs go out with the crew, and the metal springs are recycled rather than landfilled." },
-    { q: "How much does furniture removal cost?", a: "Pricing is based on the truck space your items take, from a $139 minimum pickup to a full truck. The price we quote is the price you pay." },
+    { q: "How much does furniture removal cost?", a: "Pricing is based on the truck space your items take, from a $139 minimum pickup to a full truck. You approve the final price before anything is lifted." },
     { q: "Do I need to be home?", a: "Not for curbside pickup. Stage items in your driveway, lane or garage front and take $25 off with our Curbside Discount." },
   ],
 };
