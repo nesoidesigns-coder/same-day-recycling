@@ -16,7 +16,7 @@
       "ends_after_count": null
     }
   },
-  "description": "Every Monday 6am, the AI researches recycling centers, depots and transfer stations across all 7 service cities from live web sources and refreshes the public map",
+  "description": "Every Monday 6am, the AI researches recycling centers, depots and transfer stations in every active coverage city across Canada (in five sequential batches) from live web sources and refreshes the public map",
   "name": "Recycling Center Sync",
   "definition": {
     "document": {
@@ -27,18 +27,121 @@
     },
     "do": [
       {
-        "refresh_centers": {
+        "sync_batch_1": {
           "call": "invoke_backend_function",
           "with": {
             "function_name": "recyclingCenters",
             "args": {
-              "action": "refresh"
+              "action": "refresh",
+              "cities": [
+                "Vancouver",
+                "Burnaby",
+                "Surrey",
+                "Richmond",
+                "Coquitlam",
+                "Victoria"
+              ]
+            }
+          },
+          "then": "sync_batch_2",
+          "x-base44": {
+            "title": "Research BC cities",
+            "description": "Vancouver, Burnaby, Surrey, Richmond, Coquitlam, Victoria"
+          }
+        }
+      },
+      {
+        "sync_batch_2": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "recyclingCenters",
+            "args": {
+              "action": "refresh",
+              "cities": [
+                "Kamloops",
+                "Kelowna",
+                "Maple Ridge",
+                "Pitt Meadows",
+                "Calgary",
+                "Edmonton"
+              ]
+            }
+          },
+          "then": "sync_batch_3",
+          "x-base44": {
+            "title": "Research BC, AB cities",
+            "description": "Kamloops, Kelowna, Maple Ridge, Pitt Meadows, Calgary, Edmonton"
+          }
+        }
+      },
+      {
+        "sync_batch_3": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "recyclingCenters",
+            "args": {
+              "action": "refresh",
+              "cities": [
+                "Saskatoon",
+                "Regina",
+                "Winnipeg",
+                "Toronto",
+                "Ottawa",
+                "Hamilton"
+              ]
+            }
+          },
+          "then": "sync_batch_4",
+          "x-base44": {
+            "title": "Research Prairies and ON cities",
+            "description": "Saskatoon, Regina, Winnipeg, Toronto, Ottawa, Hamilton"
+          }
+        }
+      },
+      {
+        "sync_batch_4": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "recyclingCenters",
+            "args": {
+              "action": "refresh",
+              "cities": [
+                "Mississauga",
+                "Montreal",
+                "Quebec City",
+                "Moncton",
+                "Saint John",
+                "Halifax"
+              ]
+            }
+          },
+          "then": "sync_batch_5",
+          "x-base44": {
+            "title": "Research ON, QC, Atlantic cities",
+            "description": "Mississauga, Montreal, Quebec City, Moncton, Saint John, Halifax"
+          }
+        }
+      },
+      {
+        "sync_batch_5": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "recyclingCenters",
+            "args": {
+              "action": "refresh",
+              "cities": [
+                "Charlottetown",
+                "St. John's",
+                "Whitehorse",
+                "Yellowknife",
+                "Iqaluit"
+              ]
             }
           },
           "then": "end",
           "x-base44": {
-            "title": "AI researches recycling centers",
-            "description": "Worldwide web research, updates the live map"
+            "title": "Research Atlantic and North cities",
+            "description": "Charlottetown, St. John's, Whitehorse, Yellowknife, Iqaluit"
           }
         }
       }

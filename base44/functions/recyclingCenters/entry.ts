@@ -1,6 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { ACTIVE_CITIES } from '../../shared/coverageStatus.ts';
 
-const CITIES = ['Toronto', 'Montreal', 'Ottawa', 'Calgary', 'Edmonton', 'Winnipeg', 'Hamilton', 'Mississauga', 'Halifax', 'Quebec City'];
+// Sync every city the national coverage model lists — kept in one place so
+// the recycling center map never drifts from the coverage source of truth.
+const CITIES = ACTIVE_CITIES;
 
 export default async function(req) {
   try {
@@ -37,7 +40,7 @@ export default async function(req) {
       if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
 
       const cities = Array.isArray(payload.cities) && payload.cities.length
-        ? payload.cities.slice(0, 10)
+        ? payload.cities.slice(0, 30)
         : CITIES;
       const today = new Date().toISOString().slice(0, 10);
       let researched = 0;
