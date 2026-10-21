@@ -8,6 +8,10 @@
     "email": {
       "type": "string"
     },
+    "phone": {
+      "type": "string",
+      "default": ""
+    },
     "city": {
       "type": "string"
     },
@@ -21,6 +25,14 @@
     "active": {
       "type": "boolean",
       "default": true
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
     },
     "description": {
       "type": "string",

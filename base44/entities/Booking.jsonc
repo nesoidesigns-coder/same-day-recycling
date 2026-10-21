@@ -102,8 +102,10 @@
         "unassigned",
         "assigned",
         "accepted",
+        "scheduled",
+        "completed",
         "declined",
-        "completed"
+        "paid"
       ],
       "default": "unassigned"
     },
@@ -115,6 +117,34 @@
     },
     "job_value": {
       "type": "number"
+    },
+    "final_invoice": {
+      "type": "number",
+      "default": 0
+    },
+    "referred_by_admin": {
+      "type": "boolean",
+      "default": false
+    },
+    "commission_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "commission_earned": {
+      "type": "number",
+      "default": 0
+    },
+    "commission_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "commission_paid_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pickup_confirmed": {
+      "type": "boolean",
+      "default": false
     },
     "payout_paid": {
       "type": "boolean",

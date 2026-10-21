@@ -15,10 +15,23 @@ const EXTRA_COORDS = {
   "st. john's": [47.5615, -52.7126],
   edmonton: [53.5461, -113.4938],
   calgary: [51.0447, -114.0719],
+  "port coquitlam": [49.2626, -122.7811],
+  "port moody": [49.28, -122.825],
+  "north vancouver": [49.3185, -123.0705],
+  "west vancouver": [49.3311, -123.156],
+  "new westminster": [49.2067, -122.9105],
+  langley: [49.1041, -122.6587],
+  abbotsford: [49.0504, -122.3045],
+  "maple ridge": [49.2194, -122.6015],
+  "pitt meadows": [49.2598, -122.6906],
 };
 
+// Normalize "Port Coquitlam, BC" style values before matching
+const normCity = (city) =>
+  (city || "").toLowerCase().trim().replace(/,?\s*(bc|ab|sk|mb|on|qc|nb|ns|pe|nl|yt|nt|nu)$/i, "").trim();
+
 const coordsFor = (city) => {
-  const c = (city || "").toLowerCase().trim();
+  const c = normCity(city);
   const inLib = CITIES.find((x) => x.name.toLowerCase() === c);
   if (inLib) return [inLib.lat, inLib.lng];
   return EXTRA_COORDS[c] || null;
