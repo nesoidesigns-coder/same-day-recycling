@@ -8,6 +8,11 @@
     "event_type": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
     "subscription_id": {
       "type": "string",
       "default": ""

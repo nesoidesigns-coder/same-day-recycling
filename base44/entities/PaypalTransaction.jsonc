@@ -29,6 +29,11 @@
       "type": "string",
       "default": ""
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
     "customer_email": {
       "type": "string",
       "default": ""

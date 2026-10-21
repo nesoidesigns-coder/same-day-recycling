@@ -15,6 +15,11 @@
       "type": "string",
       "default": ""
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
     "fleet_size": {
       "type": "number",
       "default": 1
