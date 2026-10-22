@@ -145,6 +145,18 @@ export default function ReceptionistChat() {
             </div>
           </motion.div>
         )}
+        {!open && !showGreeting && (
+          <button
+            onClick={handleOpen}
+            className="sm:hidden absolute bottom-full right-0 mb-3 flex items-center gap-2 rounded-full bg-white shadow-lg border border-slate-100 px-3.5 py-2 text-sm font-bold text-[#102B2A]"
+          >
+            <span className="relative flex w-2.5 h-2.5">
+              <span className="absolute inline-flex w-full h-full rounded-full bg-[#187B65] opacity-60 animate-ping" />
+              <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-[#187B65]" />
+            </span>
+            Online Now
+          </button>
+        )}
         <span className="hidden sm:flex items-center gap-2 rounded-full bg-white shadow-lg border border-slate-100 px-4 py-2 text-sm font-bold text-[#102B2A]">
           <span className="relative flex w-2.5 h-2.5">
             <span className="absolute inline-flex w-full h-full rounded-full bg-[#187B65] opacity-60 animate-ping" />
