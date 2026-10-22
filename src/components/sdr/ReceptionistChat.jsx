@@ -186,6 +186,15 @@ export default function ReceptionistChat() {
               <Minus className="w-4 h-4" />
             </button>
           </div>
+          <div className="flex items-center gap-2 border-b border-slate-100 bg-[#f4f7f5] px-4 py-2 text-xs">
+            <span className="font-semibold text-slate-500">Chat with Rex on</span>
+            <a href={base44.agents.getWhatsAppConnectURL(AGENT_NAME)} target="_blank" rel="noreferrer" className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 font-bold text-[#102B2A] hover:border-[#187B65] transition-colors">
+              <MessageCircle className="w-3.5 h-3.5 text-[#187B65]" /> WhatsApp
+            </a>
+            <a href={base44.agents.getTelegramConnectURL(AGENT_NAME)} target="_blank" rel="noreferrer" className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 font-bold text-[#102B2A] hover:border-[#187B65] transition-colors">
+              <Send className="w-3.5 h-3.5 text-[#187B65]" /> Telegram
+            </a>
+          </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {!messages.some((m) => m.role === "assistant") && (
               <div className="flex justify-start items-end gap-2">

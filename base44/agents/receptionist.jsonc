@@ -290,8 +290,8 @@
   "selected_skill_names": [],
   "selected_workspace_skill_ids": [],
   "model": "automatic",
-  "whatsapp_greeting": null,
-  "telegram_greeting": null,
+  "whatsapp_greeting": "Hi, it's Rex from Same Day Recycling. Send me a photo or a list of what you need gone and I'll quote it right here and book your pickup \u2014 same-day when you book before noon.",
+  "telegram_greeting": "Hi, it's Rex from Same Day Recycling. Tell me what you need removed (photos welcome) and I'll quote it and book your pickup \u2014 same-day slots when you book before noon.",
   "line_greeting": null,
   "memory_config": {
     "enabled": true,
