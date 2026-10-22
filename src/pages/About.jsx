@@ -16,7 +16,7 @@ export default function About() {
       <section className="bg-[#102B2A] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">About us</div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">The name is the promise.</h1>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">A national network, confirmed one job at a time.</h1>
         </div>
       </section>
 
@@ -24,16 +24,16 @@ export default function About() {
         <div>
           <h2 className="text-2xl font-bold text-[#102B2A] mb-3">One belief</h2>
           <p>
-            Same Day Recycling is a Canadian network built on one belief — the name is the promise. Same day.
-            And actually recycled, not just hauled to landfill: metals go to real scrap buyers, gypsum to real
+            Same Day Recycling is a Canadian service-coordination network. We accept requests nationwide, but confirm each pickup only after a qualified contractor accepts the job, price and arrival window.
+            Our aim is responsible reuse and recycling, not just hauled to landfill: metals go to real scrap buyers, gypsum to real
             recyclers, and furniture and usable goods to donation partners before anything else is considered.
           </p>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-[#102B2A] mb-3">How it works for customers</h2>
           <p>
-            You book online or by phone, the price is quoted upfront, and a truck arrives the same day to haul
-            away sofas, mattresses, appliances, renovation debris and general clutter. Every load is sorted by
+            You submit a request online or by phone. Dispatch checks local provider availability, confirms your approved price and agrees an arrival window after a contractor accepts. Same-day service can be requested, but is never assumed from a city listing. Confirmed crews remove
+            sofas, mattresses, appliances, renovation debris and general clutter. Every load is sorted by
             hand so the smallest possible amount ends up in the landfill. We also run a free metal pickup
             service and a scheduled subscription plan for property managers who need recurring cleanups.
           </p>

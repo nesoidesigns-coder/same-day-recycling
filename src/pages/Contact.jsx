@@ -85,18 +85,18 @@ export default function Contact() {
               <MapPin className="w-5 h-5 text-[#187B65]" /> Service area
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              We're a nationwide agency — we operate in every Canadian city.
+              We accept service inquiries nationwide; this does not mean a contractor or same-day slot is available in every city.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed mt-2">
               Requests are accepted in every Canadian city. Same-day fulfillment depends on contractor
-              availability and is confirmed with you before anything is scheduled or charged.{" "}
+              acceptance of your specific job, with price and arrival window agreed before anything is scheduled or charged.{" "}
               <Link to="/request-service" className="font-semibold text-[#187B65] hover:underline">Submit a request</Link> and dispatch takes it from there.
             </p>
           </div>
           <div className="rounded-2xl bg-[#102B2A] p-6 text-white">
             <div className="font-bold text-lg mb-1">Ready to book instead?</div>
-            <p className="text-sm text-slate-300 mb-4">Same-day pickups, upfront pricing.</p>
-            <Link to="/free-metal-pickup" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 inline-block hover:bg-[#125C4E] transition-colors">
+            <p className="text-sm text-slate-300 mb-4">Request a pickup; contractor acceptance, pricing and your window must be confirmed.</p>
+                         <Link to="/request-service" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 inline-block hover:bg-[#125C4E] transition-colors">
               Book a pickup
             </Link>
           </div>

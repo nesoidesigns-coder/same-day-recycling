@@ -120,7 +120,7 @@ export default function CityPage() {
     el.text = JSON.stringify(ld);
     document.head.appendChild(el);
     return () => { document.getElementById("city-jsonld")?.remove(); };
-  }, [city?.name]);
+  }, [city?.name, isActive, slug]);
 
   if (!city) return <NotFoundPage />;
 
@@ -197,7 +197,7 @@ export default function CityPage() {
         <div className="max-w-7xl mx-auto px-4 py-14">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Service area</div>
           <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">We cover {city.name} — and our partner cities across {region?.name || "Canada"}</h2>
-          <p className="mt-3 text-slate-600 max-w-2xl">{isActive ? "Our trucks run same-day routes across the region, and our national partner network keeps adding cities — so a pickup is never far away." : `Service requests are accepted in ${city.name} nationwide — once a ${city.name} contractor is verified, same-day routes start here. Availability is confirmed with you before anything is scheduled.`}</p>
+          <p className="mt-3 text-slate-600 max-w-2xl">{!coverageLoaded ? "Live provider status is not yet available. Requests remain open; no appointment or same-day capacity is assumed." : isActive ? `An active, verified provider serves ${city.name}. This is not a confirmed appointment: your contractor must accept the specific job, price and arrival window.` : `Requests are open in ${city.name}. ${cityStatus === "matching" ? "Contractor matching is in progress." : "No active, verified provider is currently listed for this city."} Dispatch must match a qualified contractor and obtain their acceptance before confirming a pickup.`}</p>
           <div className="mt-6 flex flex-wrap gap-2">
             {neighbours.map((c) => (
               <Link key={c.slug} to={`/${prefix}${c.slug}`} className="rounded-full bg-white border border-slate-200 px-4 py-2 text-sm font-semibold text-[#102B2A] hover:border-[#187B65] hover:text-[#187B65] transition-colors">
@@ -208,12 +208,12 @@ export default function CityPage() {
         </div>
       </section>
 
-      {/* City pricing */}
-      {isActive && (
+      {/* Published pricing is visible even while local providers are being matched. */}
+      {(
         <section id="pricing" className="max-w-7xl mx-auto px-4 py-14">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Upfront, approved by you</div>
           <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Junk removal prices in {city.name}</h2>
-          <p className="mt-3 text-slate-600 max-w-2xl">You pay by truck space, not by the hour — and you approve the price before we lift anything. Book before noon for same-day pickup.</p>
+          <p className="mt-3 text-slate-600 max-w-2xl">Published starting estimates are shown below, not a confirmed local quote or service window. Applicable taxes and any scope-specific charges are shown for your approval before work begins; pickup requires a qualified contractor to accept your job.</p>
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {BANDS.map((b) => (
               <div key={b.key} className="rounded-2xl border border-slate-100 bg-white p-5">

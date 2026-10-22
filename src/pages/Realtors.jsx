@@ -14,7 +14,7 @@ const handleItems = [
 ];
 
 const whyItems = [
-  { icon: Clock, title: "Same-day service", text: "Book before noon and the cleanout happens today, before your open house." },
+  { icon: Clock, title: "Request same-day service", text: "Tell us your deadline. Same-day cleanouts depend on a qualified contractor accepting your job and arrival window." },
   { icon: DollarSign, title: "Upfront pricing from $139", text: "You approve the price before we lift a thing. No surprises, no hidden fees." },
   { icon: Camera, title: "Before/after photos", text: "Every job documented with photos for your file and your client." },
   { icon: Recycle, title: "We recycle & donate", text: "Usable items go to donation partners — a story your sellers love." },
@@ -30,7 +30,7 @@ export default function Realtors() {
     <div className="bg-white">
       <TopBar />
       <Navbar />
-      <RexBanner message="Realtors: I make listings photo-ready by dinner." />
+      <RexBanner message="Realtors: share your property and deadline. I'll help request a cleanout, with timing confirmed after contractor acceptance." />
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -48,7 +48,7 @@ export default function Realtors() {
           </div>
           <div className="rounded-3xl bg-[#f4f7f5] p-8">
             <h2 className="text-xl font-bold text-[#102B2A]">Realtor partner program</h2>
-            <p className="mt-3 text-slate-600">Send us your listings and we prioritize your jobs — same-day slots held for partner agents, before/after photos in your inbox, and one invoice for repeat cleanouts.</p>
+            <p className="mt-3 text-slate-600">Send us your listings and requested dates. We coordinate contractor matching, before/after documentation and repeat-cleanout invoicing. Partner status does not reserve a same-day slot: each appointment requires a qualified contractor to accept the job and confirm your window.</p>
             <p className="mt-4 text-sm font-semibold text-[#102B2A]">Book below or call/text <a href="tel:+16048491745" className="text-[#187B65]">(604) 849-1745</a> and ask for the partner rate.</p>
             <p className="mt-3 text-sm font-semibold"><Link to="/realtor-dashboard" className="text-[#187B65] hover:underline">Track your cleanout requests →</Link></p>
           </div>
@@ -110,7 +110,7 @@ export default function Realtors() {
       <section className="bg-[#102B2A] text-white">
         <div className="max-w-7xl mx-auto px-4 py-14 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Need it cleared today?</h2>
-          <p className="mt-3 text-slate-300">Call or text and we'll get a crew moving.</p>
+          <p className="mt-3 text-slate-300">Call or text to check contractor availability; a crew is not confirmed until they accept your job.</p>
           <a href="tel:+16048491745" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-8 py-4 hover:bg-[#125C4E] transition-colors">
             <Phone className="w-5 h-5" /> Call or text (604) 849-1745
           </a>

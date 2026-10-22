@@ -12,7 +12,7 @@ const CONFIG = {
   items: ["Sofas & couches", "Mattresses & box springs", "Tables & chairs", "Dressers & wardrobes", "Office & desk furniture", "Hot tubs & patio sets", "Sectionals & loveseats", "Bedroom sets & nightstands", "Dining sets & bar stools", "Bookshelves & cabinets", "Recliners & futons", "Exercise equipment"],
   steps: [
     { title: "Get a quote", text: "List your pieces online or send a photo — pricing is by truck space, starting at $139." },
-    { title: "Book your slot", text: "Pick a date and time window. Book before noon and same-day pickup is usually available." },
+    { title: "Request a slot", text: "Tell us your preferred date and time. Your appointment is confirmed only after a qualified contractor accepts the job and you approve the price." },
     { title: "We lift it all", text: "The crew removes items from any room, then sorts the load for donation and recycling." },
   ],
   deep: [
@@ -70,7 +70,7 @@ const CONFIG = {
     {
       heading: "Areas we serve",
       paragraphs: [
-        "Furniture removal service requests are open across Canada, with confirmed local crews live in the Lower Mainland of British Columbia — Vancouver, Burnaby, Surrey, Richmond and Coquitlam. In other cities we take your request, confirm local availability and match a verified provider before your pickup is scheduled.",
+        "Furniture removal requests are open across Canada, including Vancouver, Burnaby, Surrey, Richmond and Coquitlam. Check the coverage page for current provider status. A listed city is not a confirmed crew or same-day slot: dispatch must match a qualified contractor, obtain their acceptance and agree your price and arrival window before confirming the appointment.",
       ],
     },
   ],
@@ -81,7 +81,7 @@ const CONFIG = {
     { q: "Can you take furniture from upstairs or an apartment?", a: "Yes. The crew carries items from any floor, including stairs, elevators and tight corners. For condo and strata buildings we coordinate elevator bookings with building management." },
     { q: "Do you disassemble furniture for removal?", a: "Where a piece needs it, the crew handles the disassembly as part of the pickup. You don't need to dismantle anything beforehand." },
     { q: "What happens to my old furniture?", a: "Every load is sorted: reusable pieces go to donation partners, metal frames and mattress springs are recycled, and only residual material is landfilled. You can request a Recycling Impact Report for the record." },
-    { q: "Can I get same-day furniture pickup?", a: "Same-day is usually available where a local crew is live when you book before noon. Availability is confirmed for your address before your booking is locked in." },
+    { q: "Can I get same-day furniture pickup?", a: "You can request same-day furniture pickup. It is not guaranteed by a city listing or the time you submit: a qualified contractor must accept your specific job and confirm the arrival window first." },
     { q: "Do you remove hot tubs?", a: "Yes. Hot tubs and other bulky outdoor items are quoted from a photo to price them accurately — send one in the quote tool and we'll book the pickup." },
   ],
 };

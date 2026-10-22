@@ -50,7 +50,7 @@ export default function FreeMetalPickup() {
         address: form.address,
         city: form.city,
         items_description: `FREE METAL PICKUP — ${form.metal}`,
-        quote_estimate: "Free",
+        quote_estimate: "Free-pickup eligibility and price pending confirmation",
       });
       base44.analytics.track({ eventName: 'booking_submitted' });
       if (typeof window.gtag === "function") {
@@ -66,16 +66,16 @@ export default function FreeMetalPickup() {
 
   return (
     <div className="bg-white">
-      <RexBanner message="Scrap metal? I'll haul it away for free — really." />
+      <RexBanner message="Tell me about your scrap metal and city. We'll check free-pickup eligibility and contractor availability before confirming." />
       <section className="bg-[#102B2A] text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Free Metal Pickup</div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
             FREE Metal Pickup —<br />
-            <span className="text-[#187B65]">We haul it, you pay $0</span>
+            <span className="text-[#187B65]">Check eligibility before pickup</span>
           </h1>
           <p className="mt-6 text-lg text-slate-300 max-w-xl leading-relaxed">
-            Old or broken appliances, car parts, bikes — anything metal. Free same-day pickup across Canada wherever a network partner is live. We recycle every load.
+            Submit a scrap metal pickup request from anywhere in Canada. Free-pickup eligibility depends on your items and location; charges may apply outside Vancouver. A provider listing does not guarantee a free or same-day pickup: contractor acceptance, your price approval and a confirmed arrival window are required.
           </p>
           <a
             href="tel:+16048491745"
@@ -93,11 +93,11 @@ export default function FreeMetalPickup() {
         {done ? (
           <div className="rounded-3xl bg-[#f4f7f5] border border-slate-100 p-8 text-center">
             <CheckCircle2 className="w-12 h-12 text-[#187B65] mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-[#102B2A]">{waitlisted ? "Inquiry received!" : "You're booked!"}</h3>
+            <h3 className="text-2xl font-bold text-[#102B2A]">Request received!</h3>
             <p className="mt-3 text-slate-600">
               {waitlisted
                 ? `Free metal pickup eligibility in ${form.city} is confirmed after your request — we've saved your inquiry and will contact you once a local provider is matched.`
-                : "We'll text or call you shortly to confirm your free pickup."}
+                : "Your request is saved, not a confirmed appointment. We will contact you to confirm eligibility, price and an arrival window after a qualified contractor accepts."}
             </p>
           </div>
         ) : (
@@ -116,7 +116,8 @@ export default function FreeMetalPickup() {
             </label>
             <label className="block">
               <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">City</span>
-              <select value={form.city} onChange={set("city")} className="input">
+              <select required value={form.city} onChange={set("city")} className="input">
+                <option value="" disabled>Select your city</option>
                 {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
                 <option value="Other city">Other city (not listed yet)</option>
               </select>
@@ -142,7 +143,7 @@ export default function FreeMetalPickup() {
               className="w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wrench className="w-5 h-5" />}
-              {saving ? "Booking…" : "Book my free pickup"}
+              {saving ? "Submitting…" : "Request a metal pickup"}
             </button>
             {error && <p className="text-sm text-red-600">{error}</p>}
           </form>
