@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2, RefreshCw, Lightbulb, AlertTriangle, Search, Globe, Clock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TechSeoPanel from "@/components/admin/TechSeoPanel";
+import AiSeoCommand from "@/components/admin/AiSeoCommand";
 
 function StatusPill({ status, label }) {
   const tones = {
@@ -246,6 +247,8 @@ export default function AdminSearchIntelligence() {
               <p className="mt-4 text-sm text-slate-400 flex items-center gap-2"><Clock className="w-4 h-4" /> Run the AI analysis to turn live query data into ranked quick wins and page fixes.</p>
             )}
           </div>
+
+          <AiSeoCommand />
         </>
       )}
     </div>
