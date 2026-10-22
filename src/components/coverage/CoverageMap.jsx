@@ -17,8 +17,8 @@ const FALLBACK_COORDS = {
 const STATE_STYLE = {
   same_day: {
     dot: "bg-[#187B65]",
-    label: "Same-Day Availability",
-    hint: "Verified contractor active — window confirmed per job",
+    label: "Provider Available",
+    hint: "Verified provider serves this city; job acceptance still required",
     icon: <ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" />,
     fill: "#187B65",
     radius: 9,
@@ -42,35 +42,22 @@ const STATE_STYLE = {
 };
 
 export default function CoverageMap() {
-  const { statusFor, loaded, contractorCounts, verifiedCityNames, matchingCityNames } = useCoverageStatus();
-
-  // Registry cities plus any verified/matching city outside the registry
-  // (e.g. a verified partner in North Vancouver) so real capacity is never hidden.
-  const registryNames = new Set(COVERAGE.map((c) => c.name.toLowerCase()));
-  const extra = [...verifiedCityNames, ...matchingCityNames]
-    .filter((n) => !registryNames.has(String(n).toLowerCase()) && FALLBACK_COORDS[n])
-    .map((name) => ({ name, province: FALLBACK_COORDS[name].province }));
-
-  const cities = [...COVERAGE, ...extra].map((c) => {
-    const state = statusFor(c.name);
-    const region = REGIONS.find((r) => r.code === c.province);
-    const fallback = FALLBACK_COORDS[c.name];
-    const lat = fallback?.lat ?? region?.lat;
-    const lng = fallback?.lng ?? region?.lng;
+  const { statusFor, loaded, error, contractorCounts, locations } = useCoverageStatus();
+  const cities = locations.map((city) => {
+    const fallback = FALLBACK_COORDS[city.name];
     return {
-      name: c.name,
-      province: c.province,
-      lat,
-      lng,
-      state,
-      count: contractorCounts[c.name] || (verifiedCityNames.includes(c.name) ? 1 : 0),
+      ...city,
+      lat: city.lat ?? fallback?.lat,
+      lng: city.lng ?? fallback?.lng,
+      state: statusFor(city.name),
+      count: contractorCounts[city.name] || 0,
     };
-  }).filter((c) => c.state && c.lat != null && c.lng != null);
+  }).filter((city) => city.state && city.lat != null && city.lng != null);
 
   const counts = {
-    same_day: cities.filter((c) => c.state === "same_day").length,
-    matching: cities.filter((c) => c.state === "matching").length,
-    recruiting: cities.filter((c) => c.state === "recruiting").length,
+    same_day: locations.filter((city) => statusFor(city.name) === "same_day").length,
+    matching: locations.filter((city) => statusFor(city.name) === "matching").length,
+    recruiting: locations.filter((city) => statusFor(city.name) === "recruiting").length,
   };
 
   return (
@@ -80,12 +67,12 @@ export default function CoverageMap() {
         <h2 className="text-2xl md:text-3xl font-bold">Live contractor availability across Canada</h2>
       </div>
       <p className="text-slate-600 max-w-2xl mb-6">
-        Green cities have a verified contractor active today. Gold cities have an open request
-        being matched. Grey cities accept requests while a local provider is being recruited.
+        Green cities have an active, verified provider, not a confirmed same-day appointment. Gold cities have an open request
+        being matched. Grey cities accept requests while a local provider is being recruited. Only locations with known coordinates are plotted; all locations are named in the lists below.
         Requests are accepted in every Canadian city, town and municipality regardless of marker colour.
       </p>
 
-      {!loaded ? (
+      {error ? <p role="status" className="rounded-3xl border border-border bg-background p-6 text-muted-foreground">Live map status is unavailable. Submit a request or call to check coverage; availability is not assumed.</p> : !loaded ? (
         <div className="flex items-center justify-center rounded-3xl border border-slate-100 bg-white shadow-sm h-[360px] md:h-[480px] text-slate-500">
           <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading live network status…
         </div>

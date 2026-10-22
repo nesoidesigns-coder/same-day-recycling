@@ -1,52 +1,40 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { CITIES } from "@/lib/cities";
 
-// The live coverage status engine — the single source of contractor-capacity
-// and open-request data for every public surface. Reads aggregate, PII-free
-// counts from the coverageStatus endpoint; never hardcoded, never derived
-// from facility directory counts.
-//
-// statusFor(city) returns one of:
-//   null         — still loading (surfaces show a neutral state)
-//   "same_day"   — Same-Day Availability (verified contractor capacity exists)
-//   "matching"   — Requests Open — Contractor Matching (open requests in city)
-//   "recruiting" — Provider Recruitment (no verified capacity, no open requests)
+// One shared snapshot for city cards, counts and the map. The legacy same_day
+// key means provider available, never a confirmed appointment or today's capacity.
 export default function useCoverageStatus() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    let on = true;
-    base44.functions
-      .invoke("coverageStatus", {})
-      .then((res) => {
-        if (on) setData(res.data || { verified_cities: [], matching_cities: [] });
-      })
-      .catch(() => {
-        if (on) setData({ verified_cities: [], matching_cities: [] });
-      });
-    return () => {
-      on = false;
-    };
-  }, []);
-
-  const verified = new Set((data?.verified_cities || []).map((c) => String(c).toLowerCase()));
-  const matching = new Set((data?.matching_cities || []).map((c) => String(c).toLowerCase()));
-
-  const statusFor = (city) => {
-    if (!data) return null;
-    const name = String(city || "").trim().toLowerCase();
-    if (verified.has(name)) return "same_day";
-    if (matching.has(name)) return "matching";
-    return "recruiting";
-  };
-
+  const { data, isSuccess, isError } = useQuery({
+    queryKey: ["public-coverage-status"],
+    queryFn: async () => {
+      const { data: snapshot } = await base44.functions.invoke("coverageStatus", {});
+      if (!Array.isArray(snapshot?.verified_cities) || !Array.isArray(snapshot?.matching_cities)) {
+        throw new Error("Coverage status is unavailable.");
+      }
+      return snapshot;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+  const key = (city) => String(city || "").trim().replace(/\s+/g, " ").toLowerCase();
+  const verifiedNames = [...new Map((data?.verified_cities || []).map((name) => [key(name), String(name).trim()])).values()];
+  const verified = new Set(verifiedNames.map(key));
+  const matchingNames = [...new Map((data?.matching_cities || []).filter((name) => !verified.has(key(name))).map((name) => [key(name), String(name).trim()])).values()];
+  const matching = new Set(matchingNames.map(key));
+  const registry = new Map(CITIES.map((city) => [key(city.name), { ...city, href: `/junk-removal-${city.slug}` }]));
+  for (const name of [...verifiedNames, ...matchingNames]) {
+    if (!registry.has(key(name))) registry.set(key(name), { name, province: null, href: `/request-service?city=${encodeURIComponent(name)}` });
+  }
   return {
-    statusFor,
-    loaded: !!data,
+    statusFor: (city) => !isSuccess || isError ? null : verified.has(key(city)) ? "same_day" : matching.has(key(city)) ? "matching" : "recruiting",
+    loaded: isSuccess && !isError,
+    error: isError,
     verifiedCities: verified,
     matchingCities: matching,
+    verifiedCityNames: verifiedNames,
+    matchingCityNames: matchingNames,
     contractorCounts: data?.contractor_counts || {},
-    verifiedCityNames: data?.verified_cities || [],
-    matchingCityNames: data?.matching_cities || [],
+    locations: [...registry.values()],
   };
 }

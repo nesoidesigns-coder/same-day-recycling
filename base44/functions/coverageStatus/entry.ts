@@ -16,32 +16,39 @@ export default async function(req) {
 
     // 1. Verified contractor capacity: active partner records. Simulation
     //    and internal test partners are excluded from capacity.
-    const { items: partners } = await srole.entities.Partner.filter({ active: true }, { limit: 200 });
-    const realPartners = (partners || [])
-      .filter((p) => !isTestPartner(p));
-    const verifiedCities = [...new Set(realPartners
-      .map((p) => String(p.city || '').trim())
-      .filter(Boolean))];
-    // Per-city contractor counts for the coverage map (aggregate only, no names or contact data).
+    const partners = [];
+    let cursor;
+    do {
+      const page = await srole.entities.Partner.filter({ active: true, verified: true }, { limit: 200, ...(cursor ? { cursor } : {}) });
+      partners.push(...(page.items || []));
+      cursor = page.has_more ? page.next_cursor : null;
+    } while (cursor);
+    const realPartners = partners.filter((p) => !isTestPartner(p));
+    const cityNames = new Map();
     const contractorCounts = {};
     for (const p of realPartners) {
-      const city = String(p.city || '').trim();
-      if (city) contractorCounts[city] = (contractorCounts[city] || 0) + 1;
+      const city = String(p.city || '').trim().replace(/\s+/g, ' ');
+      if (!city) continue;
+      const key = city.toLowerCase();
+      if (!cityNames.has(key)) cityNames.set(key, city);
+      const name = cityNames.get(key);
+      contractorCounts[name] = (contractorCounts[name] || 0) + 1;
     }
+    const verifiedCities = [...cityNames.values()].sort((a, b) => a.localeCompare(b));
 
     // 2. Open requests awaiting contractor matching, grouped by city.
     //    Cities that already have verified capacity are not re-listed.
-    const { items: open } = await srole.entities.NationalRequest.filter(
-      { status: { $in: ['new', 'provider_matching'] } },
-      { limit: 500, fields: ['city'] }
-    );
-    const matchingCities = [];
+    const { rows: open } = await srole.entities.NationalRequest.aggregate({
+      query: { status: { $in: ['new', 'provider_matching'] } },
+      groupBy: 'city',
+    });
+    const matchingByKey = new Map();
     for (const r of open || []) {
-      const city = String(r.city || '').trim();
-      if (city && !verifiedCities.some((v) => v.toLowerCase() === city.toLowerCase()) && !matchingCities.includes(city)) {
-        matchingCities.push(city);
-      }
+      const city = String(r.city || '').trim().replace(/\s+/g, ' ');
+      const key = city.toLowerCase();
+      if (city && !cityNames.has(key)) matchingByKey.set(key, city);
     }
+    const matchingCities = [...matchingByKey.values()].sort((a, b) => a.localeCompare(b));
 
     return Response.json({
       verified_cities: verifiedCities,

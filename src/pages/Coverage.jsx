@@ -21,35 +21,23 @@ export default function Coverage() {
     path: "/coverage",
   });
 
-  const { statusFor, loaded, verifiedCities, matchingCities } = useCoverageStatus();
-
-  const registryByName = new Map(COVERAGE.map((c) => [c.name.toLowerCase(), c]));
-
-  const slugFor = (name) => {
-    const c = registryByName.get(String(name).toLowerCase());
-    return c ? `/junk-removal-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` : `/request-service?city=${encodeURIComponent(name)}`;
-  };
-
-  // Same-Day Availability: verified partner records (registry + partner cities).
-  const sameDayCitiesList = [...verifiedCities].map((name) => ({ name }));
-  // Matching: open requests awaiting contractor contact (live records).
-  const matchingList = matchingCities.map((name) => ({ name }));
-  // Recruiting: registry cities with no verified capacity and no open matching.
-  const recruitingList = COVERAGE
-    .filter((c) => statusFor(c.name) === "recruiting")
-    .map((c) => ({ name: c.name, province: c.province }));
+  const { statusFor, loaded, error, locations } = useCoverageStatus();
+  const slugFor = (name) => locations.find((city) => city.name === name)?.href || `/request-service?city=${encodeURIComponent(name)}`;
+  const sameDayCitiesList = locations.filter((city) => statusFor(city.name) === "same_day");
+  const matchingList = locations.filter((city) => statusFor(city.name) === "matching");
+  const recruitingList = locations.filter((city) => statusFor(city.name) === "recruiting");
 
   const SECTIONS = [
     {
       key: "same_day",
-      title: "Same-Day Availability",
+      title: "Provider Available",
       icon: <CheckCircle2 className="w-5 h-5 text-[#187B65]" />,
       dot: "bg-[#187B65]",
-      intro: "Cities where a verified contractor is active today. Even here, your exact pickup window and price are confirmed with you before anything is scheduled or charged.",
-      cardLabel: "Verified contractor active — window confirmed per job",
+      intro: "An active, verified contractor lists this city as their service area. This does not confirm same-day capacity or an appointment. A booking is confirmed only after a contractor accepts the specific job and your price and arrival window are agreed.",
+      cardLabel: "Verified provider — job acceptance still required",
       cities: sameDayCitiesList,
       bg: "bg-white",
-      empty: 'No city currently shows same-day availability — this listing appears only when a verified contractor record is active in that city. Every request is still accepted and matched before anything is scheduled.',
+      empty: "No active, verified contractor is currently listed for a city. Requests remain open nationwide; fulfillment is not confirmed until a qualified contractor accepts your job.",
     },
     {
       key: "matching",
@@ -96,11 +84,12 @@ export default function Coverage() {
               </span>
             ))}
           </div>
-          {!loaded && (
+          {!loaded && !error && (
             <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-2 text-sm text-slate-200">
               <RefreshCw className="w-4 h-4 animate-spin" /> Checking live network status…
             </div>
           )}
+          {error && <p role="status" className="mt-6 text-sm text-slate-200">Live coverage status is unavailable. Requests remain open; call (604) 849-1745 to check your address. No availability is assumed.</p>}
         </div>
       </section>
 

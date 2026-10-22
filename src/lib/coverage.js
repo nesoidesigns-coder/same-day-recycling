@@ -57,7 +57,7 @@ export const COVERAGE = [
 
 // City-level public status labels — one wording everywhere.
 export const STATUS_LABELS = {
-  same_day: "Same-Day Availability",
+  same_day: "Provider Available",
   matching: "Requests Open — Contractor Matching",
   recruiting: "Provider Recruitment",
   requests_open: "Requests Open — Contractor Matching",
