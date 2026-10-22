@@ -8,6 +8,7 @@ import ReceiptInbox from "@/components/finance/ReceiptInbox";
 import TxLedger from "@/components/finance/TxLedger";
 import SheetsExport from "@/components/finance/SheetsExport";
 import TaxCentre from "@/components/finance/TaxCentre";
+import FinanceAiInsights from "@/components/finance/FinanceAiInsights";
 
 const TYPE_LABEL = { sdr_admin: "Same Day Recycling books", contractor: "Contractor books", white_label: "White-label business", personal: "My business" };
 
@@ -82,6 +83,7 @@ export default function FinanceDashboard() {
           {tab === "overview" && (
             <>
               <FinanceKpis summary={s} />
+              <FinanceAiInsights tenant={tenant} />
               <div className="grid lg:grid-cols-2 gap-5">
                 <FinanceTrend summary={s} />
                 <div className="holo-panel holo-panel-deep rounded-2xl p-4">
