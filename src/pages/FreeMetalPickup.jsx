@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSEO } from "@/lib/seo";
+import { useServiceMeta } from "@/components/seo/useServiceMeta";
 import { base44 } from "@/api/base44Client";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
@@ -7,11 +8,11 @@ import { CITIES, cityLabel } from "@/lib/cities";
 import { isCityActive } from "@/lib/coverage";
 
 export default function FreeMetalPickup() {
-  useSEO({
+  const meta = useServiceMeta("/free-metal-pickup", {
     title: "Free Scrap Metal Pickup | Same Day Recycling",
     description: "Check free scrap metal pickup in confirmed service areas. Describe your metal items, request collection and confirm eligibility with the team.",
-    path: "/free-metal-pickup",
   });
+  useSEO({ ...meta, path: "/free-metal-pickup" });
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", metal: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);

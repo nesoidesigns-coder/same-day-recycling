@@ -1,0 +1,52 @@
+{
+  "name": "ServicePageMeta",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Route this metadata belongs to, e.g. /furniture-removal."
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "AI-generated SEO meta title."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 320,
+      "description": "AI-generated SEO meta description."
+    },
+    "focus_keywords": {
+      "type": "string",
+      "default": "",
+      "description": "Comma-separated local keywords the meta targets."
+    },
+    "generated_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "path",
+    "title",
+    "description"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

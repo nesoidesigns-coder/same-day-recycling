@@ -4,6 +4,7 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { useSEO, useStructuredData, PRODUCTION_URL } from "@/lib/seo";
+import { useServiceMeta } from "@/components/seo/useServiceMeta";
 import { CITIES } from "@/lib/cities";
 import BeforeAfterGallery from "./BeforeAfterGallery";
 
@@ -18,7 +19,8 @@ export default function ServiceLanding({ config }) {
   const { slug, name, eyebrow, h1, title, description, intro, items, steps, faqs, gallery_service } = config;
   const url = `${BASE}/${slug}`;
 
-  useSEO({ title, description, path: `/${slug}` });
+  const storedMeta = useServiceMeta(`/${slug}`, { title, description });
+  useSEO({ ...storedMeta, path: `/${slug}` });
   useStructuredData(`${slug}-service`, {
     "@type": "Service",
     name,

@@ -15,6 +15,20 @@ export default function AiSeoCommand() {
   const [applying, setApplying] = useState("");
   const [applied, setApplied] = useState([]);
   const [drafting, setDrafting] = useState("");
+  const [metaBusy, setMetaBusy] = useState(false);
+  const [metaPages, setMetaPages] = useState(null);
+  const [metaError, setMetaError] = useState("");
+
+  const generateServiceMetas = async () => {
+    setMetaBusy(true); setMetaError(""); setMetaPages(null);
+    try {
+      const res = await base44.functions.invoke("serviceMetaGenerate", {});
+      setMetaPages(res.data?.pages || []);
+    } catch (e) {
+      setMetaError(e?.response?.data?.error || e.message || "Generation failed.");
+    }
+    setMetaBusy(false);
+  };
 
   const analyze = async () => {
     setBusy(true); setError(""); setApplied([]); setPlan(null);
@@ -75,17 +89,42 @@ export default function AiSeoCommand() {
     <div className="mt-8 holo-panel-deep rounded-2xl border border-[#54D9AE]/15 p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="text-lg font-bold text-white flex items-center gap-2"><Wand2 className="w-5 h-5 text-[#54D9AE]" /> AI SEO Command</h2>
-        <button
-          onClick={analyze}
-          disabled={busy}
-          className="self-start inline-flex items-center gap-2 rounded-full bg-[#187B65] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#125C4E] transition-colors disabled:opacity-50"
-        >
-          {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-          {busy ? "Analyzing…" : plan ? "Re-analyze" : "Analyze & propose fixes"}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={generateServiceMetas}
+            disabled={metaBusy}
+            className="self-start inline-flex items-center gap-2 rounded-full border border-[#54D9AE]/50 text-[#54D9AE] font-bold px-5 py-2.5 text-sm hover:bg-[#187B65]/20 transition-colors disabled:opacity-50"
+          >
+            {metaBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <PenLine className="w-4 h-4" />}
+            {metaBusy ? "Writing metas…" : "Generate service-page metas"}
+          </button>
+          <button
+            onClick={analyze}
+            disabled={busy}
+            className="self-start inline-flex items-center gap-2 rounded-full bg-[#187B65] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#125C4E] transition-colors disabled:opacity-50"
+          >
+            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+            {busy ? "Analyzing…" : plan ? "Re-analyze" : "Analyze & propose fixes"}
+          </button>
+        </div>
       </div>
-      <p className="mt-2 text-sm text-slate-400">Turns live Google query data into per-page title, meta and content fixes — city-page fixes apply to the live site in one tap.</p>
+      <p className="mt-2 text-sm text-slate-400">Turns live Google query data into per-page title, meta and content fixes — city-page fixes apply to the live site in one tap. Service-page metas go live automatically.</p>
 
+      {metaError && <div className="mt-4 rounded-xl border border-red-400/40 bg-red-500/10 px-3 py-2 text-xs text-red-200">{metaError}</div>}
+      {metaBusy && <div className="mt-4 flex items-center gap-2 text-sm text-slate-400"><Loader2 className="w-4 h-4 animate-spin text-[#54D9AE]" /> Writing local-SEO titles and descriptions for every service page…</div>}
+      {metaPages && !metaBusy && (
+        <div className="mt-5 space-y-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#54D9AE]"><CheckCircle2 className="w-3.5 h-3.5" /> {metaPages.length} service pages updated — live now.</div>
+          {metaPages.map((m) => (
+            <div key={m.path} className="rounded-xl bg-black/20 border border-white/5 p-4">
+              <div className="text-xs font-bold text-[#54D9AE]">{m.path}</div>
+              <div className="mt-2 text-xs text-slate-300"><span className="font-bold text-white">Title:</span> {m.title} <span className="text-slate-500">({m.title.length} chars)</span></div>
+              <div className="mt-1 text-xs text-slate-300"><span className="font-bold text-white">Meta:</span> {m.description} <span className="text-slate-500">({m.description.length} chars)</span></div>
+              {m.focus_keywords && <div className="mt-2 text-[10px] text-slate-500">{m.focus_keywords}</div>}
+            </div>
+          ))}
+        </div>
+      )}
       {error && <div className="mt-4 rounded-xl border border-red-400/40 bg-red-500/10 px-3 py-2 text-xs text-red-200">{error}</div>}
       {busy && <div className="mt-4 flex items-center gap-2 text-sm text-slate-400"><Loader2 className="w-4 h-4 animate-spin text-[#54D9AE]" /> Pulling Search Console queries and drafting page fixes…</div>}
 

@@ -5,6 +5,7 @@ import {
   Truck, Armchair, Refrigerator, Tv, Building2, Timer, Recycle, Wrench, Key, Phone,
 } from "lucide-react";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
+import { useServiceMeta } from "@/components/seo/useServiceMeta";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -37,11 +38,11 @@ export default function ExploreServices() {
   const [query, setQuery] = useState("");
   const { statusFor, loaded, verifiedCityNames, matchingCityNames } = useCoverageStatus();
 
-  useSEO({
+  const meta = useServiceMeta("/services", {
     title: "Explore Recycling & Junk Removal Services Across Canada | Same Day Recycling",
     description: "Search every Canadian city and province we cover, check availability by postal code, and browse residential and commercial recycling and removal services — with honest, verified coverage status.",
-    path: "/services",
   });
+  useSEO({ ...meta, path: "/services" });
   useStructuredData("services-breadcrumb", {
     "@type": "BreadcrumbList",
     itemListElement: [
