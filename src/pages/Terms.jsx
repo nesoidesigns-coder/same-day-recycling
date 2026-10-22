@@ -15,6 +15,7 @@ const SECTIONS = [
     h: "Quotes and pricing",
     p: [
       "Online and phone quotes are estimates based on the information you provide. The final price is confirmed with you on arrival, before any item is lifted, based on the actual volume of your load. You approve the price before work begins. Pricing is based on truck space used, from a minimum pickup charge up to a full truck load.",
+      "Your approved quote is protected: we never silently change an approved price. If you add items after approving your quote, the additional work is priced as a numbered change order, sent to you for approval, and only carried out and charged once you approve it. Declining a change order leaves your original approved scope and price unchanged.",
     ],
   },
   {
@@ -36,9 +37,11 @@ const SECTIONS = [
     ],
   },
   {
-    h: "Payment",
+    h: "Payment and completed-service policy",
     p: [
       "Payment is due upon completion of the job unless other arrangements have been made in advance. We accept the payment methods confirmed with you at booking. Subscription plan customers are billed monthly per their plan agreement.",
+      "Our completed-service policy: quotes must be approved before work begins; any additional work requires your separate approval through a change order; and payment is due under the agreed booking terms. Properly completed and authorized services are generally final and non-refundable.",
+      "That policy is not absolute: genuine billing errors, incomplete work, damage caused by our crew, unauthorized charges, and any remedy required by law remain subject to review. Contact us and we will look into it promptly.",
     ],
   },
   {

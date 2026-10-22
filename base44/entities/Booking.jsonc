@@ -127,6 +127,21 @@
       "type": "number",
       "default": 0
     },
+    "approved_quote_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Customer-approved price for the original scope. 0 = not yet approved."
+    },
+    "approval_method": {
+      "type": "string",
+      "default": "",
+      "description": "How the original quote was approved: on_site, secure_link, chat or phone."
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the customer approved the original quote."
+    },
     "referred_by_admin": {
       "type": "boolean",
       "default": false

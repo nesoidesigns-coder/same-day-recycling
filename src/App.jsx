@@ -88,6 +88,8 @@ import AdminGallery from './pages/AdminGallery';
 import AdminRevenue from './pages/AdminRevenue';
 import AdminAgreements from './pages/AdminAgreements';
 import AdminSalesIntelligence from './pages/AdminSalesIntelligence';
+import AdminDisputes from './pages/AdminDisputes';
+import ChangeOrderRespond from './pages/ChangeOrderRespond';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
@@ -153,6 +155,7 @@ const AuthenticatedApp = () => {
       <Route path="/service-finder" element={<ServiceFinder />} />
       <Route path="/request-service" element={<RequestService />} />
       <Route path="/request-status" element={<RequestStatus />} />
+      <Route path="/change-order" element={<ChangeOrderRespond />} />
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
@@ -175,6 +178,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/payouts" element={<AdminPayouts />} />
           <Route path="/admin/revenue" element={<AdminRevenue />} />
           <Route path="/admin/agreements" element={<AdminAgreements />} />
+          <Route path="/admin/disputes" element={<AdminDisputes />} />
           <Route path="/admin/sales" element={<AdminSalesIntelligence />} />
           <Route path="/admin/cities" element={<AdminCities />} />
           <Route path="/admin/reviews" element={<AdminReviews />} />

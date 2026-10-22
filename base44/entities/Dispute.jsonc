@@ -1,0 +1,113 @@
+{
+  "name": "Dispute",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "Booking the complaint relates to."
+    },
+    "job_ref": {
+      "type": "string",
+      "default": "",
+      "description": "The booking's public reference code."
+    },
+    "customer_name": {
+      "type": "string",
+      "default": ""
+    },
+    "customer_email": {
+      "type": "string",
+      "default": ""
+    },
+    "complaint": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "The customer's complaint, in their words."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under_review",
+        "awaiting_customer",
+        "resolved",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "evidence": {
+      "type": "object",
+      "default": {},
+      "description": "Snapshot of the case file: original_estimate, approved_quote, approval_method, change_orders, acknowledgements, before_after_uris, contractor_report, final_invoice, payment_status."
+    },
+    "case_summary": {
+      "type": "string",
+      "default": "",
+      "maxLength": 5000,
+      "description": "Factual case summary assembled for authorized reviewers. States facts only, never legal conclusions."
+    },
+    "resolution_notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000
+    },
+    "resolution_outcome": {
+      "type": "string",
+      "enum": [
+        "",
+        "refund_issued",
+        "partial_credit",
+        "goodwill_credit",
+        "no_action",
+        "revisit_required"
+      ],
+      "default": ""
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable event log of every status change and action taken."
+    },
+    "created_by": {
+      "type": "string",
+      "default": "",
+      "description": "Who logged the complaint: customer, rex or admin email."
+    }
+  },
+  "required": [
+    "booking_id",
+    "complaint"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

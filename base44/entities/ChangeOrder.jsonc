@@ -1,0 +1,143 @@
+{
+  "name": "ChangeOrder",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "Booking this change order modifies."
+    },
+    "job_ref": {
+      "type": "string",
+      "default": "",
+      "description": "The booking's public reference code."
+    },
+    "number": {
+      "type": "number",
+      "default": 1,
+      "description": "Sequential change order number for this job (1, 2, 3...)."
+    },
+    "items": {
+      "type": "string",
+      "description": "The additional items the customer wants removed."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "photo_uris": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Private-storage URIs of photos of the added items."
+    },
+    "amount_delta": {
+      "type": "number",
+      "description": "Additional charge before taxes. Negative for a reduction."
+    },
+    "tax_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Applicable sales tax on the additional charge."
+    },
+    "revised_total": {
+      "type": "number",
+      "default": 0,
+      "description": "Job total including this change order if approved."
+    },
+    "currency": {
+      "type": "string",
+      "default": "CAD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_approval",
+        "approved",
+        "declined",
+        "cancelled"
+      ],
+      "default": "pending_approval"
+    },
+    "approval_token": {
+      "type": "string",
+      "default": "",
+      "description": "Random token authorizing the customer's secure approval link."
+    },
+    "requested_by": {
+      "type": "string",
+      "default": "",
+      "description": "Email of the contractor or admin who requested this change."
+    },
+    "requested_by_role": {
+      "type": "string",
+      "enum": [
+        "contractor",
+        "admin"
+      ],
+      "default": "admin"
+    },
+    "responded_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "approval_method": {
+      "type": "string",
+      "default": "",
+      "description": "secure_link, chat, phone or on_site."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable event log: created, customer_emailed, approved, declined, cancelled."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "booking_id",
+    "items",
+    "amount_delta"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
