@@ -115,7 +115,39 @@ export default async function (req) {
       return Response.json({ sent: true, to: booking.email, pdf: true });
     }
 
-    return Response.json({ error: 'Unknown action. Use payment_link or receipt.' }, { status: 400 });
+    if (action === 'refund') {
+      // Admin-only chat refund of the most recent paid charge on a booking.
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') return Response.json({ error: 'Admins only.' }, { status: 403 });
+      const bookingId = String(body.booking_id || '').trim();
+      if (!bookingId) return Response.json({ error: 'booking_id is required' }, { status: 400 });
+      const booking = await svc.entities.Booking.get(bookingId).catch(() => null);
+      if (!booking || !booking.id) return Response.json({ error: 'Booking not found.' }, { status: 404 });
+      if (booking.payment_status === 'refunded') {
+        return Response.json({ ok: true, refund_status: 'already_refunded' });
+      }
+      const { items: txs } = await svc.entities.PaypalTransaction.filter(
+        { ref_id: bookingId, kind: 'order', purpose: 'booking_quote', status: 'paid' },
+        { sort: '-created_date', limit: 5 }
+      );
+      const tx = (txs || []).find((t) => t.capture_id);
+      if (!tx) {
+        return Response.json({ error: 'No paid PayPal charge found for this booking - nothing to refund.' }, { status: 422 });
+      }
+      const ref = await paypal('/v2/payments/captures/' + tx.capture_id + '/refund', 'POST', {});
+      const refundStatus = ((ref && ref.status) || 'REFUNDED').toLowerCase();
+      await svc.entities.PaypalTransaction.update(tx.id, {
+        status: 'refunded',
+        note: ('Refunded via Rex chat on ' + new Date().toISOString() + ' (PayPal status: ' + refundStatus + ')').slice(0, 1000),
+      });
+      await svc.entities.Booking.update(bookingId, {
+        payment_status: 'refunded',
+        refund_amount: tx.amount,
+      }).catch(() => {});
+      return Response.json({ ok: true, refund_status: refundStatus, amount: tx.amount });
+    }
+
+    return Response.json({ error: 'Unknown action. Use payment_link, receipt or refund.' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
