@@ -1,3 +1,5 @@
+import { sendSms } from './twilio.ts';
+
 // Business owner address — the one shown on the live site footer and used
 // by sendCustomerEmail. Credentials are the built-in Base44 SendEmail
 // integration (server-side only, never exposed to the frontend).
@@ -69,6 +71,23 @@ export async function sendBookingNotifications(srole, b) {
       console.error('Customer confirmation email failed:', msg);
       notified.errors.push('customer: ' + msg);
       }
+  }
+
+  // SMS booking confirmation: texted to the customer in addition to email.
+  notified.customer_sms = 'skipped';
+  if (b.phone) {
+    try {
+      const r = await sendSms(srole, {
+        to: b.phone,
+        body: `Same Day Recycling: request received for ${b.items_description.slice(0, 60)}${preferred ? ' on ' + preferred : ''}. We'll confirm your slot shortly. Reply here or call (604) 849-1745.`,
+        role: 'system',
+      });
+      notified.customer_sms = r.ok ? 'sent' : 'failed';
+      if (!r.ok) notified.errors.push('customer_sms: ' + r.error);
+    } catch (e) {
+      notified.customer_sms = 'failed';
+      notified.errors.push('customer_sms: ' + String((e && e.message) || e));
+    }
   }
 
   return notified;

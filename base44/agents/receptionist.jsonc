@@ -317,10 +317,21 @@
       "description": "Admin dispute case file: {action:'load', dispute_id} returns the dispute, booking, change orders and payment records; {action:'summary', dispute_id} assembles a factual case summary from records only (never invents approvals or legal conclusions)."
     },
     {
+      "function_name": "smsSend",
+      "description": "Send a text message: {action:'booking_message', booking_id, body} texts a booking's customer; {action:'custom', to, body} texts any number; {action:'dispatch_alert', booking_id} texts the assigned contractor (owner/admin only)."
+    },
+    {
       "entity_name": "ChangeOrder",
       "allowed_operations": [
         "read",
         "update"
+      ]
+    },
+    {
+      "entity_name": "SmsMessage",
+      "allowed_operations": [
+        "read",
+        "create"
       ]
     },
     {

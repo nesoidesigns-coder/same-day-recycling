@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { paypal, paypalAppOrigin, parseQuoteAmount, CURRENCY } from '../../shared/paypal.ts';
 import { categorizeLoad, buildImpactPdf, COMMERCIAL_RE } from '../../shared/impactReceipt.ts';
+import { sendSms } from '../../shared/twilio.ts';
 
 // Agent-facing sales actions for Rex: payment links and recycling receipts.
 export default async function (req) {
@@ -73,6 +74,15 @@ export default async function (req) {
         status: 'created',
       });
       const approve = (order.links || []).find((l) => l.rel === 'approve' || l.rel === 'payer-action');
+      // Payment link delivered by text alongside the chat/email link.
+      if (b.phone && approve) {
+        await sendSms(svc, {
+          to: b.phone,
+          body: `Same Day Recycling: secure payment link for $${amount.toFixed(2)} — ${approve.href}`,
+          booking_id: b.id,
+          role: 'system',
+        });
+      }
       return Response.json({ approve_url: approve ? approve.href : null, amount });
     }
 
@@ -112,6 +122,15 @@ export default async function (req) {
           items,
         },
       });
+      // Digital receipt confirmation by text (the PDF itself travels by email).
+      if (booking.phone) {
+        await sendSms(svc, {
+          to: booking.phone,
+          body: `Same Day Recycling: your Recycling Impact Report was emailed to ${booking.email}. Reply here or call (604) 849-1745 with questions.`,
+          booking_id: booking.id,
+          role: 'system',
+        });
+      }
       return Response.json({ sent: true, to: booking.email, pdf: true });
     }
 

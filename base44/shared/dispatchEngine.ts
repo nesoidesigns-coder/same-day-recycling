@@ -19,6 +19,7 @@
 // fully tracked.
 
 import { computeFee, pickActiveAgreement } from './feeEngine.ts';
+import { sendSms } from './twilio.ts';
 import { isTestPartner } from './coverageStatus.ts';
 
 // entity filter()/list() return a page ({items}) when given options, or a bare array.
@@ -206,6 +207,15 @@ export async function offerWave(srole, request, { round = 1, exclude = [], creat
     });
     offers.push(offer);
     await notifyPartner(srole, offer, request, settings);
+    // Contractor dispatch alert by SMS, alongside the email offer.
+    if (c.partner.phone) {
+      await sendSms(srole, {
+        to: c.partner.phone,
+        body: `Same Day Recycling: new job offer — ${request.city} (${String(request.service_type || '').replace(/_/g, ' ')}). ${String(request.items_description || '').slice(0, 80)} Expires ${new Date(expiresAt).toLocaleString('en-CA', { timeZone: 'America/Vancouver' })}. Accept: https://samedayrecycling.ca/partners`,
+        partner_id: c.partner.id,
+        role: 'system',
+      });
+    }
   }
 
   await logContact(srole, request, {
@@ -500,6 +510,16 @@ export async function adminAssign(srole, { requestId, partnerId, adminName }) {
   } catch (e) {
     console.error('Admin-assign email failed:', (e && e.message) || e);
   }
+  // Contractor dispatch alert by SMS for manual assignments.
+  if (partner.phone) {
+    await sendSms(srole, {
+      to: partner.phone,
+      body: `Same Day Recycling dispatch: new job assigned to you — ${request.city}: ${String(request.items_description || '').slice(0, 80)}. Accept in your dashboard: https://samedayrecycling.ca/partners`,
+      booking_id: booking.id,
+      partner_id: partner.id,
+      role: 'system',
+    });
+  }
   return { ok: true, booking_id: booking.id };
 }
 
@@ -552,6 +572,16 @@ export async function adminReassign(srole, { bookingId, newPartnerId, adminName 
     }
   } catch (e) {
     console.error('Reassign email failed:', (e && e.message) || e);
+  }
+  // Contractor dispatch alert by SMS for manual reassignments.
+  if (partner.phone) {
+    await sendSms(srole, {
+      to: partner.phone,
+      body: `Same Day Recycling dispatch: new job assigned to you — ${booking.city || ''}: ${String(booking.items_description || '').slice(0, 80)}. Accept in your dashboard: https://samedayrecycling.ca/partners`,
+      booking_id: booking.id,
+      partner_id: partner.id,
+      role: 'system',
+    });
   }
   return { ok: true };
 }

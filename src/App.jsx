@@ -90,6 +90,7 @@ import AdminAgreements from './pages/AdminAgreements';
 import AdminSalesIntelligence from './pages/AdminSalesIntelligence';
 import AdminDisputes from './pages/AdminDisputes';
 import AdminReputation from './pages/AdminReputation';
+import AdminSms from './pages/AdminSms';
 import ChangeOrderRespond from './pages/ChangeOrderRespond';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
@@ -181,6 +182,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/agreements" element={<AdminAgreements />} />
           <Route path="/admin/disputes" element={<AdminDisputes />} />
           <Route path="/admin/reputation" element={<AdminReputation />} />
+          <Route path="/admin/sms" element={<AdminSms />} />
           <Route path="/admin/sales" element={<AdminSalesIntelligence />} />
           <Route path="/admin/cities" element={<AdminCities />} />
           <Route path="/admin/reviews" element={<AdminReviews />} />

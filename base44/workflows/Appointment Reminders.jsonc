@@ -1,0 +1,47 @@
+{
+  "description": "Texts customers a day-before SMS reminder for tomorrow's confirmed pickups",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 10 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "name": "Appointment Reminders",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "appointment_reminders",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_reminders": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "smsSend",
+            "args": {
+              "action": "reminders"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send pickup reminders",
+            "description": "Texts tomorrow's confirmed customers"
+          }
+        }
+      }
+    ]
+  }
+}

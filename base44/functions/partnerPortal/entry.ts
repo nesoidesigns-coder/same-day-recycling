@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
+import { sendSms } from '../../shared/twilio.ts';
 
 const PARTNER_SHARE = 0.75;
 
@@ -293,6 +294,15 @@ export default async function(req) {
       }
     }
     await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
+
+    // Pickup updates by text: crew confirmed (accepted) and job completed.
+    if (booking.phone && (next === 'accepted' || next === 'completed')) {
+      const when = `${booking.preferred_date || 'your booked date'}${booking.time_window ? ' · ' + booking.time_window : ''}`;
+      const text = next === 'accepted'
+        ? `Same Day Recycling: your crew is confirmed for ${String(booking.items_description || '').slice(0, 50)} on ${when}. Reply here or call (604) 849-1745.`
+        : 'Same Day Recycling: your pickup is complete. Your Recycling Impact Report follows by email. Reply here or call (604) 849-1745.';
+      await sendSms(base44.asServiceRole, { to: booking.phone, body: text, booking_id: booking.id, partner_id: partner.id, role: 'system' });
+    }
 
     const [{ items: jobs }, { items: history }] = await Promise.all([loadBookings(), loadHistory()]);
     return Response.json({ ok: true, partner: publicPartner, jobs: jobs.map(withTerms), history: history.map(withTerms) });

@@ -5,7 +5,7 @@ import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart,
-  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck,
+  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare,
 } from "lucide-react";
 
 const OPS = [
@@ -36,6 +36,7 @@ const ADVANCED = [
   { to: "/admin/search-intelligence", label: "Search Intelligence", icon: LineChart },
   { to: "/admin/marketing", label: "Marketing Hub", icon: Megaphone },
   { to: "/admin/facebook", label: "Facebook AI", icon: MessagesSquare },
+  { to: "/admin/sms", label: "SMS Inbox", icon: MessageSquare },
   { to: "/admin/white-label", label: "White Label", icon: Globe },
   { to: "/admin/gallery", label: "Fleet Gallery", icon: Images },
 ];
