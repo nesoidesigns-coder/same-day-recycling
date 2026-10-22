@@ -22,7 +22,14 @@ export default function ReceiptInbox({ tenant, onSaved }) {
     try {
       const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file }); // stored privately
       const { data } = await base44.functions.invoke("financeIngest", { action: "extract", file_uri });
-      setProposal({ ...data, file_uri, file_name: file.name });
+      setProposal({
+        fields: data.proposal || {},
+        confidence: data.confidence || 0,
+        issues: data.issues || [],
+        duplicate_of: data.duplicate_of || "",
+        file_uri,
+        file_name: file.name,
+      });
     } catch (err) {
       setError(err?.response?.data?.error || err.message || "Could not read the receipt.");
     }
@@ -35,14 +42,18 @@ export default function ReceiptInbox({ tenant, onSaved }) {
     setBusy(true); setError("");
     try {
       const f = proposal.fields;
+      const td = f.tax_detail || {};
+      const num = (v) => (v === "" || v == null ? 0 : Number(v) || 0);
       await base44.functions.invoke("financeIngest", {
         action: "save",
         issues: proposal.issues,
         data: {
           ...f,
+          amount: num(f.total ?? f.amount),
+          tax_detail: { gst: num(td.gst), hst: num(td.hst), pst: num(td.pst), qst: num(td.qst) },
           receipt_uri: proposal.file_uri,
           receipt_name: proposal.file_name,
-          extracted_json: proposal.proposal,
+          extracted_json: proposal.fields,
           classification_confidence: proposal.confidence,
           needs_review: (proposal.issues || []).length > 0 || proposal.duplicate_of ? true : f.needs_review,
           duplicate_of: proposal.duplicate_of || "",
