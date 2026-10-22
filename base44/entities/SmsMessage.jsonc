@@ -45,22 +45,24 @@
     "twilio_sid": {
       "type": "string",
       "default": "",
-      "description": "Twilio message SID for outbound sends."
+      "description": "Provider message SID \u2014 present only after the provider confirms acceptance."
     },
     "status": {
       "type": "string",
       "enum": [
+        "queued",
         "sent",
         "failed",
         "received"
       ],
-      "default": "sent"
+      "default": "queued",
+      "description": "queued = waiting for a configured messaging provider; sent = the provider confirmed acceptance."
     },
     "error": {
       "type": "string",
       "default": "",
       "maxLength": 500,
-      "description": "Failure reason when status is failed."
+      "description": "Queue reason or failure detail."
     }
   },
   "required": [

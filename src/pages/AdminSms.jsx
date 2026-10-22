@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { MessageSquare, Loader2, RefreshCw } from "lucide-react";
 import SmsThread from "@/components/admin/sms/SmsThread";
+import SmsSettingsCard from "@/components/admin/sms/SmsSettingsCard";
 
 export default function AdminSms() {
   const [messages, setMessages] = useState(null);
   const [active, setActive] = useState("");
+  const [settingsTick, setSettingsTick] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -18,7 +20,7 @@ export default function AdminSms() {
         setMessages([]);
       }
     })();
-  }, []);
+  }, [settingsTick]);
 
   const threads = useMemo(() => {
     const byPhone = new Map();
@@ -45,6 +47,10 @@ export default function AdminSms() {
         <button onClick={() => window.location.reload()} className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 hover:text-[#102B2A] transition-colors" aria-label="Refresh">
           <RefreshCw className="w-4 h-4" />
         </button>
+      </div>
+
+      <div className="mb-6">
+        <SmsSettingsCard onChanged={() => setSettingsTick((t) => t + 1)} />
       </div>
 
       {messages === null ? (

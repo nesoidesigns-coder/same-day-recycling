@@ -1,0 +1,58 @@
+{
+  "name": "SmsSettings",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "enum": [
+        "off",
+        "twilio"
+      ],
+      "default": "off",
+      "description": "Which messaging provider outbound SMS uses. 'off' queues every outbound text; nothing sends until the admin turns a provider on."
+    },
+    "from_number": {
+      "type": "string",
+      "default": "",
+      "description": "Sending number in E.164 format, entered and verified by the admin. The business contact number (604 Chatr line) is never changed or replaced by this \u2014 it stays the customer-facing contact."
+    },
+    "outbound_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Master switch for outbound sending when a provider is selected."
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "The admin confirms the sending number is verified/active in the provider console. Nothing is purchased or provisioned automatically."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

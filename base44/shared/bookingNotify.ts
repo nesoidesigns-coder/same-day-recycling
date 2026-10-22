@@ -82,7 +82,7 @@ export async function sendBookingNotifications(srole, b) {
         body: `Same Day Recycling: request received for ${b.items_description.slice(0, 60)}${preferred ? ' on ' + preferred : ''}. We'll confirm your slot shortly. Reply here or call (604) 849-1745.`,
         role: 'system',
       });
-      notified.customer_sms = r.ok ? 'sent' : 'failed';
+      notified.customer_sms = r.ok ? 'sent' : (r.queued ? 'queued' : 'failed');
       if (!r.ok) notified.errors.push('customer_sms: ' + r.error);
     } catch (e) {
       notified.customer_sms = 'failed';
