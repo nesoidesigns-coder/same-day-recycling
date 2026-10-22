@@ -165,11 +165,6 @@ export default function ReceptionistChat() {
           Online Now
         </span>
         <button onClick={handleOpen} aria-label="Chat with us" className="relative flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-transform hover:scale-105">
-          {!open && (
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#187B65] border-2 border-white shadow" aria-hidden="true">
-              <span className="absolute inset-0 rounded-full bg-[#187B65] opacity-60 animate-ping" />
-            </span>
-          )}
           {open ? (
             <span className="w-14 h-14 rounded-full bg-[#187B65] text-[#102B2A] flex items-center justify-center">
               <X className="w-6 h-6" />
