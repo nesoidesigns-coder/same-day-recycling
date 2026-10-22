@@ -3,7 +3,6 @@ import { useSEO } from "@/lib/seo";
 import { MapPin, CheckCircle2, ArrowRight, Phone, Hourglass, RefreshCw, UserSearch } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
-import { COVERAGE } from "@/lib/coverage";
 import { REGIONS } from "@/lib/regions";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import CoverageMap from "@/components/coverage/CoverageMap";
@@ -11,7 +10,7 @@ import CoverageMap from "@/components/coverage/CoverageMap";
 // Coverage page — driven entirely by the live status engine
 // (src/hooks/useCoverageStatus.js → coverageStatus endpoint). Three honest,
 // data-backed states, applied with the same labels on every public surface:
-//   Same-Day Availability                — verified contractor capacity exists
+//   Provider Available                   — active, verified provider serves city
 //   Requests Open — Contractor Matching  — open requests are being matched
 //   Provider Recruitment                 — requests accepted, capacity recruiting
 export default function Coverage() {

@@ -154,7 +154,7 @@ export default function ExploreServices() {
           ) : (
             <div className="mt-8 space-y-8">
               {groups.map((g) => (
-                <div key={g.region.code}>
+                <div key={g.region.code || "other-locations"}>
                   <div className="flex items-center gap-2 text-xs font-bold tracking-[0.15em] text-[#187B65] uppercase mb-3">
                     <MapPin className="w-3.5 h-3.5" /> {g.region.name}
                   </div>

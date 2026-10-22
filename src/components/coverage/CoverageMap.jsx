@@ -1,8 +1,6 @@
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
-import { COVERAGE } from "@/lib/coverage";
-import { REGIONS } from "@/lib/regions";
 import { Map, Loader2, ShieldCheck, UserSearch, Hourglass } from "lucide-react";
 
 // Live national coverage map driven by the same verified-partner status feed as

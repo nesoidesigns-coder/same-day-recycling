@@ -17,7 +17,7 @@ import { useSEO, useStructuredData } from "@/lib/seo";
 export default function ProvincePage() {
   const { code } = useParams();
   const region = regionByCode((code || "").toUpperCase());
-  const { statusFor, loaded: coverageLoaded } = useCoverageStatus();
+  const { statusFor, loaded: coverageLoaded, error: coverageError } = useCoverageStatus();
   const [providers, setProviders] = useState(null);
 
   useSEO({
@@ -93,9 +93,9 @@ export default function ProvincePage() {
             remote location. Tell us what needs to go and we'll work to connect you with a qualified
             local service provider.
             {activeCities.length ? (
-              <> Confirmed same-day capacity today in <span className="text-white font-semibold">{activeCities.map((c) => c.name).join(", ")}</span>.</>
+              <> Active, verified providers are listed in <span className="text-white font-semibold">{activeCities.map((c) => c.name).join(", ")}</span>.</>
             ) : null}{" "}
-            Same-day fulfillment depends on contractor availability and is confirmed with you before anything is scheduled or charged.
+            Provider availability is not a confirmed appointment or same-day capacity. Each pickup requires a qualified contractor to accept the specific job and agree your price and arrival window.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to={`/request-service?province=${region.code}`} className="rounded-full bg-[#187B65] text-white font-bold px-6 py-3 hover:bg-[#125C4E] transition-colors flex items-center gap-2">
@@ -128,8 +128,8 @@ export default function ProvincePage() {
           </div>
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5">
             <CheckCircle2 className="w-4 h-4 text-[#187B65]" />
-            <div className="text-2xl font-bold text-[#102B2A] mt-2">{activeCities.length}</div>
-            <div className="text-xs text-slate-500 mt-1">Same-day availability cities</div>
+            <div className="text-2xl font-bold text-[#102B2A] mt-2">{coverageLoaded ? activeCities.length : coverageError ? "Unavailable" : "…"}</div>
+            <div className="text-xs text-slate-500 mt-1">Cities with a verified provider</div>
           </div>
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5">
             <div className="text-2xl font-bold text-[#102B2A] mt-4">24/7</div>
@@ -141,7 +141,7 @@ export default function ProvincePage() {
           <div className="mb-14">
             <h2 className="text-2xl font-bold text-[#102B2A]">Service status by city in {region.name}</h2>
             <p className="mt-2 text-slate-600 text-sm">
-              {activeCities.length} same-day availability · {matchingCities.length} matching · {recruitingCities.length} recruiting. Each card links to that city's real status page.
+              {coverageLoaded ? `${activeCities.length} with a provider available · ${matchingCities.length} matching · ${recruitingCities.length} recruiting.` : coverageError ? "Live coverage is unavailable; no local capacity is assumed." : "Checking live coverage…"} Each card links to that city's status page.
             </p>
             <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {cities.map((city) => {
@@ -157,7 +157,7 @@ export default function ProvincePage() {
                       <Icon className={`w-5 h-5 ${st === "same_day" ? "text-[#187B65]" : st === "matching" ? "text-[#102B2A]" : "text-slate-400"}`} />
                       <div>
                         <div className="font-bold text-[#102B2A]">{city.name}</div>
-                        <div className="text-xs text-slate-500">{st ? STATUS_LABELS[st] : "Checking live status…"}</div>
+                        <div className="text-xs text-slate-500">{st ? STATUS_LABELS[st] : coverageError ? "Status unavailable — requests open" : "Checking live status…"}</div>
                       </div>
                     </div>
                     <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#187B65] transition-colors" />

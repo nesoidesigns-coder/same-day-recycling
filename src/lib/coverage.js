@@ -13,7 +13,7 @@
 //      contractor has accepted a specific job and window.
 //
 // Public status labels (applied identically on every surface):
-//   same_day    → "Same-Day Availability"      (verified capacity exists, subject to booking confirmation)
+//   same_day    → "Provider Available"         (legacy key; never proof of today's capacity or job acceptance)
 //   matching    → "Requests Open — Contractor Matching"
 //   recruiting  → "Provider Recruitment"
 //   per-job     → "Booking Confirmed"          (contractor accepted a specific job)
@@ -25,6 +25,7 @@ const FULL_CAPABILITIES = ["junk_removal", "furniture", "appliances", "electroni
 // contractor capacity is layered on live by useCoverageStatus().
 export const COVERAGE = [
   { name: "Vancouver", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
+  { name: "North Vancouver", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Burnaby", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Surrey", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Richmond", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },

@@ -7,6 +7,7 @@ import { COVERAGE, cityByName } from "@/lib/coverage";
 // Per-city metadata: map location, marketing copy, slugs for deep links.
 const CITY_META = {
   Vancouver: { slug: "vancouver", lat: 49.2827, lng: -123.1207, radius: 16000 },
+  "North Vancouver": { slug: "north-vancouver", lat: 49.3113, lng: -123.0696, radius: 12000 },
   Burnaby: { slug: "burnaby", lat: 49.2488, lng: -122.9805, radius: 12000 },
   Surrey: { slug: "surrey", lat: 49.1913, lng: -122.849, radius: 14000 },
   Richmond: { slug: "richmond", lat: 49.1668, lng: -123.1336, radius: 12000 },

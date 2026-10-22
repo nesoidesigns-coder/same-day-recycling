@@ -25,7 +25,7 @@ export default function About() {
           <h2 className="text-2xl font-bold text-[#102B2A] mb-3">One belief</h2>
           <p>
             Same Day Recycling is a Canadian service-coordination network. We accept requests nationwide, but confirm each pickup only after a qualified contractor accepts the job, price and arrival window.
-            Our aim is responsible reuse and recycling, not just hauled to landfill: metals go to real scrap buyers, gypsum to real
+            Our aim is responsible reuse and recycling, not simply hauling to landfill: metals go to real scrap buyers, gypsum to real
             recyclers, and furniture and usable goods to donation partners before anything else is considered.
           </p>
         </div>
