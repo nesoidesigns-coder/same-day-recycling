@@ -6,6 +6,8 @@ import AlertCentre from "@/components/admin/AlertCentre";
 import AdminTrendChart from "@/components/admin/AdminTrendChart";
 import StatusBar from "@/components/admin/StatusBar";
 import CoveragePanel from "@/components/admin/CoveragePanel";
+import FinanceGauges from "@/components/admin/FinanceGauges";
+import RexMonitor from "@/components/admin/RexMonitor";
 import { Loader2 } from "lucide-react";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
@@ -94,6 +96,7 @@ export default function AdminOverview() {
         <KpiCard label="Partners available" value={activePartners.length} sub={partners.length > activePartners.length ? `${partners.length - activePartners.length} inactive` : "Across the network"} tone="emerald" href="/admin/partners" />
         <KpiCard label="Pending payouts" value={pendingPayouts > 0 ? money(pendingPayouts) : "$0.00"} sub={`${money(paidPayouts)} paid to date`} tone={pendingPayouts > 0 ? "amber" : "forest"} href="/admin/payouts" />
         <KpiCard label="Customer rating" value={rating === null ? "—" : `${rating} ★`} sub={reviews.length ? `${reviews.length} approved review${reviews.length === 1 ? "" : "s"}` : "No approved reviews yet"} tone="emerald" href="/admin/reviews" />
+        <KpiCard label="Failed bookings" value={cancelled.length} sub="Cancelled jobs, all time" tone={cancelled.length ? "amber" : "forest"} href="/admin/jobs" />
       </div>
 
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
@@ -126,6 +129,13 @@ export default function AdminOverview() {
       </div>
 
       <CoveragePanel />
+
+      <div>
+        <h2 className="text-lg font-bold text-[#102B2A] tracking-tight mb-3">Financial accountability</h2>
+        <FinanceGauges />
+      </div>
+
+      <RexMonitor />
     </div>
   );
 }
