@@ -1,40 +1,76 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import KpiCard from "@/components/admin/KpiCard";
-import { Loader2, DollarSign, History } from "lucide-react";
+import PayoutJobList from "@/components/admin/payouts/PayoutJobList";
+import { Loader2, DollarSign } from "lucide-react";
 
-const PARTNER_SHARE = 0.75;
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
+const r2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+
+// Exact recorded amounts for one completed job — no fixed split anywhere.
+// Legacy jobs completed before fee terms were recorded fall back to
+// invoice minus referral commission, and are labelled as legacy.
+function jobNumbers(b) {
+  const invoice = Number(b.final_invoice) || Number(b.job_value) || 0;
+  const snap = b.fee_terms_snapshot || {};
+  const fee = b.platform_fee_amount != null ? Number(b.platform_fee_amount) || 0 : Number(snap.fee) || 0;
+  const commission = Number(b.commission_earned) || 0;
+  const refund = Number(b.refund_amount) || 0;
+  const hasTerms = Boolean(snap.rule);
+  const recordedNet = Number(b.contractor_net_amount);
+  const contractorNet = hasTerms && Number.isFinite(recordedNet) ? recordedNet : Math.max(0, invoice - commission);
+  return {
+    id: b.id,
+    name: b.name,
+    partner_name: b.partner_name || "",
+    preferred_date: b.preferred_date || "",
+    invoice,
+    fee,
+    commission,
+    refund,
+    rule: snap.rule || "",
+    disclosure: snap.disclosure || "",
+    hasTerms,
+    owed: Math.max(0, contractorNet - refund),
+    payoutPaid: !!b.payout_paid,
+  };
+}
 
 export default function AdminPayouts() {
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
 
   const load = async () => {
-    const [grossAgg, unpaidAgg, paidAgg, history] = await Promise.all([
+    const [grossAgg, completedPage] = await Promise.all([
       base44.entities.Booking.aggregate({ query: { status: { $ne: "cancelled" } }, groupBy: "status", sum: ["job_value"] }),
-      base44.entities.Booking.aggregate({ query: { assignment_status: "completed", payout_paid: false }, groupBy: "partner_name", sum: ["job_value"] }),
-      base44.entities.Booking.aggregate({ query: { assignment_status: "completed", payout_paid: true }, groupBy: "partner_name", sum: ["job_value"] }),
-      base44.entities.Booking.filter({ assignment_status: "completed", payout_paid: true }, { sort: "-updated_date", limit: 50 }),
+      base44.entities.Booking.filter({ assignment_status: "completed" }, { sort: "-updated_date", limit: 200 }),
     ]);
     const gross = (grossAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0), 0);
-    const unpaidByPartner = Object.fromEntries((unpaidAgg.rows || []).map((r) => [r.partner_name, r.sum_job_value || 0]));
-    const paidByPartner = Object.fromEntries((paidAgg.rows || []).map((r) => [r.partner_name, r.sum_job_value || 0]));
-    const partners = [...new Set([...(unpaidAgg.rows || []).map((r) => r.partner_name), ...(paidAgg.rows || []).map((r) => r.partner_name)])];
+    const jobs = (completedPage.items || []).map(jobNumbers);
+    const unpaid = jobs.filter((j) => !j.payoutPaid);
+    const paid = jobs.filter((j) => j.payoutPaid);
+    const sum = (list, key) => list.reduce((s, j) => s + j[key], 0);
+    const names = [...new Set(jobs.map((j) => j.partner_name || "Unassigned"))];
     setData({
       gross,
-      partnerOwed: (unpaidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0), 0) * PARTNER_SHARE,
-      platformRevenue: (paidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0), 0) * (1 - PARTNER_SHARE)
-        + (unpaidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0), 0) * (1 - PARTNER_SHARE),
-      paidTotal: (paidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0), 0) * PARTNER_SHARE,
-      rows: partners.map((name) => ({
-        name,
-        jobs: ((unpaidAgg.rows || []).find((r) => r.partner_name === name)?.count || 0) + ((paidAgg.rows || []).find((r) => r.partner_name === name)?.count || 0),
-        revenue: (unpaidByPartner[name] || 0) + (paidByPartner[name] || 0),
-        unpaid: unpaidByPartner[name] || 0,
-        paid: paidByPartner[name] || 0,
-      })),
-      history: history.items || [],
+      partnerOwed: sum(unpaid, "owed"),
+      platformRevenue: sum(unpaid, "fee") + sum(unpaid, "commission") + sum(paid, "fee") + sum(paid, "commission"),
+      paidTotal: sum(paid, "owed"),
+      rows: names.map((name) => {
+        const mine = jobs.filter((j) => (j.partner_name || "Unassigned") === name);
+        const mineUnpaid = unpaid.filter((j) => (j.partner_name || "Unassigned") === name);
+        const minePaid = paid.filter((j) => (j.partner_name || "Unassigned") === name);
+        return {
+          name,
+          jobs: mine.length,
+          revenue: sum(mine, "invoice"),
+          unpaid: sum(mineUnpaid, "owed"),
+          paid: sum(minePaid, "owed"),
+          unpaidJobs: mineUnpaid,
+        };
+      }),
+      unpaid,
+      paid,
     });
   };
 
@@ -45,8 +81,13 @@ export default function AdminPayouts() {
   const markPaid = async (name) => {
     await base44.entities.Booking.updateMany(
       { assignment_status: "completed", payout_paid: false, partner_name: name },
-      { $set: { payout_paid: true } }
+      { $set: { payout_paid: true, payout_paid_date: new Date().toISOString().slice(0, 10) } }
     );
+    load().catch(() => setFailed(true));
+  };
+
+  const markOnePaid = async (job) => {
+    await base44.entities.Booking.update(job.id, { payout_paid: true, payout_paid_date: new Date().toISOString().slice(0, 10) });
     load().catch(() => setFailed(true));
   };
 
@@ -59,19 +100,19 @@ export default function AdminPayouts() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] tracking-tight">Financial Control</h1>
-        <p className="text-sm text-slate-500 mt-1">Booking value, partner earnings and platform revenue — calculated from booking records only</p>
+        <p className="text-sm text-slate-500 mt-1">Every number comes from the exact fee terms recorded on each job at assignment — no fixed percentages</p>
       </div>
 
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
         <KpiCard label="Gross booking value" value={money(data.gross)} sub="All active & completed jobs" />
-        <KpiCard label="Partner amounts owed" value={money(data.partnerOwed)} sub="75% of unpaid completed jobs" tone="amber" />
-        <KpiCard label="Platform revenue" value={money(data.platformRevenue)} sub="25% share of completed jobs" tone="emerald" />
-        <KpiCard label="Payouts completed" value={money(data.paidTotal)} sub="Verified paid booking records" tone="emerald" />
+        <KpiCard label="Contractor amounts owed" value={money(data.partnerOwed)} sub="Net after each job's exact fee terms" tone="amber" />
+        <KpiCard label="Platform earnings" value={money(data.platformRevenue)} sub="Recorded fees + referral commissions on completed jobs" tone="emerald" />
+        <KpiCard label="Payouts completed" value={money(data.paidTotal)} sub="Net amounts marked paid" tone="emerald" />
       </div>
 
       <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
         <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A] mb-1">Payouts by partner</h2>
-        <p className="text-xs text-slate-500 mb-4">Partner share: 75% of job value · Referral retained: 25%</p>
+        <p className="text-xs text-slate-500 mb-4">Totals use each job's recorded fee terms — percentage, fixed, or no-fee agreements all shown exactly</p>
         {data.rows.length === 0 ? (
           <p className="text-slate-500 text-sm py-6 text-center">No completed jobs yet — payouts appear here as jobs are completed.</p>
         ) : (
@@ -79,14 +120,13 @@ export default function AdminPayouts() {
             {data.rows.map((r) => (
               <div key={r.name} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#f6f8f7] px-4 py-3">
                 <div>
-                  <div className="font-bold text-[#102B2A] text-sm">{r.name || "Unassigned"}</div>
+                  <div className="font-bold text-[#102B2A] text-sm">{r.name}</div>
                   <div className="text-xs text-slate-500">{r.jobs} completed job{r.jobs === 1 ? "" : "s"}</div>
                 </div>
                 <div className="flex flex-wrap gap-x-5 gap-y-1 text-right text-sm">
-                  <span><span className="text-xs text-slate-400 font-semibold">Booked </span><span className="font-bold text-[#102B2A]">{money(r.revenue)}</span></span>
-                  <span><span className="text-xs text-slate-400 font-semibold">Partner </span><span className="font-bold text-[#187B65]">{money(r.revenue * PARTNER_SHARE)}</span></span>
-                  <span><span className="text-xs text-slate-400 font-semibold">Paid </span><span className="font-bold text-[#102B2A]">{money(r.paid * PARTNER_SHARE)}</span></span>
-                  <span><span className="text-xs text-slate-400 font-semibold">Owed </span><span className="font-bold text-amber-600">{money(r.unpaid * PARTNER_SHARE)}</span></span>
+                  <span><span className="text-xs text-slate-400 font-semibold">Invoiced </span><span className="font-bold text-[#102B2A]">{money(r.revenue)}</span></span>
+                  <span><span className="text-xs text-slate-400 font-semibold">Paid </span><span className="font-bold text-[#187B65]">{money(r.paid)}</span></span>
+                  <span><span className="text-xs text-slate-400 font-semibold">Owed </span><span className="font-bold text-amber-600">{money(r.unpaid)}</span></span>
                 </div>
                 <button
                   onClick={() => markPaid(r.name)}
@@ -102,46 +142,19 @@ export default function AdminPayouts() {
       </div>
 
       <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <History className="w-4 h-4 text-[#187B65]" />
-          <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A]">Payout history</h2>
-          <span className="text-xs text-slate-400">Verified paid records only</span>
-        </div>
-        {data.history.length === 0 ? (
-          <p className="text-slate-500 text-sm py-4">No payouts recorded as paid yet. When you mark partner payouts paid, each verified job appears here.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-100">
-                  <th className="text-left py-2 px-2">Customer</th>
-                  <th className="text-left py-2 px-2">Partner</th>
-                  <th className="text-left py-2 px-2">Job date</th>
-                  <th className="text-right py-2 px-2">Job value</th>
-                  <th className="text-right py-2 px-2">Partner paid</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {data.history.map((b) => (
-                  <tr key={b.id}>
-                    <td className="py-2.5 px-2 font-semibold text-[#102B2A]">{b.name}</td>
-                    <td className="py-2.5 px-2 text-slate-600">{b.partner_name || "—"}</td>
-                    <td className="py-2.5 px-2 text-slate-500">{b.preferred_date || "—"}</td>
-                    <td className="py-2.5 px-2 text-right text-[#102B2A] font-semibold">{money(b.job_value)}</td>
-                    <td className="py-2.5 px-2 text-right text-[#187B65] font-bold">{money((Number(b.job_value) || 0) * PARTNER_SHARE)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A] mb-1">Per-job earnings breakdown — owed</h2>
+        <p className="text-xs text-slate-500 mb-4">Invoice, exact fee terms applied, referral commission, refunds and contractor net for every unpaid completed job</p>
+        <PayoutJobList jobs={data.unpaid} onMarkOne={markOnePaid} />
       </div>
 
-      <p className="rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3">
-        Legacy view: this page applies a flat 75/25 split to every completed job. It does not use per-agreement fee terms. For agreement-based fees, platform revenue and contractor net, use Revenue Intelligence (Admin &rarr; Revenue). Changing this calculation requires administrator approval.
-      </p>
+      <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A] mb-1">Payout history — paid</h2>
+        <p className="text-xs text-slate-500 mb-4">Verified paid jobs with the exact fee terms that applied to each</p>
+        <PayoutJobList jobs={data.paid} paid onMarkOne={markOnePaid} />
+      </div>
+
       <p className="text-xs text-slate-400 px-1">
-        Reconciliation: partner owed + platform revenue always equals gross completed value (75/25 split). No external payment processor is connected yet — totals come from booking records, never invented.
+        Fee terms are captured per job when a contractor is assigned (their active agreement at that moment) and finalized at completion. Jobs completed before per-job fee terms existed are marked "legacy" — their contractor net is the invoice minus any referral commission, with no platform fee assumed.
       </p>
     </div>
   );
