@@ -1,0 +1,75 @@
+{
+  "name": "FinancialAuditLog",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string",
+      "default": "",
+      "description": "Tenant this audit entry belongs to."
+    },
+    "action": {
+      "type": "string",
+      "description": "create, update, review, ai_extract, export, correction"
+    },
+    "tx_id": {
+      "type": "string",
+      "default": ""
+    },
+    "actor_email": {
+      "type": "string",
+      "default": ""
+    },
+    "actor_role": {
+      "type": "string",
+      "default": ""
+    },
+    "summary": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "detail": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -63,6 +63,7 @@ import WhiteLabelPay from './pages/WhiteLabelPay';
 import SoftwareSales from './pages/SoftwareSales';
 import SoftwarePay from './pages/SoftwarePay';
 import MembershipPay from './pages/MembershipPay';
+import FinanceDashboard from './pages/FinanceDashboard';
 import CompanyDashboard from './pages/CompanyDashboard';
 import AdminSoftware from './pages/AdminSoftware';
 import SoftwareOnboarding from './pages/SoftwareOnboarding';
@@ -190,6 +191,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/software" element={<AdminSoftware />} />
         <Route path="/admin/national" element={<AdminNational />} />
         <Route path="/company" element={<CompanyDashboard />} />
+        <Route path="/finance" element={<FinanceDashboard />} />
         <Route path="/partners" element={<PartnersDashboard />} />
         <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />

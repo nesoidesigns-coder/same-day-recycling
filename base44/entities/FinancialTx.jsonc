@@ -1,0 +1,190 @@
+{
+  "name": "FinancialTx",
+  "type": "object",
+  "properties": {
+    "owner_type": {
+      "type": "string",
+      "enum": [
+        "sdr_admin",
+        "contractor",
+        "white_label",
+        "personal"
+      ],
+      "default": "personal",
+      "description": "Which business owns this transaction: sdr_admin = Same Day Recycling's own books, contractor = a partner contractor's books, white_label = a white-label tenant's books."
+    },
+    "owner_email": {
+      "type": "string",
+      "default": "",
+      "description": "Business email of the tenant that owns this transaction. RLS anchors tenant isolation on this field."
+    },
+    "business_name": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_id": {
+      "type": "string",
+      "default": ""
+    },
+    "white_label_id": {
+      "type": "string",
+      "default": ""
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "income",
+        "expense"
+      ],
+      "default": "expense"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "platform_job",
+        "independent"
+      ],
+      "default": "independent",
+      "description": "platform_job = money tied to a Same Day Recycling dispatched job; independent = a job the contractor acquired on their own."
+    },
+    "booking_id": {
+      "type": "string",
+      "default": ""
+    },
+    "job_label": {
+      "type": "string",
+      "default": ""
+    },
+    "merchant": {
+      "type": "string",
+      "default": "",
+      "description": "For expenses: who was paid. For income: the customer."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "tx_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Total including taxes. Decimal-safe, 2 decimals."
+    },
+    "subtotal_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "tax_detail": {
+      "type": "object",
+      "default": {},
+      "description": "Tax breakdown: {gst, hst, pst, qst} as numbers."
+    },
+    "tax_jurisdiction": {
+      "type": "string",
+      "default": "",
+      "description": "Province code driving the tax treatment (BC, AB, ON, QC...)."
+    },
+    "category": {
+      "type": "string",
+      "default": "other",
+      "description": "job_income, other_income, fuel, vehicle, equipment, disposal_fees, contractor_payment, insurance, office, marketing, professional_fees, other"
+    },
+    "payment_method": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "paid",
+        "outstanding",
+        "refunded",
+        "disputed"
+      ],
+      "default": "paid"
+    },
+    "receipt_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "Private-storage URI of the original receipt document."
+    },
+    "receipt_name": {
+      "type": "string",
+      "default": ""
+    },
+    "extracted_json": {
+      "type": "object",
+      "default": {},
+      "description": "Raw AI extraction result retained alongside the confirmed record."
+    },
+    "classification_confidence": {
+      "type": "number",
+      "default": 0
+    },
+    "needs_review": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flagged for human review (low AI confidence, missing info, or possible duplicate)."
+    },
+    "duplicate_of": {
+      "type": "string",
+      "default": ""
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "kind",
+    "amount",
+    "tx_date"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
