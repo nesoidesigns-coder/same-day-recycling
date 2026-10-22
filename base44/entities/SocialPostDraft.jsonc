@@ -1,0 +1,64 @@
+{
+  "name": "SocialPostDraft",
+  "type": "object",
+  "properties": {
+    "week_of": {
+      "type": "string",
+      "format": "date",
+      "description": "Monday of the week these drafts belong to."
+    },
+    "title": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "hashtags": {
+      "type": "string",
+      "default": ""
+    },
+    "cta": {
+      "type": "string",
+      "default": ""
+    },
+    "angle": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "shared"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "title",
+    "caption"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

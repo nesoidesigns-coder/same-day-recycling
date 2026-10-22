@@ -1,0 +1,73 @@
+{
+  "name": "Weekly Social Posts",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday morning the AI drafts three promotional social posts for the week and emails them to the owner",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_social_posts",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate_posts": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "socialPosts",
+            "args": {
+              "action": "generate"
+            }
+          },
+          "then": "email_posts",
+          "x-base44": {
+            "title": "Draft this week's posts",
+            "description": "AI writes 3 promotional captions"
+          }
+        }
+      },
+      {
+        "email_posts": {
+          "call": "send_email",
+          "with": {
+            "template_name": "SocialPostDigest",
+            "to": "nesoidesigns@gmail.com",
+            "description": "The week's three drafted social posts, ready to copy and share",
+            "variables": {
+              "week_of": "${ .generate_posts.week_of }",
+              "p1_title": "${ .generate_posts.posts[0].title }",
+              "p1_caption": "${ .generate_posts.posts[0].caption }",
+              "p1_hashtags": "${ .generate_posts.posts[0].hashtags }",
+              "p2_title": "${ .generate_posts.posts[1].title }",
+              "p2_caption": "${ .generate_posts.posts[1].caption }",
+              "p2_hashtags": "${ .generate_posts.posts[1].hashtags }",
+              "p3_title": "${ .generate_posts.posts[2].title }",
+              "p3_caption": "${ .generate_posts.posts[2].caption }",
+              "p3_hashtags": "${ .generate_posts.posts[2].hashtags }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email drafts to owner"
+          }
+        }
+      }
+    ]
+  }
+}
