@@ -17,7 +17,8 @@
         "white_label_setup",
         "white_label_subscription",
         "license_setup",
-        "license_subscription"
+        "license_subscription",
+        "contractor_membership"
       ],
       "default": "white_label_setup"
     },

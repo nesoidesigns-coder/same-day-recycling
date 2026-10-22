@@ -58,6 +58,23 @@ export function paypalAppOrigin(req) {
 export async function applySubscriptionState(srole, purpose, refId, state, client = null) {
   if (!refId) return;
   const today = new Date().toISOString().slice(0, 10);
+  if (purpose === 'contractor_membership') {
+    // Membership billing lifecycle. The agreement's status stays admin-controlled
+    // ('ended' on cancellation is the one automatic transition); payment only
+    // stamps the contractor's acceptance date.
+    const ag = await srole.entities.ContractorAgreement.get(refId).catch(() => null);
+    if (!ag || !ag.id) return;
+    if (state === 'cancelled') {
+      if (ag.status !== 'ended') {
+        await srole.entities.ContractorAgreement.update(ag.id, { status: 'ended' });
+      }
+      return;
+    }
+    if (state === 'active' && !ag.accepted_by_contractor_date) {
+      await srole.entities.ContractorAgreement.update(ag.id, { accepted_by_contractor_date: today });
+    }
+    return;
+  }
   if (purpose === 'license_subscription') {
     const lic = await srole.entities.SoftwareLicense.get(refId).catch(() => null);
     if (!lic || !lic.id) return;

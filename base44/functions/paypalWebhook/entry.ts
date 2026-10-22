@@ -71,21 +71,38 @@ export default async function(req) {
           });
           action = 'backfilled';
         } else {
-          const wl = await srole.entities.WhiteLabelClient.get(customId).catch(() => null);
-          if (wl && wl.id) {
+          const ag = await srole.entities.ContractorAgreement.get(customId).catch(() => null);
+          if (ag && ag.id) {
             tx = await srole.entities.PaypalTransaction.create({
               kind: 'subscription',
-              purpose: 'white_label_subscription',
-              ref_id: wl.id,
-              ref_label: wl.company,
-              customer_email: wl.email || '',
-              amount: Number(wl.monthly_fee) || 0,
+              purpose: 'contractor_membership',
+              ref_id: ag.id,
+              ref_label: ag.partner_name || '',
+              customer_email: ag.partner_email || '',
+              amount: Number(ag.membership_fee_monthly) || Number((ag.territory_subscription || {}).monthly_rate) || 0,
               currency: CURRENCY,
               paypal_subscription_id: subId,
               paypal_payer_email: payerEmail,
               status: backfillStatus,
             });
             action = 'backfilled';
+          } else {
+            const wl = await srole.entities.WhiteLabelClient.get(customId).catch(() => null);
+            if (wl && wl.id) {
+              tx = await srole.entities.PaypalTransaction.create({
+                kind: 'subscription',
+                purpose: 'white_label_subscription',
+                ref_id: wl.id,
+                ref_label: wl.company,
+                customer_email: wl.email || '',
+                amount: Number(wl.monthly_fee) || 0,
+                currency: CURRENCY,
+                paypal_subscription_id: subId,
+                paypal_payer_email: payerEmail,
+                status: backfillStatus,
+              });
+              action = 'backfilled';
+            }
           }
         }
       }

@@ -28,6 +28,20 @@ export default function AdminAgreements() {
 
   useEffect(() => { load(); }, []);
 
+  // Contractor membership billing: generate the contractor's PayPal payment link.
+  const [busyBilling, setBusyBilling] = useState("");
+  const startBilling = async (a) => {
+    setBusyBilling(a.id);
+    try {
+      const { data } = await base44.functions.invoke("paypalCheckout", { action: "start_membership_billing", agreement_id: a.id });
+      try { await navigator.clipboard.writeText(data.pay_url); } catch { /* clipboard may be blocked - still show the URL */ }
+      alert("PayPal billing link ready" + (navigator.clipboard ? " and copied to clipboard" : "") + " - send it to the contractor:\n\n" + data.pay_url);
+    } catch (e) {
+      alert(e?.response?.data?.error || e.message || "Could not start billing.");
+    }
+    setBusyBilling("");
+  };
+
   // Nothing becomes active without an explicit administrator action.
   const setStatus = async (a, status) => {
     const patch = { status };
@@ -71,11 +85,17 @@ export default function AdminAgreements() {
               <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold capitalize ${STATUS_STYLE[a.status]}`}>{a.status.replace(/_/g, " ")}</span>
             </div>
             <p className="text-xs text-slate-500 mt-2">{a.fee_disclosure}</p>
+            {a.paypal_subscription_id && <p className="flex items-center gap-1 text-[11px] text-[#187B65] mt-1"><CheckCircle2 className="w-3 h-3" /> PayPal membership billing set up</p>}
             {a.status === "active" && <p className="flex items-center gap-1 text-[11px] text-[#187B65] mt-1"><CheckCircle2 className="w-3 h-3" /> Approved by {a.approved_by} · effective {a.effective_date}</p>}
             <div className="flex gap-2 mt-3">
               {a.status === "draft" && <button onClick={() => setStatus(a, "pending_contractor_acceptance")} className="rounded-full border border-amber-300 text-amber-700 font-bold px-4 py-1.5 text-xs">Send for contractor acceptance</button>}
               {a.status === "pending_contractor_acceptance" && <button onClick={() => setStatus(a, "active")} className="rounded-full bg-[#187B65] text-white font-bold px-4 py-1.5 text-xs">Confirm accepted &amp; activate</button>}
               {a.status === "active" && <button onClick={() => setStatus(a, "ended")} className="rounded-full border border-slate-200 text-slate-600 font-bold px-4 py-1.5 text-xs">End agreement</button>}
+              {a.status !== "ended" && (Number(a.membership_fee_monthly) || Number((a.territory_subscription || {}).monthly_rate)) > 0 && (
+                <button onClick={() => startBilling(a)} disabled={busyBilling === a.id} className="rounded-full border border-[#187B65] text-[#187B65] font-bold px-4 py-1.5 text-xs">
+                  {busyBilling === a.id ? "Preparing…" : a.paypal_subscription_id ? "Copy billing link" : "Set up PayPal billing"}
+                </button>
+              )}
             </div>
           </div>
         ))}

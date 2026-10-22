@@ -103,6 +103,23 @@
         }
       }
     },
+    "pay_token": {
+      "type": "string",
+      "default": "",
+      "description": "Public payment token for the contractor's PayPal membership billing page."
+    },
+    "paypal_plan_id": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_annual_plan_id": {
+      "type": "string",
+      "default": ""
+    },
+    "paypal_subscription_id": {
+      "type": "string",
+      "default": ""
+    },
     "status": {
       "type": "string",
       "enum": [

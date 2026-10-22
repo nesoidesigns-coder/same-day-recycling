@@ -86,6 +86,40 @@ export default async function(req) {
       return Response.json({ pay_token: rec.pay_token, existing: false });
     }
 
+    if (action === 'get_membership') {
+      const payToken = String(body.pay_token || '').trim();
+      if (!payToken) return Response.json({ error: 'Missing payment token.' }, { status: 400 });
+      const { items } = await srole.entities.ContractorAgreement.filter({ pay_token: payToken }, { limit: 1 });
+      if (!items || !items.length) return Response.json({ error: 'This payment link is not valid.' }, { status: 404 });
+      const a = items[0];
+      const sub = await srole.entities.PaypalTransaction.filter({ purpose: 'contractor_membership', ref_id: a.id, status: 'active' }, { limit: 1 });
+      const monthly = Number(a.membership_fee_monthly) || Number((a.territory_subscription || {}).monthly_rate) || 0;
+      return Response.json({
+        partner_name: a.partner_name,
+        contact_name: a.partner_email || '',
+        agreement_type: a.agreement_type,
+        monthly_fee: monthly,
+        subscription_active: !!(sub.items && sub.items.length),
+      });
+    }
+
+    if (action === 'start_membership_billing') {
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') return Response.json({ error: 'Admins only.' }, { status: 403 });
+      const agreementId = String(body.agreement_id || '').trim();
+      if (!agreementId) return Response.json({ error: 'Missing agreement.' }, { status: 400 });
+      const a = await srole.entities.ContractorAgreement.get(agreementId).catch(() => null);
+      if (!a || !a.id) return Response.json({ error: 'Agreement not found.' }, { status: 404 });
+      const monthly = Number(a.membership_fee_monthly) || Number((a.territory_subscription || {}).monthly_rate) || 0;
+      if (!monthly) return Response.json({ error: 'This agreement has no monthly membership fee configured.' }, { status: 422 });
+      let payToken = a.pay_token || '';
+      if (!payToken) {
+        payToken = crypto.randomUUID();
+        await srole.entities.ContractorAgreement.update(a.id, { pay_token: payToken });
+      }
+      return Response.json({ pay_url: appOrigin(req) + '/membership-pay?pay=' + payToken });
+    }
+
     if (action === 'create_order') {
       const kind = String(body.kind || '');
       let amount = 0, description = '', refId = '', refLabel = '', purpose = '', customerEmail = '', taxInfo = null;
@@ -257,14 +291,17 @@ export default async function(req) {
       const payToken = String(body.pay_token || '').trim();
       if (!payToken) return Response.json({ error: 'Missing payment token.' }, { status: 400 });
       const isLicense = body.target === 'license';
+      const isMembership = body.target === 'contractor_membership';
       const annual = body.billing_cycle === 'annual';
-      const entity = isLicense ? srole.entities.SoftwareLicense : srole.entities.WhiteLabelClient;
-      const purpose = isLicense ? 'license_subscription' : 'white_label_subscription';
-      const payReturn = isLicense ? '/software-pay?pay=' : '/white-label-pay?pay=';
+      const entity = isMembership ? srole.entities.ContractorAgreement : isLicense ? srole.entities.SoftwareLicense : srole.entities.WhiteLabelClient;
+      const purpose = isMembership ? 'contractor_membership' : isLicense ? 'license_subscription' : 'white_label_subscription';
+      const payReturn = isMembership ? '/membership-pay?pay=' : isLicense ? '/software-pay?pay=' : '/white-label-pay?pay=';
       const { items } = await entity.filter({ pay_token: payToken }, { limit: 1 });
       if (!items || !items.length) return Response.json({ error: 'This payment link is not valid.' }, { status: 404 });
       const c = items[0];
-      const monthly = Number(c.monthly_fee) || 0;
+      const monthly = isMembership
+        ? (Number(c.membership_fee_monthly) || Number((c.territory_subscription || {}).monthly_rate) || 0)
+        : (Number(c.monthly_fee) || 0);
       if (!monthly) return Response.json({ error: 'No monthly fee is configured.' }, { status: 422 });
       // Duplicate prevention: refuse when a subscription is already active, and
       // reuse a still-pending PayPal agreement instead of creating a new one per attempt.
@@ -295,9 +332,9 @@ export default async function(req) {
       let planId = annual ? (c.paypal_annual_plan_id || '') : (c.paypal_plan_id || '');
       if (!planId) {
         const product = await paypal('/v1/catalogs/products', 'POST', {
-          name: ('Same Day Recycling - ' + c.company).slice(0, 127),
+          name: ('Same Day Recycling - ' + (c.company || c.partner_name || 'Contractor')).slice(0, 127),
           type: 'SERVICE',
-          description: isLicense ? 'Software license subscription' : 'White-label service',
+          description: isMembership ? 'Contractor network membership' : isLicense ? 'Software license subscription' : 'White-label service',
         });
         const plan = await paypal('/v1/billing/plans', 'POST', {
           product_id: product.id,
@@ -332,8 +369,8 @@ export default async function(req) {
         kind: 'subscription',
         purpose,
         ref_id: c.id,
-        ref_label: c.company,
-        customer_email: c.email || '',
+        ref_label: (c.company || c.partner_name || ''),
+        customer_email: (c.email || c.partner_email || ''),
         amount: billAmount,
         currency: CURRENCY,
         paypal_subscription_id: sub.id,
@@ -364,6 +401,9 @@ export default async function(req) {
         await applySubscriptionState(srole, items[0].purpose, items[0].ref_id, 'active', base44);
         if (items[0].purpose === 'license_subscription' && items[0].ref_id) {
           await srole.entities.SoftwareLicense.update(items[0].ref_id, { paypal_subscription_id: subId }).catch(() => {});
+        }
+        if (items[0].purpose === 'contractor_membership' && items[0].ref_id) {
+          await srole.entities.ContractorAgreement.update(items[0].ref_id, { paypal_subscription_id: subId }).catch(() => {});
         }
         return Response.json({ status: 'active' });
       }
