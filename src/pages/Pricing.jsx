@@ -28,6 +28,10 @@ const FAQS = [
   { q: "Which cities do you serve?", a: "We're a nationwide agency — we operate in every Canadian city, and the recycling directory covers every province and territory. Exact city pricing varies slightly; every quote shows your rate." },
   { q: "Are prices in CAD? Is tax included?", a: "All prices are in Canadian dollars (CAD). GST and/or PST — depending on the pickup address — are added when you approve the final price, and the full amount is shown before you pay." },
   { q: "Can I combine discounts?", a: "One discount per job: the Self-Load Discount (10%), the curbside staging discount ($25) and subscription member rates don't stack — we apply whichever saves you the most." },
+  { q: "Will stairs, tight hallways or awkward access cost extra?", a: "No. The crew does all the lifting from any room or floor — stairs, elevators and tight hallways are included in the tier price. You only pay for the truck space your load fills." },
+  { q: "What exactly is included in the price?", a: "Everything: labor, loading, trucking, sorting, donation drop-offs and disposal fees. The price you approve on arrival is the full price — no fuel surcharges, tipping fees or per-item charges added later." },
+  { q: "What happens to my items after pickup?", a: "Every load is sorted: reusable furniture and goods go to donation partners, metals and electronics go to recyclers, and only true residual waste is landfilled. You can request a recycling receipt for any job." },
+  { q: "What if I have hazardous materials like paint or propane?", a: "We can't transport hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Ask us and we'll point you to the right municipal depot or licensed disposal service in your city." },
 ];
 
 export default function Pricing() {

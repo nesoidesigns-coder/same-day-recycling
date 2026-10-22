@@ -2,6 +2,7 @@ import ServiceLanding from "@/components/sdr/ServiceLanding";
 
 const CONFIG = {
   slug: "appliance-removal",
+  gallery_service: "appliance-removal",
   name: "Appliance Removal & Recycling",
   eyebrow: "Residential recycling · Canada",
   h1: "Appliance removal with proper metal and refrigerant handling",

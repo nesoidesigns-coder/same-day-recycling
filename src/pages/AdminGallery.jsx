@@ -9,6 +9,18 @@ const CATEGORIES = [
   { value: "jobsites", label: "Job Sites" },
 ];
 
+const PHOTO_TYPES = [
+  { value: "", label: "Standard photo" },
+  { value: "before", label: "Before shot" },
+  { value: "after", label: "After shot" },
+];
+
+const SERVICES = [
+  { value: "", label: "Gallery only" },
+  { value: "furniture-removal", label: "Furniture Removal page" },
+  { value: "appliance-removal", label: "Appliance Removal page" },
+];
+
 const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm";
 const label = "text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-100/50";
 const inputCls = "w-full rounded-xl border border-[#187B65]/30 bg-[#051511] px-4 py-2.5 text-sm text-emerald-50 placeholder:text-emerald-100/30 focus:border-[#187B65] focus:outline-none";
@@ -19,6 +31,8 @@ export default function AdminGallery() {
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("trucks");
+  const [photoType, setPhotoType] = useState("");
+  const [service, setService] = useState("");
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -45,6 +59,8 @@ export default function AdminGallery() {
         title: title.trim(),
         caption: caption.trim(),
         category,
+        ...(photoType ? { photo_type: photoType } : {}),
+        ...(service ? { service } : {}),
         file_url,
         sort_order: maxSort + 1,
       });
@@ -121,6 +137,22 @@ export default function AdminGallery() {
               <label className={`${label} block mb-2`}>Caption (optional)</label>
               <input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="One line about this shot" className={inputCls} />
             </div>
+            <div>
+              <label className={`${label} block mb-2`}>Before / After (optional)</label>
+              <select value={photoType} onChange={(e) => setPhotoType(e.target.value)} className={inputCls}>
+                {PHOTO_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={`${label} block mb-2`}>Service page (optional)</label>
+              <select value={service} onChange={(e) => setService(e.target.value)} className={inputCls}>
+                {SERVICES.map((s) => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <button
             onClick={upload}
@@ -154,7 +186,11 @@ export default function AdminGallery() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-bold text-white text-sm truncate">{p.title}</p>
-                  <p className="text-[11px] text-emerald-100/40">{CATEGORIES.find((c) => c.value === p.category)?.label || p.category}</p>
+                  <p className="text-[11px] text-emerald-100/40">
+                    {CATEGORIES.find((c) => c.value === p.category)?.label || p.category}
+                    {p.photo_type ? ` · ${p.photo_type === "before" ? "Before" : "After"}` : ""}
+                    {p.service ? ` · ${SERVICES.find((s) => s.value === p.service)?.label || p.service}` : ""}
+                  </p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => move(i, -1)} disabled={i === 0} className="p-2 rounded-lg border border-[#187B65]/30 text-[#187B65] disabled:opacity-30 hover:bg-[#187B65]/10 transition-colors" aria-label="Move up">

@@ -23,6 +23,19 @@
       ],
       "default": "trucks"
     },
+    "photo_type": {
+      "type": "string",
+      "enum": [
+        "before",
+        "after"
+      ],
+      "description": "Set to 'before' or 'after' to show the photo as a Before/After pair on a service page; leave unset for standard gallery photos."
+    },
+    "service": {
+      "type": "string",
+      "default": "",
+      "description": "Slug of the service page this photo belongs to (e.g. furniture-removal, appliance-removal). Empty means gallery-only."
+    },
     "file_url": {
       "type": "string"
     },

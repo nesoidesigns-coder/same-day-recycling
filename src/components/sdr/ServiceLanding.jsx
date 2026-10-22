@@ -5,6 +5,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { useSEO, useStructuredData, PRODUCTION_URL } from "@/lib/seo";
 import { CITIES } from "@/lib/cities";
+import BeforeAfterGallery from "./BeforeAfterGallery";
 
 const BASE = PRODUCTION_URL;
 
@@ -14,7 +15,7 @@ const ACTIVE_CITIES = CITIES
   .map((c) => ({ "@type": "City", name: c.name }));
 
 export default function ServiceLanding({ config }) {
-  const { slug, name, eyebrow, h1, title, description, intro, items, steps, faqs } = config;
+  const { slug, name, eyebrow, h1, title, description, intro, items, steps, faqs, gallery_service } = config;
   const url = `${BASE}/${slug}`;
 
   useSEO({ title, description, path: `/${slug}` });
@@ -90,6 +91,8 @@ export default function ServiceLanding({ config }) {
           </div>
         </div>
       </section>
+
+      {gallery_service && <BeforeAfterGallery service={gallery_service} />}
 
       <section className="max-w-7xl mx-auto px-4 py-14">
         <div className="rounded-3xl bg-[#f4f7f5] border border-[#187B65]/20 p-8 grid md:grid-cols-2 gap-6">
