@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Search, MapPin, CheckCircle2, Clock, Rocket, ArrowRight,
+  Search, MapPin, CheckCircle2, Clock, UserSearch, ArrowRight,
   Truck, Armchair, Refrigerator, Tv, Building2, Timer, Recycle, Wrench, Key, Phone,
 } from "lucide-react";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -11,12 +12,6 @@ import PostalCheck, { PROVINCE_NAMES } from "@/components/sdr/PostalCheck";
 import { CITIES } from "@/lib/cities";
 import { REGIONS } from "@/lib/regions";
 import { useSEO, useStructuredData } from "@/lib/seo";
-
-const STATUS_CHIP = {
-  active: { label: "Directly serviced", cls: "bg-[#187B65]/10 text-[#187B65] border-[#187B65]/30", icon: CheckCircle2 },
-  partner_onboarding: { label: "Partner onboarding", cls: "bg-amber-50 text-amber-700 border-amber-200", icon: Rocket },
-  coming_soon: { label: "Coming soon", cls: "bg-slate-100 text-slate-500 border-slate-200", icon: Clock },
-};
 
 const CATEGORIES = [
   { name: "Junk Removal", desc: "General junk, garage & estate cleanouts, renovation debris", to: "/#services", icon: Truck },
@@ -30,8 +25,17 @@ const CATEGORIES = [
   { name: "Property Management", desc: "Recurring cleanouts for strata & rentals", to: "/property-managers", icon: Key },
 ];
 
+const chipFor = (statusFor, loaded, city) => {
+  const s = loaded ? statusFor(city) : null;
+  if (s === "same_day") return { label: "Same-Day Availability", cls: "bg-[#187B65]/10 text-[#187B65] border-[#187B65]/30", icon: CheckCircle2 };
+  if (s === "matching") return { label: "Requests Open — Contractor Matching", cls: "bg-amber-50 text-amber-700 border-amber-200", icon: UserSearch };
+  if (s === "recruiting") return { label: "Provider Recruitment", cls: "bg-slate-100 text-slate-500 border-slate-200", icon: Clock };
+  return { label: "Checking live status…", cls: "bg-slate-100 text-slate-400 border-slate-200", icon: Clock };
+};
+
 export default function ExploreServices() {
   const [query, setQuery] = useState("");
+  const { statusFor, loaded, verifiedCityNames, matchingCityNames } = useCoverageStatus();
 
   useSEO({
     title: "Explore Recycling & Junk Removal Services Across Canada | Same Day Recycling",
@@ -53,7 +57,8 @@ export default function ExploreServices() {
   const groups = REGIONS
     .map((r) => ({ region: r, cities: filtered.filter((c) => c.province === r.code) }))
     .filter((g) => g.cities.length > 0);
-  const activeCount = CITIES.filter((c) => c.status === "active").length;
+  const activeCount = verifiedCityNames.length;
+  const matchingCount = matchingCityNames.length;
 
   return (
     <div className="min-h-screen bg-white">
@@ -81,15 +86,15 @@ export default function ExploreServices() {
             <div className="mt-4 space-y-3">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#187B65] shrink-0 mt-0.5" />
-                <div className="text-sm"><span className="font-bold text-[#102B2A]">Directly serviced ({activeCount} cities)</span><span className="block text-slate-600">Same-day pickup is live and verified — book online today.</span></div>
+                <div className="text-sm"><span className="font-bold text-[#102B2A]">Same-Day Availability ({activeCount} cities)</span><span className="block text-slate-600">A verified contractor is active today — book online, window confirmed before pickup.</span></div>
               </div>
               <div className="flex items-start gap-3">
-                <Rocket className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                <div className="text-sm"><span className="font-bold text-[#102B2A]">Partner onboarding</span><span className="block text-slate-600">A partner is being recruited or verified — service isn't confirmed yet.</span></div>
+                <UserSearch className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div className="text-sm"><span className="font-bold text-[#102B2A]">Requests Open — Contractor Matching</span><span className="block text-slate-600">Open service requests here are being matched or recruited right now — never promised same-day.</span></div>
               </div>
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-                <div className="text-sm"><span className="font-bold text-[#102B2A]">Sourcing contractors</span><span className="block text-slate-600">Requests are accepted here nationwide — our dispatch team is recruiting a local contractor for this market.</span></div>
+                <div className="text-sm"><span className="font-bold text-[#102B2A]">Provider Recruitment</span><span className="block text-slate-600">Requests are accepted nationwide — our dispatch team is recruiting a local contractor for this market.</span></div>
               </div>
             </div>
           </div>
@@ -154,7 +159,7 @@ export default function ExploreServices() {
                   </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {g.cities.map((c) => {
-                      const chip = STATUS_CHIP[c.status];
+                      const chip = chipFor(statusFor, loaded, c.name);
                       return (
                         <Link
                           key={c.slug}
