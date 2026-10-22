@@ -7,6 +7,7 @@ import { useSEO, useStructuredData, PRODUCTION_URL } from "@/lib/seo";
 import { useServiceMeta } from "@/components/seo/useServiceMeta";
 import { CITIES } from "@/lib/cities";
 import BeforeAfterGallery from "./BeforeAfterGallery";
+import ServiceDeepContent from "./ServiceDeepContent";
 
 const BASE = PRODUCTION_URL;
 
@@ -95,6 +96,8 @@ export default function ServiceLanding({ config }) {
       </section>
 
       {gallery_service && <BeforeAfterGallery service={gallery_service} />}
+
+      <ServiceDeepContent sections={config.deep} />
 
       <section className="max-w-7xl mx-auto px-4 py-14">
         <div className="rounded-3xl bg-[#f4f7f5] border border-[#187B65]/20 p-8 grid md:grid-cols-2 gap-6">
