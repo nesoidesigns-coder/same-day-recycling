@@ -5,7 +5,7 @@ import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart,
-  Globe2, PieChart, FileSignature, TrendingUp,
+  Globe2, PieChart, FileSignature, TrendingUp, Trello,
 } from "lucide-react";
 
 const OPS = [
@@ -13,6 +13,7 @@ const OPS = [
   { to: "/admin/national", label: "National Ops", icon: Globe2 },
   { to: "/admin/jobs", label: "Jobs & Dispatch", icon: Truck },
   { to: "/admin/leads", label: "Leads", icon: UserPlus },
+  { to: "/admin/pipeline", label: "Lead Pipeline", icon: Trello },
   { to: "/admin/assignments", label: "Assignments", icon: ClipboardList },
   { to: "/admin/routes", label: "Route Intelligence", icon: RouteIcon },
   { to: "/admin/partners", label: "Partners", icon: Users },

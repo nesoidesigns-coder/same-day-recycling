@@ -22,6 +22,7 @@ import AdminOverview from './pages/AdminOverview';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminDispatch from './pages/AdminDispatch';
 import AdminLeads from './pages/AdminLeads';
+import AdminPipeline from './pages/AdminPipeline';
 import AdminAssignments from './pages/AdminAssignments';
 import AdminPartners from './pages/AdminPartners';
 import AdminPayouts from './pages/AdminPayouts';
@@ -167,6 +168,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin" element={<AdminOverview />} />
           <Route path="/admin/jobs" element={<AdminDispatch />} />
           <Route path="/admin/leads" element={<AdminLeads />} />
+          <Route path="/admin/pipeline" element={<AdminPipeline />} />
           <Route path="/admin/assignments" element={<AdminAssignments />} />
           <Route path="/admin/partners" element={<AdminPartners />} />
           <Route path="/admin/applications" element={<AdminApplications />} />
