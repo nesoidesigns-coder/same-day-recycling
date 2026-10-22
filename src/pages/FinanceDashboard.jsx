@@ -6,6 +6,7 @@ import FinanceKpis from "@/components/finance/FinanceKpis";
 import FinanceTrend from "@/components/finance/FinanceTrend";
 import ReceiptInbox from "@/components/finance/ReceiptInbox";
 import TxLedger from "@/components/finance/TxLedger";
+import SheetsExport from "@/components/finance/SheetsExport";
 
 const TYPE_LABEL = { sdr_admin: "Same Day Recycling books", contractor: "Contractor books", white_label: "White-label business", personal: "My business" };
 
@@ -65,12 +66,15 @@ export default function FinanceDashboard() {
           </div>
         </div>
 
-        <div className="mt-6 flex gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-2">
           {[["overview", "Overview"], ["receipts", "Receipt inbox"], ["ledger", "Transactions"]].map(([k, label]) => (
             <button key={k} onClick={() => setTab(k)} className={"rounded-full px-4 py-2 text-xs font-bold transition-colors " + (tab === k ? "bg-[#187B65] text-white" : "border border-[#187B65]/40 text-white/60 hover:text-white")}>
               {label}
             </button>
           ))}
+          <div className="ml-auto">
+            <SheetsExport />
+          </div>
         </div>
 
         <div className="mt-6 space-y-5">
