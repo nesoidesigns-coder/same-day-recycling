@@ -5,7 +5,7 @@ import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart,
-  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale,
+  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck,
 } from "lucide-react";
 
 const OPS = [
@@ -21,6 +21,7 @@ const OPS = [
   { to: "/admin/revenue", label: "Revenue Intelligence", icon: PieChart },
   { to: "/admin/agreements", label: "Agreements", icon: FileSignature },
   { to: "/admin/disputes", label: "Disputes", icon: Scale },
+  { to: "/admin/reputation", label: "Reputation", icon: ShieldCheck },
   { to: "/admin/sales", label: "Sales Intelligence", icon: TrendingUp },
 ];
 const CONFIG = [

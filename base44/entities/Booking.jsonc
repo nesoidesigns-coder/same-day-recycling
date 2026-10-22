@@ -186,6 +186,26 @@
       "type": "string",
       "format": "date"
     },
+    "arrival_status": {
+      "type": "string",
+      "enum": [
+        "",
+        "on_time",
+        "late",
+        "no_show"
+      ],
+      "default": "",
+      "description": "Arrival punctuality for the job window, recorded at completion. Empty = not yet recorded."
+    },
+    "receipt_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the customer's receipt (Recycling Impact Report) has been generated and sent."
+    },
+    "receipt_sent_date": {
+      "type": "string",
+      "format": "date"
+    },
     "description": {
       "type": "string",
       "default": "",

@@ -46,6 +46,16 @@
       "maxLength": 5000,
       "description": "Factual case summary assembled for authorized reviewers. States facts only, never legal conclusions."
     },
+    "contractor_response": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000,
+      "description": "The assigned contractor's response or factual correction on the open case. Unverified complaints never count against a contractor until resolved."
+    },
+    "contractor_response_date": {
+      "type": "string",
+      "format": "date"
+    },
     "resolution_notes": {
       "type": "string",
       "default": "",

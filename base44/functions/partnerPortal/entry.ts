@@ -213,6 +213,53 @@ export default async function(req) {
       });
     }
 
+    // Disputes on this contractor's jobs: they may read them and submit one
+    // response (a reply or a factual correction) while a case is still open.
+    if (action === 'disputes') {
+      const mine = await base44.asServiceRole.entities.Booking.filter(
+        { partner_id: partner.id, record_type: { $ne: 'internal_test' } },
+        { limit: 200 }
+      );
+      const ids = (Array.isArray(mine) ? mine : mine.items || []).map((b) => b.id);
+      const disputePage = ids.length
+        ? await base44.asServiceRole.entities.Dispute.filter({ booking_id: { $in: ids } }, { limit: 100 })
+        : { items: [] };
+      const list = (Array.isArray(disputePage) ? disputePage : disputePage.items || []).map((d) => ({
+        id: d.id,
+        job_ref: d.job_ref,
+        status: d.status,
+        complaint: d.complaint,
+        case_summary: d.case_summary || '',
+        contractor_response: d.contractor_response || '',
+        contractor_response_date: d.contractor_response_date || '',
+        created_date: d.created_date,
+      }));
+      return Response.json({ partner: publicPartner, disputes: list });
+    }
+
+    if (action === 'dispute_response') {
+      const text = String(body?.response || '').trim().slice(0, 2000);
+      const disputeId = String(body?.dispute_id || '');
+      if (!text || !disputeId) {
+        return Response.json({ error: 'A response and dispute id are required.' }, { status: 400 });
+      }
+      const dispute = await base44.asServiceRole.entities.Dispute.get(disputeId);
+      if (!dispute) return Response.json({ error: 'Dispute not found.' }, { status: 404 });
+      const related = await base44.asServiceRole.entities.Booking.get(dispute.booking_id);
+      if (!related || related.partner_id !== partner.id) {
+        return Response.json({ error: 'That dispute is not on one of your jobs.' }, { status: 403 });
+      }
+      if (dispute.status === 'resolved' || dispute.status === 'closed') {
+        return Response.json({ error: 'This case is already resolved.' }, { status: 409 });
+      }
+      await base44.asServiceRole.entities.Dispute.update(disputeId, {
+        contractor_response: text,
+        contractor_response_date: new Date().toISOString().slice(0, 10),
+        history: [...(dispute.history || []), { date: new Date().toISOString(), event: 'contractor_response', note: 'The contractor submitted a response or correction.' }],
+      });
+      return Response.json({ ok: true });
+    }
+
     // Scoped mutation: only a booking assigned to THIS partner may change state.
     const allowed = { accept: 'accepted', decline: 'declined', complete: 'completed' };
     const next = allowed[action];
@@ -237,6 +284,13 @@ export default async function(req) {
     };
     if (next === 'completed') {
       updateData.status = 'completed';
+      // Arrival punctuality is recorded with completion (self-reported by the
+      // contractor, timestamped in the job's status history).
+      const arrival = String(body?.arrival_status || '');
+      if (['on_time', 'late', 'no_show'].includes(arrival)) {
+        updateData.arrival_status = arrival;
+        updateData.status_history = [...updateData.status_history, { status: 'arrival_' + arrival, date: new Date().toISOString() }];
+      }
     }
     await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
 

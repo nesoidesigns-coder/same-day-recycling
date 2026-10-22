@@ -45,7 +45,7 @@ export default function Navbar() {
           </span>
           <span className="leading-tight">
             <span className="block text-lg tracking-tight">Same Day Recycling</span>
-            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-400">Canada's Recycling Network. One Intelligent Platform.</span>
+            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-400">Canada's Intelligent Recycling & Removal Network. Powered by Recycling OS.</span>
           </span>
         </Link>
         <div className="hidden md:flex items-center gap-8">

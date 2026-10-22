@@ -7,6 +7,7 @@ import Financials from "@/components/partner/Financials";
 import Performance from "@/components/partner/Performance";
 import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
 import LeadOffers from "@/components/partner/LeadOffers";
+import DisputeResponse from "@/components/partner/DisputeResponse";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -32,6 +33,7 @@ export default function PartnersDashboard() {
   const [history, setHistory] = useState([]);
   const [requests, setRequests] = useState([]);
   const [offers, setOffers] = useState([]);
+  const [arrivalPick, setArrivalPick] = useState("");
 
   const load = useCallback(async () => {
     const res = await base44.functions.invoke("partnerPortal", { action: "data" });
@@ -61,9 +63,9 @@ export default function PartnersDashboard() {
     })();
   }, [load]);
 
-  const act = async (bookingId, action) => {
+  const act = async (bookingId, action, arrivalStatus) => {
     try {
-      const res = await base44.functions.invoke("partnerPortal", { action, booking_id: bookingId });
+      const res = await base44.functions.invoke("partnerPortal", { action, booking_id: bookingId, arrival_status: arrivalStatus });
       const d = res.data;
       setJobs(d.jobs || []);
       setHistory(d.history || []);
@@ -147,6 +149,8 @@ export default function PartnersDashboard() {
 
         <Performance />
 
+        <DisputeResponse />
+
         <SubscriptionTerms />
 
         <div className="mb-10">
@@ -202,9 +206,20 @@ export default function PartnersDashboard() {
                     </>
                   )}
                   {b.assignment_status === "accepted" && (
-                    <button onClick={() => act(b.id, "complete")} className="rounded-full border border-[#187B65]/60 bg-[#187B65]/10 text-[#187B65] font-bold px-5 py-2.5 text-sm hover:bg-[#187B65]/20 transition-colors flex items-center gap-2">
-                      <PackageCheck className="w-4 h-4" /> Mark complete
-                    </button>
+                    arrivalPick === b.id ? (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65]">Arrival was:</span>
+                        {["on_time", "late", "no_show"].map((s) => (
+                          <button key={s} onClick={() => { setArrivalPick(""); act(b.id, "complete", s); }} className="rounded-full border border-[#187B65]/50 bg-[#187B65]/10 text-[#187B65] font-bold px-3.5 py-2 text-xs hover:bg-[#187B65]/20 transition-colors capitalize">
+                            {s.replace("_", " ")}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <button onClick={() => setArrivalPick(b.id)} className="rounded-full border border-[#187B65]/60 bg-[#187B65]/10 text-[#187B65] font-bold px-5 py-2.5 text-sm hover:bg-[#187B65]/20 transition-colors flex items-center gap-2">
+                        <PackageCheck className="w-4 h-4" /> Mark complete
+                      </button>
+                    )
                   )}
                 </div>
               </div>
