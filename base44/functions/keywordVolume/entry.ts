@@ -1,12 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
-import { normalizeCategory, normalizeCompetition, currentPeriod } from '../../shared/demand.ts';
+import { normalizeCategory, normalizeCompetition, currentPeriod, CATEGORY_LABELS } from '../../shared/demand.ts';
 
 // Google Ads Keyword Planner retrieval — the ONLY authorized automated volume
 // source. Pulls monthly search-volume estimates for every major Canadian
 // recycling / junk-removal category across Canada, each province and key
 // cities, then upserts source-labeled DemandObservation records. Volumes come
 // straight from the API; nothing is estimated, zero-filled or fabricated.
+// Values stored from GenerateKeywordIdeaResult are Keyword Planner's 12-month
+// rolling averages and are labeled metric_type: monthly_average — never as an
+// individual month's volume.
 
 const REQUIRED = [
   'GOOGLE_ADS_DEVELOPER_TOKEN',
@@ -23,6 +26,7 @@ const SEEDS = [
   'mattress disposal',
   'estate cleanout services',
   'construction waste removal',
+  'demolition debris removal',
   'electronics recycling',
   'waste disposal services',
   'recycling pickup',
@@ -75,7 +79,7 @@ export default async function(req) {
     const today = now.toISOString().slice(0, 10);
     const started = now.toISOString();
     const period = currentPeriod(now);
-    const CADENCE = 'Monthly retrieval via Google Ads API (Keyword Planner volumes are monthly estimates)';
+    const CADENCE = 'Monthly retrieval via Google Ads API (Keyword Planner volumes are 12-month rolling averages published monthly)';
 
     // Connection check (no API work) — also used by the admin panel.
     const missing = REQUIRED.filter((n) => !secrets.get(n));
@@ -192,6 +196,10 @@ export default async function(req) {
     }
 
     // ---- 4. Keep the top 3 keyword observations per category per geography ----
+    // avgMonthlySearches is a 12-month ROLLING AVERAGE, so it is stored with
+    // metric_type monthly_average and period_end = retrieval month. When the
+    // API reports per-month monthlySearchVolumes, the latest actual month is
+    // additionally stored as metric_type monthly_volume for that keyword.
     const records = [];
     const failedGeos = [];
     for (const r of results) {
@@ -199,59 +207,87 @@ export default async function(req) {
       const perCat = new Map();
       for (const idea of r.ideas) {
         const m = idea.keywordIdeaMetrics;
-        if (!m || !(Number(m.avgMonthlySearches) > 0)) continue;
+        if (!m) continue;
         const cat = normalizeCategory(m.keyword);
         if (cat === 'other') continue;
-        if (!perCat.has(cat)) perCat.set(cat, []);
-        perCat.get(cat).push({
+        const avg = Number(m.avgMonthlySearches) || 0;
+        const vols = (m.monthlySearchVolumes || []).map((v) => ({ month: `${v.year}-${String(v.month).padStart(2, '0')}`, searches: Number(v.monthlySearches) || 0 })).filter((v) => v.searches > 0);
+        const latestMonth = vols.length ? vols[vols.length - 1] : null;
+        if (!(avg > 0) && !latestMonth) continue;
+        perCat.set(cat, (perCat.get(cat) || []).concat([{
           keyword: m.keyword,
-          volume: Number(m.avgMonthlySearches),
+          variants: idea.closeVariants || [],
+          avg,
+          latestMonth,
           competition: normalizeCompetition(String(m.competition || 'unknown')),
-          trend: trendFrom(m.monthlySearchVolumes),
-        });
+          trend: trendFrom(vols),
+        }]));
       }
       for (const [cat, entries] of perCat) {
-        entries.sort((a, b) => b.volume - a.volume);
+        entries.sort((a, b) => Math.max(b.avg, b.latestMonth?.searches || 0) - Math.max(a.avg, a.latestMonth?.searches || 0));
         for (const e of entries.slice(0, 3)) {
-          records.push({
+          const base = {
             geo_type: r.scope.geo_type,
             geo_key: r.scope.geo_key,
             province_code: r.scope.province_code || '',
             city: r.scope.city || '',
             service_category: cat,
             keyword: e.keyword,
-            period,
-            est_monthly_volume: e.volume,
-            volume_basis: 'keyword_planner',
-            trend_index: 0,
-            trend_direction: e.trend,
+            close_variants: e.variants,
             competition: e.competition,
+            trend_direction: e.trend,
             source: 'Google Ads Keyword Planner (API)',
             source_url: 'https://ads.google.com/aw/keywordplanner/home',
-            methodology_note: 'Google Ads Keyword Planner monthly search-volume estimates for the geography, retrieved via the Google Ads API. Overlapping keyword variants are deduplicated at aggregation time.',
             last_updated: today,
-          });
+          };
+          if (e.avg > 0) {
+            records.push({
+              ...base,
+              period,
+              metric_type: 'monthly_average',
+              period_start: `${period}-01`,
+              period_end: `${period}-28`,
+              est_monthly_volume: e.avg,
+              trend_index: 0,
+              volume_basis: 'keyword_planner',
+              methodology_note: 'Keyword Planner 12-month rolling average of monthly searches (avgMonthlySearches), retrieved via the Google Ads API and labeled as an average — never presented as an individual month volume.',
+            });
+          }
+          if (e.latestMonth) {
+            records.push({
+              ...base,
+              period: e.latestMonth.month,
+              metric_type: 'monthly_volume',
+              period_start: `${e.latestMonth.month}-01`,
+              period_end: `${e.latestMonth.month}-28`,
+              est_monthly_volume: e.latestMonth.searches,
+              trend_index: 0,
+              volume_basis: 'keyword_planner',
+              methodology_note: 'Keyword Planner per-month search-volume estimate (monthlySearchVolumes), retrieved via the Google Ads API.',
+            });
+          }
         }
       }
     }
 
     // ---- 5. Upsert against existing observations for this period ----
-    const existingPage = await svc.entities.DemandObservation.filter({ period }, { limit: 1000 });
+    const existingPage = await svc.entities.DemandObservation.filter({ period: { $gte: periodsBack(period, 14) } }, { limit: 1000 });
     const existing = new Map();
     for (const row of existingPage.items || []) {
-      existing.set(`${(row.keyword || '').toLowerCase()}|${row.geo_key || ''}|${row.geo_type || ''}`, row);
+      existing.set(`${(row.keyword || '').toLowerCase()}|${row.geo_key || ''}|${row.geo_type || ''}|${row.period}`, row);
     }
     const updates = [];
     const creates = [];
     const seen = new Set();
     for (const rec of records) {
-      const key = `${rec.keyword.toLowerCase()}|${rec.geo_key}|${rec.geo_type}`;
+      const key = `${rec.keyword.toLowerCase()}|${rec.geo_key}|${rec.geo_type}|${rec.period}`;
       if (seen.has(key)) continue;
       seen.add(key);
       const match = existing.get(key);
       if (match) {
         updates.push({
           id: match.id,
+          metric_type: rec.metric_type,
           est_monthly_volume: rec.est_monthly_volume,
           competition: rec.competition,
           trend_direction: rec.trend_direction,
@@ -276,7 +312,7 @@ export default async function(req) {
     const okGeos = results.filter((r) => r.ideas).length;
     const status = okGeos === 0 ? 'failed' : failedGeos.length ? 'partial' : 'success';
     const coverageParts = [
-      `${okGeos}/${runnable.length} geographies returned volumes (${records.length} keyword observations).`,
+      `${okGeos}/${runnable.length} geographies returned volumes (${records.length} keyword observations, averages and individual months labeled separately).`,
       unresolved.length ? `Unresolved geo targets: ${unresolved.join(', ')}.` : '',
       failedGeos.length ? `Failed: ${failedGeos.slice(0, 5).join(' | ')}.` : '',
     ].filter(Boolean).join(' ');
@@ -306,4 +342,10 @@ export default async function(req) {
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
+}
+
+function periodsBack(period, n) {
+  const [y, m] = String(period || '').split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1 - n, 1));
+  return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, '0')}`;
 }

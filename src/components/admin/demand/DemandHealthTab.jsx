@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, CheckCircle2, XCircle, MinusCircle, AlertTriangle } from "lucide-react";
+import { Loader2, RefreshCw, CheckCircle2, XCircle, MinusCircle, AlertTriangle, Download, FileSpreadsheet } from "lucide-react";
+import { COVERAGE } from "@/lib/coverage";
+import { CATEGORY_LABELS } from "@/lib/demandShared";
 
 const SOURCE_META = {
-  google_search_console: { label: "Google Search Console", note: "Our capture: impressions, clicks, positions (Canada-filtered, 28-day window)." },
-  google_analytics: { label: "Google Analytics", note: "Site engagement: sessions, users, engagement rate (28 days)." },
-  google_ads_keyword_planner: { label: "Google Ads Keyword Planner", note: "Industry volumes. No API connection — verified exports are imported below." },
-  google_trends: { label: "Google Trends", note: "Relative interest indices only; recorded manually with their source." },
-  recycling_os: { label: "Recycling OS", note: "Verified inquiries, bookings and completed pickups from platform records." },
-  import: { label: "Imports", note: "History of volume data imports." },
+  google_search_console: { label: "Google Search Console", note: "Our capture: impressions, clicks, positions (Canada-filtered, 28-day window).", cadence: "Daily (reporting lags ~2 days)" },
+  google_analytics: { label: "Google Analytics", note: "Site engagement: sessions, users, engagement rate (28 days).", cadence: "Daily" },
+  google_ads_keyword_planner: { label: "Google Ads Keyword Planner", note: "Volume estimates via the official Google Ads API, or verified monthly exports.", cadence: "Monthly" },
+  google_trends: { label: "Google Trends", note: "Sampled relative-interest indices from official exports; never search counts.", cadence: "Manual export import" },
+  recycling_os: { label: "Recycling OS", note: "Verified inquiries, bookings and completed pickups from platform records.", cadence: "Live" },
+  import: { label: "Imports", note: "History of volume data imports.", cadence: "On import" },
 };
 
 const STATUS_ICON = {
@@ -19,6 +21,11 @@ const STATUS_ICON = {
   partial: { icon: AlertTriangle, cls: "text-amber-500" },
   skipped: { icon: MinusCircle, cls: "text-slate-400" },
 };
+
+const KP_SETUP = `Keyword Planner automations (official API retrieval and the monthly refresh workflow) stay disabled until a Google Ads OAuth client with the adwords scope is set up — at which point the platform uses them as designed.`;
+const TRENDS_API_NOTE = `The official Google Trends API is in a limited alpha (application-based access, no published pricing or availability date). Until access is granted, Trends data is added through CSV exports imported below — indices only, never search counts.`;
+
+const CITY_CHOICES = COVERAGE.map((c) => c.name).concat(["Toronto", "Mississauga", "Ottawa", "Montreal", "Calgary", "Edmonton", "Winnipeg", "Halifax"]);
 
 export default function DemandHealthTab({ report }) {
   const [logs, setLogs] = useState([]);
@@ -107,7 +114,8 @@ export default function DemandHealthTab({ report }) {
           ) : (
             <div className="text-xs text-slate-600 mt-1.5">
               <p>Missing credentials: <span className="font-semibold">{(kp.missing || []).join(", ") || "none"}</span>.</p>
-              <p className="mt-1">Add them under Dashboard → Secrets (Google Ads API developer token, customer ID and an OAuth client + refresh token with the adwords scope). Until then, verified Keyword Planner exports can be imported in the Import tab.</p>
+              <p className="mt-1">{KP_SETUP}</p>
+              <p className="mt-1">Until then, verified Keyword Planner exports can be imported in the Import tab.</p>
             </div>
           )}
           <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -125,6 +133,14 @@ export default function DemandHealthTab({ report }) {
         </div>
       )}
 
+      <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-bold text-[#102B2A] text-sm">Google Trends</span>
+          <span className="ml-auto rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">API alpha · access pending</span>
+        </div>
+        <p className="text-xs text-slate-600 mt-1.5">{TRENDS_API_NOTE}</p>
+      </div>
+
       <div className="grid sm:grid-cols-2 gap-3 mb-8">
         {Object.entries(SOURCE_META).map(([key, meta]) => {
           const st = key === "import" ? null : live[key];
@@ -137,10 +153,13 @@ export default function DemandHealthTab({ report }) {
                 {st && <span className="ml-auto text-[10px] font-bold uppercase text-slate-500">{st.status}</span>}
               </div>
               <p className="text-xs text-slate-500 mt-1.5">{st?.note || meta.note}</p>
+              <p className="mt-1 text-[10px] text-slate-400">Cadence: {meta.cadence}</p>
             </div>
           );
         })}
       </div>
+
+      <ExportCard />
 
       <h3 className="font-bold text-[#102B2A] mb-2">Update log</h3>
       {logs.length === 0 ? (
@@ -169,6 +188,42 @@ export default function DemandHealthTab({ report }) {
           </table>
         </div>
       )}
+    </div>
+  );
+}
+
+// CSV prefill generator so the import sheet matches the accepted columns.
+function ExportCard() {
+  const buildCsv = () => {
+    const header = ["keyword", "service_category", "province", "city", "est_monthly_volume", "metric_type", "period", "source", "trend_index", "competition"];
+    const rows = [];
+    for (const city of CITY_CHOICES) {
+      for (const [cat, label] of Object.entries(CATEGORY_LABELS)) {
+        if (cat === "other") continue;
+        rows.push([`junk removal ${city}`, cat, "", city, "", "monthly_volume", "", "Google Ads Keyword Planner export", "", ""]);
+        break;
+      }
+    }
+    return [header.join(","), ...rows.map((r) => r.map((v) => `"${v}"`).join(","))].join("\n");
+  };
+  const download = () => {
+    const blob = new Blob([buildCsv()], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "demand-import-template.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  return (
+    <div className="mb-8 rounded-2xl border border-slate-200 bg-[#f6f9f8] p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <FileSpreadsheet className="w-4 h-4 text-[#187B65]" />
+        <span className="font-bold text-[#102B2A] text-sm">Import sheet helpers</span>
+        <Button variant="outline" onClick={download} className="ml-auto gap-2">
+          <Download className="w-4 h-4" /> Download CSV template
+        </Button>
+      </div>
+      <p className="text-xs text-slate-600 mt-1.5">The template carries the accepted column set (keyword, service_category, province, city, est_monthly_volume, metric_type, period, source, trend_index, competition) and one prefilled city/service row to copy.</p>
     </div>
   );
 }

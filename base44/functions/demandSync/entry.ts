@@ -132,14 +132,14 @@ export default async function(req) {
     const kpMissing = KP_REQUIRED.filter((n) => !secrets.get(n));
     sources.google_ads_keyword_planner = kpMissing.length === 0
       ? { status: 'skipped', note: 'Google Ads credentials on file; volumes are retrieved monthly by the Keyword Planner Refresh (or on demand in Source Health).' }
-      : { status: 'unavailable', note: `Google Ads credentials missing: ${kpMissing.join(', ')}. Verified Keyword Planner exports can also be imported in Demand Intelligence > Import.` };
+      : { status: 'unavailable', note: `Google Ads credentials missing: ${kpMissing.join(', ')}. Verified Keyword Planner exports can also be imported in Market Intelligence > Import Data.` };
     sources.google_trends = {
       status: 'unavailable',
-      note: 'Google Trends provides relative interest indices only and has no bulk API; regional indices can be recorded as observations with the index values (never as exact counts).',
+      note: 'Google Trends provides sampled relative-interest indices only. The official API is in a limited alpha (application-based access); until granted, indices come from CSV exports imported in Market Intelligence > Import Data — never presented as search counts.',
     };
     logs.push(
       { source: 'google_ads_keyword_planner', status: kpMissing.length === 0 ? 'skipped' : 'unavailable', run_date: today, started_at: started, coverage_note: kpMissing.length === 0 ? 'Google Ads credentials on file; the monthly Keyword Planner Refresh retrieves volumes.' : `No authorized Google Ads connection (missing: ${kpMissing.join(', ')}).`, next_update_cadence: KP_CADENCE },
-      { source: 'google_trends', status: 'unavailable', run_date: today, started_at: started, coverage_note: 'No bulk API; relative-interest indices can be recorded manually with their source.', next_update_cadence: 'Manual' }
+      { source: 'google_trends', status: 'unavailable', run_date: today, started_at: started, coverage_note: 'API in limited alpha; sampled indices are imported from CSV exports with their comparison window.', next_update_cadence: 'Manual (export import)' }
     );
 
     // ---- Recycling OS verified operational records ----
