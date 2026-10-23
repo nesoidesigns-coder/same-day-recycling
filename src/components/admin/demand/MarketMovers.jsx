@@ -1,0 +1,5 @@
+export default function MarketMovers({ data }) {
+  return <section className="rounded-2xl border border-market-line bg-market-surface p-5"><h3 className="font-bold">Rising and declining monthly demand</h3><p className="mt-1 text-xs text-market-muted">Calculated changes in estimated searches, using the same keyword, source and geography across consecutive months.</p>
+    <div className="mt-4 grid gap-6 sm:grid-cols-2">{[['Rising',data.rising],['Declining',data.declining]].map(([label,rows]) => <div key={label}><h4 className="text-xs font-bold uppercase tracking-wider text-market-accent">{label}</h4>{!rows.length && <p className="mt-3 text-sm text-market-muted">No comparable {label.toLowerCase()} terms on file.</p>}<ul className="mt-3 space-y-3">{rows.map((r) => <li key={r.keyword}><div className="flex justify-between gap-3 text-sm"><span>{r.keyword}</span><strong className="tabular-nums">{r.mom_pct > 0 ? '+' : ''}{r.mom_pct}%</strong></div><p className="mt-1 text-[11px] text-market-muted">{r.sources.join(' · ')} · {r.period} · {r.scope}</p></li>)}</ul></div>)}</div>
+  </section>;
+}

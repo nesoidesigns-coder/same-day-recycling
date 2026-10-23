@@ -9,18 +9,16 @@
         "province",
         "city"
       ],
-      "default": "province",
-      "description": "Geographic level of this observation."
+      "default": "province"
     },
     "geo_key": {
       "type": "string",
       "default": "",
-      "description": "Geography identifier: 'CA' national, province code, or city name. Deduplication is scoped to keyword + geo_key + period."
+      "description": "CA, province code or source-reported city identifier."
     },
     "province_code": {
       "type": "string",
-      "default": "",
-      "description": "Province or territory code (BC, ON, QC, NT...)."
+      "default": ""
     },
     "city": {
       "type": "string",
@@ -37,6 +35,7 @@
         "waste_disposal",
         "estate_cleanout",
         "construction_debris",
+        "demolition_cleanup",
         "mattress_disposal",
         "yard_waste_removal",
         "commercial_waste",
@@ -46,37 +45,72 @@
         "same_day_pickup",
         "other"
       ],
-      "default": "other",
-      "description": "Service category the keyword belongs to."
+      "default": "other"
     },
     "keyword": {
       "type": "string",
-      "description": "The search keyword or term group. Overlapping keyword variants must be recorded as one canonical keyword to prevent double-counting."
+      "description": "Source-reported canonical keyword; combined variants are not separate volume records."
+    },
+    "close_variants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Variants included in this keyword's reported volume, not additional searches."
     },
     "period": {
       "type": "string",
-      "description": "Reporting period in YYYY-MM format."
+      "description": "YYYY-MM of the source observation, not the retrieval month."
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "monthly_volume",
+        "monthly_average",
+        "relative_interest",
+        "unspecified_estimate"
+      ],
+      "default": "unspecified_estimate",
+      "description": "Monthly estimates, rolling averages and Trends samples are never combined or compared interchangeably."
+    },
+    "period_start": {
+      "type": "string",
+      "default": "",
+      "description": "Source reporting window start (YYYY-MM-DD or YYYY-MM)."
+    },
+    "period_end": {
+      "type": "string",
+      "default": "",
+      "description": "Source reporting window end."
     },
     "est_monthly_volume": {
       "type": "number",
-      "default": 0,
-      "description": "Estimated monthly searches for the keyword in the geography. 0 = index-only observation."
+      "minimum": 0,
+      "default": 0
     },
     "volume_basis": {
       "type": "string",
       "enum": [
         "keyword_planner",
+        "google_trends",
         "published_estimate",
         "admin_import",
         "not_available"
       ],
-      "default": "admin_import",
-      "description": "Where the volume figure came from. Only keyword_planner values may be described as Google-supplied estimates."
+      "default": "admin_import"
     },
     "trend_index": {
       "type": "number",
+      "minimum": 0,
+      "maximum": 100,
       "default": 0,
-      "description": "Relative search-interest index (0-100 scale, Google Trends style). An index is never an exact search count."
+      "description": "Google Trends export's sampled relative-interest index, never a search count."
+    },
+    "comparison_group": {
+      "type": "string",
+      "default": "",
+      "description": "Stable source export window id. Trends indices are only compared inside this window and geography."
     },
     "trend_direction": {
       "type": "string",
@@ -97,28 +131,25 @@
         "unknown"
       ],
       "default": "unknown",
-      "description": "Competition indicator for the keyword (from the source's advertising competition data)."
+      "description": "Advertising competition, not contractor supply or SEO difficulty."
     },
     "source": {
       "type": "string",
-      "default": "",
-      "description": "Human-readable data source, e.g. 'Google Ads Keyword Planner (admin export 2026-10-23)'."
+      "default": ""
     },
     "source_url": {
       "type": "string",
-      "format": "uri",
       "default": ""
     },
     "methodology_note": {
       "type": "string",
       "default": "",
-      "maxLength": 1000,
-      "description": "How this figure was derived, for the public methodology documentation."
+      "maxLength": 1000
     },
     "last_updated": {
       "type": "string",
       "format": "date",
-      "description": "Date the observation was last refreshed from its source."
+      "description": "Retrieval date, distinct from the reporting period."
     }
   },
   "required": [

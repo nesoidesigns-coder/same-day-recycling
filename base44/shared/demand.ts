@@ -5,7 +5,7 @@
 
 export const SERVICE_CATEGORIES = [
   'junk_removal', 'furniture_removal', 'mattress_disposal', 'appliance_removal', 'electronics',
-  'recycling', 'waste_disposal', 'estate_cleanout', 'construction_debris',
+  'recycling', 'waste_disposal', 'estate_cleanout', 'construction_debris', 'demolition_cleanup',
   'yard_waste_removal', 'commercial_waste', 'hot_tub_removal', 'scrap_metal',
   'bin_rentals', 'same_day_pickup', 'other',
 ];
@@ -24,6 +24,7 @@ export const CATEGORY_LABELS = {
   waste_disposal: 'Waste Disposal',
   estate_cleanout: 'Estate Cleanouts',
   construction_debris: 'Construction Debris',
+  demolition_cleanup: 'Demolition Cleanup',
   yard_waste_removal: 'Yard Waste Removal',
   commercial_waste: 'Commercial Waste Removal',
   hot_tub_removal: 'Hot Tub Removal',
@@ -70,6 +71,7 @@ const CATEGORY_ALIASES = {
   estate: 'estate_cleanout', hoarding: 'estate_cleanout',
   'construction debris': 'construction_debris', 'construction waste': 'construction_debris',
   renovation: 'construction_debris', 'demo debris': 'construction_debris',
+  'demolition cleanup': 'demolition_cleanup', 'demolition clean up': 'demolition_cleanup',
   'yard waste': 'yard_waste_removal', 'yard waste removal': 'yard_waste_removal',
   'yard cleanup': 'yard_waste_removal', leaves: 'yard_waste_removal', 'branch removal': 'yard_waste_removal',
   'commercial waste': 'commercial_waste', 'commercial waste removal': 'commercial_waste',

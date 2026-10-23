@@ -45,6 +45,7 @@ module.exports = {
   			'gold-dark': 'hsl(var(--brand-gold-dark))',
   			'brand-cyan': 'hsl(var(--brand-cyan))',
 			mint: 'hsl(var(--brand-mint))',
+			       market: { bg: 'hsl(var(--market-bg))', surface: 'hsl(var(--market-surface))', ink: 'hsl(var(--market-ink))', muted: 'hsl(var(--market-muted))', line: 'hsl(var(--market-line))', accent: 'hsl(var(--market-accent))' },
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',

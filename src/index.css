@@ -39,6 +39,12 @@
     --brand-gold-dark: 32 82% 33%;
     --brand-cyan: 189 94% 43%;
     --brand-mint: 161 52% 59%;
+    --market-bg: 168 48% 7%;
+    --market-surface: 167 36% 12%;
+    --market-ink: 156 30% 96%;
+    --market-muted: 165 21% 74%;
+    --market-line: 167 24% 28%;
+    --market-accent: 161 64% 59%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -50,6 +56,12 @@
   }
 
   .dark {
+    --market-bg: 168 48% 7%;
+    --market-surface: 167 36% 12%;
+    --market-ink: 156 30% 96%;
+    --market-muted: 165 21% 74%;
+    --market-line: 167 24% 28%;
+    --market-accent: 161 64% 59%;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
