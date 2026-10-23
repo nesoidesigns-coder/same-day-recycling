@@ -11,6 +11,7 @@ import ItemEstimator from "@/components/sdr/ItemEstimator";
 import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
 import Footer from "@/components/sdr/Footer";
 import LazySection from "@/components/sdr/LazySection";
+import RecyclingPulse from "@/components/sdr/pulse/RecyclingPulse";
 
 // Below-the-fold sections load after first paint; the quote calculator and
 // booking form stay eager so conversion actions are always instantly ready.
@@ -55,6 +56,7 @@ export default function Home() {
       <Navbar />
       <InstantQuoteFlow />
       <HomeHero onCity={(city) => bookFromQuote({ city })} />
+      <RecyclingPulse />
       <LazySection minHeight={440}><RexJourney onBook={bookFromQuote} /></LazySection>
       <LazySection minHeight={480}><TrustGauges /></LazySection>
       <LazySection minHeight={480}><CanadaNetworkMap /></LazySection>

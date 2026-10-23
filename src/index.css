@@ -296,6 +296,16 @@ h1, h2, h3, h4, p, a, span, li, button {
   to { stroke-dashoffset: -24; }
 }
 
+/* Recycling Pulse gauge: slow activity-arc rotation */
+@keyframes pulse-arc-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pulse-arc-spin {
+  animation: pulse-arc-spin 9s linear infinite;
+  transform-origin: center;
+}
+
 .data-flow {
   stroke-dasharray: 6 6;
   animation: data-dash 1.2s linear infinite;
@@ -371,6 +381,7 @@ h1, h2, h3, h4, p, a, span, li, button {
   .mascot-wave-once,
   .network-pulse,
   .data-flow,
+  .pulse-arc-spin,
   .rex-orb--processing::before,
   .rex-orb--listening,
   .rex-orb--processing .rex-orb__core {

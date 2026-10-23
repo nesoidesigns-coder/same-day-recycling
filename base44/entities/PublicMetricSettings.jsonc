@@ -1,0 +1,45 @@
+{
+  "name": "PublicMetricSettings",
+  "type": "object",
+  "properties": {
+    "metrics_enabled": {
+      "type": "object",
+      "default": {},
+      "description": "Metric key -> boolean (service_inquiries, unique_customers, pickup_requests, confirmed_bookings, completed_pickups, available_contractors, verified_service_areas). A missing key means enabled. Controls public visibility only - it never edits the verified totals themselves."
+    },
+    "targets": {
+      "type": "object",
+      "default": {},
+      "description": "Optional operational capacity targets, e.g. {available_contractors: 10, verified_service_areas: 20}. Targets drive gauge progress only; verified totals are always the real record counts and can never be set manually."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Owner's internal notes about the public metrics configuration."
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
