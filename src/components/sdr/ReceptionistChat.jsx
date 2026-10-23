@@ -129,7 +129,7 @@ export default function ReceptionistChat() {
             className="hidden sm:block absolute bottom-full right-0 mb-3 w-56"
           >
             <div className="relative rounded-2xl rounded-br-md bg-white border border-[#187B65]/40 shadow-lg px-3.5 py-2.5 text-xs font-semibold text-[#102B2A] leading-snug">
-              Hi, I'm Rex — Same Day Recycling's AI assistant. Instant quotes and bookings across Canada, recycling answers any time.
+              Hey! I'm Rex from Same Day Recycling. Need something picked up? I can help you estimate, book and track — any time.
               <button
                 onClick={handleOpen}
                 className="mt-1.5 block text-[11px] font-black uppercase tracking-wider text-[#187B65]"
@@ -201,13 +201,13 @@ export default function ReceptionistChat() {
               <div className="flex justify-start items-end gap-2">
                 <AiMascotFull height={64} />
                 <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[75%]">
-                  Welcome to Same Day Recycling. I can quote and book pickups anywhere in Canada — and answer recycling questions from anywhere in the world. What do you need removed?
+                  Hey! I'm Rex. Need something picked up? Tell me what you've got, and I'll help you figure out the next step.
                 </div>
               </div>
             )}
             {!messages.some((m) => m.role === "user") && !starting && (
               <div className="flex flex-wrap gap-2 pt-1">
-                {["Get an instant quote", "Book a same-day pickup", "What can't you take?", "Recycling rules worldwide"].map((chip) => (
+                {["What do you take?", "Estimate my load", "Book a pickup", "Do you serve my area?"].map((chip) => (
                   <button key={chip} onClick={() => send(chip)} disabled={sending} className="rounded-full border border-[#187B65]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#102B2A] hover:bg-[#187B65]/10 transition-colors">
                     {chip}
                   </button>

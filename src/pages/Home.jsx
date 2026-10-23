@@ -10,6 +10,7 @@ import TransparentPricing from "@/components/sdr/TransparentPricing";
 import RexJourney from "@/components/sdr/RexJourney";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
+import ItemEstimator from "@/components/sdr/ItemEstimator";
 import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
 import Footer from "@/components/sdr/Footer";
 import LazySection from "@/components/sdr/LazySection";
@@ -58,6 +59,7 @@ export default function Home() {
       <LazySection minHeight={380}><ProvinceImpact /></LazySection>
       <Services />
       <HowItWorks />
+      <ItemEstimator onBook={bookFromQuote} />
       <TransparentPricing />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />

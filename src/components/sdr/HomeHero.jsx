@@ -1,56 +1,74 @@
-import { useNavigate } from "react-router-dom";
-import { Phone, ShieldCheck, Network, ArrowRight } from "lucide-react";
+import { Calculator, CalendarCheck, MapPin, Phone, ShieldCheck, Recycle } from "lucide-react";
 import ServiceDiscovery from "./ServiceDiscovery";
+import { Image } from "@/components/ui/image";
 
+const TRUCK_IMG = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/b368925f5_generated_image.png";
+
+// Friendly, light hero: answers "what / my area / how do I start" in one screen.
+// The three actions scroll straight to the working tools — estimator, booking
+// form and the live coverage check.
 export default function HomeHero({ onCity }) {
-  const navigate = useNavigate();
+  const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <section id="top" className="relative bg-[#102B2A] text-white overflow-hidden">
-      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#187B65]/20 blur-3xl pointer-events-none" />
-      <div className="relative max-w-5xl mx-auto px-4 pt-6 pb-10 md:py-20 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3.5 py-1.5 text-[10px] sm:text-xs font-bold tracking-[0.14em] uppercase text-emerald-100/90">
-          <Network className="w-3.5 h-3.5 text-[#187B65]" />
-          Canada's Intelligent Recycling &amp; Removal Network
-        </div>
-        <h1 className="mt-4 text-[1.65rem] leading-tight sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
-          Recycling &amp; Junk Removal Requests Across Canada
-        </h1>
-        <p className="mt-3 text-[15px] md:text-lg text-emerald-100/85 max-w-2xl mx-auto leading-relaxed">
-          Tell us what needs to go. We'll work to connect you with a qualified local service provider — in every province and territory.
-        </p>
+    <section id="top" className="bg-[#FAF8F4] overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 pt-8 pb-10 md:pt-14 md:pb-16">
+        <div className="grid md:grid-cols-[1.15fr_1fr] gap-8 md:gap-10 items-center">
+          <div className="text-center md:text-left">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white border border-[#187B65]/20 px-3.5 py-1.5 text-[10px] sm:text-xs font-bold tracking-[0.14em] uppercase text-[#187B65] shadow-sm">
+              <Recycle className="w-3.5 h-3.5" />
+              Canada's recycling &amp; removal network
+            </div>
+            <h1 className="mt-4 text-4xl leading-[1.05] sm:text-5xl md:text-6xl font-extrabold tracking-tight text-[#102B2A]">
+              Junk Gone. Space Back. <span className="text-[#187B65]">Same Day.</span>
+            </h1>
+            <p className="mt-4 text-[15px] md:text-lg text-slate-600 max-w-xl mx-auto md:mx-0 leading-relaxed">
+              Book junk removal, furniture pickup, appliance recycling, and property cleanouts with a simple, guided experience.
+            </p>
 
-        {/* Primary: unified postal/city → coverage → material → provider discovery */}
-        <div className="mt-6 max-w-2xl mx-auto">
+            <div className="mt-6 flex flex-col gap-2.5 max-w-md mx-auto md:mx-0">
+              <button
+                onClick={() => scrollTo("estimate")}
+                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-[#187B65] text-white font-bold px-7 py-3.5 text-base shadow-md shadow-[#187B65]/25 hover:bg-[#125C4E] transition-colors"
+              >
+                <Calculator className="w-5 h-5" /> Get My Instant Estimate
+              </button>
+              <button
+                onClick={() => scrollTo("book")}
+                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-[#102B2A] text-white font-bold px-7 py-3.5 text-base hover:bg-[#0a3020] transition-colors"
+              >
+                <CalendarCheck className="w-5 h-5" /> Book a Pickup
+              </button>
+              <button
+                onClick={() => scrollTo("area-check")}
+                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-white text-[#102B2A] border-2 border-slate-200 font-bold px-7 py-3.5 text-base hover:border-[#187B65] hover:text-[#187B65] transition-colors"
+              >
+                <MapPin className="w-5 h-5" /> Check My Area
+              </button>
+            </div>
+
+            <div className="mt-5 flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-xs font-semibold text-slate-500">
+              <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Free, no-obligation estimates</span>
+              <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> You approve the price before we lift anything</span>
+            </div>
+            <a href="tel:+16048491745" className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-[#102B2A] hover:text-[#187B65] transition-colors">
+              <Phone className="w-4 h-4 text-[#187B65]" /> (604) 849-1745
+            </a>
+          </div>
+
+          <div>
+            <Image
+              src={TRUCK_IMG}
+              fittingType="fit"
+              alt="Friendly green pickup truck loaded with furniture next to recycling bins"
+              className="w-full max-w-md mx-auto h-56 sm:h-72 md:h-96 rounded-3xl"
+            />
+          </div>
+        </div>
+
+        {/* Live coverage check — kept as the "Check My Area" tool */}
+        <div id="area-check" className="mt-8 md:mt-12 max-w-2xl mx-auto scroll-mt-20">
           <ServiceDiscovery onCity={onCity} />
-        </div>
-
-        {/* Primary + secondary national actions */}
-        <div className="mt-5 flex flex-wrap justify-center gap-2.5">
-          <button
-            onClick={() => navigate("/request-service")}
-            className="inline-flex items-center min-h-[48px] rounded-full bg-[#187B65] text-white font-bold px-7 py-2.5 text-sm shadow-lg shadow-[#187B65]/30 hover:bg-[#125C4E] transition-colors"
-          >
-            Request Service <ArrowRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => navigate("/recycling")}
-            className="inline-flex items-center min-h-[48px] rounded-full border-2 border-white/30 text-white font-bold px-5 py-2.5 text-sm hover:bg-white/10 transition-colors"
-          >
-            Browse Recycling Directory
-          </button>
-        </div>
-
-        <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-semibold text-emerald-100/75">
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Requests open in every province &amp; territory</span>
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" /> Same-day fulfillment depends on contractor availability &amp; confirmation</span>
-        </div>
-
-        <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-2 text-sm text-emerald-100/75">
-          <span>One Country. One Network. A Smarter Way to Recycle.</span>
-          <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 font-semibold text-white hover:text-[#187B65] transition-colors">
-            <Phone className="w-4 h-4 text-[#187B65]" /> (604) 849-1745
-          </a>
         </div>
       </div>
     </section>
