@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Bot, Send, CheckCircle2, Circle, Sparkles, Phone, Loader2 } from "lucide-react";
+import { useSEO } from "@/lib/seo";
 
 const OPENING =
   "Hi, I'm Rex — the Same Day Recycling booking engine. We're a nationwide agency: I accept service requests from every city in Canada, and our dispatch team arranges a qualified local contractor — same-day pickup is confirmed once a contractor accepts. Tell me what you need picked up and where. What are we clearing out today?";
@@ -24,6 +25,11 @@ const STARTERS = [
 ];
 
 export default function AIBookingCenter() {
+  useSEO({
+    title: "AI Booking Center | Same Day Recycling",
+    description: "Book junk removal, furniture pickup and recycling service across Canada with Rex, the Same Day Recycling booking assistant. Nationwide request intake; contractor acceptance and your approved price confirm every appointment.",
+    path: "/ai-booking",
+  });
   const [messages, setMessages] = useState([{ role: "assistant", content: OPENING }]);
   const [collected, setCollected] = useState({});
   const [booked, setBooked] = useState(null);

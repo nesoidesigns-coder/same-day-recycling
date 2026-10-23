@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Loader2, CheckCircle2, XCircle, FileSignature, Recycle } from "lucide-react";
+import { useSEO } from "@/lib/seo";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
 
 // Public customer-facing approval screen for a change order, opened from the
 // emailed secure link (?token=...). The token is the only credential.
 export default function ChangeOrderRespond() {
+  // Tokenized customer approval screen — never a search result.
+  useSEO({ robots: "noindex, nofollow" });
   const [state, setState] = useState("loading"); // loading | ready | decided | error
   const [co, setCo] = useState(null);
   const [decision, setDecision] = useState("");
