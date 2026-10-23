@@ -53,6 +53,15 @@
       "default": "",
       "maxLength": 1000
     },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "service",
+        "internal_test"
+      ],
+      "default": "service",
+      "description": "internal_test = validation fixture. Test records are excluded from public coverage counts (matching_cities) and never count as real demand."
+    },
     "coverage_status": {
       "type": "string",
       "enum": [

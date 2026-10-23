@@ -12,6 +12,20 @@ export const DEFAULT_PRICES = {
   full_truck: 649,
 };
 
+// THE one merge rule for city pricing rows — used by quoteEstimate,
+// cityPricing and every other consumer. Only finite, POSITIVE stored rates
+// override the defaults: an unset or zero tier falls back to the national
+// rate, so calculators, booking forms and Rex can never disagree.
+export function resolveCityPrices(row) {
+  if (!row) return { ...DEFAULT_PRICES };
+  const picks = {};
+  for (const k of Object.keys(DEFAULT_PRICES)) {
+    const v = Number(row[k]);
+    if (Number.isFinite(v) && v > 0) picks[k] = v;
+  }
+  return { ...DEFAULT_PRICES, ...picks };
+}
+
 // Truck space per unit, measured in eighths of a full truck.
 export const ITEM_WEIGHTS = {
   sofa: 1.2,

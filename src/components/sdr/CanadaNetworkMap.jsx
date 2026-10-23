@@ -105,7 +105,7 @@ export default function CanadaNetworkMap() {
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
             We accept service requests from every Canadian city — same-day pickup is confirmed wherever a verified contractor is available, and we source one where we're still expanding.
-            Shaded areas are live coverage zones from verified-partner status; every green point is an independent recycling facility verified for our public directory — not a Same Day Recycling pickup partner.
+            Shaded areas are live coverage zones from verified-partner status; every green point is an independent recycling facility researched for our public directory — not a Same Day Recycling pickup partner.
           </p>
         </div>
 

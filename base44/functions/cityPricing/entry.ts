@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { DEFAULT_PRICES } from '../../shared/pricing.ts';
+import { DEFAULT_PRICES, resolveCityPrices } from '../../shared/pricing.ts';
 
 export default async function(req) {
   try {
@@ -20,14 +20,7 @@ export default async function(req) {
           { limit: 1 }
         ));
       }
-      if (rows[0]) {
-        const picks = {};
-        for (const k of Object.keys(DEFAULT_PRICES)) {
-          const v = Number(rows[0][k]);
-          if (Number.isFinite(v) && v > 0) picks[k] = v;
-        }
-        prices = { ...DEFAULT_PRICES, ...picks };
-      }
+      if (rows[0]) prices = resolveCityPrices(rows[0]);
     } catch (e) {
       // fall back to default rates
     }

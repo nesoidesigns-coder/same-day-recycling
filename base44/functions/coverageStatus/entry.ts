@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { isTestPartner } from '../../shared/coverageStatus.ts';
+import { isTestPartner, ACTIVE_CITIES } from '../../shared/coverageStatus.ts';
 
 // Public, aggregate-only coverage status endpoint. PII-free: returns city
 // names and counts only. This is the single authoritative source for:
@@ -36,17 +36,25 @@ export default async function(req) {
     }
     const verifiedCities = [...cityNames.values()].sort((a, b) => a.localeCompare(b));
 
-    // 2. Open requests awaiting contractor matching, grouped by city.
-    //    Cities that already have verified capacity are not re-listed.
+    // 2. Public matching layer: every registry service-territory city WITHOUT
+    //    verified contractor capacity is "Requests Open — Contractor Matching"
+    //    (the registry, not open requests, is authoritative — so the homepage
+    //    can never report zero matching while the registry says otherwise).
+    //    Open customer requests in cities OUTSIDE the registry are appended;
+    //    internal_test records never count as demand.
+    const matchingByKey = new Map();
+    for (const name of ACTIVE_CITIES) {
+      const key = name.toLowerCase();
+      if (!cityNames.has(key)) matchingByKey.set(key, name);
+    }
     const { rows: open } = await srole.entities.NationalRequest.aggregate({
-      query: { status: { $in: ['new', 'provider_matching'] } },
+      query: { status: { $in: ['new', 'provider_matching'] }, record_type: { $ne: 'internal_test' } },
       groupBy: 'city',
     });
-    const matchingByKey = new Map();
     for (const r of open || []) {
       const city = String(r.city || '').trim().replace(/\s+/g, ' ');
       const key = city.toLowerCase();
-      if (city && !cityNames.has(key)) matchingByKey.set(key, city);
+      if (city && !cityNames.has(key) && !matchingByKey.has(key)) matchingByKey.set(key, city);
     }
     const matchingCities = [...matchingByKey.values()].sort((a, b) => a.localeCompare(b));
 

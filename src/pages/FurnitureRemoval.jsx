@@ -83,7 +83,7 @@ const CONFIG = {
   ],
   faqs: [
     { q: "Do you take mattresses and box springs?", a: "Yes. Mattresses and box springs go out with the crew, and the metal springs are recycled rather than landfilled. A single mattress fits a normal minimum pickup." },
-    { q: "How much does furniture removal cost?", a: "Pricing is based on the truck space your items take, from a $139 minimum pickup to a full truck. You approve the final price before anything is lifted." },
+    { q: "How much does furniture removal cost?", a: "Pricing is based on the truck space your items take, from a $139 minimum pickup to a full truck at the national standard rate — your quote always shows your city's exact rates. You approve the final price before anything is lifted." },
     { q: "Do I need to be home?", a: "Not for curbside pickup. Stage items in your driveway, lane or garage front and take $25 off with our Curbside Discount." },
     { q: "Can you take furniture from upstairs or an apartment?", a: "Yes. The crew carries items from any floor, including stairs, elevators and tight corners. For condo and strata buildings we coordinate elevator bookings with building management." },
     { q: "Do you disassemble furniture for removal?", a: "Where a piece needs it, the crew handles the disassembly as part of the pickup. You don't need to dismantle anything beforehand." },

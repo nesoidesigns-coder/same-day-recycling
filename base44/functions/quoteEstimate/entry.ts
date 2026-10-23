@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
-import { computeQuote, itemsToEighths, DEFAULT_PRICES } from '../../shared/pricing.ts';
+import { computeQuote, itemsToEighths, DEFAULT_PRICES, resolveCityPrices } from '../../shared/pricing.ts';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 
 export default async function(req) {
@@ -26,7 +26,7 @@ export default async function(req) {
           { limit: 1 }
         ));
       }
-      if (rows[0]) prices = { ...DEFAULT_PRICES, ...rows[0] };
+      if (rows[0]) prices = resolveCityPrices(rows[0]);
     } catch (e) {
       // fall back to placeholder rates
     }

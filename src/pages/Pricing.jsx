@@ -21,7 +21,7 @@ const GUARANTEES = [
 ];
 
 const FAQS = [
-  { q: "How much does junk removal cost?", a: "Pricing is based on the truck space your load fills, from a $139 minimum pickup up to about $649 for a full truck. The exact price depends on volume and weight, and the final price is confirmed on arrival before we lift anything." },
+  { q: "How much does junk removal cost?", a: "Pricing is based on the truck space your load fills, from a $139 minimum pickup up to about $649 for a full truck at the national standard rate (some cities set their own approved rates — your quote always shows your exact figure). The exact price depends on volume and weight, and the final price is confirmed on arrival before we lift anything." },
   { q: "How do I know what I'll pay before the crew arrives?", a: "Get an instant estimate with our online quote tool or from a photo, or call for a free no-obligation estimate. You approve the final price on arrival before we lift a thing — no surprise hikes." },
   { q: "Are there extra fees like fuel or dumping charges?", a: "No. Labor, loading, transport, sorting and disposal are all included in the tier price. No hidden fees, no scale surprises." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Everything else that fits in a truck, we can usually take." },

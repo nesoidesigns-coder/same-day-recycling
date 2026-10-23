@@ -16,6 +16,7 @@ export default function CityPricingEditor() {
   const [cityKey, setCityKey] = useState("");
   const [values, setValues] = useState(null);
   const [rowId, setRowId] = useState(null);
+  const [rec, setRec] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -23,6 +24,7 @@ export default function CityPricingEditor() {
     (async () => {
       setValues(null);
       setRowId(null);
+      setRec(null);
       let rec = null;
       if (cityKey) {
         const { items } = await base44.entities.PricingSettings.filter({ city: cityKey }, { limit: 1 });
@@ -33,6 +35,7 @@ export default function CityPricingEditor() {
       }
       if (rec) {
         setRowId(rec.id);
+        setRec(rec);
         setValues(Object.fromEntries(RATE_FIELDS.map(([k]) => [k, rec[k] ?? ""])));
       } else {
         setValues(Object.fromEntries(RATE_FIELDS.map(([k]) => [k, ""])));
@@ -40,14 +43,34 @@ export default function CityPricingEditor() {
     })();
   }, [cityKey]);
 
+  // Versioned pricing: saving IS the owner's approval. Every change is
+  // recorded with who approved it and when, the revision is bumped, and the
+  // previously published rates are snapshotted into history — so approved
+  // local rates can never be overwritten silently.
   const save = async () => {
     setSaving(true);
     setSaved(false);
-    const data = {};
-    for (const [k] of RATE_FIELDS) data[k] = Number(values[k]) || 0;
+    const data = Object.fromEntries(RATE_FIELDS.map(([k]) => [k, Number(values[k]) || 0]));
     if (cityKey) data.city = cityKey;
-    if (rowId) await base44.entities.PricingSettings.update(rowId, data);
-    else await base44.entities.PricingSettings.create(data);
+    const me = await base44.auth.me();
+    data.approved_by = me?.email || "admin";
+    data.approved_date = new Date().toISOString().slice(0, 10);
+    if (rec) {
+      data.revision = (rec.revision || 1) + 1;
+      data.history = [
+        ...(rec.history || []),
+        {
+          date: rec.updated_date || new Date().toISOString(),
+          revision: rec.revision || 1,
+          approved_by: rec.approved_by || "",
+          rates: Object.fromEntries(RATE_FIELDS.map(([k]) => [k, rec[k] ?? null])),
+        },
+      ];
+      await base44.entities.PricingSettings.update(rec.id, data);
+    } else {
+      data.revision = 1;
+      await base44.entities.PricingSettings.create(data);
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
     setSaving(false);

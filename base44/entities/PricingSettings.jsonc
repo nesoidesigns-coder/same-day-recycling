@@ -34,6 +34,43 @@
       "type": "string",
       "default": "",
       "maxLength": 1000
+    },
+    "revision": {
+      "type": "number",
+      "default": 1,
+      "description": "Bumped on every published change. Prior published rates are snapshotted into history."
+    },
+    "approved_by": {
+      "type": "string",
+      "default": "",
+      "description": "Owner/admin who published these rates. Published pricing rules only change through this explicit approval."
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the owner approved the currently published rates."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "number"
+          },
+          "approved_by": {
+            "type": "string"
+          },
+          "rates": {
+            "type": "object"
+          }
+        },
+        "default": []
+      },
+      "description": "Immutable snapshots of every previously published rate set \u2014 change history for auditing, never auto-overwritten."
     }
   },
   "required": [],
