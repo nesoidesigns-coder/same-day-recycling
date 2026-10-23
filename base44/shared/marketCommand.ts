@@ -121,7 +121,16 @@ export function buildMarketCommand(input, filters = {}, storedCount = input.leng
     const candidates = eligible.filter((r) => r.period === period);
     const window = candidates.map((r) => `${r.period_start}|${r.period_end}`).sort()[0];
     const rows = measure === 'monthly_average' ? candidates.filter((r) => `${r.period_start}|${r.period_end}` === window) : candidates;
-    return { category:c, label:CATEGORY_LABELS[c], ...metric(rows, available.filter((r) => r.period === previousPeriod(period)), scopeLabel, period), included_in_overview:period === latest && measure === desired && (measure !== 'monthly_average' || window === averageWindow) };
+    // Leading city per service: city-level observations only, never projected
+    // from national or provincial totals.
+    const cityAgg = new Map();
+    for (const r of engineRows.filter((r) => r.geo_type === 'city' && r.service_category === c && kind(r) === desired && within(r))) {
+      const ck = `${norm(r.city)}|${norm(r.province_code)}`;
+      cityAgg.set(ck, (cityAgg.get(ck) || 0) + Number(r.est_monthly_volume));
+    }
+    const topCity = [...cityAgg.entries()].sort((a,b) => b[1]-a[1])[0] || null;
+    const leading_city = topCity ? { city: topCity[0].split('|')[0], province_code: topCity[0].split('|')[1], value: topCity[1] } : null;
+    return { category:c, label:CATEGORY_LABELS[c], ...metric(rows, available.filter((r) => r.period === previousPeriod(period)), scopeLabel, period), leading_city, included_in_overview:period === latest && measure === desired && (measure !== 'monthly_average' || window === averageWindow) };
   });
   const monthly = scoped.filter((r) => kind(r) === 'monthly_volume' && within(r));
   const monthlyPeriods = unique(monthly.map((r) => r.period)).sort();
