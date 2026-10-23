@@ -5,6 +5,7 @@ import TerritoryCard from "@/components/partner/TerritoryCard";
 import IncomingRequests from "@/components/partner/IncomingRequests";
 import Financials from "@/components/partner/Financials";
 import Performance from "@/components/partner/Performance";
+import ValueDashboard from "@/components/partner/ValueDashboard";
 import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
 import LeadOffers from "@/components/partner/LeadOffers";
 import DisputeResponse from "@/components/partner/DisputeResponse";
@@ -148,6 +149,8 @@ export default function PartnersDashboard() {
         <Financials />
 
         <Performance />
+
+        <ValueDashboard />
 
         <DisputeResponse />
 

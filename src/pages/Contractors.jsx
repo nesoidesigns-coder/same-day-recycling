@@ -256,6 +256,11 @@ export default function Contractors() {
               Membership plans are capped per market to keep job flow healthy for every member.
             </p>
             <p className="text-slate-600 font-semibold">No hidden charges: every fee is disclosed in your agreement before you sign.</p>
+            <p className="text-sm">
+              <Link to="/contractor-membership" className="inline-flex items-center gap-1.5 font-bold text-[#187B65] hover:underline">
+                Full comparison: entitlements, fees, billing, cancellation &amp; regions <ArrowRight className="w-4 h-4" />
+              </Link>
+            </p>
           </div>
           <div className="mt-10 max-w-3xl mx-auto rounded-3xl border border-slate-200 bg-[#f6f8f7] p-6 md:p-8">
             <h3 className="text-lg font-bold text-[#102B2A]">Subscription terms, plainly</h3>

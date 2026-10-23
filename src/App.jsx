@@ -99,6 +99,9 @@ const AdminRevenue = lazyPage(() => import('./pages/AdminRevenue'));
 const AdminConversion = lazyPage(() => import('./pages/AdminConversion'));
 const AdminAcquisition = lazyPage(() => import('./pages/AdminAcquisition'));
 const AdminContractorOps = lazyPage(() => import('./pages/AdminContractorOps'));
+const AdminFranchiseReview = lazyPage(() => import('./pages/AdminFranchiseReview'));
+const AdminContractorAcquisition = lazyPage(() => import('./pages/AdminContractorAcquisition'));
+const MembershipCompare = lazyPage(() => import('./pages/MembershipCompare'));
 const AdminAgreements = lazyPage(() => import('./pages/AdminAgreements'));
 const AdminSalesIntelligence = lazyPage(() => import('./pages/AdminSalesIntelligence'));
 const AdminDisputes = lazyPage(() => import('./pages/AdminDisputes'));
@@ -161,6 +164,7 @@ const AuthenticatedApp = () => {
       <Route path="/review" element={<ReviewPage />} />
       <Route path="/realtors" element={<Realtors />} />
       <Route path="/contractors" element={<Contractors />} />
+      <Route path="/contractor-membership" element={<MembershipCompare />} />
       <Route path="/contractor-onboarding" element={<ContractorOnboarding />} />
       <Route path="/coverage" element={<Coverage />} />
       <Route path="/region/:code" element={<ProvincePage />} />
@@ -204,6 +208,8 @@ const AuthenticatedApp = () => {
           <Route path="/admin/revenue" element={<AdminRevenue />} />
           <Route path="/admin/acquisition" element={<AdminAcquisition />} />
           <Route path="/admin/contractor-ops" element={<AdminContractorOps />} />
+          <Route path="/admin/contractor-acquisition" element={<AdminContractorAcquisition />} />
+          <Route path="/admin/franchise-review" element={<AdminFranchiseReview />} />
           <Route path="/admin/conversion" element={<AdminConversion />} />
           <Route path="/admin/agreements" element={<AdminAgreements />} />
           <Route path="/admin/disputes" element={<AdminDisputes />} />

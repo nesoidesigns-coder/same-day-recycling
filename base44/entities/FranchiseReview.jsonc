@@ -1,0 +1,118 @@
+{
+  "name": "FranchiseReview",
+  "type": "object",
+  "properties": {
+    "subject": {
+      "type": "string",
+      "description": "What is under review, e.g. 'Membership program' or the agreement's partner name."
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "membership_program",
+        "contractor_agreement",
+        "software_license"
+      ],
+      "default": "contractor_agreement"
+    },
+    "agreement_id": {
+      "type": "string",
+      "default": "",
+      "description": "ContractorAgreement under review, when one applies."
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "brand_licensing, operating_control, territorial_rights, required_fees, marketing_assistance, exit_or_renewal, other."
+          },
+          "term": {
+            "type": "string",
+            "description": "The specific term or fact being flagged, exactly as it appears."
+          },
+          "flagged": {
+            "type": "boolean",
+            "default": true
+          },
+          "note": {
+            "type": "string",
+            "default": "",
+            "maxLength": 1000
+          }
+        }
+      },
+      "default": [],
+      "description": "Risk-factor flags for legal review: brand licensing, operating control, territorial rights, required fees, marketing assistance."
+    },
+    "counsel_status": {
+      "type": "string",
+      "enum": [
+        "pending_legal_review",
+        "in_review",
+        "review_complete"
+      ],
+      "default": "pending_legal_review",
+      "description": "Where the Canadian legal counsel review stands. Never records a legal conclusion \u2014 only that counsel has or has not reviewed."
+    },
+    "counsel_notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 4000,
+      "description": "Counsel's working notes. Counsel, not this system, determines any legal conclusion."
+    },
+    "reviewed_by": {
+      "type": "string",
+      "default": ""
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "subject"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

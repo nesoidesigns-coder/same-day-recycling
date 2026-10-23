@@ -6,6 +6,7 @@ import {
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
   Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles,
+  Target, FileSearch,
 } from "lucide-react";
 
 const OPS = [
@@ -24,6 +25,7 @@ const OPS = [
   { to: "/admin/disputes", label: "Disputes", icon: Scale },
   { to: "/admin/reputation", label: "Reputation", icon: ShieldCheck },
   { to: "/admin/sales", label: "Sales Intelligence", icon: TrendingUp },
+  { to: "/admin/contractor-acquisition", label: "Contractor Acquisition", icon: Target },
 ];
 const INTELLIGENCE = [
   { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
@@ -38,6 +40,7 @@ const CONFIG = [
   { to: "/admin/cities", label: "City Management", icon: MapPin },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/keywords", label: "Search Keywords", icon: Search },
+  { to: "/admin/franchise-review", label: "Franchise Review", icon: FileSearch },
 ];
 const ADVANCED = [
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
