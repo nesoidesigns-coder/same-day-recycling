@@ -1,9 +1,33 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Recycle, Loader2, RefreshCw, ExternalLink, Phone } from "lucide-react";
+import { Recycle, Loader2, RefreshCw, ExternalLink, Phone, Navigation } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { CITIES } from "@/lib/cities";
+
+// Live road radar exits for self-haulers: deep links open the driver's own
+// navigation app, where live traffic and route choice are real — no invented
+// congestion data is drawn on the map itself.
+const directionsLinks = (c) => (
+  <div style={{ fontSize: 12, marginTop: 6, display: "flex", gap: 8 }}>
+    <a
+      href={`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=driving`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: "#187B65", fontWeight: 700, textDecoration: "underline" }}
+    >
+      Directions · live traffic
+    </a>
+    <a
+      href={`https://waze.com/ul?ll=${c.lat},${c.lng}&navigate=yes`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: "#102B2A", fontWeight: 700, textDecoration: "underline" }}
+    >
+      Waze radar
+    </a>
+  </div>
+);
 
 export default function RecyclingCentersMap({ city = null, showSelector = false }) {
   const [centers, setCenters] = useState(null);
@@ -62,6 +86,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
           </h2>
           <p className="mt-3 text-slate-600 text-lg">
             Real drop-off depots, transfer stations and recycling facilities across Canada — researched and kept up to date for you.
+            Self-hauling? Open directions from any centre and your navigation app shows live road conditions for the trip.
           </p>
           {lastResearched && (
             <p className="mt-1 text-xs text-slate-400">Last updated:{" "}{lastResearched}</p>
@@ -137,6 +162,8 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                             </a>
                           </div>
                         )}
+                        {directionsLinks(c)}
+
                       </div>
                     </Popup>
                   </CircleMarker>
@@ -150,7 +177,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                   <p className="font-bold text-[#102B2A] text-sm">{c.name}</p>
                   <p className="text-xs text-slate-500 mt-1">{c.address}</p>
                   {c.accepts && <p className="text-xs text-slate-600 mt-2">Accepts: {c.accepts}</p>}
-                  <div className="flex items-center gap-3 mt-2 text-xs">
+                  <div className="flex flex-wrap items-center gap-3 mt-2 text-xs">
                     {c.phone && (
                       <a href={`tel:${c.phone}`} className="inline-flex items-center gap-1 text-[#187B65] font-semibold">
                         <Phone className="w-3 h-3" /> Call
@@ -161,6 +188,14 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                         <ExternalLink className="w-3 h-3" /> Website
                       </a>
                     )}
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=driving`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[#187B65] font-semibold"
+                    >
+                      <Navigation className="w-3 h-3" /> Directions · live traffic
+                    </a>
                   </div>
                 </div>
               ))}
