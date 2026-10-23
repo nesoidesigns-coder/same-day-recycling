@@ -26,7 +26,7 @@ export default function RexMonitor() {
         <div className="flex items-center gap-2 text-sm font-bold text-[#102B2A]">
           <Bot className="w-5 h-5 text-[#187B65]" /> Rex AI activity
         </div>
-        <p className="text-sm text-slate-400 mt-3">Loading action log…</p>
+        <p className="text-sm text-slate-500 mt-3">Loading action log…</p>
       </div>
     );
   }
@@ -42,7 +42,7 @@ export default function RexMonitor() {
         <div className="flex items-center gap-2 text-sm font-bold text-[#102B2A]">
           <Bot className="w-5 h-5 text-[#187B65]" /> Rex AI activity
           <RexOrb state={queue.length > 0 ? "attention" : "success"} size={14} showLabel={false} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">last {log.length} logged actions</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">last {log.length} logged actions</span>
         </div>
         <div className="flex items-center gap-3 text-xs font-semibold">
           <span className="flex items-center gap-1 text-emerald-700"><CheckCircle2 className="w-3.5 h-3.5" /> {ok.length} successful</span>
@@ -78,7 +78,7 @@ export default function RexMonitor() {
                 <div className="min-w-0">
                   <div className="text-sm font-semibold text-[#102B2A] break-words">{(l.action || "").replace(/_/g, " ")}</div>
                   <div className="text-xs text-slate-500 break-words">{l.summary}</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">
+                  <div className="text-[10px] text-slate-500 mt-0.5">
                     {(l.created_date || "").replace("T", " ").slice(0, 16)}
                     {l.target_id ? ` · ${l.target_type || "record"}: ${l.target_id}` : ""}
                   </div>

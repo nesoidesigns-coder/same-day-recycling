@@ -118,7 +118,7 @@ export default function AdminSearchAuthority() {
           <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
             {kpis.map((k) => (
               <div key={k.label} className="rounded-2xl bg-white border border-slate-100 shadow-sm px-4 py-4">
-                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   <k.icon className="w-3.5 h-3.5 text-[#187B65]" /> {k.label}
                 </div>
                 <div className="mt-1 text-2xl font-extrabold text-[#102B2A]">{k.value}</div>
@@ -281,7 +281,7 @@ function Table({ head, rows, empty }) {
   return (
     <table className="w-full text-sm">
       <thead>
-        <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+        <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
           {head.map((h, i) => <th key={h} className={i === 0 ? "py-2 pr-4" : "py-2 pr-4 text-right"}>{h}</th>)}
         </tr>
       </thead>
@@ -301,7 +301,7 @@ function Table({ head, rows, empty }) {
 function MiniStat({ label, value, note, tone }) {
   return (
     <div className="rounded-2xl bg-[#f4f7f5] border border-slate-100 px-4 py-3.5">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</div>
       <div className={`mt-0.5 text-xl font-extrabold ${tone || "text-[#102B2A]"}`}>{value}</div>
       {note && <div className="text-[10px] text-slate-500">{note}</div>}
     </div>

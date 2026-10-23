@@ -99,7 +99,7 @@ export default function BrandScanner({ scan, history, running, onRun }) {
 
       {history.length > 1 && (
         <div className="mt-5 pt-4 border-t border-slate-100">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 inline-flex items-center gap-1.5">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 inline-flex items-center gap-1.5">
             <History className="w-3.5 h-3.5" /> Scan history
           </div>
           <div className="flex flex-wrap gap-2">
@@ -118,10 +118,10 @@ export default function BrandScanner({ scan, history, running, onRun }) {
 function ListBlock({ title, icon, items }) {
   return (
     <div className="rounded-2xl bg-[#f4f7f5] border border-slate-100 px-4 py-3">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 inline-flex items-center gap-1.5">{icon} {title}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 inline-flex items-center gap-1.5">{icon} {title}</div>
       <ul className="space-y-1 text-xs text-[#102B2A]">
         {(items || []).slice(0, 5).map((it, i) => <li key={i}>• {it}</li>)}
-        {(!items || items.length === 0) && <li className="text-slate-400">—</li>}
+        {(!items || items.length === 0) && <li className="text-slate-500">—</li>}
       </ul>
     </div>
   );

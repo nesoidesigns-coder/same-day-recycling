@@ -67,7 +67,7 @@ export default function OverviewTab() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-400 mb-3">Live counts</h2>
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-3">Live counts</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <Tile label="National requests" value={data.total} />
           <Tile label="Unassigned requests" value={data.unassigned} accent={data.unassigned > 0 ? "text-amber-600" : undefined} />
@@ -79,7 +79,7 @@ export default function OverviewTab() {
           <Tile label="Prospective providers" value={data.prospects} />
           <Tile label="Pending callbacks" value={data.callbacks} accent={data.callbacks > 0 ? "text-amber-600" : undefined} />
         </div>
-        <p className="mt-2 text-xs text-slate-400">Job revenue from completed operator bookings: ${Number(data.bookingRevenue).toLocaleString("en-CA")}</p>
+        <p className="mt-2 text-xs text-slate-500">Job revenue from completed operator bookings: ${Number(data.bookingRevenue).toLocaleString("en-CA")}</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -90,7 +90,7 @@ export default function OverviewTab() {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-slate-400 uppercase tracking-wide">
+                <tr className="text-left text-xs text-slate-500 uppercase tracking-wide">
                   <th className="py-1.5">Region</th>
                   <th className="py-1.5 text-right">Requests</th>
                   <th className="py-1.5 text-right">Verified providers</th>
@@ -116,7 +116,7 @@ export default function OverviewTab() {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-slate-400 uppercase tracking-wide">
+                <tr className="text-left text-xs text-slate-500 uppercase tracking-wide">
                   <th className="py-1.5">City</th>
                   <th className="py-1.5 text-right">Requests</th>
                 </tr>

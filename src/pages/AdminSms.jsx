@@ -54,7 +54,7 @@ export default function AdminSms() {
       </div>
 
       {messages === null ? (
-        <div className="flex items-center justify-center py-24 text-slate-400">
+        <div className="flex items-center justify-center py-24 text-slate-500">
           <Loader2 className="w-6 h-6 animate-spin" />
         </div>
       ) : threads.length === 0 ? (

@@ -23,7 +23,7 @@ export default function GaugeCard({ title, tooltip, updated, onOpen, status, chi
               </button>
               {tipOpen && (
                 <div className="absolute right-0 top-full mt-1 w-56 z-30 rounded-xl bg-slate-900 text-white text-[11px] leading-relaxed p-3 shadow-xl">
-                  <button onClick={() => setTipOpen(false)} aria-label="Close" className="absolute top-1.5 right-1.5 text-slate-400 hover:text-white">
+                  <button onClick={() => setTipOpen(false)} aria-label="Close" className="absolute top-1.5 right-1.5 text-slate-500 hover:text-white">
                     <X className="w-3 h-3" />
                   </button>
                   {tooltip}
@@ -43,9 +43,9 @@ export default function GaugeCard({ title, tooltip, updated, onOpen, status, chi
         </div>
       </div>
       <div className="flex-1">{children}</div>
-      <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-[11px] text-slate-400">
+      <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-[11px] text-slate-500">
         <span className="flex items-center gap-1 truncate"><Clock className="w-3 h-3 shrink-0" />{updated}</span>
-        {status && <span className={`font-bold shrink-0 ${STATUS_COLOR[status] || "text-slate-400"}`}>{status}</span>}
+        {status && <span className={`font-bold shrink-0 ${STATUS_COLOR[status] || "text-slate-500"}`}>{status}</span>}
       </div>
     </div>
   );

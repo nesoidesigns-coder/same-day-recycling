@@ -182,23 +182,23 @@ export default function AdminAnalytics() {
             <button onClick={() => load("custom", custom)} className="rounded-full bg-emerald-500 text-white font-bold px-5 py-2.5 text-sm hover:bg-emerald-600">Apply</button>
           </div>
         )}
-        <p className="text-[11px] text-slate-400 mb-6">Residential / commercial / recurring filters will appear once booking records track service type.</p>
+        <p className="text-[11px] text-slate-500 mb-6">Residential / commercial / recurring filters will appear once booking records track service type.</p>
 
         {showTargets && (
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-bold text-slate-800">Targets &amp; warning levels</h2>
-              <button onClick={() => setShowTargets(false)} aria-label="Close targets"><X className="w-4 h-4 text-slate-400" /></button>
+              <button onClick={() => setShowTargets(false)} aria-label="Close targets"><X className="w-4 h-4 text-slate-500" /></button>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {targets.map((t, i) => (
                 <div key={t.id || i} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
-                  <div className="text-xs font-bold text-slate-700 mb-2">{t.label || t.metric} <span className="text-slate-400 font-semibold">({t.unit})</span></div>
+                  <div className="text-xs font-bold text-slate-700 mb-2">{t.label || t.metric} <span className="text-slate-500 font-semibold">({t.unit})</span></div>
                   <div className="flex gap-2">
                     <input type="number" step="any" value={t.target ?? ""} onChange={(e) => setTargets(targets.map((tt, j) => (j === i ? { ...tt, target: e.target.value } : tt)))} className="input !py-2 text-sm" aria-label={`${t.label || t.metric} target`} />
                     <input type="number" step="any" value={t.warning ?? ""} onChange={(e) => setTargets(targets.map((tt, j) => (j === i ? { ...tt, warning: e.target.value } : tt)))} className="input !py-2 text-sm" aria-label={`${t.label || t.metric} warning level`} />
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-1.5">target · warning</div>
+                  <div className="text-[10px] text-slate-500 mt-1.5">target · warning</div>
                 </div>
               ))}
             </div>
@@ -213,7 +213,7 @@ export default function AdminAnalytics() {
         ) : error ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 font-semibold">{error}</div>
         ) : !data ? (
-          <div className="text-sm text-slate-400 py-10 text-center">Choose a period to load metrics.</div>
+          <div className="text-sm text-slate-500 py-10 text-center">Choose a period to load metrics.</div>
         ) : (
           <>
             <h2 className={SECTION_TITLE}>Business performance</h2>
@@ -348,11 +348,11 @@ export default function AdminAnalytics() {
             {detail.loading ? (
               <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 text-emerald-500 animate-spin" /></div>
             ) : detail.records.length === 0 ? (
-              <p className="text-sm text-slate-400 py-8 text-center">No records for this metric in the selected period.</p>
+              <p className="text-sm text-slate-500 py-8 text-center">No records for this metric in the selected period.</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                  <tr className="text-left text-[10px] uppercase tracking-wider text-slate-500 border-b border-slate-100">
                     {detail.headers.map((h) => <th key={h} className="py-2 pr-3 font-bold">{h}</th>)}
                   </tr>
                 </thead>

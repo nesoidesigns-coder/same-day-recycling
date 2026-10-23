@@ -61,7 +61,7 @@ export default function SalesIntelligenceTab() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-400 mb-3">Demand funnel (real records only)</h2>
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-3">Demand funnel (real records only)</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: "Customer inquiries", value: data.total },
@@ -82,7 +82,7 @@ export default function SalesIntelligenceTab() {
       </div>
 
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-400 mb-3 flex items-center gap-2">
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-3 flex items-center gap-2">
           <Target className="w-4 h-4 text-[#187B65]" /> Contractor outreach opportunities — demand without a verified contractor
         </h2>
         {data.opportunities.length === 0 ? (
@@ -91,7 +91,7 @@ export default function SalesIntelligenceTab() {
           <div className="rounded-2xl border border-slate-100 bg-white shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-slate-400 uppercase tracking-wide">
+                <tr className="text-left text-xs text-slate-500 uppercase tracking-wide">
                   <th className="px-4 py-2.5">City</th>
                   <th className="px-4 py-2.5">Inquiries</th>
                   <th className="px-4 py-2.5">Outreach play</th>

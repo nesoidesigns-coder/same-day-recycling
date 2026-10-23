@@ -123,7 +123,7 @@ export default function AdminPartners() {
               {CITIES.map((c) => <option key={c.slug} value={c.name}>{c.name}</option>)}
             </select>
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Equipment</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Equipment</div>
               <div className="space-y-1.5">
                 {EQUIPMENT_OPTIONS.map((item) => (
                   <label key={item} className="flex items-center gap-2 text-sm text-slate-600">
@@ -142,7 +142,7 @@ export default function AdminPartners() {
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
               {saving ? "Adding…" : "Add partner & send invite"}
             </button>
-            <p className="text-[11px] text-slate-400 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#187B65]" /> Contractors can also self-register at /partner-register — their account links automatically.</p>
+            <p className="text-[11px] text-slate-500 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#187B65]" /> Contractors can also self-register at /partner-register — their account links automatically.</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import AiMascotFull from "./AiMascotFull";
 
 // Only the launcher is part of the critical page load — the chat panel
@@ -7,6 +8,7 @@ import AiMascotFull from "./AiMascotFull";
 const ChatPanel = lazy(() => import("./ChatPanel"));
 
 export default function ReceptionistChat() {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [showGreeting, setShowGreeting] = useState(false);
 
@@ -31,6 +33,12 @@ export default function ReceptionistChat() {
     window.addEventListener("rex:open", openRex);
     return () => window.removeEventListener("rex:open", openRex);
   }, []);
+
+  // The Command Centre's admin pages are working dashboards — the floating Rex
+  // launcher never covers them there. Rex stays on every customer-facing page,
+  // and admin intelligence panels (Rex Monitor, Rex Intelligence Ask) are
+  // untouched. This must remain after every hook.
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <>

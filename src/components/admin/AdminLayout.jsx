@@ -57,7 +57,7 @@ const ADVANCED = [
 function NavList({ pathname, onNavigate }) {
   const group = (title, items) => (
     <div className="mb-6">
-      <div className="px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{title}</div>
+      <div className="px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">{title}</div>
       <nav className="space-y-0.5">
         {items.map((n) => {
           const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
@@ -66,11 +66,11 @@ function NavList({ pathname, onNavigate }) {
               key={n.to}
               to={n.to}
               onClick={onNavigate}
-              className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 min-h-[44px] text-sm font-semibold transition-colors ${
                 active ? "bg-[#102B2A] text-white shadow-sm" : "text-slate-600 hover:bg-[#eef4f0] hover:text-[#102B2A]"
               }`}
             >
-              <n.icon className={`w-4 h-4 ${active ? "text-[#187B65]" : "text-slate-400"}`} />
+              <n.icon className={`w-4 h-4 ${active ? "text-[#187B65]" : "text-slate-500"}`} />
               {n.label}
             </Link>
           );
@@ -178,7 +178,7 @@ export default function AdminLayout() {
       )}
 
       <div className="md:pl-64">
-        <main className="max-w-6xl mx-auto px-4 py-6 md:px-8 md:py-8">
+        <main className="max-w-6xl mx-auto px-4 pb-24 pt-6 md:px-8 md:py-8">
           <Outlet />
         </main>
       </div>

@@ -10,13 +10,13 @@ const withSuffix = (v, s) => (v === null || v === undefined ? NA : `${v}${s}`);
 
 function ContractorCard({ c }) {
   const badge = (ok, onText, offText) => (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] ${ok ? "bg-[#187B65]/10 text-[#187B65]" : "bg-slate-100 text-slate-400"}`}>
+    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] ${ok ? "bg-[#187B65]/10 text-[#187B65]" : "bg-slate-100 text-slate-500"}`}>
       {ok ? onText : offText}
     </span>
   );
   const stat = (k, v) => (
     <div key={k} className="rounded-xl bg-[#f6f8f7] px-3 py-2">
-      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">{k}</div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{k}</div>
       <div className="text-sm font-bold text-[#102B2A] mt-0.5">{v}</div>
     </div>
   );
@@ -48,14 +48,14 @@ function ContractorCard({ c }) {
       </div>
       {c.disputes.length > 0 && (
         <div className="mt-4 space-y-2">
-          <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Disputes on this contractor's jobs</div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Disputes on this contractor's jobs</div>
           {c.disputes.map((d) => (
             <div key={d.id} className="rounded-xl border border-slate-200 px-3 py-2 text-xs">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-[#102B2A]">{d.job_ref || "Job"}</span>
                 <span className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] bg-slate-100 text-slate-500">{d.status}</span>
                 {d.outcome && <span className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] bg-[#187B65]/10 text-[#187B65]">{d.outcome.replace(/_/g, " ")}</span>}
-                {d.pricing_note && <span className="text-slate-400">pricing-related</span>}
+                {d.pricing_note && <span className="text-slate-500">pricing-related</span>}
               </div>
               <p className="text-slate-600 mt-1">{d.complaint}</p>
               {d.contractor_response && (
@@ -165,7 +165,7 @@ export default function AdminReputation() {
 
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-bold text-[#102B2A] tracking-tight">Contractor accountability records</h2>
-            <span className="text-xs text-slate-400">{(data.contractors || []).length} contractors on file</span>
+            <span className="text-xs text-slate-500">{(data.contractors || []).length} contractors on file</span>
           </div>
           <div className="space-y-4">
             {(data.contractors || []).length === 0 && (

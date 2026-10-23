@@ -79,8 +79,8 @@ export default function EvidenceInspector({ scanId }) {
                 <div>
                   <div className="flex items-center gap-2 mb-2 pt-2 border-t border-slate-100">
                     <Globe className="w-3.5 h-3.5 text-[#187B65]" />
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Deep research findings</h3>
-                    <span className="text-[10px] text-slate-400">from Rex's web research</span>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Deep research findings</h3>
+                    <span className="text-[10px] text-slate-500">from Rex's web research</span>
                   </div>
                   <div className="space-y-2">
                     {research.map((f) => <FindingCard key={f.id} f={f} {...shared} />)}
@@ -107,7 +107,7 @@ function FindingCard({ f, openId, setOpenId, busyId, act }) {
         <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${SEVERITY_STYLE[f.severity] || SEVERITY_STYLE.minor}`}>{f.severity}</span>
         <span className="flex-1 min-w-0 text-xs font-bold text-[#102B2A] truncate">{f.finding_text}</span>
         <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider hidden sm:inline ${STATUS_META[f.status]?.tone || ""}`}>{STATUS_META[f.status]?.label || f.status}</span>
-        {open ? <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" /> : <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />}
+        {open ? <ChevronUp className="w-4 h-4 text-slate-500 shrink-0" /> : <ChevronDown className="w-4 h-4 text-slate-500 shrink-0" />}
       </button>
 
       {open && (
@@ -128,11 +128,11 @@ function FindingCard({ f, openId, setOpenId, busyId, act }) {
           </div>
 
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Actual result at test time</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Actual result at test time</div>
             <p className="text-[#102B2A] leading-relaxed bg-[#f4f7f5] rounded-xl px-3 py-2">{f.actual_result || "—"}</p>
           </div>
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Proposed fix</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Proposed fix</div>
             <p className="text-[#102B2A] leading-relaxed bg-[#eef4f0] rounded-xl px-3 py-2">{f.proposed_fix}</p>
           </div>
 
@@ -173,7 +173,7 @@ function FindingCard({ f, openId, setOpenId, busyId, act }) {
           </div>
 
           {(f.history || []).length > 0 && (
-            <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+            <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-100">
               {f.history.map((h, i) => <span key={i} className="mr-3">{String(h.date || "").slice(0, 10)} · {h.event}</span>)}
             </div>
           )}
@@ -186,7 +186,7 @@ function FindingCard({ f, openId, setOpenId, busyId, act }) {
 function Field({ label, children }) {
   return (
     <div>
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">{label}</div>
       <div>{children}</div>
     </div>
   );

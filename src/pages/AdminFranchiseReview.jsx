@@ -212,7 +212,7 @@ export default function AdminFranchiseReview() {
 
             <div className="mt-4 grid md:grid-cols-2 gap-4">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Counsel review status</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Counsel review status</div>
                 <select
                   value={review.counsel_status}
                   onChange={(e) => saveReview(review, { counsel_status: e.target.value, reviewed_by: review.reviewed_by || "" })}
@@ -224,7 +224,7 @@ export default function AdminFranchiseReview() {
                 </select>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Counsel notes (working notes only)</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Counsel notes (working notes only)</div>
                 <textarea
                   value={review.counsel_notes || ""}
                   onChange={(e) => setReviews((rs) => rs.map((r) => (r.id === review.id ? { ...r, counsel_notes: e.target.value } : r)))}
@@ -237,7 +237,7 @@ export default function AdminFranchiseReview() {
             </div>
             {saved === review.id && <p className="mt-2 text-[11px] text-[#187B65] inline-flex items-center gap-1"><Save className="w-3 h-3" /> Saved.</p>}
             {(review.history || []).length > 0 && (
-              <div className="mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-400">
+              <div className="mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-500">
                 {review.history.map((h, i) => <span key={i} className="mr-3">{String(h.date || "").slice(0, 10)} · {h.event}</span>)}
               </div>
             )}

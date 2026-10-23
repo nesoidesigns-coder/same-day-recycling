@@ -75,7 +75,7 @@ export default function SmsSettingsCard({ onChanged }) {
     <div className="flex items-center gap-2 text-sm">
       {ok ? <CheckCircle2 className="w-4 h-4 text-[#187B65]" /> : <XCircle className="w-4 h-4 text-slate-300" />}
       <span className="text-slate-600">{label}</span>
-      {detail && <span className="text-slate-400 text-xs">{detail}</span>}
+      {detail && <span className="text-slate-500 text-xs">{detail}</span>}
     </div>
   );
 
@@ -83,7 +83,7 @@ export default function SmsSettingsCard({ onChanged }) {
     <div className="rounded-2xl border border-slate-200 bg-white p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2 font-bold text-[#102B2A]">
-          {status?.ready ? <ShieldCheck className="w-5 h-5 text-[#187B65]" /> : status?.provider !== "off" ? <Clock className="w-5 h-5 text-gold-dark" /> : <CircleOff className="w-5 h-5 text-slate-400" />}
+          {status?.ready ? <ShieldCheck className="w-5 h-5 text-[#187B65]" /> : status?.provider !== "off" ? <Clock className="w-5 h-5 text-gold-dark" /> : <CircleOff className="w-5 h-5 text-slate-500" />}
           SMS connection
         </div>
         <div className="text-xs font-bold uppercase tracking-wide">
@@ -92,7 +92,7 @@ export default function SmsSettingsCard({ onChanged }) {
           ) : status.provider !== "off" ? (
             <span className="text-amber-600">Incomplete — outbound texts are queued</span>
           ) : (
-            <span className="text-slate-400">Off — outbound texts are queued</span>
+            <span className="text-slate-500">Off — outbound texts are queued</span>
           )}
         </div>
       </div>
@@ -104,10 +104,10 @@ export default function SmsSettingsCard({ onChanged }) {
           <Row ok={!!status.from_number} label="Sending number" detail={status.from_number ? `${status.from_number} (${status.from_number_source})` : "none yet"} />
           <Row ok={!!status.verified} label="Admin-verified number" detail={status.verified ? "confirmed" : "not confirmed"} />
           <div className="flex items-center gap-2 text-sm">
-            <Clock className="w-4 h-4 text-slate-400" />
+            <Clock className="w-4 h-4 text-slate-500" />
             <span className="text-slate-600">Queued messages: <strong className="text-[#102B2A]">{status.queued_count}</strong></span>
           </div>
-          <div className="text-xs text-slate-400 self-center">Business contact line (604 Chatr) is never changed by SMS settings.</div>
+          <div className="text-xs text-slate-500 self-center">Business contact line (604 Chatr) is never changed by SMS settings.</div>
         </div>
       )}
 

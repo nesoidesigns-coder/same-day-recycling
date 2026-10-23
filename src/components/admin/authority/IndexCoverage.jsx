@@ -11,7 +11,7 @@ export default function IndexCoverage({ index }) {
     <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500">Index coverage</h2>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 rounded-full px-2 py-0.5">Google evidence</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 rounded-full px-2 py-0.5">Google evidence</span>
       </div>
 
       {index.sitemap_error ? (
@@ -41,7 +41,7 @@ export default function IndexCoverage({ index }) {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     <th className="py-2 pr-4">Page</th>
                     <th className="py-2 pr-4">Status</th>
                     <th className="py-2 pr-4">Coverage state (Google)</th>
@@ -84,7 +84,7 @@ export default function IndexCoverage({ index }) {
 function Stat({ label, value, tone }) {
   return (
     <div className="rounded-2xl bg-[#f4f7f5] border border-slate-100 px-4 py-3.5">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</div>
       <div className={`mt-0.5 text-xl font-extrabold ${tone || "text-[#102B2A]"}`}>{value}</div>
     </div>
   );
