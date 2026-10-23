@@ -39,8 +39,8 @@ export default function ExploreServices() {
   const { statusFor, loaded, error, locations } = useCoverageStatus();
 
   const meta = useServiceMeta("/services", {
-    title: "Explore Recycling & Junk Removal Services Across Canada | Same Day Recycling",
-    description: "Search every Canadian city and province we cover, check availability by postal code, and browse residential and commercial recycling and removal services — with honest, verified coverage status.",
+    title: "Junk Removal & Recycling Services | Same Day Recycling | Canada",
+    description: "Same-day junk removal, furniture and appliance pickup across Canada. Check availability by city and postal code with honest, verified coverage status.",
   });
   useSEO({ ...meta, path: "/services" });
   useStructuredData("services-breadcrumb", {

@@ -5,8 +5,8 @@ const CONFIG = {
   name: "Commercial & Office Recycling",
   eyebrow: "Business solutions · Canada",
   h1: "Commercial recycling and office cleanouts, on your schedule",
-  title: "Commercial & Office Recycling | Same Day Recycling",
-  description: "Office furniture, e-waste, fit-out debris and recurring pickup programs for businesses across Canada — with a diversion record for every completed job.",
+  title: "Commercial Junk Removal & Waste Management | Same Day Recycling",
+  description: "Commercial junk removal and waste management for Canadian businesses. Office furniture, e-waste and recurring pickup programs with a diversion record for every completed job.",
   intro: "Move-outs, renovations and inventory clear-outs generate waste on a deadline. We haul office furniture, e-waste and debris, run recurring pickup programs, and issue a formal diversion record with every completed commercial job, showing how your load was sorted.",
   items: ["Office furniture & desks", "E-waste & electronics", "Fit-out & renovation debris", "Warehouse & storage clearouts", "Recurring pickup programs", "Diversion records for every job"],
   steps: [
