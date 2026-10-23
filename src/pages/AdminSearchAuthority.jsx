@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import IndexingRecoveryCentre from "@/components/admin/authority/IndexingRecoveryCentre";
 import IndexCoverage from "@/components/admin/authority/IndexCoverage";
 import SeoAutopilot from "@/components/admin/authority/SeoAutopilot";
+import MarketDemandGauges from "@/components/admin/authority/MarketDemandGauges";
 
 const num = (n) => Number(n || 0).toLocaleString("en-CA");
 const pct = (v) => `${v || 0}%`;
@@ -126,6 +127,8 @@ export default function AdminSearchAuthority() {
               </div>
             ))}
           </div>
+
+          <MarketDemandGauges />
 
           <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
             <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4">Top search queries (28 days)</h2>
