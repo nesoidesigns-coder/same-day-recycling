@@ -1,6 +1,20 @@
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import PulseRing, { formatCount, useCountUp, prefersReducedMotion } from "@/components/sdr/pulse/PulseRing";
 
 const fmt = (v) => v === null || v === undefined ? '—' : Number(v).toLocaleString('en-CA');
+
+// Subtle demand-direction indicator: rising / falling / stable, from the
+// background month-over-month comparison. Never animated for effect.
+function directionChip(mom) {
+  if (mom === null || mom === undefined || !Number.isFinite(Number(mom))) return null;
+  const v = Number(mom);
+  const d = v > 0.5
+    ? { icon: TrendingUp, text: 'Rising', cls: 'border-[#54D9AE]/40 bg-[#54D9AE]/10 text-[#54D9AE]' }
+    : v < -0.5
+      ? { icon: TrendingDown, text: 'Falling', cls: 'border-amber-400/40 bg-amber-400/10 text-amber-300' }
+      : { icon: Minus, text: 'Stable', cls: 'border-market-line bg-white/5 text-market-muted' };
+  return <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${d.cls}`}><d.icon className="h-3 w-3" />{d.text}</span>;
+}
 
 // Geography level badge — national estimates are visually distinct from
 // provincial/city aggregates (emerald ring + badge vs mint).
@@ -39,10 +53,11 @@ export default function MarketGauge({ label, metric, change = false, level = nul
         )}
       </div>
       <div className="my-4 flex justify-center">
-        <PulseRing value={available && !change ? metric.value : 1} size={128} thickness={9} kind="activity" palette={palette} spin={available}>
+        <PulseRing value={available && !change ? metric.value : 1} size={128} thickness={9} kind="activity" palette={palette} spin={false}>
           {available ? (
             <>
-              <span className="text-xl font-extrabold tabular-nums text-market-ink">
+              <span className="text-xl font-extrabold tabular-nums text-market-ink inline-flex items-center gap-1">
+                {change && directionChip(metric.mom_pct)}
                 {change ? `${metric.mom_pct > 0 ? '+' : ''}${fmt(metric.mom_pct)}%` : formatCount(display)}
               </span>
               <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-market-muted">
@@ -59,6 +74,7 @@ export default function MarketGauge({ label, metric, change = false, level = nul
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${measure.cls}`}>{measure.text}</span>
+        {!change && directionChip(metric.mom_pct)}
         {!change && metric.omitted_measures > 0 && (
           <span className="text-[10px] text-market-muted">
             {metric.omitted_measures} record{metric.omitted_measures === 1 ? '' : 's'} kept separate (different measure)
