@@ -1,0 +1,59 @@
+{
+  "name": "OpsSheetsSettings",
+  "type": "object",
+  "properties": {
+    "spreadsheet_id": {
+      "type": "string",
+      "default": "",
+      "description": "Google spreadsheet ID of the operations tracker."
+    },
+    "spreadsheet_url": {
+      "type": "string",
+      "default": "",
+      "description": "Shareable URL of the operations tracker spreadsheet."
+    },
+    "sheet_name": {
+      "type": "string",
+      "default": "Bookings",
+      "description": "Tab name where booking rows are appended."
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "When true, every new booking is appended to the operations spreadsheet."
+    },
+    "last_backfill_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the initial history backfill ran, if any."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

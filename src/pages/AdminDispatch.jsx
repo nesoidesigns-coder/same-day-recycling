@@ -7,6 +7,7 @@ import ScheduleModal from "@/components/admin/dispatch/ScheduleModal";
 import CompleteModal from "@/components/admin/dispatch/CompleteModal";
 import PaidModal from "@/components/admin/dispatch/PaidModal";
 import CommissionSummary from "@/components/admin/dispatch/CommissionSummary";
+import OpsSheetsCard from "@/components/admin/OpsSheetsCard";
 import {
   Loader2, Phone, MapPin, ArrowUpDown, X, CalendarClock, UserPlus, MessageSquareText,
   Camera, ShieldCheck, ShieldAlert, Copy,
@@ -373,6 +374,8 @@ export default function AdminDispatch() {
       </div>
 
       {notice && <div className="rounded-xl bg-[#187B65]/10 text-[#187B65] px-4 py-2.5 text-sm font-bold">{notice}</div>}
+
+      <OpsSheetsCard />
 
       {/* Dispatch partners + verification */}
       <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5">
