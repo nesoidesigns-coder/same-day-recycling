@@ -56,10 +56,12 @@ export default function CityPage() {
   const [centers, setCenters] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [quotePrefill, setQuotePrefill] = useState(null);
+  // Admin-authored SEO copy (CitySeo) overrides the generated fallback once loaded.
+  const [seoMeta, setSeoMeta] = useState(null);
 
   useSEO({
-    title: city ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : "Page Not Found | Same Day Recycling",
-    description: city ? `Request junk removal in ${city.name}, ${city.province}. Requests are accepted nationwide; same-day pickup depends on contractor availability and is confirmed with you before anything is scheduled or charged.` : "This page was not found. Browse recycling services, software or confirmed coverage.",
+    title: seoMeta?.title || (city ? `Junk Removal in ${city.name}, ${city.province} | Same Day Recycling` : "Page Not Found | Same Day Recycling"),
+    description: seoMeta?.description || (city ? `Request junk removal in ${city.name}, ${city.province}. Requests are accepted nationwide; same-day pickup depends on contractor availability and is confirmed with you before anything is scheduled or charged.` : "This page was not found. Browse recycling services, software or confirmed coverage."),
     path: pageSlug ? `/${pageSlug}` : "/",
     robots: city ? "index, follow" : "noindex, follow",
   });
@@ -98,6 +100,11 @@ export default function CityPage() {
         const r = await base44.entities.Review.filter({ approved: true, city: city.name }, { limit: 6 });
         if (!cancelled) setReviews(Array.isArray(r) ? r : r.items || []);
       } catch { /* section hides itself */ }
+      try {
+        const s = await base44.entities.CitySeo.filter({ city: city.name }, { limit: 1 });
+        const row = (Array.isArray(s) ? s : s.items || [])[0];
+        if (!cancelled && row) setSeoMeta({ title: row.seo_title, description: row.seo_description });
+      } catch { /* generated fallback stays */ }
     })();
     return () => { cancelled = true; };
   }, [city?.name]);
