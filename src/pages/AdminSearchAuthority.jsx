@@ -56,6 +56,25 @@ export default function AdminSearchAuthority() {
   const cls = funnel?.funnel?.visits.by_class || {};
   const realVisits = (cls.customer || 0) + (cls.contractor || 0);
 
+  // Bucket GSC queries into the term families this business competes for.
+  // Generic "recycling" SERPs are dominated by informational sites, so the
+  // transactional families get the titles' leading keyword positions.
+  const FAMILIES = [
+    { key: "Junk removal & pickup", re: /junk|removal|pick ?up|sofa|couch|furniture|appliance|mattress|cleanout/i },
+    { key: "Waste & disposal", re: /waste|disposal|management|dump/i },
+    { key: "Recycling (generic)", re: /recycl|e-?waste|electronic/i },
+  ];
+  const families = (data?.queries || []).reduce((acc, q) => {
+    const f = FAMILIES.find((r) => r.re.test(q.key));
+    const key = f ? f.key : "Other / brand";
+    let row = acc.find((a) => a.key === key);
+    if (!row) { row = { key, impressions: 0, clicks: 0, best: 0, top: q.key }; acc.push(row); }
+    row.impressions += q.impressions || 0;
+    row.clicks += q.clicks || 0;
+    if (q.position && (!row.best || q.position < row.best)) { row.best = q.position; row.top = q.key; }
+    return acc;
+  }, []).sort((a, b) => b.impressions - a.impressions);
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -106,6 +125,22 @@ export default function AdminSearchAuthority() {
             <Table
               head={["Query", "Clicks", "Impressions", "CTR", "Position"]}
               rows={data.queries.map((q) => [q.query, num(q.clicks), num(q.impressions), pct(q.ctr), q.position ? `#${q.position}` : "—"])}
+              empty="No queries with meaningful volume in this window yet."
+            />
+          </div>
+
+          <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
+            <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4 inline-flex items-center gap-2">
+              <Search className="w-4 h-4 text-[#187B65]" /> Keyword positioning (28 days)
+            </h2>
+            <p className="text-[11px] text-slate-500 mb-4">
+              Real Search Console queries bucketed into the term families this business competes for. Generic
+              "recycling" SERPs are dominated by informational sites, so titles lead with the transactional
+              families — junk removal and same-day pickup — where buyers convert.
+            </p>
+            <Table
+              head={["Term family", "Impressions", "Clicks", "Best position", "Top query"]}
+              rows={families.map((f) => [f.key, num(f.impressions), num(f.clicks), f.best ? `#${f.best}` : "—", f.top])}
               empty="No queries with meaningful volume in this window yet."
             />
           </div>
