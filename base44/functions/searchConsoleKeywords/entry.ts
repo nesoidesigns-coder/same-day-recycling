@@ -42,6 +42,9 @@ export default async function(req) {
     const start = new Date(end);
     start.setUTCDate(start.getUTCDate() - 27);
 
+    // dimension: 'page' aggregates by landing page (per-page performance);
+    // default aggregates by query + page (keyword-level view).
+    const byPage = payload.dimension === 'page';
     const analyticsRes = await fetch(
       `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(target)}/searchAnalytics/query`,
       {
@@ -53,8 +56,8 @@ export default async function(req) {
         body: JSON.stringify({
           startDate: fmt(start),
           endDate: fmt(end),
-          dimensions: ['query', 'page'],
-          rowLimit: 200,
+          dimensions: byPage ? ['page'] : ['query', 'page'],
+          rowLimit: 250,
         }),
         signal: AbortSignal.timeout(10000),
       }
@@ -63,6 +66,22 @@ export default async function(req) {
       return Response.json({ error: `Search Analytics request failed (${analyticsRes.status})` }, { status: 502 });
     }
     const analyticsData = await analyticsRes.json();
+
+    if (byPage) {
+      return Response.json({
+        sites,
+        siteUrl: target,
+        startDate: fmt(start),
+        endDate: fmt(end),
+        pages: (analyticsData.rows || []).map((r) => ({
+          page: r.keys[0],
+          clicks: r.clicks || 0,
+          impressions: r.impressions || 0,
+          ctr: Math.round((r.ctr || 0) * 1000) / 10,
+          position: Math.round((r.position || 0) * 10) / 10,
+        })),
+      });
+    }
 
     return Response.json({
       sites,
