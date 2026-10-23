@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useStructuredData } from "@/lib/seo";
 import { BadgeCheck, ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
 
 const ROTATE_MS = 6000;
@@ -8,6 +9,28 @@ export default function Reviews() {
   const [reviews, setReviews] = useState(null);
   const [placeId, setPlaceId] = useState(null);
   const [index, setIndex] = useState(0);
+
+  const count = reviews?.length || 0;
+  const average = count
+    ? Math.round((reviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / count) * 10) / 10
+    : null;
+
+  // Real verified reviews only: aggregate rating and individual reviews are
+  // emitted as Schema.org structured data for crawlers (never fabricated).
+  useStructuredData("reviews", count
+    ? {
+        "@type": "LocalBusiness",
+        "@id": "https://samedayrecycling.ca/#localbusiness",
+        aggregateRating: { "@type": "AggregateRating", ratingValue: average, reviewCount: count, bestRating: 5, worstRating: 1 },
+        review: reviews.slice(0, 10).map((r) => ({
+          "@type": "Review",
+          author: { "@type": "Person", name: r.customer_name || "Verified customer" },
+          reviewRating: { "@type": "Rating", ratingValue: Number(r.rating) || 5, bestRating: 5, worstRating: 1 },
+          reviewBody: r.text,
+          datePublished: r.created_date?.slice(0, 10),
+        })),
+      }
+    : null);
 
   useEffect(() => {
     (async () => {
@@ -69,6 +92,15 @@ export default function Reviews() {
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">
             What our customers say
           </h2>
+          <p className="mt-3 flex items-center justify-center gap-2 text-sm text-slate-600">
+            <span className="flex gap-0.5 text-[#187B65]">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <Star key={n} className={`w-4 h-4 ${n <= Math.round(average) ? "fill-[#187B65]" : "text-slate-200"}`} />
+              ))}
+            </span>
+            <span className="font-bold text-[#102B2A]">{average}/5</span>
+            <span>from {count} verified customer {count === 1 ? "review" : "reviews"}</span>
+          </p>
         </div>
         <div className="max-w-3xl mx-auto">
           <div className="relative rounded-3xl bg-[#f4f7f5] border border-slate-100 p-8 md:p-12 text-center">

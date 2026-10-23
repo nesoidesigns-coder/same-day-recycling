@@ -64,7 +64,14 @@
           "email": "samedayrecycling@gmail.com",
           "serviceType": "Junk removal, metal pickup and recycling service requests, fulfilled through a contractor network",
           "parentOrganization": { "@id": "https://samedayrecycling.ca/#organization" },
-          "areaServed": { "@type": "Country", "name": "Canada" }
+          "areaServed": { "@type": "Country", "name": "Canada" },
+          "openingHours": "Mo-Su 00:00-23:59",
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "00:00",
+            "closes": "23:59"
+          }
         }
       ]
     }
