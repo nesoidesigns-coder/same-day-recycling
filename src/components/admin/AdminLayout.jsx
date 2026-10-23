@@ -26,6 +26,7 @@ const OPS = [
   { to: "/admin/sales", label: "Sales Intelligence", icon: TrendingUp },
 ];
 const INTELLIGENCE = [
+  { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
   { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
   { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
   { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
