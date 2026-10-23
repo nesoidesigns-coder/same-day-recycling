@@ -1,0 +1,98 @@
+{
+  "name": "BrandScan",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "default": "samedayrecycling.ca"
+    },
+    "overall_score": {
+      "type": "number"
+    },
+    "scores": {
+      "type": "object",
+      "default": {},
+      "description": "Per-dimension sub-scores: {seo, discoverability, reputation, credibility, positioning}, each {score, explanation, basis: verified|ai_estimate}."
+    },
+    "strengths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "weaknesses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "verified_findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": [],
+      "description": "Findings confirmed against fetched live content ({finding, evidence})."
+    },
+    "ai_estimates": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": [],
+      "description": "Findings the AI could not verify against fetched content ({finding, reasoning})."
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "URLs actually fetched for this scan, with fetch outcome per source."
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "previous_overall_score": {
+      "type": "number",
+      "description": "Overall score of the scan immediately before this one, for trend comparison. Null on the first scan."
+    },
+    "run_by": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
