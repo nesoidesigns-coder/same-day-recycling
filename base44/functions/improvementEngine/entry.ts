@@ -125,11 +125,31 @@ export default async function (req) {
         const rec = await recordFinding(svc, existing, f, 'site_diagnostics', 'site_scan');
         if (rec) created.push({ id: rec.id, title: rec.title, severity: rec.severity });
       }
+      const criticals = created.filter((c) => c.severity === 'critical');
+
+      // Alert the owner by email when the scan finds critical problems so
+      // critical regressions never sit unnoticed in the queue.
+      if (criticals.length > 0) {
+        try {
+          const adminsPage = await svc.entities.User.filter({ role: 'admin' }, { limit: 50 });
+          const admins = Array.isArray(adminsPage) ? adminsPage : (adminsPage.items || []);
+          const to = admins.map((u) => u.email).filter(Boolean).join(',');
+          if (to) {
+            const rows = criticals.map((c) => `<li>${c.title}</li>`).join('');
+            await svc.integrations.Core.SendEmail({
+              to,
+              subject: `${criticals.length} critical site problem${criticals.length === 1 ? '' : 's'} detected`,
+              html: `<p>The latest site diagnostics found <strong>${criticals.length} critical</strong> problem${criticals.length === 1 ? '' : 's'} now queued in your Improvement Queue:</p><ul>${rows}</ul><p>Review them at the Command Centre: Improvement Queue.</p>`,
+            });
+          }
+        } catch { /* alert is best-effort; the queue record is the source of truth */ }
+      }
+
       return Response.json({
         checked: checks.length,
         urls: checks.map((c) => ({ url: c.url, http_status: c.http_status || null, findings: c.findings.length })),
         new_findings: created,
-        critical_count: created.filter((c) => c.severity === 'critical').length,
+        critical_count: criticals.length,
       });
     }
 

@@ -8,6 +8,7 @@
         "facebook",
         "search",
         "direct",
+        "ai_search",
         "other"
       ],
       "default": "direct"

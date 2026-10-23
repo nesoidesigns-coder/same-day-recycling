@@ -8,6 +8,7 @@ import StatusBar from "@/components/admin/StatusBar";
 import CoveragePanel from "@/components/admin/CoveragePanel";
 import FinanceGauges from "@/components/admin/FinanceGauges";
 import RexMonitor from "@/components/admin/RexMonitor";
+import ScoreExplainer from "@/components/admin/ScoreExplainer";
 import { Loader2 } from "lucide-react";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
@@ -20,7 +21,7 @@ export default function AdminOverview() {
 
   useEffect(() => {
     (async () => {
-      const [bookingsPage, partnersPage, quoteNew, approvedReviews, reviewPending, unpaidAgg, paidAgg] = await Promise.all([
+      const [bookingsPage, partnersPage, quoteNew, approvedReviews, reviewPending, unpaidAgg, paidAgg, visits] = await Promise.all([
         base44.entities.Booking.filter({}, { sort: "-created_date", limit: 500 }),
         base44.entities.Partner.filter({}, {}),
         base44.entities.QuoteLead.count({ status: "new" }),
@@ -28,6 +29,7 @@ export default function AdminOverview() {
         base44.entities.Review.count({ approved: false }),
         base44.entities.Booking.aggregate({ query: { assignment_status: "completed", payout_paid: false }, groupBy: "partner_name", sum: ["job_value"] }),
         base44.entities.Booking.aggregate({ query: { assignment_status: "completed", payout_paid: true }, groupBy: "partner_name", sum: ["job_value"] }),
+        base44.functions.invoke("visitStats", {}),
       ]);
       setData({
         bookings: bookingsPage.items || [],
@@ -37,6 +39,7 @@ export default function AdminOverview() {
         reviewPending: Number(reviewPending) || 0,
         pendingPayouts: (unpaidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0) * PARTNER_SHARE, 0),
         paidPayouts: (paidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0) * PARTNER_SHARE, 0),
+        aiReferrals: ((visits?.data || {}).visits_30d || {}).ai_search || 0,
       });
     })().catch(() => setFailed(true));
   }, []);
@@ -48,7 +51,7 @@ export default function AdminOverview() {
     return <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-20" />;
   }
 
-  const { bookings, partners, quoteNew, reviews, reviewPending, pendingPayouts, paidPayouts } = data;
+  const { bookings, partners, quoteNew, reviews, reviewPending, pendingPayouts, paidPayouts, aiReferrals } = data;
   // Test records (internal_test) are tracked separately — live ops never include them.
   const live = bookings.filter((b) => (b.record_type || "service") !== "internal_test");
   const testCount = bookings.length - live.length;
@@ -97,6 +100,7 @@ export default function AdminOverview() {
         <KpiCard label="Pending payouts" value={pendingPayouts > 0 ? money(pendingPayouts) : "$0.00"} sub={`${money(paidPayouts)} paid to date`} tone={pendingPayouts > 0 ? "amber" : "forest"} href="/admin/payouts" />
         <KpiCard label="Customer rating" value={rating === null ? "—" : `${rating} ★`} sub={reviews.length ? `${reviews.length} approved review${reviews.length === 1 ? "" : "s"}` : "No approved reviews yet"} tone="emerald" href="/admin/reviews" />
         <KpiCard label="Failed bookings" value={cancelled.length} sub="Cancelled jobs, all time" tone={cancelled.length ? "amber" : "forest"} href="/admin/jobs" />
+        <KpiCard label="AI search referrals" value={aiReferrals} sub="Visits from AI assistants, 30 days" tone="emerald" href="/admin/analytics" />
       </div>
 
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
@@ -127,6 +131,8 @@ export default function AdminOverview() {
         <AdminTrendChart bookings={live} />
         <StatusBar bookings={live} />
       </div>
+
+      <ScoreExplainer />
 
       <CoveragePanel />
 

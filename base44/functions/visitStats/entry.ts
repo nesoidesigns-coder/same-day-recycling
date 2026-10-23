@@ -12,7 +12,7 @@ export default async function(req) {
     const monthAgo = new Date(now - 30 * 86400000).toISOString();
 
     const bySource = (rows, key) => {
-      const out = { facebook: 0, search: 0, direct: 0, other: 0, total: 0 };
+      const out = { facebook: 0, search: 0, direct: 0, other: 0, ai_search: 0, total: 0 };
       (rows || []).forEach((row) => {
         const src = String(row.source || 'other');
         if (src in out) out[src] += row.count || 0;

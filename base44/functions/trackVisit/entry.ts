@@ -58,7 +58,11 @@ export default async function(req) {
 
     const r = referrer.toLowerCase();
     let source = 'direct';
-    if (r.includes('facebook.com') || r.includes('fb.me') || r.includes('instagram.com') || r.includes('l.facebook') || r.includes('l.instagram')) {
+    const AI_HOSTS = ['chatgpt.com', 'chat.openai.com', 'perplexity.ai', 'gemini.google.com', 'copilot.microsoft.com', 'claude.ai', 'you.com', 'poe.com', 'chat.mistral.ai', 'labs.perplexity.ai'];
+    if (AI_HOSTS.some((h) => r.includes(h))) {
+      // AI search: visits referred by an AI assistant's cited link.
+      source = 'ai_search';
+    } else if (r.includes('facebook.com') || r.includes('fb.me') || r.includes('instagram.com') || r.includes('l.facebook') || r.includes('l.instagram')) {
       source = 'facebook';
     } else if (r.includes('google.') || r.includes('bing.') || r.includes('duckduckgo.') || r.includes('yahoo.')) {
       source = 'search';
