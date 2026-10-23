@@ -6,11 +6,12 @@ import { CITIES, cityLabel } from "@/lib/cities";
 import { isCityActive } from "@/lib/coverage";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import { provinceForCity, taxFor } from "@/lib/canadaTax";
+import { normalizePostal, isValidPostal, provinceFromFsa, provinceName } from "@/lib/geo";
 import ReviewInvite from "@/components/sdr/ReviewInvite";
 import PayPalButtons from "@/components/pay/PayPalButtons";
 
 export default function BookingForm({ prefill }) {
-  const [form, setForm] = useState({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false });
+  const [form, setForm] = useState({ city: "", postal_code: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false });
   const [photo, setPhoto] = useState(null);
   const [quoteNote, setQuoteNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -82,6 +83,21 @@ export default function BookingForm({ prefill }) {
   // national — active cities book directly, anywhere else submits as a
   // nationwide service request so dispatch sources the local contractor.
   const notLive = !!form.city && !isCityActive(form.city);
+
+  // Live postal-code validation: a valid Canadian FSA instantly identifies the
+  // province/territory and the availability tier we operate at there.
+  const fsa = normalizePostal(form.postal_code);
+  const postalProvince = provinceFromFsa(fsa);
+  const postalProvinceName = fsa ? (postalProvince ? provinceName(postalProvince) : "the Northwest Territories or Nunavut") : "";
+  const postalTyping = form.postal_code.trim().length > 2 && !isValidPostal(form.postal_code) && !fsa;
+  const provCities = fsa ? CITIES.filter((c) => c.province === postalProvince) : [];
+  const postalStatus = !fsa
+    ? ""
+    : provCities.some((c) => statusFor(c.name) === "same_day")
+      ? "same_day"
+      : provCities.some((c) => statusFor(c.name) === "matching")
+        ? "matching"
+        : "recruiting";
   const citySameDay = coverageLoaded && !!form.city && statusFor(form.city) === "same_day";
   const beforeNoon = vancouverHour() < 12;
   const vancouverDate = (offset) => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(Date.now() + offset * 86400000));
@@ -99,6 +115,7 @@ export default function BookingForm({ prefill }) {
           phone: form.phone,
           address: form.address,
           city: form.city,
+          postal_code: form.postal_code,
           service_type: 'junk_removal',
           items_description: form.items_description,
           preferred_date: scheduleDate,
@@ -193,7 +210,7 @@ export default function BookingForm({ prefill }) {
             </Link>
           </div>
         )}
-        <button onClick={() => { setDone(false); setWaitlisted(false); setForm({ city: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false }); setPhoto(null); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
+        <button onClick={() => { setDone(false); setWaitlisted(false); setForm({ city: "", postal_code: "", name: "", email: "", phone: "", address: "", items_description: "", preferred_date: "", curbside: false }); setPhoto(null); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
           Book another pickup
         </button>
         <ReviewInvite />
@@ -206,12 +223,44 @@ export default function BookingForm({ prefill }) {
       <h3 className="text-2xl font-bold text-[#102B2A]">Book your pickup</h3>
       <p className="text-sm text-slate-500 mt-1 mb-6">Submit your request — we confirm the window and price with you before anything is scheduled.</p>
       <div className="space-y-4">
-        <Field label="Your city" required>
-          <select value={form.city} onChange={update("city")} required className="input">
-            <option value="" disabled>Select your city</option>
-            {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
-          </select>
-        </Field>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Postal code" required>
+            <input
+              value={form.postal_code}
+              onChange={(e) => setForm((f) => ({ ...f, postal_code: e.target.value.toUpperCase() }))}
+              className="input"
+              placeholder="e.g. V6B 1A1"
+              inputMode="text"
+              autoCapitalize="characters"
+            />
+          </Field>
+          <Field label="Your city" required>
+            <select value={form.city} onChange={update("city")} required className="input">
+              <option value="" disabled>Select your city</option>
+              {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
+            </select>
+          </Field>
+        </div>
+        {postalTyping && (
+          <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
+            Enter a valid Canadian postal code (letter-number-letter, e.g. V6B 1A1).
+          </div>
+        )}
+        {fsa && (
+          <div className={`rounded-xl px-4 py-2.5 text-xs font-semibold border ${
+            postalStatus === "same_day"
+              ? "bg-[#f4f7f5] border-[#187B65]/30 text-[#102B2A]"
+              : postalStatus === "matching"
+                ? "bg-amber-50 border-amber-200 text-amber-800"
+                : "bg-slate-50 border-slate-200 text-slate-600"
+          }`}>
+            {postalStatus === "same_day"
+              ? `Verified providers are active in ${postalProvinceName} — same-day pickup is available in our listed cities; we confirm your window before anything is scheduled.`
+              : postalStatus === "matching"
+                ? `Requests are open in ${postalProvinceName} — dispatch matches your local contractor and confirms pricing before anything is scheduled.`
+                : `We're building coverage in ${postalProvinceName} — submit below and dispatch sources your local contractor.`}
+          </div>
+        )}
         {notLive && (
           <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">
             We operate in every Canadian city — submitting below creates a nationwide service request. Our dispatch team arranges your local contractor and confirms pricing and your pickup window before anything is scheduled.
