@@ -19,11 +19,12 @@ export default async function(req) {
     const startIso = new Date(startMs).toISOString();
     const prevStartIso = new Date(prevStartMs).toISOString();
 
-    const [visitsCurAgg, visitsPrevAgg, leadsPage, bookingsPage] = await Promise.all([
+    const [visitsCurAgg, visitsPrevAgg, leadsPage, bookingsPage, testBookingsPage] = await Promise.all([
       base44.entities.Visit.aggregate({ query: { created_date: { $gte: startIso } }, groupBy: 'traffic_class' }),
       base44.entities.Visit.aggregate({ query: { created_date: { $gte: prevStartIso, $lt: startIso } }, groupBy: 'traffic_class' }),
       base44.entities.QuoteLead.filter({ created_date: { $gte: prevStartIso } }, { limit: 500 }),
       base44.entities.Booking.filter({ record_type: 'service', created_date: { $gte: prevStartIso } }, { limit: 500 }),
+      base44.entities.Booking.filter({ record_type: 'internal_test', created_date: { $gte: prevStartIso } }, { limit: 500 }),
     ]);
 
     const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
@@ -35,6 +36,12 @@ export default async function(req) {
 
     const { cur: leadsCur, prev: leadsPrev } = split(items(leadsPage));
     const { cur: bookings, prev: bookingsPrev } = split(items(bookingsPage));
+    const { cur: testsCur, prev: testsPrev } = split(items(testBookingsPage));
+    // Test fixtures surfaced so the owner can see what growth reporting excludes.
+    const testRecords = testsCur
+      .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+      .slice(0, 10)
+      .map((t) => ({ ref: t.reference_code || t.id, name: t.name, city: t.city, status: t.status }));
 
     // Traffic classification: owner activity, customers, contractors and bots
     // are tracked separately — conversions are measured on real traffic only.
@@ -102,6 +109,7 @@ export default async function(req) {
         commission_earned: sum(completed, (b) => b.commission_earned),
       },
       cities,
+      tests: { current: testsCur.length, previous: testsPrev.length, records: testRecords },
       truncated: Boolean(leadsPage?.has_more || bookingsPage?.has_more),
     });
   } catch (error) {
