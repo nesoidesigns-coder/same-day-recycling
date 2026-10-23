@@ -93,6 +93,7 @@ const CityPage = lazyPage(() => import('./pages/CityPage'));
 const Pricing = lazyPage(() => import('./pages/Pricing'));
 const AdminGallery = lazyPage(() => import('./pages/AdminGallery'));
 const AdminRevenue = lazyPage(() => import('./pages/AdminRevenue'));
+const AdminConversion = lazyPage(() => import('./pages/AdminConversion'));
 const AdminAgreements = lazyPage(() => import('./pages/AdminAgreements'));
 const AdminSalesIntelligence = lazyPage(() => import('./pages/AdminSalesIntelligence'));
 const AdminDisputes = lazyPage(() => import('./pages/AdminDisputes'));
@@ -196,6 +197,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/applications" element={<AdminApplications />} />
           <Route path="/admin/payouts" element={<AdminPayouts />} />
           <Route path="/admin/revenue" element={<AdminRevenue />} />
+          <Route path="/admin/conversion" element={<AdminConversion />} />
           <Route path="/admin/agreements" element={<AdminAgreements />} />
           <Route path="/admin/disputes" element={<AdminDisputes />} />
           <Route path="/admin/reputation" element={<AdminReputation />} />
