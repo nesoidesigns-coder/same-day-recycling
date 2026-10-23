@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -9,91 +10,101 @@ import ScrollToTop from './components/ScrollToTop';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import ReceptionistChat from '@/components/sdr/ReceptionistChat';
 import SearchIndexing from '@/components/seo/SearchIndexing';
-// Add page imports here
+// Add page imports here.
+// Route-level code splitting: only the home page (LCP target) and auth pages
+// load upfront; every other page is fetched on demand.
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
-import AdminPricing from './pages/AdminPricing';
-import AdminOverview from './pages/AdminOverview';
-import AdminLayout from '@/components/admin/AdminLayout';
-import AdminDispatch from './pages/AdminDispatch';
-import AdminLeads from './pages/AdminLeads';
-import AdminPipeline from './pages/AdminPipeline';
-import AdminAssignments from './pages/AdminAssignments';
-import AdminPartners from './pages/AdminPartners';
-import AdminPayouts from './pages/AdminPayouts';
-import AdminCities from './pages/AdminCities';
-import AdminReviews from './pages/AdminReviews';
-import AdminKeywords from './pages/AdminKeywords';
-import AdminSystem from './pages/AdminSystem';
-import AdminRoutes from './pages/AdminRoutes';
-import AdminAnalytics from './pages/AdminAnalytics';
-import RecyclingDirectory from './pages/RecyclingDirectory';
-import ProviderDetail from './pages/ProviderDetail';
-import RecyclingAssistant from './pages/RecyclingAssistant';
-import AdminDirectory from './pages/AdminDirectory';
-import PartnersDashboard from './pages/PartnersDashboard';
-import PartnerRegister from './pages/PartnerRegister';
-import ContractorOnboarding from './pages/ContractorOnboarding';
-import AdminApplications from './pages/AdminApplications';
-import Subscriptions from './pages/Subscriptions';
-import FreeMetalPickup from './pages/FreeMetalPickup';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import ReviewPage from './pages/ReviewPage';
-import RealtorLanding from './pages/RealtorLanding';
-import RealtorOnePager from './pages/RealtorOnePager';
-import RealtorDashboard from './pages/RealtorDashboard';
-import Realtors from './pages/Realtors';
-import AdminFacebook from './pages/AdminFacebook';
-import AdminMarketing from './pages/AdminMarketing';
-import RecyclingCenters from './pages/RecyclingCenters';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import Contractors from './pages/Contractors';
-import Coverage from './pages/Coverage';
-import ProvincePage from './pages/ProvincePage';
-import PropertyManagers from './pages/PropertyManagers';
-import WhiteLabel from './pages/WhiteLabel';
-import AdminWhiteLabel from './pages/AdminWhiteLabel';
-import WhiteLabelPay from './pages/WhiteLabelPay';
-import SoftwareSales from './pages/SoftwareSales';
-import SoftwarePay from './pages/SoftwarePay';
-import MembershipPay from './pages/MembershipPay';
-import FinanceDashboard from './pages/FinanceDashboard';
-import CompanyDashboard from './pages/CompanyDashboard';
-import AdminSoftware from './pages/AdminSoftware';
-import SoftwareOnboarding from './pages/SoftwareOnboarding';
-import LicenseAgreement from './pages/LicenseAgreement';
-import Gallery from './pages/Gallery';
-import FurnitureRemoval from './pages/FurnitureRemoval';
-import ApplianceRemoval from './pages/ApplianceRemoval';
-import ElectronicsRecycling from './pages/ElectronicsRecycling';
-import CommercialRecycling from './pages/CommercialRecycling';
-import SameDayPickup from './pages/SameDayPickup';
-import AdminSearchIntelligence from './pages/AdminSearchIntelligence';
-import ExploreServices from './pages/ExploreServices';
-import RequestService from './pages/RequestService';
-import RequestStatus from './pages/RequestStatus';
-import AdminNational from './pages/AdminNational';
-import ServiceFinder from './pages/ServiceFinder';
-import AIBookingCenter from './pages/AIBookingCenter';
-import CityPage from './pages/CityPage';
-import Pricing from './pages/Pricing';
-import AdminGallery from './pages/AdminGallery';
-import AdminRevenue from './pages/AdminRevenue';
-import AdminAgreements from './pages/AdminAgreements';
-import AdminSalesIntelligence from './pages/AdminSalesIntelligence';
-import AdminDisputes from './pages/AdminDisputes';
-import AdminReputation from './pages/AdminReputation';
-import AdminSms from './pages/AdminSms';
-import ChangeOrderRespond from './pages/ChangeOrderRespond';
+
+const lazyPage = (loader) => lazy(loader);
+const Privacy = lazyPage(() => import('./pages/Privacy'));
+const Terms = lazyPage(() => import('./pages/Terms'));
+const AdminPricing = lazyPage(() => import('./pages/AdminPricing'));
+const AdminOverview = lazyPage(() => import('./pages/AdminOverview'));
+const AdminLayout = lazyPage(() => import('@/components/admin/AdminLayout'));
+const AdminDispatch = lazyPage(() => import('./pages/AdminDispatch'));
+const AdminLeads = lazyPage(() => import('./pages/AdminLeads'));
+const AdminPipeline = lazyPage(() => import('./pages/AdminPipeline'));
+const AdminAssignments = lazyPage(() => import('./pages/AdminAssignments'));
+const AdminPartners = lazyPage(() => import('./pages/AdminPartners'));
+const AdminPayouts = lazyPage(() => import('./pages/AdminPayouts'));
+const AdminCities = lazyPage(() => import('./pages/AdminCities'));
+const AdminReviews = lazyPage(() => import('./pages/AdminReviews'));
+const AdminKeywords = lazyPage(() => import('./pages/AdminKeywords'));
+const AdminSystem = lazyPage(() => import('./pages/AdminSystem'));
+const AdminRoutes = lazyPage(() => import('./pages/AdminRoutes'));
+const AdminAnalytics = lazyPage(() => import('./pages/AdminAnalytics'));
+const RecyclingDirectory = lazyPage(() => import('./pages/RecyclingDirectory'));
+const ProviderDetail = lazyPage(() => import('./pages/ProviderDetail'));
+const RecyclingAssistant = lazyPage(() => import('./pages/RecyclingAssistant'));
+const AdminDirectory = lazyPage(() => import('./pages/AdminDirectory'));
+const PartnersDashboard = lazyPage(() => import('./pages/PartnersDashboard'));
+const PartnerRegister = lazyPage(() => import('./pages/PartnerRegister'));
+const ContractorOnboarding = lazyPage(() => import('./pages/ContractorOnboarding'));
+const AdminApplications = lazyPage(() => import('./pages/AdminApplications'));
+const Subscriptions = lazyPage(() => import('./pages/Subscriptions'));
+const FreeMetalPickup = lazyPage(() => import('./pages/FreeMetalPickup'));
+const About = lazyPage(() => import('./pages/About'));
+const Contact = lazyPage(() => import('./pages/Contact'));
+const ReviewPage = lazyPage(() => import('./pages/ReviewPage'));
+const RealtorLanding = lazyPage(() => import('./pages/RealtorLanding'));
+const RealtorOnePager = lazyPage(() => import('./pages/RealtorOnePager'));
+const RealtorDashboard = lazyPage(() => import('./pages/RealtorDashboard'));
+const Realtors = lazyPage(() => import('./pages/Realtors'));
+const AdminFacebook = lazyPage(() => import('./pages/AdminFacebook'));
+const AdminMarketing = lazyPage(() => import('./pages/AdminMarketing'));
+const RecyclingCenters = lazyPage(() => import('./pages/RecyclingCenters'));
+const Blog = lazyPage(() => import('./pages/Blog'));
+const BlogPost = lazyPage(() => import('./pages/BlogPost'));
+const Contractors = lazyPage(() => import('./pages/Contractors'));
+const Coverage = lazyPage(() => import('./pages/Coverage'));
+const ProvincePage = lazyPage(() => import('./pages/ProvincePage'));
+const PropertyManagers = lazyPage(() => import('./pages/PropertyManagers'));
+const WhiteLabel = lazyPage(() => import('./pages/WhiteLabel'));
+const AdminWhiteLabel = lazyPage(() => import('./pages/AdminWhiteLabel'));
+const WhiteLabelPay = lazyPage(() => import('./pages/WhiteLabelPay'));
+const SoftwareSales = lazyPage(() => import('./pages/SoftwareSales'));
+const SoftwarePay = lazyPage(() => import('./pages/SoftwarePay'));
+const MembershipPay = lazyPage(() => import('./pages/MembershipPay'));
+const FinanceDashboard = lazyPage(() => import('./pages/FinanceDashboard'));
+const CompanyDashboard = lazyPage(() => import('./pages/CompanyDashboard'));
+const AdminSoftware = lazyPage(() => import('./pages/AdminSoftware'));
+const SoftwareOnboarding = lazyPage(() => import('./pages/SoftwareOnboarding'));
+const LicenseAgreement = lazyPage(() => import('./pages/LicenseAgreement'));
+const Gallery = lazyPage(() => import('./pages/Gallery'));
+const FurnitureRemoval = lazyPage(() => import('./pages/FurnitureRemoval'));
+const ApplianceRemoval = lazyPage(() => import('./pages/ApplianceRemoval'));
+const ElectronicsRecycling = lazyPage(() => import('./pages/ElectronicsRecycling'));
+const CommercialRecycling = lazyPage(() => import('./pages/CommercialRecycling'));
+const SameDayPickup = lazyPage(() => import('./pages/SameDayPickup'));
+const AdminSearchIntelligence = lazyPage(() => import('./pages/AdminSearchIntelligence'));
+const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
+const RequestService = lazyPage(() => import('./pages/RequestService'));
+const RequestStatus = lazyPage(() => import('./pages/RequestStatus'));
+const AdminNational = lazyPage(() => import('./pages/AdminNational'));
+const ServiceFinder = lazyPage(() => import('./pages/ServiceFinder'));
+const AIBookingCenter = lazyPage(() => import('./pages/AIBookingCenter'));
+const CityPage = lazyPage(() => import('./pages/CityPage'));
+const Pricing = lazyPage(() => import('./pages/Pricing'));
+const AdminGallery = lazyPage(() => import('./pages/AdminGallery'));
+const AdminRevenue = lazyPage(() => import('./pages/AdminRevenue'));
+const AdminAgreements = lazyPage(() => import('./pages/AdminAgreements'));
+const AdminSalesIntelligence = lazyPage(() => import('./pages/AdminSalesIntelligence'));
+const AdminDisputes = lazyPage(() => import('./pages/AdminDisputes'));
+const AdminReputation = lazyPage(() => import('./pages/AdminReputation'));
+const AdminSms = lazyPage(() => import('./pages/AdminSms'));
+const ChangeOrderRespond = lazyPage(() => import('./pages/ChangeOrderRespond'));
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
+
+const RouteFallback = () => (
+  <div className="min-h-[70vh] flex items-center justify-center" role="status" aria-label="Loading page">
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+  </div>
+);
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -120,6 +131,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <Suspense fallback={<RouteFallback />}>
     <Routes>
       {/* Add your page Route elements here */}
       <Route path="/" element={<Home />} />
@@ -210,6 +222,7 @@ const AuthenticatedApp = () => {
       <Route path="/:pageSlug" element={<CityPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </Suspense>
   );
 };
 

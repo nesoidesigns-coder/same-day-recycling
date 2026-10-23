@@ -1,0 +1,16 @@
+{
+  "name": "Same Day Recycling",
+  "short_name": "SDR",
+  "description": "Nationwide junk removal and recycling service requests across Canada.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#187B65",
+  "icons": [
+    {
+      "src": "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02e81d056_logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

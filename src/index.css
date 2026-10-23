@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
-
+/* Fonts load via <link> tags in index.html (preconnected, cached), keeping
+   the stylesheet itself free of render-blocking @import chains. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

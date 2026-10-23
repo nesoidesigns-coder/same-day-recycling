@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy } from "react";
 import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -9,18 +9,22 @@ import HowItWorks from "@/components/sdr/HowItWorks";
 import TransparentPricing from "@/components/sdr/TransparentPricing";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
-import CanadaNetworkMap from "@/components/sdr/CanadaNetworkMap";
-import ProvinceImpact from "@/components/sdr/ProvinceImpact";
-import FeaturedProviders from "@/components/sdr/FeaturedProviders";
-import NationalCoverage from "@/components/sdr/NationalCoverage";
-import RecyclingCentersMap from "@/components/sdr/RecyclingCentersMap";
-import Reviews from "@/components/sdr/Reviews";
-import EnvironmentalImpact from "@/components/sdr/EnvironmentalImpact";
-import BusinessSolutions from "@/components/sdr/BusinessSolutions";
-import OperatingSystemPitch from "@/components/sdr/OperatingSystemPitch";
 import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
-import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
+import LazySection from "@/components/sdr/LazySection";
+
+// Below-the-fold sections load after first paint; the quote calculator and
+// booking form stay eager so conversion actions are always instantly ready.
+const CanadaNetworkMap = lazy(() => import("@/components/sdr/CanadaNetworkMap"));
+const ProvinceImpact = lazy(() => import("@/components/sdr/ProvinceImpact"));
+const FeaturedProviders = lazy(() => import("@/components/sdr/FeaturedProviders"));
+const NationalCoverage = lazy(() => import("@/components/sdr/NationalCoverage"));
+const RecyclingCentersMap = lazy(() => import("@/components/sdr/RecyclingCentersMap"));
+const EnvironmentalImpact = lazy(() => import("@/components/sdr/EnvironmentalImpact"));
+const OperatingSystemPitch = lazy(() => import("@/components/sdr/OperatingSystemPitch"));
+const BusinessSolutions = lazy(() => import("@/components/sdr/BusinessSolutions"));
+const Reviews = lazy(() => import("@/components/sdr/Reviews"));
+const FinalCTA = lazy(() => import("@/components/sdr/FinalCTA"));
 
 export default function Home() {
   useSEO({
@@ -47,22 +51,22 @@ export default function Home() {
       <Navbar />
       <HomeHero onCity={(city) => bookFromQuote({ city })} />
       <TrustGauges />
-      <CanadaNetworkMap />
-      <ProvinceImpact />
+      <LazySection minHeight={480}><CanadaNetworkMap /></LazySection>
+      <LazySection minHeight={380}><ProvinceImpact /></LazySection>
       <Services />
       <HowItWorks />
       <TransparentPricing />
       <QuoteCalculator onBook={bookFromQuote} />
       <Booking prefill={quotePrefill} />
-      <FeaturedProviders />
-      <NationalCoverage />
-      <RecyclingCentersMap showSelector />
-      <EnvironmentalImpact />
-      <OperatingSystemPitch />
-      <BusinessSolutions />
-      <Reviews />
+      <LazySection minHeight={320}><FeaturedProviders /></LazySection>
+      <LazySection minHeight={360}><NationalCoverage /></LazySection>
+      <LazySection minHeight={520}><RecyclingCentersMap showSelector /></LazySection>
+      <LazySection minHeight={340}><EnvironmentalImpact /></LazySection>
+      <LazySection minHeight={360}><OperatingSystemPitch /></LazySection>
+      <LazySection minHeight={340}><BusinessSolutions /></LazySection>
+      <LazySection minHeight={360}><Reviews /></LazySection>
       <FAQ />
-      <FinalCTA />
+      <LazySection minHeight={300}><FinalCTA /></LazySection>
       <Footer />
     </div>
   );
