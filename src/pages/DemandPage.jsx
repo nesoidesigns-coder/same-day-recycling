@@ -5,6 +5,7 @@ import { Globe2, MapPin, Search, Users, Loader2, Info, CalendarClock, CheckCircl
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { useSEO } from "@/lib/seo";
 import { COVERAGE } from "@/lib/coverage";
+import TrendAnalysis from "@/components/demand/TrendAnalysis";
 import PulseRing, { formatCount, useCountUp } from "@/components/sdr/pulse/PulseRing";
 
 const AnimatedNumber = ({ value, className = "" }) => {
@@ -319,6 +320,8 @@ export default function DemandPage() {
                 </div>
               )}
             </div>
+
+            <TrendAnalysis />
 
             <div className="mt-6 rounded-3xl bg-white border border-slate-100 p-6 text-xs text-slate-500 leading-relaxed">
               <div className="font-bold text-[#102B2A] text-sm mb-1 flex items-center gap-2"><Info className="w-4 h-4 text-[#187B65]" /> Methodology</div>

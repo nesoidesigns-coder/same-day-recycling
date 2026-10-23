@@ -79,7 +79,7 @@ export default async function(req) {
     for (const key of keys) {
       const d = demandByCity.get(key);
       const s = serviceByCity.get(key);
-      const allPeriods = new Set([...(d ? [...d.periods.keys()] : []), ...(s ? [...s.periods.keys()] : [])]);
+      const allPeriods = new Set([...(d ? [...d.periods.keys()] : []), ...(s ? [...s.keys()] : [])]);
       const range = monthRange([...allPeriods]);
       const series = range.map((period) => {
         const dp = d ? d.periods.get(period) : null;
