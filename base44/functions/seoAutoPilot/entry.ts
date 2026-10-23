@@ -30,6 +30,29 @@ const metaIssue = (c) =>
   c.title_length === 0 || c.description_length === 0
   || c.unique_title === false || c.unique_description === false;
 
+// The platform prerenders page bodies but the served <head> comes from the
+// platform SEO layer — so a generic shell title ("City Page | …") can pass a
+// presence check while Googlebot still sees a generic, city-blind page. These
+// checks fail that case: the title must not be a shell pattern, and on city
+// pages it must name the city.
+const slugCity = (p) => {
+  const m = /^\/junk-removal-(.+)$/.exec(p);
+  return m ? m[1].split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : null;
+};
+const headQualityIssues = (c) => {
+  const p = pathOf(c.url);
+  const city = slugCity(p);
+  const issues = [];
+  if (c.title && /city page/i.test(c.title)) issues.push(`title is the generic shell pattern ("${c.title}")`);
+  if (c.title && c.title_length < 25) issues.push(`title too short (${c.title_length} chars)`);
+  if (c.description && c.description_length < 70) issues.push(`description too short (${c.description_length} chars)`);
+  if (city) {
+    if (c.title && !c.title.toLowerCase().includes(city.toLowerCase())) issues.push(`title does not name the city (${city})`);
+    if (c.description && !c.description.toLowerCase().includes(city.toLowerCase())) issues.push('description does not name the city');
+  }
+  return issues;
+};
+
 const gscQuery = async (token, siteUrl, start, end, dims, limit) => {
   try {
     const res = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
@@ -178,7 +201,7 @@ export default async function(req) {
         let ok = 0;
         for (const c of list.slice(0, 3)) {
           const after = await fetchPage(c.url);
-          if (after.title_length > 0 && after.description_length > 0) ok++;
+          if (after.title_length > 0 && after.description_length > 0 && headQualityIssues(after).length === 0) ok++;
         }
         for (const c of list) {
           const key = `${c.url}|${label}: meta regenerated`;
@@ -243,6 +266,24 @@ export default async function(req) {
           openKeys.add(key);
         }
       }
+      const headIssues = headQualityIssues(c);
+      if (headIssues.length) {
+        const key = `${c.url}|Crawler head is generic or city-blind`;
+        if (!seen(key)) {
+          await addEntry({
+            area: 'technical', url: c.url, fix_applied: false,
+            issue: 'Crawler head is generic or city-blind',
+            evidence: `Served head: title="${c.title}" (${c.title_length} chars), description="${String(c.description).slice(0, 120)}" (${c.description_length} chars). Found: ${headIssues.join('; ')}.`,
+            fix: 'Dashboard → SEO & GEO → Meta tags: replace the generic title/description for this page (or clear the override and enable Advanced settings → "Automatic titles and descriptions"). Re-verified against the live page automatically next run.',
+            status: 'needs_approval',
+            status_detail: `Body renders fully (${c.words} words) — only the served head is generic.`,
+            history: push([], 'detected', 'Page check'),
+          });
+          summary.approvals++; summary.critical++;
+          newCritical.push(`${pathOf(c.url)} crawler head is generic or city-blind`);
+          openKeys.add(key);
+        }
+      }
       if (c.http_status !== 200) {
         const key = `${c.url}|Page does not return HTTP 200`;
         if (!seen(key)) {
@@ -257,6 +298,21 @@ export default async function(req) {
           summary.approvals++; summary.critical++; newCritical.push(`${pathOf(c.url)} returns HTTP ${c.http_status}`);
           openKeys.add(key);
         }
+      }
+    }
+
+    // --- 3b. Retest previously detected generic-head items against the live page -
+    // The item closes only when a fresh fetch shows a real, city-specific head.
+    const headOpen = existing.filter((e) => e.issue === 'Crawler head is generic or city-blind' && e.status === 'needs_approval');
+    for (const e of headOpen.slice(0, 10)) {
+      const after = await fetchPage(e.url);
+      if (after.http_status === 200 && headQualityIssues(after).length === 0) {
+        await log.update(e.id, {
+          status: 'fixed', fix_applied: true, verified_date: d,
+          status_detail: `Retest passed on the live page: title="${after.title}", description="${String(after.description).slice(0, 100)}".`,
+          history: [...(e.history || []), { date: new Date().toISOString(), event: 'retest_passed', note: 'Fresh fetch shows a real, city-specific title and description.' }],
+        });
+        summary.verified++;
       }
     }
 
