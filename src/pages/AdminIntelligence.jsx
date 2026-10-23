@@ -6,6 +6,7 @@ import RingGauge from "@/components/admin/RingGauge";
 import BrandScanner from "@/components/admin/intel/BrandScanner";
 import MarketOpportunityPanel from "@/components/admin/intel/MarketOpportunityPanel";
 import RexIntelligenceAsk from "@/components/admin/intel/RexIntelligenceAsk";
+import EvidenceInspector from "@/components/admin/intel/EvidenceInspector";
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
@@ -103,6 +104,10 @@ export default function AdminIntelligence() {
 
       <div className="mt-5">
         <BrandScanner scan={scan} history={history} running={running} onRun={runScan} />
+      </div>
+
+      <div className="mt-5">
+        <EvidenceInspector scanId={scan?.id} />
       </div>
 
       <div className="mt-5">

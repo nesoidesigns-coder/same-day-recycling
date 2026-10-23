@@ -1,0 +1,129 @@
+{
+  "name": "RexFinding",
+  "type": "object",
+  "properties": {
+    "scan_id": {
+      "type": "string",
+      "default": "",
+      "description": "BrandScan this finding came from."
+    },
+    "finding_text": {
+      "type": "string",
+      "description": "The finding exactly as the scanner stated it (unique key per scan)."
+    },
+    "finding_kind": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "ai_estimate"
+      ],
+      "default": "verified",
+      "description": "verified = confirmed against fetched live content; ai_estimate = Rex's unconfirmed assessment."
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "major",
+        "minor"
+      ],
+      "default": "major",
+      "description": "Rex-classified impact: critical = loses customers or blocks crawlers, major = hurts rankings or trust, minor = polish."
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "default": "",
+      "description": "URL that was actually tested when the finding was recorded."
+    },
+    "tested_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the original test (the scan date)."
+    },
+    "actual_result": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "What the test actually observed \u2014 the raw evidence, not a conclusion."
+    },
+    "proposed_fix": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Rex's concrete, specific recommended fix."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "approved",
+        "resolved",
+        "not_resolved"
+      ],
+      "default": "open",
+      "description": "open = awaiting owner approval; approved = owner accepted the fix (implementation pending); resolved = retest passed; not_resolved = retest failed."
+    },
+    "approved_by": {
+      "type": "string",
+      "default": "",
+      "description": "Email of the owner/admin who approved the fix."
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "retest_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the last retest, when one has run."
+    },
+    "retest_evidence": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "What the retest observed on the live page."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "default": []
+      },
+      "description": "Immutable event log: created, approved, retest_passed, retest_failed."
+    }
+  },
+  "required": [
+    "finding_text"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
