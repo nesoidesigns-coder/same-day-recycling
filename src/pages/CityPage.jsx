@@ -13,6 +13,7 @@ import Booking from "@/components/sdr/Booking";
 import NotFoundPage from "@/lib/NotFoundPage";
 import CityRulesBlock from "@/components/sdr/CityRulesBlock";
 import CityGranularServices from "@/components/sdr/CityGranularServices";
+import VancouverContent from "@/components/sdr/VancouverContent";
 import { Image } from "@/components/ui/image";
 import { cityFromSlug, CITIES } from "@/lib/cities";
 import { regionByCode } from "@/lib/regions";
@@ -200,6 +201,7 @@ export default function CityPage() {
 
       <Services />
       <CityGranularServices city={city.name} />
+      {city.slug === "vancouver" && <VancouverContent />}
 
       {/* Service area */}
       <section className="bg-[#f4f7f5]">
