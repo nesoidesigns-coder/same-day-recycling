@@ -10,6 +10,12 @@
     "title": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this draft."
+    },
     "caption": {
       "type": "string",
       "maxLength": 2000
