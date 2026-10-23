@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 1 * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "keyword_planner_refresh",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "retrieve_volumes": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "keywordVolume",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Retrieve Keyword Planner volumes",
+            "description": "Pull monthly search volumes for all major Canadian categories across Canada, provinces and key cities, and upsert source-labeled demand observations"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Keyword Planner Refresh",
+  "description": "Monthly retrieval of Google Ads Keyword Planner volumes for all major Canadian recycling and junk-removal categories, across Canada, each province and key cities. Upserts source-labeled DemandObservation records; never fabricates data."
+}

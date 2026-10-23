@@ -24,13 +24,40 @@ export default function DemandHealthTab({ report }) {
   const [logs, setLogs] = useState([]);
   const [syncing, setSyncing] = useState(false);
   const [lastSync, setLastSync] = useState(null);
+  const [kp, setKp] = useState(null);
+  const [kpRunning, setKpRunning] = useState(false);
+  const [kpResult, setKpResult] = useState(null);
 
   const loadLogs = async () => {
     const { items } = await base44.entities.DemandSyncLog.filter({}, { sort: "-created_date", limit: 30 });
     setLogs(items || []);
   };
 
-  useEffect(() => { loadLogs(); }, []);
+  const checkKp = async () => {
+    try {
+      const res = await base44.functions.invoke("keywordVolume", { checkOnly: true });
+      setKp(res.data);
+    } catch {
+      setKp(null);
+    }
+  };
+
+  const runKp = async () => {
+    setKpRunning(true);
+    setKpResult(null);
+    try {
+      const res = await base44.functions.invoke("keywordVolume", {});
+      setKpResult(res.data);
+      await loadLogs();
+      await checkKp();
+    } catch (e) {
+      setKpResult({ status: "failed", error: e?.response?.data?.error || e.message });
+    } finally {
+      setKpRunning(false);
+    }
+  };
+
+  useEffect(() => { loadLogs(); checkKp(); }, []);
 
   const runSync = async () => {
     setSyncing(true);
@@ -60,6 +87,41 @@ export default function DemandHealthTab({ report }) {
       {lastSync && (
         <div className="mb-4 rounded-xl bg-[#187B65]/5 border border-[#187B65]/20 px-4 py-3 text-sm text-[#102B2A]">
           Last refresh {new Date(lastSync.refreshed_at).toLocaleTimeString("en-CA")} — Search Console: {live.google_search_console?.status || "—"}, Analytics: {live.google_analytics?.status || "—"}, Recycling OS: {live.recycling_os?.status || "success"}.
+        </div>
+      )}
+
+      {kp && (
+        <div className={`mb-8 rounded-2xl border p-4 ${kp.connected ? "border-[#187B65]/30 bg-[#187B65]/5" : "border-amber-300 bg-amber-50"}`}>
+          <div className="flex flex-wrap items-center gap-2">
+            {kp.connected ? <CheckCircle2 className="w-4 h-4 text-[#187B65]" /> : <AlertTriangle className="w-4 h-4 text-amber-600" />}
+            <span className="font-bold text-[#102B2A] text-sm">Keyword Planner connection</span>
+            <span className={`ml-auto rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${kp.connected ? "bg-[#187B65] text-white" : "bg-amber-200 text-amber-900"}`}>
+              {kp.connected ? "connected" : "credentials missing"}
+            </span>
+          </div>
+          {kp.connected ? (
+            <p className="text-xs text-slate-600 mt-1.5">
+              Google Ads API is authorized. Monthly volumes for all major Canadian categories are retrieved for
+              Canada, each province and key cities. Refresh cadence: {kp.cadence}.
+            </p>
+          ) : (
+            <div className="text-xs text-slate-600 mt-1.5">
+              <p>Missing credentials: <span className="font-semibold">{(kp.missing || []).join(", ") || "none"}</span>.</p>
+              <p className="mt-1">Add them under Dashboard → Secrets (Google Ads API developer token, customer ID and an OAuth client + refresh token with the adwords scope). Until then, verified Keyword Planner exports can be imported in the Import tab.</p>
+            </div>
+          )}
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <Button onClick={runKp} disabled={!kp.connected || kpRunning} className="gap-2 bg-[#187B65] hover:bg-[#125C4E]">
+              <RefreshCw className={`w-4 h-4 ${kpRunning ? "animate-spin" : ""}`} /> {kpRunning ? "Retrieving volumes…" : "Retrieve Keyword Planner volumes"}
+            </Button>
+            {kpResult && (
+              <span className="text-xs text-slate-600">
+                {kpResult.status === "success" || kpResult.status === "partial"
+                  ? `${kpResult.records_upserted} keyword observations upserted for ${kpResult.period} across ${kpResult.geos_ok} of ${kpResult.geos_total} geographies.`
+                  : `Retrieval failed: ${kpResult.error || kpResult.status}.`}
+              </span>
+            )}
+          </div>
         </div>
       )}
 

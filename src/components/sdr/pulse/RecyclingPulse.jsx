@@ -210,10 +210,17 @@ export default function RecyclingPulse() {
             <span className="text-xs font-bold uppercase tracking-widest text-white/50">Reading market data…</span>
           </div>
         ) : !market?.available ? (
-          <div className="mx-auto mt-8 max-w-2xl rounded-3xl border border-[#187B65]/30 bg-white/[0.05] p-8 text-center">
-            <Info className="mx-auto mb-2 h-8 w-8 text-[#187B65]" />
-            <div className="text-lg font-bold text-white">Data pending</div>
-            <p className="mt-2 text-sm text-white/60">{market?.pending_note || "Market estimates appear once a verified source is connected."}</p>
+          <div className="mx-auto mt-8 flex max-w-2xl flex-col items-center gap-3 rounded-3xl border border-[#187B65]/25 bg-white/[0.04] px-6 py-4 text-center sm:flex-row sm:rounded-full">
+            <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden="true">
+              <span className="mascot-ring absolute inline-flex h-full w-full rounded-full bg-[#54D9AE]" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#54D9AE]" />
+            </span>
+            <span className="text-sm font-semibold text-white/80">
+              Market intelligence connecting — Canadian search-demand estimates appear here once the verified source goes live.
+            </span>
+            <Link to="/demand" className="shrink-0 text-xs font-bold text-[#54D9AE] hover:underline sm:ml-auto">
+              How this works
+            </Link>
           </div>
         ) : (
           <>

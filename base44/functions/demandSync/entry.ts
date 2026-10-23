@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { dedupeObservations, summarizeDemand, currentPeriod } from '../../shared/demand.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
+import { secrets } from 'base44:runtime';
 
 const fmtDate = (d) => d.toISOString().slice(0, 10);
 
@@ -22,7 +23,7 @@ export default async function(req) {
     const today = fmtDate(now);
     const GSC_CADENCE = 'Daily (Search Console reporting lags ~2 days)';
     const GA_CADENCE = 'Daily (GA4 standard processing)';
-    const KP_CADENCE = 'Manual / on import (Keyword Planner volumes are monthly estimates)';
+    const KP_CADENCE = 'Monthly retrieval via Google Ads API (Keyword Planner volumes are monthly estimates)';
 
     const logs = [];
     const sources = {};
@@ -123,17 +124,21 @@ export default async function(req) {
       logs.push({ source: 'google_analytics', status: 'failed', run_date: today, started_at: started, error: e.message, next_update_cadence: GA_CADENCE });
     }
 
-    // ---- Keyword Planner / Trends: no authorized API connection ----
-    sources.google_ads_keyword_planner = {
-      status: 'unavailable',
-      note: 'No Google Ads (Keyword Planner) connection configured. Estimated volumes can be imported from Keyword Planner exports in Demand Intelligence > Import.',
-    };
+    // ---- Keyword Planner / Trends ----
+    const KP_REQUIRED = [
+      'GOOGLE_ADS_DEVELOPER_TOKEN', 'GOOGLE_ADS_CUSTOMER_ID', 'GOOGLE_ADS_CLIENT_ID',
+      'GOOGLE_ADS_CLIENT_SECRET', 'GOOGLE_ADS_REFRESH_TOKEN',
+    ];
+    const kpMissing = KP_REQUIRED.filter((n) => !secrets.get(n));
+    sources.google_ads_keyword_planner = kpMissing.length === 0
+      ? { status: 'skipped', note: 'Google Ads credentials on file; volumes are retrieved monthly by the Keyword Planner Refresh (or on demand in Source Health).' }
+      : { status: 'unavailable', note: `Google Ads credentials missing: ${kpMissing.join(', ')}. Verified Keyword Planner exports can also be imported in Demand Intelligence > Import.` };
     sources.google_trends = {
       status: 'unavailable',
       note: 'Google Trends provides relative interest indices only and has no bulk API; regional indices can be recorded as observations with the index values (never as exact counts).',
     };
     logs.push(
-      { source: 'google_ads_keyword_planner', status: 'unavailable', run_date: today, started_at: started, coverage_note: 'No authorized Google Ads connection. Volumes are imported from verified Keyword Planner exports in the admin panel.', next_update_cadence: KP_CADENCE },
+      { source: 'google_ads_keyword_planner', status: kpMissing.length === 0 ? 'skipped' : 'unavailable', run_date: today, started_at: started, coverage_note: kpMissing.length === 0 ? 'Google Ads credentials on file; the monthly Keyword Planner Refresh retrieves volumes.' : `No authorized Google Ads connection (missing: ${kpMissing.join(', ')}).`, next_update_cadence: KP_CADENCE },
       { source: 'google_trends', status: 'unavailable', run_date: today, started_at: started, coverage_note: 'No bulk API; relative-interest indices can be recorded manually with their source.', next_update_cadence: 'Manual' }
     );
 
