@@ -14,7 +14,7 @@
     "geo_key": {
       "type": "string",
       "default": "",
-      "description": "CA, province code or source-reported city identifier."
+      "description": "CA, province code, or source-reported city identifier."
     },
     "province_code": {
       "type": "string",
@@ -23,6 +23,32 @@
     "city": {
       "type": "string",
       "default": ""
+    },
+    "country_code": {
+      "type": "string",
+      "default": "CA"
+    },
+    "search_engine": {
+      "type": "string",
+      "enum": [
+        "google",
+        "bing",
+        "other",
+        "unknown"
+      ],
+      "default": "unknown"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "keyword_planner",
+        "dataforseo",
+        "semrush",
+        "google_trends",
+        "licensed_import",
+        "manual"
+      ],
+      "default": "manual"
     },
     "service_category": {
       "type": "string",
@@ -49,19 +75,18 @@
     },
     "keyword": {
       "type": "string",
-      "description": "Source-reported canonical keyword; combined variants are not separate volume records."
+      "description": "Source canonical keyword. Provider-grouped close variants are not additional searches."
     },
     "close_variants": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": [],
-      "description": "Variants included in this keyword's reported volume, not additional searches."
+      "default": []
     },
     "period": {
       "type": "string",
-      "description": "YYYY-MM of the source observation, not the retrieval month."
+      "description": "YYYY-MM of source reporting period, never substituted with retrieval month."
     },
     "metric_type": {
       "type": "string",
@@ -69,30 +94,36 @@
         "monthly_volume",
         "monthly_average",
         "relative_interest",
+        "estimated_organic_clicks",
+        "estimated_paid_clicks",
         "unspecified_estimate"
       ],
-      "default": "unspecified_estimate",
-      "description": "Monthly estimates, rolling averages and Trends samples are never combined or compared interchangeably."
+      "default": "unspecified_estimate"
     },
     "period_start": {
       "type": "string",
-      "default": "",
-      "description": "Source reporting window start (YYYY-MM-DD or YYYY-MM)."
+      "default": ""
     },
     "period_end": {
       "type": "string",
-      "default": "",
-      "description": "Source reporting window end."
+      "default": ""
     },
     "est_monthly_volume": {
       "type": "number",
       "minimum": 0,
       "default": 0
     },
+    "estimated_clicks": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Provider-reported industry-wide click estimate, never inferred from volume, CPC or site traffic."
+    },
     "volume_basis": {
       "type": "string",
       "enum": [
         "keyword_planner",
+        "dataforseo",
+        "semrush",
         "google_trends",
         "published_estimate",
         "admin_import",
@@ -104,13 +135,12 @@
       "type": "number",
       "minimum": 0,
       "maximum": 100,
-      "default": 0,
-      "description": "Google Trends export's sampled relative-interest index, never a search count."
+      "default": 0
     },
     "comparison_group": {
       "type": "string",
       "default": "",
-      "description": "Stable source export window id. Trends indices are only compared inside this window and geography."
+      "description": "Source export normalization window. Trends indices are comparable only within this window and geography."
     },
     "trend_direction": {
       "type": "string",
@@ -131,7 +161,7 @@
         "unknown"
       ],
       "default": "unknown",
-      "description": "Advertising competition, not contractor supply or SEO difficulty."
+      "description": "Ad competition, not organic difficulty or contractor supply."
     },
     "source": {
       "type": "string",
@@ -146,10 +176,19 @@
       "default": "",
       "maxLength": 1000
     },
+    "update_cadence": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "retrieved_at": {
+      "type": "string",
+      "default": "",
+      "description": "Actual dataset retrieval/import timestamp, not the reporting period."
+    },
     "last_updated": {
       "type": "string",
-      "format": "date",
-      "description": "Retrieval date, distinct from the reporting period."
+      "format": "date"
     }
   },
   "required": [

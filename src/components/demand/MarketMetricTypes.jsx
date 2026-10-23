@@ -1,0 +1,11 @@
+export default function MarketMetricTypes({ data }) {
+  return <section className="rounded-2xl border border-market-line bg-market-surface p-5">
+    <h3 className="font-bold">Four different measures. Never one blended total.</h3>
+    <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <article className="rounded-xl border border-market-line p-4"><h4 className="text-sm font-bold">Search volume</h4><p className="mt-2 text-xs leading-relaxed text-market-muted">Estimated searches for tracked services across the industry. Not unique customers, live events or campaign performance.</p></article>
+      <article className="rounded-xl border border-market-line p-4"><h4 className="text-sm font-bold">Search interest</h4><p className="mt-2 text-xs leading-relaxed text-market-muted">Google Trends samples, 0–100 within their original comparison window. Not counts and never converted into volume.</p></article>
+      <article className="rounded-xl border border-market-line p-4"><h4 className="text-sm font-bold">Estimated industry clicks</h4>{['estimated_organic_clicks','estimated_paid_clicks'].map((key) => {const metric = data.click_metrics?.[key];return <div key={key} className="mt-2 text-xs"><p className="font-semibold text-market-accent">{key.includes('organic') ? 'Organic' : 'Paid'}: {metric?.available ? metric.value.toLocaleString('en-CA') : 'Unavailable'}</p>{metric?.available ? <p className="mt-1 text-market-muted">Estimated · {metric.sources.join(' · ')} · {metric.period} · {metric.scope} · retrieved {metric.refreshed_at || metric.updated}. {metric.methodologies.join(' ')}</p> : <p className="mt-1 text-market-muted">No licensed industry-wide click data for this selection.</p>}</div>;})}</article>
+      <article className="rounded-xl border border-market-line p-4"><h4 className="text-sm font-bold">Actual website traffic</h4><p className="mt-2 text-xs leading-relaxed text-market-muted">Our measured Search Console clicks, analytics sessions and operational activity stay in private Recycling OS reports. They never define national demand.</p></article>
+    </div>
+  </section>;
+}

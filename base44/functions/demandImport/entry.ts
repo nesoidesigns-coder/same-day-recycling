@@ -1,120 +1,39 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { normalizeCategory, normalizeCompetition, currentPeriod } from '../../shared/demand.ts';
-
-// Admin-only import of verified demand observations (e.g. a Google Ads
-// Keyword Planner export or a Google Trends CSV export). Every imported row is
-// stored with its source label and measure type so public figures always
-// carry their provenance and are never mixed across measures.
-const MEASURES = ['monthly_volume', 'monthly_average', 'relative_interest', 'unspecified_estimate'];
-const BASES = ['keyword_planner', 'google_trends', 'published_estimate', 'admin_import'];
+import { normalizeDemandRows, observationKey } from '../../shared/marketImport.ts';
+import { buildMarketCommand } from '../../shared/marketCommand.ts';
 
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
-
-    let payload = {};
-    try { payload = await req.json(); } catch {}
-    const fileUri = String(payload.file_uri || '').trim();
-    const sourceLabel = String(payload.source_label || '').trim().slice(0, 120);
-    const volumeBasis = BASES.includes(payload.volume_basis) ? payload.volume_basis : 'keyword_planner';
-    const metricType = MEASURES.includes(payload.metric_type) ? payload.metric_type : 'unspecified_estimate';
-    if (!fileUri) return Response.json({ error: 'file_uri is required' }, { status: 400 });
-
-    const { file_url: signedUrl } = await base44.asServiceRole.integrations.Core.CreateFileSignedUrl({ file_uri: fileUri, expires_in: 300 });
-
-    const extracted = await base44.asServiceRole.integrations.Core.ExtractDataFromUploadedFile({
-      file_url: signedUrl,
-      json_schema: {
-        type: 'object',
-        properties: {
-          rows: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                keyword: { type: 'string', description: 'Canonical search keyword; overlapping variants are only merged when the source reports them as one keyword.' },
-                close_variants: { type: 'string', description: 'Comma-separated variants included in this keyword volume, if the source lists them.' },
-                service_category: { type: 'string', description: 'One of: junk_removal, furniture_removal, appliance_removal, electronics, recycling, waste_disposal, estate_cleanout, construction_debris, demolition_cleanup, other.' },
-                province: { type: 'string', description: 'Province or territory name or code, empty for national rows.' },
-                city: { type: 'string', description: 'City name, empty for province or national rows.' },
-                est_monthly_volume: { type: 'number', description: 'Estimated monthly searches (0 for index-only rows).' },
-                trend_index: { type: 'number', description: 'Relative interest index 0-100 if provided, otherwise 0.' },
-                comparison_group: { type: 'string', description: 'Export window identifier for Trends samples (e.g. 2026-01-01_2026-12-31_canada).' },
-                trend_direction: { type: 'string', description: 'rising, steady or falling if known.' },
-                competition: { type: 'string', description: 'low, medium or high if provided.' },
-                period: { type: 'string', description: 'YYYY-MM the value applies to.' },
-              },
-              required: ['keyword', 'est_monthly_volume'],
-            },
-          },
-        },
-        required: ['rows'],
-      },
-    });
-
-    if (extracted.status !== 'success' || !extracted.output?.rows) {
-      return Response.json({ error: extracted.details || 'Could not extract rows from the file. Expected columns: keyword, service_category, province, city, est_monthly_volume, trend_index, comparison_group, competition, period.' }, { status: 400 });
+    if (!user) return Response.json({error:'Unauthorized'},{status:401});
+    if (user.role !== 'admin') return Response.json({error:'Forbidden'},{status:403});
+    const text = await req.text();
+    if (text.length > 2000000) return Response.json({error:'Import payload exceeds 2 MB.'},{status:413});
+    const payload = JSON.parse(text), meta = payload.metadata || {};
+    let rows = payload.rows;
+    // Excel remains available as a reviewed extraction; CSV/JSON uses deterministic parsing in the browser.
+    if (!rows && payload.signed_url && payload.preview === true) {
+      const url = new URL(payload.signed_url);
+      if (!['media.base44.com','static.wixstatic.com','base44.app'].some((host) => url.hostname === host || url.hostname.endsWith('.'+host)) || url.protocol !== 'https:') return Response.json({error:'Use the app private-upload file picker.'},{status:400});
+      const extracted = await base44.asServiceRole.integrations.Core.ExtractDataFromUploadedFile({file_url:payload.signed_url,json_schema:{type:'object',properties:{rows:{type:'array',maxItems:500,items:{type:'object',properties:{keyword:{type:'string'},service_category:{type:'string'},country_code:{type:'string'},search_engine:{type:'string'},geo_type:{type:'string'},province:{type:'string'},city:{type:'string'},period:{type:'string'},metric_type:{type:'string'},est_monthly_volume:{type:'number'},estimated_clicks:{type:'number'},trend_index:{type:'number'},comparison_group:{type:'string'},period_start:{type:'string'},period_end:{type:'string'},close_variants:{type:'string'}},required:['keyword']}}},required:['rows']}});
+      if (extracted.status !== 'success') return Response.json({error:extracted.details || 'Could not extract spreadsheet rows.'},{status:400});
+      rows = extracted.output?.rows;
     }
-
-    const today = new Date().toISOString().slice(0, 10);
-    const fallbackPeriod = currentPeriod();
-    const records = [];
-    const skipped = [];
-    for (const row of extracted.output.rows) {
-      const keyword = String(row.keyword || '').trim();
-      if (!keyword) { skipped.push('Row missing keyword'); continue; }
-      const city = String(row.city || '').trim();
-      const provinceRaw = String(row.province || '').trim();
-      const provinceCode = (provinceRaw || '').toUpperCase().slice(0, 2);
-      const geoType = city ? 'city' : provinceRaw ? 'province' : 'national';
-      const geoKey = city || provinceCode || 'CA';
-      const period = /^\d{4}-\d{2}$/.test(String(row.period || '')) ? row.period : fallbackPeriod;
-      const isIndex = metricType === 'relative_interest' || volumeBasis === 'google_trends';
-      const volume = Number(row.est_monthly_volume) || 0;
-      const trendIndex = Number(row.trend_index) || 0;
-      if (isIndex && !(trendIndex > 0) && !(volume > 0)) { skipped.push(`Row "${keyword}" has no usable index value`); continue; }
-      if (!isIndex && !(volume > 0)) { skipped.push(`Row "${keyword}" has no volume value`); continue; }
-      records.push({
-        geo_type: geoType,
-        geo_key: geoKey,
-        province_code: city ? '' : provinceCode,
-        city,
-        service_category: normalizeCategory(row.service_category),
-        keyword,
-        close_variants: String(row.close_variants || '').split(',').map((v) => v.trim()).filter(Boolean).slice(0, 20),
-        period,
-        metric_type: isIndex ? 'relative_interest' : metricType === 'relative_interest' ? 'unspecified_estimate' : metricType,
-        est_monthly_volume: isIndex ? 0 : volume,
-        volume_basis: isIndex ? 'google_trends' : volumeBasis,
-        trend_index: isIndex ? (trendIndex || volume) : trendIndex,
-        comparison_group: String(row.comparison_group || '').trim().slice(0, 120),
-        trend_direction: ['rising', 'steady', 'falling'].includes(String(row.trend_direction || '')) ? row.trend_direction : 'unknown',
-        competition: normalizeCompetition(row.competition),
-        source: sourceLabel || (isIndex ? 'Google Trends CSV export' : 'Admin CSV import'),
-        methodology_note: `Imported ${today}; ${isIndex ? 'sampled relative-interest index from a Trends export (never a search count)' : metricType === 'monthly_average' ? '12-month rolling average as reported by the source' : 'monthly search-volume estimate as reported by the source'}.`,
-        last_updated: today,
-      });
-    }
-
-    if (!records.length) return Response.json({ error: 'No valid rows found in the file.', skipped }, { status: 400 });
-
-    const created = await base44.asServiceRole.entities.DemandObservation.bulkCreate(records);
-    await base44.asServiceRole.entities.DemandSyncLog.create({
-      source: 'import',
-      status: 'success',
-      run_date: today,
-      started_at: new Date().toISOString(),
-      records_upserted: records.length,
-      period: fallbackPeriod,
-      coverage_note: `Imported ${records.length} observations (basis: ${volumeBasis}, measure: ${metricType}, source: ${sourceLabel || 'Admin CSV import'}). Skipped: ${skipped.length}.`,
-      next_update_cadence: 'Manual / on import',
-    });
-
-    return Response.json({ ok: true, created: records.length, skipped, volume_basis: volumeBasis, metric_type: metricType });
-  } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
-  }
+    let records;
+    try { records = normalizeDemandRows(rows,meta); } catch(e) { return Response.json({error:e.message},{status:400}); }
+    if (payload.preview === true) return Response.json({ok:true,records,count:records.length,review_required:true,command_preview:buildMarketCommand(records,{engine:meta.search_engine || 'google',measure:meta.metric_type === 'monthly_average' ? 'monthly_average' : 'monthly_volume'})});
+    let cursor; const existing = new Map();
+    do {
+      const page = await base44.entities.DemandObservation.filter({provider:meta.provider,source:meta.source_label,period:{$in:[...new Set(records.map((r) => r.period))]}},{limit:500,cursor});
+      for(const r of page.items || []) existing.set(observationKey(r),r.id);
+      cursor = page.has_more ? page.next_cursor : undefined;
+    } while(cursor);
+    const creates=[], updates=[];
+    for(const record of records) {const id=existing.get(observationKey(record));if(id) updates.push({id,...record});else creates.push(record);}
+    for(let i=0;i<creates.length;i+=100) await base44.entities.DemandObservation.bulkCreate(creates.slice(i,i+100));
+    for(let i=0;i<updates.length;i+=100) await base44.entities.DemandObservation.bulkUpdate(updates.slice(i,i+100));
+    await base44.entities.DemandSyncLog.create({source:'import',status:'success',run_date:new Date().toISOString().slice(0,10),finished_at:new Date().toISOString(),records_upserted:records.length,period:[...new Set(records.map((r) => r.period))].sort().join(', ').slice(0,500),coverage_note:`${meta.source_label}: ${records.length} source observations imported. Provider ${meta.provider}; engines and measures stored separately.`,next_update_cadence:meta.update_cadence});
+    return Response.json({ok:true,created:creates.length,updated:updates.length,total:records.length});
+  } catch(error) { return Response.json({error:error.message},{status:500}); }
 }

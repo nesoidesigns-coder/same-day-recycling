@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Globe2, Loader2, BookOpen } from "lucide-react";
+import { Globe2, BookOpen } from "lucide-react";
 import DemandCommandTab from "@/components/admin/demand/DemandCommandTab";
 import DemandHealthTab from "@/components/admin/demand/DemandHealthTab";
 import DemandDataTab from "@/components/admin/demand/DemandDataTab";
 import DemandImportTab from "@/components/admin/demand/DemandImportTab";
 import DemandInsightsTab from "@/components/admin/demand/DemandInsightsTab";
+import PrivatePerformance from '@/components/demand/PrivatePerformance';
+import { useQueryClient } from '@tanstack/react-query';
 
 const TABS = [
   ["command", "Market Intelligence"],
@@ -13,6 +15,7 @@ const TABS = [
   ["data", "Industry Data"],
   ["import", "Import Data"],
   ["insights", "Rex Analysis"],
+  ["private", "Private Performance"],
   ["methodology", "Methodology"],
 ];
 
@@ -20,12 +23,14 @@ export default function AdminDemand() {
   const [tab, setTab] = useState("command");
   const [report, setReport] = useState(null);
   const [reportLoading, setReportLoading] = useState(true);
+  const cache = useQueryClient();
 
   const loadReport = async () => {
     setReportLoading(true);
     try {
-      const res = await base44.functions.invoke("demandReport", {});
-      setReport(res.data);
+      const [res, privateRes] = await Promise.all([base44.functions.invoke('demandReport', {}),base44.functions.invoke('demandReport', {view:'private_capture'})]);
+      setReport({...res.data,capture:privateRes.data.capture});
+      await cache.invalidateQueries({queryKey:['marketObservatory']});
     } catch {
       setReport(null);
     } finally {
@@ -43,7 +48,7 @@ export default function AdminDemand() {
         </span>
         <div>
           <h1 className="text-2xl font-extrabold text-[#102B2A]">Market Intelligence</h1>
-          <p className="text-sm text-slate-500">Canadian search-demand measurement across the industry, with Same Day Recycling's verified capture shown separately.</p>
+          <p className="text-sm text-slate-500">Independent Canadian market demand, not advertising campaign performance. Company analytics live in Private Performance.</p>
         </div>
       </div>
 
@@ -69,7 +74,8 @@ export default function AdminDemand() {
             onOpenImport={() => setTab("import")}
           />
         )}
-        {tab === "health" && <DemandHealthTab report={report} />}
+        {tab === "health" && <DemandHealthTab onOpenImport={() => setTab('import')} onRefresh={loadReport} />}
+        {tab === 'private' && <PrivatePerformance report={report} onRefresh={loadReport}/>}
         {tab === "data" && <DemandDataTab />}
         {tab === "import" && <DemandImportTab onImported={loadReport} />}
         {tab === "insights" && <DemandInsightsTab />}
@@ -105,7 +111,7 @@ function Methodology() {
         </div>
         <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5">
           <div className="font-bold text-[#102B2A] mb-1">Update cadence & honesty</div>
-          <p>Search Console and Analytics refresh daily on their real provider cadence (Search Console reporting lags ~2 days). Keyword Planner volumes are monthly estimates and refresh only when a verified export is imported. Google Trends has no bulk API — indices are recorded manually with their source. Every refresh, failure and unavailable provider is logged in Source Health with timestamps and coverage notes. Nothing claims real-time nationwide search tracking.</p>
+          <p>Industry keyword estimates follow the original dataset reporting schedule, usually monthly, not each page reload. DataForSEO, Semrush, Keyword Planner and other licensed exports are alternative activation paths, independent of our advertising campaigns. Direct API access depends on provider authorization and subscription requirements. Trends indices require a source-reported export and its original comparison window; web-search-generated readings are not accepted as verified samples. Every metric identifies its source, engine, Canadian geography, reporting month and retrieval date. Organic and paid clicks appear only when a licensed industry-wide click dataset explicitly supplies them, never by multiplying volume by an assumed click rate.</p>
         </div>
         <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5">
           <div className="font-bold text-[#102B2A] mb-1">Demand vs. coverage</div>

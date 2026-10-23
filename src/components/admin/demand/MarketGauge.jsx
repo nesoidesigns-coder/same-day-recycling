@@ -30,7 +30,7 @@ export default function MarketGauge({ label, metric, change = false, level = nul
 
   return (
     <article className="rounded-2xl border border-market-line bg-market-surface p-5 text-market-ink">
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <h3 className="min-h-10 text-sm font-bold">{label}</h3>
         {levelBadge && (
           <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${levelBadge.cls}`}>
@@ -69,8 +69,11 @@ export default function MarketGauge({ label, metric, change = false, level = nul
         <div><dt className="inline">Type: </dt><dd className="inline">{change ? 'Calculated from comparable estimates' : metric.classification || 'Estimated'}</dd></div>
         <div><dt className="inline">Scope: </dt><dd className="inline">{metric.scope}</dd></div>
         <div><dt className="inline">Period: </dt><dd className="inline">{metric.period || 'Unavailable'}{change && metric.previous_period ? ` vs ${metric.previous_period}` : ''}</dd></div>
+        {metric.engines?.length > 0 && <div>Engine: {metric.engines.join(' · ')}</div>}
+        {metric.reporting_windows?.length > 0 && <div>Reporting window: {metric.reporting_windows.join(' · ')}</div>}
         <div><dt className="inline">Source: </dt><dd className="inline">{metric.sources?.join(' · ') || 'No source observations on file'}</dd></div>
-        {metric.updated && <div>Retrieved: {metric.updated}</div>}
+        {metric.source_urls?.filter((url) => /^https:\/\//.test(url)).map((url) => <div key={url}><a href={url} target="_blank" rel="noreferrer" className="text-market-accent underline">Original source report</a></div>)}
+        {metric.updated && <div>Retrieved: {metric.refreshed_at || metric.updated}</div>}
       </dl>
       {change && <p className="mt-2 text-xs text-market-muted">{metric.change_note}</p>}
       <p className="mt-3 text-[11px] text-market-muted">Ring is a status indicator, not market share.</p>

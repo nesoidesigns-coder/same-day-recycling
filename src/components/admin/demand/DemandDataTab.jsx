@@ -21,7 +21,7 @@ export default function DemandDataTab() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [form, setForm] = useState({ keyword: "", category: "junk_removal", geo_type: "province", province: "BC", city: "", volume: "", period: "", source: "", metric_type: "monthly_volume", competition: "unknown", trend_direction: "unknown", close_variants: "" });
+  const [form, setForm] = useState({ keyword: "", category: "junk_removal", geo_type: "province", province: "BC", city: "", volume: "", period: "", source: "", source_url: "", methodology_note: "", search_engine: "google", comparison_group: "", metric_type: "monthly_volume", competition: "unknown", trend_direction: "unknown", close_variants: "" });
   const [filterText, setFilterText] = useState("");
   const [filterMeasure, setFilterMeasure] = useState("all");
 
@@ -39,6 +39,9 @@ export default function DemandDataTab() {
 
   const add = async () => {
     if (!form.keyword.trim()) { setMessage("Keyword is required."); return; }
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(form.period) || !form.source.trim() || !/^https:\/\//.test(form.source_url) || !form.methodology_note.trim()) { setMessage('Supply the real reporting month, original source label, source URL and methodology.'); return; }
+    if (form.volume === '' || !Number.isFinite(Number(form.volume)) || Number(form.volume) < 0 || (form.metric_type === 'relative_interest' && (Number(form.volume) > 100 || !form.comparison_group.trim()))) { setMessage('Supply a source value; indices need a 0–100 value and their comparison window.'); return; }
+    if (form.geo_type === 'city' && !form.city.trim()) { setMessage('City is required.'); return; }
     setSaving(true);
     setMessage("");
     try {
@@ -49,20 +52,26 @@ export default function DemandDataTab() {
       await base44.entities.DemandObservation.create({
         geo_type: form.geo_type,
         geo_key: form.geo_type === "city" ? form.city.trim() : form.geo_type === "province" ? form.province : "CA",
-        province_code: form.geo_type === "province" ? form.province : "",
+        province_code: form.geo_type !== 'national' ? form.province : '',
+        search_engine: form.metric_type === 'relative_interest' ? 'google' : form.search_engine,
+        provider: form.metric_type === 'relative_interest' ? 'google_trends' : 'manual',
+        country_code: 'CA',
+        source_url: form.source_url.trim(),
+        comparison_group: form.comparison_group.trim(),
+        retrieved_at: new Date().toISOString(),
         city: form.geo_type === "city" ? form.city.trim() : "",
         service_category: form.category,
         keyword: form.keyword.trim(),
         close_variants: variants,
         period,
         est_monthly_volume: isIndex ? 0 : Number(form.volume) || 0,
-        volume_basis: isIndex ? "google_trends" : "keyword_planner",
+        volume_basis: isIndex ? 'google_trends' : 'admin_import',
         metric_type: form.metric_type,
         trend_index: isIndex ? Number(form.volume) || 0 : 0,
         competition: form.competition,
         trend_direction: form.trend_direction,
-        source: form.source.trim() || (isIndex ? "Google Trends (CSV export)" : "Google Ads Keyword Planner (manual entry)"),
-        methodology_note: `Manually recorded ${today} (${MEASURE_OPTIONS.find(([v]) => v === form.metric_type)?.[1] || form.metric_type}).`,
+        source: form.source.trim(),
+        methodology_note: `Admin-recorded source observation. ${form.methodology_note.trim()}`.slice(0,1000),
         last_updated: today,
       });
       setForm({ ...form, keyword: "", volume: "", source: "", close_variants: "" });
@@ -116,7 +125,7 @@ export default function DemandDataTab() {
               <SelectItem value="city">City</SelectItem>
             </SelectContent>
           </Select>
-          {form.geo_type === "province" && (
+          {form.geo_type !== 'national' && (
             <Select value={form.province} onValueChange={(v) => setForm({ ...form, province: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>{PROVINCES.map(([c, n]) => <SelectItem key={c} value={c}>{n}</SelectItem>)}</SelectContent>
@@ -126,8 +135,12 @@ export default function DemandDataTab() {
             <Input placeholder="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
           )}
           <Input type="number" placeholder={form.metric_type === "relative_interest" ? "Trends index (0-100)" : "Est. monthly volume"} value={form.volume} onChange={(e) => setForm({ ...form, volume: e.target.value })} />
-          <Input placeholder="Period (YYYY-MM, blank = current)" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} />
-          <Input placeholder="Source label" value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} />
+          <Input placeholder="Source reporting month (YYYY-MM)" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} />
+          <Input placeholder="Original source label (required)" value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} />
+          <Input placeholder="Source URL (https://)" value={form.source_url} onChange={(e) => setForm({...form,source_url:e.target.value})}/>
+          <Input placeholder="Source methodology and coverage" value={form.methodology_note} onChange={(e) => setForm({...form,methodology_note:e.target.value})}/>
+          <Select value={form.search_engine} onValueChange={(v) => setForm({...form,search_engine:v})}><SelectTrigger aria-label="Search engine"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="google">Google</SelectItem><SelectItem value="bing">Bing</SelectItem></SelectContent></Select>
+          {form.metric_type === 'relative_interest' && <Input placeholder="Original Trends comparison window" value={form.comparison_group} onChange={(e) => setForm({...form,comparison_group:e.target.value})}/>}
           <Input placeholder="Close variants (comma-separated, optional)" value={form.close_variants} onChange={(e) => setForm({ ...form, close_variants: e.target.value })} />
           <Select value={form.competition} onValueChange={(v) => setForm({ ...form, competition: v })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
