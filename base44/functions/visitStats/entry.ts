@@ -21,14 +21,31 @@ export default async function(req) {
       return out;
     };
 
+    const byClass = (rows) => {
+      const out = { customer: 0, contractor: 0, owner: 0, bot: 0, total: 0 };
+      (rows || []).forEach((row) => {
+        // Records created before classification existed count as customer.
+        const cls = String(row.traffic_class || 'customer');
+        if (cls in out) out[cls] += row.count || 0;
+        out.total += row.count || 0;
+      });
+      return out;
+    };
+
     const dayAgo = new Date(now - 86400000).toISOString();
-    const [weekRows, monthRows, bookingsWeek, cityRows, todayRows, pathRows] = await Promise.all([
-      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: weekAgo } }, groupBy: 'source' }),
-      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo } }, groupBy: 'source' }),
+    // Real traffic = customer + contractor visits. Owner testing and bot
+    // crawls are tracked but never inflate visitor statistics.
+    const REAL = { traffic_class: { $nin: ['bot', 'owner'] } };
+    const [weekRows, monthRows, bookingsWeek, cityRows, todayRows, pathRows, classesDay, classesWeek, classesMonth] = await Promise.all([
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: weekAgo }, ...REAL }, groupBy: 'source' }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo }, ...REAL }, groupBy: 'source' }),
       base44.asServiceRole.entities.Booking.count({ created_date: { $gte: weekAgo }, status: { $ne: 'cancelled' } }),
       base44.asServiceRole.entities.Booking.aggregate({ query: { created_date: { $gte: monthAgo }, status: { $ne: 'cancelled' } }, groupBy: 'city', sort: '-count', limit: 5 }),
-      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo } }, groupBy: 'source' }),
-      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo } }, groupBy: 'path', sort: '-count', limit: 5 }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo }, ...REAL }, groupBy: 'source' }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo }, ...REAL }, groupBy: 'path', sort: '-count', limit: 5 }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo } }, groupBy: 'traffic_class' }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: weekAgo } }, groupBy: 'traffic_class' }),
+      base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo } }, groupBy: 'traffic_class' }),
     ]);
 
     const cityRow = (cityRows?.rows || []).find((r) => String(r.city || '').trim());
@@ -39,6 +56,11 @@ export default async function(req) {
       visits_30d: bySource(monthRows?.rows),
       bookings_7d: bookingsWeek,
       top_city: cityRow ? cityRow.city : '',
+      traffic_classes: {
+        '24h': byClass(classesDay?.rows),
+        '7d': byClass(classesWeek?.rows),
+        '30d': byClass(classesMonth?.rows),
+      },
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

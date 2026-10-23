@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Radio, Activity, Globe, Users, CalendarCheck, MousePointerClick, Facebook, Search, Link2, HelpCircle } from "lucide-react";
+import { Radio, Activity, Globe, Users, CalendarCheck, MousePointerClick, Facebook, Search, Link2, HelpCircle, Truck, ShieldCheck, Bot } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import EngagementSection from "@/components/admin/EngagementSection";
 
@@ -42,6 +42,7 @@ export default function LiveTrackerTab() {
 
   const v24 = stats?.visits_24h;
   const v30 = stats?.visits_30d;
+  const cls = stats?.traffic_classes?.["30d"] || {};
 
   return (
     <div>
@@ -74,7 +75,7 @@ export default function LiveTrackerTab() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="rounded-2xl bg-[#102B2A] px-4 py-4">
               <div className="flex items-center gap-2 text-[#187B65] text-xs font-semibold mb-1">
-                <Activity className="w-4 h-4" /> Visits last 24h
+                <Activity className="w-4 h-4" /> Visits 24h (real traffic)
               </div>
               <span className="text-2xl font-bold text-white">{(v24?.total || 0).toLocaleString()}</span>
             </div>
@@ -107,6 +108,22 @@ export default function LiveTrackerTab() {
               <SourceCard icon={<HelpCircle className="w-3.5 h-3.5" />} label="Other" value={v24?.other || 0} total={v24?.total || 0} />
             </div>
           </div>
+
+          {stats.traffic_classes && (
+            <div>
+              <h3 className="font-bold text-[#102B2A] mb-3 text-sm">Traffic classification (30d)</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <SourceCard icon={<Users className="w-3.5 h-3.5" />} label="Customer" value={cls.customer || 0} total={cls.total || 0} />
+                <SourceCard icon={<Truck className="w-3.5 h-3.5" />} label="Contractor" value={cls.contractor || 0} total={cls.total || 0} />
+                <SourceCard icon={<ShieldCheck className="w-3.5 h-3.5" />} label="Owner (you)" value={cls.owner || 0} total={cls.total || 0} />
+                <SourceCard icon={<Bot className="w-3.5 h-3.5" />} label="Bot" value={cls.bot || 0} total={cls.total || 0} />
+              </div>
+              <p className="mt-2 text-[11px] text-slate-500">
+                Who the visits are: customers exploring services, contractors exploring partnerships and software,
+                your own admin activity, and automated crawlers. Visitor totals exclude owner and bot traffic.
+              </p>
+            </div>
+          )}
 
           <div>
             <h3 className="font-bold text-[#102B2A] mb-3 text-sm">Top pages (24h)</h3>

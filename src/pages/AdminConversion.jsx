@@ -37,7 +37,7 @@ export default function AdminConversion() {
   const r = data?.rates;
   const m = data?.money;
   const stages = f && [
-    { label: "Site visits", value: f.visits.current, prev: f.visits.previous, sub: "Tracked sessions on the site" },
+    { label: "Site visits", value: f.visits.current, prev: f.visits.previous, sub: "Customer & contractor traffic — bots and owner activity excluded" },
     { label: "Quote leads", value: f.quote_leads.current, prev: f.quote_leads.previous, sub: `${f.quote_leads.booked} booked directly from a quote` },
     { label: "Booking requests", value: f.booking_requests.current, prev: f.booking_requests.previous, sub: "Submitted pickup requests" },
     { label: "Confirmed", value: f.confirmed.current, sub: "Accepted and scheduled jobs" },
@@ -109,6 +109,15 @@ export default function AdminConversion() {
             ))}
           </div>
 
+          {f.visits.by_class && (
+            <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <ClassCard label="Customer traffic" value={f.visits.by_class.customer} note="Exploring services & quotes" />
+              <ClassCard label="Contractor traffic" value={f.visits.by_class.contractor} note="Partnership & software pages" />
+              <ClassCard label="Owner activity" value={f.visits.by_class.owner} note="Your testing & admin" />
+              <ClassCard label="Bot traffic" value={f.visits.by_class.bot} note="Crawlers & automated" />
+            </div>
+          )}
+
           <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <MoneyCard label="Completed job value" value={money(m.completed_job_value)} note="All completed jobs, incl. externally settled" />
             <MoneyCard label="Platform-processed" value={money(m.platform_paid_value)} note="Paid through this platform" />
@@ -162,6 +171,16 @@ export default function AdminConversion() {
           )}
         </>
       ) : null}
+    </div>
+  );
+}
+
+function ClassCard({ label, value, note }) {
+  return (
+    <div className="rounded-2xl bg-white border border-slate-100 shadow-sm px-4 py-4">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
+      <div className="mt-1 text-xl font-extrabold text-[#102B2A]">{(Number(value) || 0).toLocaleString("en-CA")}</div>
+      <div className="mt-0.5 text-[11px] text-slate-500">{note}</div>
     </div>
   );
 }

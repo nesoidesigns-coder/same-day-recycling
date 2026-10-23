@@ -19,9 +19,9 @@ export default async function(req) {
     const startIso = new Date(startMs).toISOString();
     const prevStartIso = new Date(prevStartMs).toISOString();
 
-    const [visitsCur, visitsPrev, leadsPage, bookingsPage] = await Promise.all([
-      base44.entities.Visit.count({ created_date: { $gte: startIso } }),
-      base44.entities.Visit.count({ created_date: { $gte: prevStartIso, $lt: startIso } }),
+    const [visitsCurAgg, visitsPrevAgg, leadsPage, bookingsPage] = await Promise.all([
+      base44.entities.Visit.aggregate({ query: { created_date: { $gte: startIso } }, groupBy: 'traffic_class' }),
+      base44.entities.Visit.aggregate({ query: { created_date: { $gte: prevStartIso, $lt: startIso } }, groupBy: 'traffic_class' }),
       base44.entities.QuoteLead.filter({ created_date: { $gte: prevStartIso } }, { limit: 500 }),
       base44.entities.Booking.filter({ record_type: 'service', created_date: { $gte: prevStartIso } }, { limit: 500 }),
     ]);
@@ -35,6 +35,22 @@ export default async function(req) {
 
     const { cur: leadsCur, prev: leadsPrev } = split(items(leadsPage));
     const { cur: bookings, prev: bookingsPrev } = split(items(bookingsPage));
+
+    // Traffic classification: owner activity, customers, contractors and bots
+    // are tracked separately — conversions are measured on real traffic only.
+    const byClass = (rows) => {
+      const out = { customer: 0, contractor: 0, owner: 0, bot: 0, unclassified: 0 };
+      for (const row of rows || []) {
+        const cls = String(row.traffic_class || 'unclassified');
+        if (cls in out) out[cls] += row.count || 0;
+      }
+      return out;
+    };
+    const realTraffic = (c) => c.customer + c.contractor + c.unclassified;
+    const classesCur = byClass(visitsCurAgg?.rows);
+    const classesPrev = byClass(visitsPrevAgg?.rows);
+    const visitsCur = realTraffic(classesCur);
+    const visitsPrev = realTraffic(classesPrev);
 
     const countWhere = (rows, fn) => rows.filter(fn).length;
     const sum = (rows, fn) => rows.reduce((a, r) => a + (Number(fn(r)) || 0), 0);
@@ -61,7 +77,7 @@ export default async function(req) {
       days,
       generated_at: new Date().toISOString(),
       funnel: {
-        visits: { current: visitsCur, previous: visitsPrev },
+        visits: { current: visitsCur, previous: visitsPrev, by_class: classesCur },
         quote_leads: {
           current: leadsCur.length,
           previous: leadsPrev.length,
