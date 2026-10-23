@@ -125,7 +125,7 @@ export default function ServiceDiscovery({ onCity }) {
       {step === "location" && (
         <form onSubmit={check} className="mt-4 grid gap-3" aria-label="Service location check">
           <div className="relative">
-            <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <MapPin className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <label htmlFor="discovery-location" className="sr-only">Enter your postal code or city</label>
             <input
               id="discovery-location"
@@ -207,7 +207,7 @@ export default function ServiceDiscovery({ onCity }) {
           </div>
 
           <div className="mt-4">
-            <div className="text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">Step 2 · What do you need handled?</div>
+            <div className="text-xs font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">Step 2 · What do you need handled?</div>
             <div className="flex flex-wrap gap-2">
               {POPULAR.map((c) => (
                 <button

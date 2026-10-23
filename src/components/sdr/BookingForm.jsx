@@ -173,7 +173,7 @@ export default function BookingForm({ prefill }) {
             ? `Your request for ${form.city} is in our system. We operate in every Canadian city — our dispatch team is arranging your local contractor and will call you with pricing and your pickup window.`
             : "Your booking is in — dispatch confirms your pickup window and upfront price with you before anything is scheduled."}
         </p>
-        <p className="mt-2 text-xs text-slate-400 max-w-sm mx-auto">
+        <p className="mt-2 text-xs text-slate-500 max-w-sm mx-auto">
           Your approved quote is the price you pay. Any additional items are priced as a separate change order and only added with your approval — <Link to="/terms" className="font-semibold text-[#187B65]">see terms</Link>.
         </p>
         {!waitlisted && bookingId && !payDone && quoteAmount > 0 && (() => {

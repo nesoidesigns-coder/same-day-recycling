@@ -28,6 +28,8 @@ const Image = React.forwardRef(
       focalPointX,
       focalPointY,
       quality = 90,
+      targetWidth,
+      targetHeight,
       onError,
       ...props
     },
@@ -100,6 +102,8 @@ const Image = React.forwardRef(
         fittingType={fittingType}
         focalPoint={focalPoint}
         quality={quality}
+        targetWidth={targetWidth}
+        targetHeight={targetHeight}
         aspectRatio={aspectRatio}
         {...imageProps}
       />

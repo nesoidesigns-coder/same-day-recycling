@@ -46,7 +46,7 @@ export default function Navbar() {
           </span>
           <span className="leading-tight">
             <span className="block text-lg tracking-tight">Same Day Recycling</span>
-            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-400">Canada's Intelligent Recycling & Removal Network. Powered by Recycling OS.</span>
+            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-500">Canada's Intelligent Recycling & Removal Network. Powered by Recycling OS.</span>
           </span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
@@ -75,7 +75,7 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <div className="mt-2 pt-3 border-t border-slate-100 px-4 pb-1">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">
                     <MapPin className="w-3 h-3 text-[#187B65]" /> Service coverage
                   </div>
                   <div className="grid grid-cols-2 gap-1">
@@ -113,7 +113,7 @@ export default function Navbar() {
             Get a Free Quote
           </Link>
           <div className="pt-2 border-t border-slate-100">
-            <div className="text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">More</div>
+            <div className="text-xs font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">More</div>
             <div className="grid grid-cols-2 gap-2">
               {moreLinks.map((l) => (
                 <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-600 py-1.5 rounded-lg px-2 hover:bg-[#f4f7f5]">
@@ -122,7 +122,7 @@ export default function Navbar() {
               ))}
             </div>
             <div className="mt-3 pt-3 border-t border-slate-100">
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-[0.15em] text-slate-400 uppercase mb-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">
                 <MapPin className="w-3 h-3 text-[#187B65]" /> Service Coverage
               </div>
               <div className="grid grid-cols-2 gap-1">

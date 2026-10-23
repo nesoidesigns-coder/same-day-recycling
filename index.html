@@ -69,6 +69,10 @@
       ]
     }
     </script>
+    <style>
+      @keyframes sdr-splash-spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) { #app-splash > div[style*="sdr-splash"] { animation: none; } }
+    </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-77FTJJBHE1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -78,7 +82,14 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Branded splash: paints before the JS bundle finishes so the first
+           contentful paint happens immediately. React replaces it on mount. -->
+      <div id="app-splash" style="position:fixed;inset:0;z-index:100;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px" role="status" aria-label="Loading Same Day Recycling">
+        <img src="https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02e81d056_logo.png" alt="" width="64" height="64" fetchpriority="high" style="width:64px;height:64px;object-fit:contain" />
+        <div style="width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#187B65;border-radius:9999px;animation:sdr-splash-spin 0.9s linear infinite"></div>
+      </div>
+    </div>
     <noscript>
       <div style="max-width:760px;margin:0 auto;padding:32px 20px;font-family:Arial,Helvetica,sans-serif;color:#102B2A;line-height:1.6">
         <h2 style="color:#187B65">Same Day Recycling &mdash; Nationwide Junk Removal &amp; Recycling Network</h2>

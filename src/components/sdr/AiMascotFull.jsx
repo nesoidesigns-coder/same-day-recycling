@@ -16,10 +16,11 @@ export default function AiMascotFull({ height, waveOnce = false, className = "",
         alt="Rex, the Same Day Recycling human mascot"
         originWidth={843}
         originHeight={1512}
+        targetWidth={112}
         className={`${waveOnce ? "mascot-wave-once" : "mascot-wave"} h-full w-auto`}
         fittingType="fit"
         loading={eager ? "eager" : undefined}
-        fetchpriority={eager ? "high" : undefined}
+        fetchpriority={eager ? "low" : undefined}
       />
     </span>
   );

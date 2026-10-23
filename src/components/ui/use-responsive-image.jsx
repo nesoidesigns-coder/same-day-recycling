@@ -3,7 +3,7 @@ import { useSize } from "../../hooks/use-size"
 import { cn } from "../../lib/utils"
 import { DEFAULT_TRANSFORM_WIDTH, getImagePreviewClassName } from "./image-helpers"
 
-export function useResponsiveImage({ parsed, fittingType, focalPoint, quality, className, onLoad, onSourceChange }, parentRef) {
+export function useResponsiveImage({ parsed, fittingType, focalPoint, quality, className, onLoad, onSourceChange, targetWidth, targetHeight }, parentRef) {
   const wrapperRef = React.useRef(null)
   const imgRef = React.useRef(null)
   const size = useSize(wrapperRef)
@@ -22,9 +22,13 @@ export function useResponsiveImage({ parsed, fittingType, focalPoint, quality, c
 
   const crop = fittingType !== "fit"
   // Wait for useSize's pre-paint measurement before requesting a transform.
+  // When both target dimensions are given they fix the transform outright, so
+  // the requested URL (and srcSet) is stable across prerender and hydration —
+  // above-the-fold images can then be preloaded safely.
+  const fixed = targetWidth && targetHeight
   const options = size && {
-    width: size.width || DEFAULT_TRANSFORM_WIDTH,
-    height: size.height || undefined,
+    width: fixed ? targetWidth : (size.width || targetWidth || DEFAULT_TRANSFORM_WIDTH),
+    height: fixed ? targetHeight : (size.height || undefined),
     crop,
     focalPoint: crop ? focalPoint : undefined,
     quality,
