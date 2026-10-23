@@ -88,7 +88,50 @@ export default function AdminAcquisition() {
         <div className="mt-8 rounded-2xl bg-white border border-red-200 px-5 py-4 text-sm text-red-700">{error}</div>
       ) : funnel ? (
         <>
-          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Real vs test: the growth numbers below exclude every test record. */}
+          <div className="mt-6 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
+            <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4">
+              Real business growth vs test activity
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4 mb-4">
+              <div className="rounded-2xl bg-[#eef4f0] border border-[#187B65]/25 px-4 py-4">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#187B65]">Real customer bookings</div>
+                <div className="mt-1 text-3xl font-extrabold text-[#102B2A]">{f.booking_requests.current}</div>
+                <div className="text-[11px] text-slate-500 mt-1">Previous period: {f.booking_requests.previous}</div>
+              </div>
+              <div className="rounded-2xl bg-slate-50 border border-slate-100 px-4 py-4">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Test records (excluded)</div>
+                <div className="mt-1 text-3xl font-extrabold text-slate-500">{funnel.tests.current}</div>
+                <div className="text-[11px] text-slate-500 mt-1">Previous period: {funnel.tests.previous}</div>
+              </div>
+            </div>
+            {funnel.tests.records.length > 0 ? (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    <th className="py-2 pr-4">Reference</th>
+                    <th className="py-2 pr-4">Name</th>
+                    <th className="py-2 pr-4">City</th>
+                    <th className="py-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {funnel.tests.records.map((t) => (
+                    <tr key={t.ref} className="border-t border-slate-100">
+                      <td className="py-2.5 pr-4 font-mono text-xs text-slate-500">{t.ref}</td>
+                      <td className="py-2.5 pr-4 text-[#102B2A]">{t.name || "—"}</td>
+                      <td className="py-2.5 pr-4">{t.city || "—"}</td>
+                      <td className="py-2.5 capitalize text-slate-600">{t.status || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-sm text-slate-500">No test bookings created in this period.</p>
+            )}
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
             {kpis.map((k) => (
               <div key={k.label} className="rounded-2xl bg-white border border-slate-100 shadow-sm px-4 py-4">
                 <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -161,48 +204,6 @@ export default function AdminAcquisition() {
             )}
           </div>
 
-          {/* Real vs test: the growth numbers above exclude every record below. */}
-          <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
-            <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4">
-              Real growth vs test activity
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-4 mb-4">
-              <div className="rounded-2xl bg-[#eef4f0] border border-[#187B65]/25 px-4 py-4">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-[#187B65]">Real customer bookings</div>
-                <div className="mt-1 text-3xl font-extrabold text-[#102B2A]">{f.booking_requests.current}</div>
-                <div className="text-[11px] text-slate-500 mt-1">Previous period: {f.booking_requests.previous}</div>
-              </div>
-              <div className="rounded-2xl bg-slate-50 border border-slate-100 px-4 py-4">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Test records (excluded)</div>
-                <div className="mt-1 text-3xl font-extrabold text-slate-500">{funnel.tests.current}</div>
-                <div className="text-[11px] text-slate-500 mt-1">Previous period: {funnel.tests.previous}</div>
-              </div>
-            </div>
-            {funnel.tests.records.length > 0 ? (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    <th className="py-2 pr-4">Reference</th>
-                    <th className="py-2 pr-4">Name</th>
-                    <th className="py-2 pr-4">City</th>
-                    <th className="py-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {funnel.tests.records.map((t) => (
-                    <tr key={t.ref} className="border-t border-slate-100">
-                      <td className="py-2.5 pr-4 font-mono text-xs text-slate-500">{t.ref}</td>
-                      <td className="py-2.5 pr-4 text-[#102B2A]">{t.name || "—"}</td>
-                      <td className="py-2.5 pr-4">{t.city || "—"}</td>
-                      <td className="py-2.5 capitalize text-slate-600">{t.status || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="text-sm text-slate-500">No test bookings created in this period.</p>
-            )}
-          </div>
         </>
       ) : null}
     </div>
