@@ -1,4 +1,4 @@
-import { Calculator, CalendarCheck, MapPin, Phone, ShieldCheck, Recycle } from "lucide-react";
+import { Calculator, CalendarCheck, MessageCircle, Phone, ShieldCheck, Recycle } from "lucide-react";
 import ServiceDiscovery from "./ServiceDiscovery";
 import { Image } from "@/components/ui/image";
 
@@ -26,24 +26,24 @@ export default function HomeHero({ onCity }) {
               Book junk removal, furniture pickup, appliance recycling, and property cleanouts with a simple, guided experience.
             </p>
 
-            <div className="mt-6 flex flex-col gap-2.5 max-w-md mx-auto md:mx-0">
+            <div className="mt-6 grid grid-cols-2 gap-2.5 max-w-md mx-auto md:mx-0">
               <button
                 onClick={() => scrollTo("estimate")}
-                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-[#187B65] text-white font-bold px-7 py-3.5 text-base shadow-md shadow-[#187B65]/25 hover:bg-[#125C4E] transition-colors"
+                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-[#187B65] text-white font-bold px-5 py-3.5 text-[15px] shadow-md shadow-[#187B65]/25 hover:bg-[#125C4E] transition-colors"
               >
-                <Calculator className="w-5 h-5" /> Get My Instant Estimate
+                <Calculator className="w-5 h-5 shrink-0" /> Instant Estimate
               </button>
               <button
                 onClick={() => scrollTo("book")}
-                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-[#102B2A] text-white font-bold px-7 py-3.5 text-base hover:bg-[#0a3020] transition-colors"
+                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-[#102B2A] text-white font-bold px-5 py-3.5 text-[15px] hover:bg-[#0a3020] transition-colors"
               >
-                <CalendarCheck className="w-5 h-5" /> Book a Pickup
+                <CalendarCheck className="w-5 h-5 shrink-0" /> Book Pickup
               </button>
               <button
-                onClick={() => scrollTo("area-check")}
-                className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-white text-[#102B2A] border-2 border-slate-200 font-bold px-7 py-3.5 text-base hover:border-[#187B65] hover:text-[#187B65] transition-colors"
+                onClick={() => window.dispatchEvent(new CustomEvent("rex:open"))}
+                className="col-span-2 inline-flex items-center justify-center gap-2 min-h-[52px] rounded-full bg-white text-[#102B2A] border-2 border-slate-200 font-bold px-5 py-3.5 text-[15px] hover:border-[#187B65] hover:text-[#187B65] transition-colors"
               >
-                <MapPin className="w-5 h-5" /> Check My Area
+                <MessageCircle className="w-5 h-5 shrink-0" /> Ask Rex — instant answers &amp; photo quotes
               </button>
             </div>
 

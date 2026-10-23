@@ -24,6 +24,14 @@ export default function ReceptionistChat() {
     setShowGreeting(false);
   };
 
+  // Any page button can open Rex with a "rex:open" window event
+  // (e.g. the hero's "Ask Rex" action).
+  useEffect(() => {
+    const openRex = () => { setOpen(true); setShowGreeting(false); };
+    window.addEventListener("rex:open", openRex);
+    return () => window.removeEventListener("rex:open", openRex);
+  }, []);
+
   return (
     <>
       <div className="fixed bottom-[calc(1.25rem_+_env(safe-area-inset-bottom))] right-4 z-[60] flex items-center gap-3">
