@@ -39,8 +39,8 @@ export default async function(req) {
     const [weekRows, monthRows, bookingsWeek, cityRows, todayRows, pathRows, classesDay, classesWeek, classesMonth] = await Promise.all([
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: weekAgo }, ...REAL }, groupBy: 'source' }),
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo }, ...REAL }, groupBy: 'source' }),
-      base44.asServiceRole.entities.Booking.count({ created_date: { $gte: weekAgo }, status: { $ne: 'cancelled' } }),
-      base44.asServiceRole.entities.Booking.aggregate({ query: { created_date: { $gte: monthAgo }, status: { $ne: 'cancelled' } }, groupBy: 'city', sort: '-count', limit: 5 }),
+      base44.asServiceRole.entities.Booking.count({ created_date: { $gte: weekAgo }, status: { $ne: 'cancelled' }, record_type: 'service' }),
+      base44.asServiceRole.entities.Booking.aggregate({ query: { created_date: { $gte: monthAgo }, status: { $ne: 'cancelled' }, record_type: 'service' }, groupBy: 'city', sort: '-count', limit: 5 }),
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo }, ...REAL }, groupBy: 'source' }),
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo }, ...REAL }, groupBy: 'path', sort: '-count', limit: 5 }),
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: dayAgo } }, groupBy: 'traffic_class' }),
