@@ -16,7 +16,7 @@
       "ends_after_count": null
     }
   },
-  "description": "Every Monday 9am: auto SEO pulls the latest Google Search Console keywords, runs the AI SEO strategist, saves the analysis, and emails the owner the top quick wins and page actions",
+  "description": "Every Monday 9am: auto SEO pulls the latest Google Search Console keywords, runs the AI SEO strategist, refreshes city and service page meta, re-submits the sitemap so Google re-crawls, and emails the owner the top quick wins",
   "name": "Auto SEO",
   "definition": {
     "document": {
@@ -47,10 +47,38 @@
             "function_name": "citySeoSync",
             "args": {}
           },
-          "then": "check_data",
+          "then": "apply_service_meta",
           "x-base44": {
             "title": "Optimize every city page",
             "description": "AI writes and applies fresh titles, descriptions and hero copy for each city landing page"
+          }
+        }
+      },
+      {
+        "apply_service_meta": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "serviceMetaGenerate",
+            "args": {}
+          },
+          "then": "resubmit_sitemap",
+          "x-base44": {
+            "title": "Optimize every service page",
+            "description": "AI refreshes titles, descriptions and focus keywords for each service page"
+          }
+        }
+      },
+      {
+        "resubmit_sitemap": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "submitSitemap",
+            "args": {}
+          },
+          "then": "check_data",
+          "x-base44": {
+            "title": "Ask Google to re-crawl",
+            "description": "Re-submits the sitemap so fresh meta gets crawled"
           }
         }
       },

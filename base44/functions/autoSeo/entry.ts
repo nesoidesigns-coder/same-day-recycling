@@ -25,6 +25,7 @@ export default async function(req) {
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
         'You are an SEO strategist for Same Day Recycling (samedayrecycling.ca), a same-day junk removal service across Canada. ' +
+        'STRATEGY: topical authority through service-specific local long-tail keywords - item + city queries like "couch removal Vancouver" - rather than generic "junk removal" head terms. Prioritize long-tail quick wins over head-term advice. ' +
         'Its site has city and location pages, ' +
         'plus pages for subscriptions (property managers), realtor partners, free metal pickup, contractors, about and contact. ' +
         'Below are real Google Search Console queries (last 28 days) with the page they matched, clicks, impressions and average position.\n\n' +
