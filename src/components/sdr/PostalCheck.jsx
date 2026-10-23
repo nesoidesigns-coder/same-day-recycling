@@ -3,7 +3,7 @@ import { MapPin, CheckCircle2, Search, XCircle, ArrowRight, Clock, Rocket } from
 import { Link } from "react-router-dom";
 import { activeCitiesByProvince, onboardingCitiesByProvince, comingSoonCitiesByProvince } from "@/lib/coverage";
 
-const FSA_RE = /^[A-Z]\d[A-Z](?:\d[A-Z]\d)?$/;
+export const FSA_RE = /^[A-Z]\d[A-Z](?:\d[A-Z]\d)?$/;
 
 export const LETTER_PROVINCE = {
   A: "NL", B: "NS", C: "PE", E: "NB", G: "QC", H: "QC", J: "QC",

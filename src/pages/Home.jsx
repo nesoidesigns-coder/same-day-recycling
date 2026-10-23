@@ -7,6 +7,7 @@ import TrustGauges from "@/components/sdr/TrustGauges";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
 import TransparentPricing from "@/components/sdr/TransparentPricing";
+import RexJourney from "@/components/sdr/RexJourney";
 import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
@@ -51,6 +52,7 @@ export default function Home() {
       <TopBar />
       <Navbar />
       <HomeHero onCity={(city) => bookFromQuote({ city })} />
+      <RexJourney onBook={bookFromQuote} />
       <TrustGauges />
       <LazySection minHeight={480}><CanadaNetworkMap /></LazySection>
       <LazySection minHeight={380}><ProvinceImpact /></LazySection>
