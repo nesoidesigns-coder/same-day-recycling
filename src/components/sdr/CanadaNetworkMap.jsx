@@ -6,6 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { base44 } from "@/api/base44Client";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
+import { useTrafficOverlay, TrafficToggle, TrafficLayers } from "@/components/sdr/TrafficOverlay";
 
 const HUB = { lat: 49.2827, lng: -123.1207, label: "Network HQ — Canada" };
 
@@ -24,6 +25,8 @@ export default function CanadaNetworkMap() {
   const [traffic, setTraffic] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [view3d, setView3d] = useState(false);
+  const [showTraffic, setShowTraffic] = useState(false);
+  const trafficCfg = useTrafficOverlay();
   const [, setTick] = useState(0);
 
   useEffect(() => {
@@ -125,6 +128,9 @@ export default function CanadaNetworkMap() {
                 <Icon className="w-4 h-4" /> {label}
               </button>
             ))}
+            {trafficCfg && (
+              <TrafficToggle on={showTraffic} onChange={setShowTraffic} />
+            )}
           </div>
         </div>
 
@@ -148,6 +154,7 @@ export default function CanadaNetworkMap() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+            {showTraffic && <TrafficLayers traffic={trafficCfg} />}
             {/* live coverage zones from verified-partner status */}
             {coverageCities.map(({ name, city, state }) => (
               <Circle

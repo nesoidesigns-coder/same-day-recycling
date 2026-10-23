@@ -4,10 +4,10 @@ import "leaflet/dist/leaflet.css";
 import { Recycle, Loader2, RefreshCw, ExternalLink, Phone, Navigation } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { CITIES } from "@/lib/cities";
+import { useTrafficOverlay, TrafficToggle, TrafficLayers } from "@/components/sdr/TrafficOverlay";
 
-// Live road radar exits for self-haulers: deep links open the driver's own
-// navigation app, where live traffic and route choice are real — no invented
-// congestion data is drawn on the map itself.
+// Live road conditions for self-haulers: an optional TomTom traffic overlay
+// drawn on the map, plus deep links into the driver's own navigation app.
 const directionsLinks = (c) => (
   <div style={{ fontSize: 12, marginTop: 6, display: "flex", gap: 8 }}>
     <a
@@ -34,6 +34,8 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
   const [activeCity, setActiveCity] = useState(city);
   const [isAdmin, setIsAdmin] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showTraffic, setShowTraffic] = useState(false);
+  const trafficCfg = useTrafficOverlay();
 
   useEffect(() => {
     let active = true;
@@ -127,12 +129,18 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
           </div>
         ) : (
           <>
+            {trafficCfg && (
+              <div className="flex justify-end mb-2">
+                <TrafficToggle on={showTraffic} onChange={setShowTraffic} />
+              </div>
+            )}
             <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm h-[380px] md:h-[480px] relative z-0">
               <MapContainer center={mapCenter} zoom={activeCity ? 10 : 4} scrollWheelZoom={false} className="w-full h-full">
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                {showTraffic && <TrafficLayers traffic={trafficCfg} />}
                 {shown.map((c) => (
                   <CircleMarker
                     key={c.id}
