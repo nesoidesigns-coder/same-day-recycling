@@ -1,6 +1,6 @@
 const steps = [
   { n: "01", title: "Book in a minute", desc: "Call or book online — takes under sixty seconds." },
-  { n: "02", title: "We arrive same-day", desc: "Approve an upfront price before we lift a thing." },
+  { n: "02", title: "We match & confirm", desc: "A verified contractor accepts your job — you approve the upfront price before we lift a thing." },
   { n: "03", title: "We haul & recycle", desc: "Every load sorted: recycled, donated, or responsibly disposed." },
 ];
 

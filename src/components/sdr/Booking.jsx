@@ -9,12 +9,12 @@ export default function Booking({ prefill }) {
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Book now</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Get it gone today.</h2>
           <p className="mt-5 text-lg text-slate-600 max-w-md">
-            Fill out the form and we'll call you back within 30 minutes to confirm your pickup window and upfront price.
+            Fill out the form — we route your request to a verified local contractor, and your pickup window and upfront price are confirmed with you before anything is scheduled. Nothing is charged before confirmation.
           </p>
           <div className="mt-8 space-y-4">
             {[
               { icon: Leaf, t: "Recycled or donated", d: "Everything we can is diverted from the landfill." },
-              { icon: Truck, t: "Same-day dispatch", d: "Book before noon, we're usually there this afternoon." },
+              { icon: Truck, t: "Same-day matching", d: "Book before noon where contractor availability is live — confirmed per job, never assumed." },
               { icon: Recycle, t: "Responsible disposal", d: "Properly sorted loads — recycled or donated first." },
             ].map((p) => (
               <div key={p.t} className="flex items-start gap-4">

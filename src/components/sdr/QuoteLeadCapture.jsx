@@ -26,7 +26,7 @@ export default function QuoteLeadCapture({ itemsText, estimate, city }) {
   if (state === "done") {
     return (
       <div className="mt-4 border-t border-white/20 pt-4 flex items-center gap-2 text-sm text-[#187B65] font-semibold">
-        <CheckCircle2 className="w-4 h-4" /> Sent — we'll follow up within 30 minutes to lock in your price.
+        <CheckCircle2 className="w-4 h-4" /> Received — we'll confirm your quote and pickup options shortly.
       </div>
     );
   }

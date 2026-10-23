@@ -22,9 +22,9 @@ export default function FeaturedProviders() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
             <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Featured</div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">Verified providers</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#102B2A] tracking-tight">From the verified directory</h2>
             <p className="mt-3 text-slate-600 text-lg">
-              Confirmed members of the national network, with accepted materials and booking options on every listing.
+              Verified recycling and drop-off listings from our public directory, confirmed against official sources. At-your-door pickup is arranged by dispatch in every city.
             </p>
           </div>
           <Link

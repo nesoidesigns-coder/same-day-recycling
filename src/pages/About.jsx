@@ -72,7 +72,7 @@ export default function About() {
         <div className="rounded-3xl bg-[#f4f7f5] p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <div className="text-2xl font-bold text-[#102B2A]">Need something gone today?</div>
-            <div className="text-slate-600 mt-1">Book in minutes — we'll call you back within 30 minutes.</div>
+            <div className="text-slate-600 mt-1">Book in minutes — dispatch confirms your window before anything is scheduled.</div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link to="/contractors" className="rounded-full border-2 border-[#102B2A] text-[#102B2A] font-bold px-6 py-3 text-center hover:bg-[#102B2A] hover:text-white transition-colors">Join the Network</Link>

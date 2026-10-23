@@ -37,7 +37,7 @@ export default function ExitIntentOffer() {
         </span>
         <h3 className="text-2xl font-bold text-[#102B2A] leading-tight">Wait — your junk isn't gone yet.</h3>
         <p className="mt-3 text-slate-600 text-sm leading-relaxed">
-          Get an instant quote in 30 seconds. Book before noon and the crew hauls it <span className="font-bold text-[#102B2A]">this afternoon</span> — no hidden fees, price approved before we lift a thing.
+          Get an instant quote in 30 seconds. Book before noon for a same-afternoon slot <span className="font-bold text-[#102B2A]">where contractor availability is live</span> — no hidden fees, price approved before we lift a thing.
         </p>
         <button onClick={goQuote} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3.5 hover:bg-[#125C4E] transition-colors">
           Get my instant quote

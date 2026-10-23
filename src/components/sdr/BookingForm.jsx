@@ -154,7 +154,7 @@ export default function BookingForm({ prefill }) {
         <p className="mt-3 text-slate-600 max-w-sm mx-auto">
           {waitlisted
             ? `Your request for ${form.city} is in our system. We operate in every Canadian city — our dispatch team is arranging your local contractor and will call you with pricing and your pickup window.`
-            : "We'll call you within 30 minutes to confirm your pickup window."}
+            : "Your booking is in — dispatch confirms your pickup window and upfront price with you before anything is scheduled."}
         </p>
         <p className="mt-2 text-xs text-slate-400 max-w-sm mx-auto">
           Your approved quote is the price you pay. Any additional items are priced as a separate change order and only added with your approval — <Link to="/terms" className="font-semibold text-[#187B65]">see terms</Link>.
@@ -204,7 +204,7 @@ export default function BookingForm({ prefill }) {
   return (
     <form onSubmit={handleSubmit} className="rounded-3xl bg-white p-6 md:p-8 border border-slate-100 shadow-sm">
       <h3 className="text-2xl font-bold text-[#102B2A]">Book your pickup</h3>
-      <p className="text-sm text-slate-500 mt-1 mb-6">We'll call you back within 30 minutes.</p>
+      <p className="text-sm text-slate-500 mt-1 mb-6">Submit your request — we confirm the window and price with you before anything is scheduled.</p>
       <div className="space-y-4">
         <Field label="Your city" required>
           <select value={form.city} onChange={update("city")} required className="input">
@@ -288,7 +288,7 @@ export default function BookingForm({ prefill }) {
                       : "Same-day unlocks once a verified provider serves your city."
                   : scheduleMode === "next"
                     ? "Pick any date — dispatch confirms the window with you."
-                    : "We call you back within 30 minutes and confirm the earliest window."}
+                    : "Dispatch matches the earliest window and confirms it with you."}
             </p>
             {scheduleMode === "next" && (
               <input value={form.preferred_date} onChange={update("preferred_date")} type="date" min={vancouverDate(1)} className="input mt-2" aria-label="Preferred pickup date" />

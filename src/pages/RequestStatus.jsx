@@ -4,16 +4,15 @@ import { base44 } from "@/api/base44Client";
 import Navbar from "@/components/sdr/Navbar";
 import RexBanner from "@/components/sdr/RexBanner";
 import Footer from "@/components/sdr/Footer";
-import { Search, Loader2, CheckCircle2, MapPin, CalendarDays, Clock, Wrench, SearchX } from "lucide-react";
+import { Search, Loader2, CheckCircle2, MapPin, CalendarDays, Clock, Wrench, SearchX, Tag, Bell, Phone } from "lucide-react";
 
 const STATUS_META = {
   new: { label: "Received", tone: "bg-sky-500/15 text-sky-300 border-sky-400/30", copy: "We've received your request and our national dispatch team is taking it from here." },
   provider_matching: { label: "Arranging a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "We operate nationwide — our dispatch team is arranging your local contractor." },
-  recruiting: { label: "Sourcing a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor and will contact you as soon as one accepts. Nothing is scheduled or charged before a contractor accepts." },
+  recruiting: { label: "Sourcing a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor and will contact you as soon as one accepts. If none accepts, dispatch will contact you with next steps. Nothing is scheduled or charged before a contractor accepts." },
   matched: { label: "Contractor matched", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "A local contractor has been matched. They'll confirm scheduling and pricing with you directly." },
   confirmed: { label: "Confirmed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is confirmed. Dispatch has locked in your appointment." },
   completed: { label: "Completed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "This request is complete. Thanks for recycling with the network!" },
-  confirmed: { label: "Confirmed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is confirmed." },
   contacted: { label: "Contacted", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Our team has contacted you to confirm your pickup details." },
   scheduled: { label: "Scheduled", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is scheduled. Have your items ready for the arrival window." },
   cancelled: { label: "Cancelled", tone: "bg-red-500/10 text-red-300 border-red-400/30", copy: "This request was cancelled. Submit a new request any time." },
@@ -22,7 +21,7 @@ const STATUS_META = {
 // Direct (active-city) bookings follow the classic booking flow rather than
 // the nationwide dispatch flow, so they get their own status copy.
 const BOOKING_COPY = {
-  new: "We've received your booking and will call you shortly to confirm your pickup window.",
+  new: "We've received your booking — dispatch confirms your pickup window with you before anything is scheduled.",
   confirmed: "Your pickup is confirmed. We'll see you at the scheduled time.",
   contacted: "Our team has contacted you to confirm your pickup details.",
   scheduled: "Your pickup is scheduled — have your items ready for the arrival window.",
@@ -66,6 +65,39 @@ export default function RequestStatus() {
 
   const meta = result ? STATUS_META[result.status] : null;
   const copy = result?.kind === "booking" ? (BOOKING_COPY[result.status] || meta?.copy) : meta?.copy;
+
+  // Customer dashboard fields: estimate + approval, provider acceptance and
+  // the next expected update, so the customer always knows where things stand.
+  const est = Number(result?.quote_amount) || Number(result?.approved_quote_amount) || Number(result?.job_value) ||
+    (result?.kind === "booking" ? (parseFloat((String(result.quote_estimate || "").match(/(\d+(?:\.\d{1,2})?)/) || [])[1]) || 0) : 0);
+  const APPROVAL_TEXT = {
+    none: "Awaiting a contractor's quote",
+    pending_provider: "Contractor is preparing your quote",
+    sent: "Quote sent — awaiting your approval",
+    approved: "Quote approved by you",
+    declined: "Quote declined",
+  };
+  const approvalText = result?.kind === "booking"
+    ? (Number(result.approved_quote_amount) > 0 ? "Price approved by you" : "Estimate — the final price is confirmed on arrival")
+    : (APPROVAL_TEXT[result?.quote_status] || "");
+  const providerAccepted = Boolean(
+    result?.partner_name ||
+    (result?.kind === "booking"
+      ? ["accepted", "scheduled", "completed", "paid"].includes(result.assignment_status)
+      : ["contractor_accepted", "pickup_scheduled", "job_completed"].includes(result.dispatch_status))
+  );
+  const NEXT_UPDATE = {
+    new: "You'll hear from us as soon as a contractor accepts your job.",
+    provider_matching: "You'll hear from us as soon as a contractor accepts your job.",
+    recruiting: "We keep sourcing until a contractor accepts — if none does, dispatch contacts you with next steps.",
+    matched: "Your contractor will confirm your arrival window and price.",
+    contacted: "Dispatch is confirming your window with you.",
+    confirmed: "Arrival-day confirmation comes from your contractor.",
+    scheduled: "Arrival-day confirmation comes from your contractor.",
+    completed: "All done — your Recycling Impact Report follows.",
+    cancelled: "",
+  };
+  const nextUpdate = result ? (NEXT_UPDATE[result.status] || "") : "";
 
   return (
     <div className="bg-white">
@@ -160,7 +192,36 @@ export default function RequestStatus() {
                 </div>
               )}
             </div>
-            <p className="mt-6 text-xs text-emerald-100/40">Requested {String(result.created_date || "").slice(0, 10)} · Questions? Call (604) 849-1745.</p>
+            <div className="mt-6 pt-6 border-t border-[#187B65]/20 space-y-3 text-sm">
+              <div className="flex items-start gap-2">
+                {providerAccepted
+                  ? <CheckCircle2 className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
+                  : <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />}
+                <div>
+                  <span className="font-semibold text-white">{providerAccepted ? "Provider accepted" : "Provider matching in progress"}</span>
+                  <span className="text-emerald-100/70"> — {providerAccepted ? `your job is with ${result.partner_name}.` : "no contractor has accepted yet; nothing is scheduled or charged."}</span>
+                </div>
+              </div>
+              {est > 0 && (
+                <div className="flex items-start gap-2">
+                  <Tag className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-emerald-100/50">Estimate:</span> <span className="font-semibold text-white">${est.toFixed(2)} CAD</span>
+                    {approvalText && <span className="text-emerald-100/70"> · {approvalText}</span>}
+                  </div>
+                </div>
+              )}
+              {nextUpdate && (
+                <div className="flex items-start gap-2">
+                  <Bell className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
+                  <div><span className="text-emerald-100/50">Next update:</span> <span className="text-white">{nextUpdate}</span></div>
+                </div>
+              )}
+              <a href="tel:+16048491745" className="inline-flex items-center gap-2 rounded-full bg-[#187B65] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#125C4E] transition-colors">
+                <Phone className="w-4 h-4" /> Questions? Call (604) 849-1745
+              </a>
+            </div>
+            <p className="mt-6 text-xs text-emerald-100/40">Requested {String(result.created_date || "").slice(0, 10)}.</p>
           </div>
         )}
       </section>
