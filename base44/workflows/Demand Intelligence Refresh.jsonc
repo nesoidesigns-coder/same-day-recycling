@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "demand_intelligence_refresh",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "refresh_sources": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "demandSync",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Refresh demand sources",
+            "description": "Sync capture data and log per-source status"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Demand Intelligence Refresh",
+  "description": "Daily refresh of the national demand intelligence sources: Search Console and Analytics capture data, Recycling OS verified records, and honest unavailable-state logging for Keyword Planner and Trends."
+}

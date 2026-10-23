@@ -87,6 +87,8 @@ const AdminIntelligence = lazyPage(() => import('./pages/AdminIntelligence'));
 const AdminGrowth = lazyPage(() => import('./pages/AdminGrowth'));
 const AdminImprovements = lazyPage(() => import('./pages/AdminImprovements'));
 const AdminSeoCommand = lazyPage(() => import('./pages/AdminSeoCommand'));
+const AdminDemand = lazyPage(() => import('./pages/AdminDemand'));
+const DemandPage = lazyPage(() => import('./pages/DemandPage'));
 const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
 const RequestService = lazyPage(() => import('./pages/RequestService'));
 const RequestStatus = lazyPage(() => import('./pages/RequestStatus'));
@@ -187,6 +189,7 @@ const AuthenticatedApp = () => {
       <Route path="/request-status" element={<RequestStatus />} />
       <Route path="/change-order" element={<ChangeOrderRespond />} />
       <Route path="/ai-booking" element={<AIBookingCenter />} />
+      <Route path="/demand" element={<DemandPage />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />
@@ -226,6 +229,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/intelligence" element={<AdminIntelligence />} />
           <Route path="/admin/growth" element={<AdminGrowth />} />
           <Route path="/admin/improvements" element={<AdminImprovements />} />
+          <Route path="/admin/demand" element={<AdminDemand />} />
           <Route path="/admin/seo" element={<AdminSeoCommand />} />
           <Route path="/admin/routes" element={<AdminRoutes />} />
         </Route>

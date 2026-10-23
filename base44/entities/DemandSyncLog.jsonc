@@ -1,0 +1,91 @@
+{
+  "name": "DemandSyncLog",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": [
+        "google_search_console",
+        "google_analytics",
+        "google_ads_keyword_planner",
+        "google_trends",
+        "recycling_os",
+        "import"
+      ],
+      "default": "recycling_os",
+      "description": "Which data provider this sync entry covers."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "partial",
+        "failed",
+        "unavailable",
+        "skipped"
+      ],
+      "default": "success",
+      "description": "success = data refreshed; unavailable = no authorized connection or provider cadence not yet due; failed = API error."
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "started_at": {
+      "type": "string",
+      "default": ""
+    },
+    "finished_at": {
+      "type": "string",
+      "default": ""
+    },
+    "records_upserted": {
+      "type": "number",
+      "default": 0
+    },
+    "period": {
+      "type": "string",
+      "default": "",
+      "description": "Data window covered, e.g. '28d' or '2026-10'."
+    },
+    "coverage_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "What the provider actually returned and its geographic/temporal coverage."
+    },
+    "error": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "next_update_cadence": {
+      "type": "string",
+      "default": "",
+      "description": "The provider's real update cadence, e.g. 'Daily (reporting lags ~2 days)'."
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

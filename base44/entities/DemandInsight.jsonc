@@ -1,0 +1,53 @@
+{
+  "name": "DemandInsight",
+  "type": "object",
+  "properties": {
+    "period": {
+      "type": "string",
+      "description": "Data period the analysis was generated from, e.g. '2026-10'."
+    },
+    "analysis": {
+      "type": "object",
+      "default": {},
+      "description": "Rex's AI analysis: high_demand_categories, underserved_markets, seasonal_opportunities, rising_terms, contractor_recruitment, landing_page_recommendations."
+    },
+    "summary": {
+      "type": "string",
+      "default": "",
+      "maxLength": 3000
+    },
+    "generated_by": {
+      "type": "string",
+      "default": "rex_ai"
+    },
+    "basis": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "What data the analysis was based on, recorded for auditability."
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

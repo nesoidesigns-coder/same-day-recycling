@@ -1,0 +1,138 @@
+{
+  "name": "DemandObservation",
+  "type": "object",
+  "properties": {
+    "geo_type": {
+      "type": "string",
+      "enum": [
+        "national",
+        "province",
+        "city"
+      ],
+      "default": "province",
+      "description": "Geographic level of this observation."
+    },
+    "geo_key": {
+      "type": "string",
+      "default": "",
+      "description": "Geography identifier: 'CA' national, province code, or city name. Deduplication is scoped to keyword + geo_key + period."
+    },
+    "province_code": {
+      "type": "string",
+      "default": "",
+      "description": "Province or territory code (BC, ON, QC, NT...)."
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "service_category": {
+      "type": "string",
+      "enum": [
+        "junk_removal",
+        "furniture_removal",
+        "appliance_removal",
+        "electronics",
+        "recycling",
+        "waste_disposal",
+        "estate_cleanout",
+        "construction_debris",
+        "other"
+      ],
+      "default": "other",
+      "description": "Service category the keyword belongs to."
+    },
+    "keyword": {
+      "type": "string",
+      "description": "The search keyword or term group. Overlapping keyword variants must be recorded as one canonical keyword to prevent double-counting."
+    },
+    "period": {
+      "type": "string",
+      "description": "Reporting period in YYYY-MM format."
+    },
+    "est_monthly_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Estimated monthly searches for the keyword in the geography. 0 = index-only observation."
+    },
+    "volume_basis": {
+      "type": "string",
+      "enum": [
+        "keyword_planner",
+        "published_estimate",
+        "admin_import",
+        "not_available"
+      ],
+      "default": "admin_import",
+      "description": "Where the volume figure came from. Only keyword_planner values may be described as Google-supplied estimates."
+    },
+    "trend_index": {
+      "type": "number",
+      "default": 0,
+      "description": "Relative search-interest index (0-100 scale, Google Trends style). An index is never an exact search count."
+    },
+    "trend_direction": {
+      "type": "string",
+      "enum": [
+        "rising",
+        "steady",
+        "falling",
+        "unknown"
+      ],
+      "default": "unknown"
+    },
+    "competition": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "unknown"
+      ],
+      "default": "unknown",
+      "description": "Competition indicator for the keyword (from the source's advertising competition data)."
+    },
+    "source": {
+      "type": "string",
+      "default": "",
+      "description": "Human-readable data source, e.g. 'Google Ads Keyword Planner (admin export 2026-10-23)'."
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "default": ""
+    },
+    "methodology_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "How this figure was derived, for the public methodology documentation."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the observation was last refreshed from its source."
+    }
+  },
+  "required": [
+    "keyword"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

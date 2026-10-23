@@ -1,0 +1,39 @@
+{
+  "name": "DemandSnapshot",
+  "type": "object",
+  "properties": {
+    "capture": {
+      "type": "object",
+      "default": {},
+      "description": "Latest verified market-capture aggregates: {gsc:{impressions,clicks,ctr,position}, ga:{sessions,users,engagement_rate}, recycling_os:{verified_inquiries,completed_pickups}}. Aggregates only \u2014 never raw visitor data."
+    },
+    "refreshed_at": {
+      "type": "string",
+      "description": "ISO timestamp of the last successful capture refresh."
+    },
+    "sources": {
+      "type": "object",
+      "default": {},
+      "description": "Per-source status of the last refresh: {source: {status, note}}."
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
