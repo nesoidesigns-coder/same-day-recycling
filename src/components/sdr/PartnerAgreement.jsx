@@ -3,8 +3,8 @@ import { MapPin, Users, ShieldCheck, AlertTriangle } from "lucide-react";
 const terms = [
   {
     icon: MapPin,
-    title: "Exclusivity is metro, not a city line",
-    text: "Every metro is one market — one partner serves it. Edmonton is one market; Calgary is another. The agreement defines exclusivity by market boundaries, not by municipal lines.",
+    title: "Territories are membership seats, not exclusive rights",
+    text: "You get a defined service territory under a written membership agreement — never an exclusive right to a market. No guaranteed exclusivity: jobs are dispatched to verified, available partners, and no territory is ever promised to one operator alone.",
   },
   {
     icon: Users,

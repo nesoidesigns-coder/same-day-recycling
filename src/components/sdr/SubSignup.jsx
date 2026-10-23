@@ -75,7 +75,7 @@ export default function SubSignup() {
       {error && <p className="text-sm text-red-600">{error}</p>}
       <p className="text-xs text-slate-500 flex items-center gap-1.5">
         <Zap className="w-3.5 h-3.5 text-[#187B65]" />
-        No contract — cancel anytime. Extra pickups beyond 4 billed at member rates.
+        No contract — cancel anytime. Extra pickups beyond 4 are quoted and approved at standard rates before each pickup. Unused pickups don't roll over.
       </p>
     </form>
   );

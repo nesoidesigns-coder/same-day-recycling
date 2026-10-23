@@ -87,7 +87,7 @@ export default function ExploreServices() {
             <div className="mt-4 space-y-3">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#187B65] shrink-0 mt-0.5" />
-                <div className="text-sm"><span className="font-bold text-[#102B2A]">Provider Available {loaded ? `(${activeCount} ${activeCount === 1 ? "city" : "cities"})` : error ? "(status unavailable)" : "(checking…)"}</span><span className="block text-slate-600">An active, verified contractor serves the named city. Same-day capacity is not assumed; the contractor must accept your specific job before the appointment is confirmed.</span></div>
+                <div className="text-sm"><span className="font-bold text-[#102B2A]">Provider Available {loaded ? `(${activeCount} ${activeCount === 1 ? "city" : "cities"})` : error ? "(status unavailable)" : ""}</span><span className="block text-slate-600">An active, verified contractor serves the named city. Same-day capacity is not assumed; the contractor must accept your specific job before the appointment is confirmed.</span></div>
               </div>
               <div className="flex items-start gap-3">
                 <UserSearch className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />

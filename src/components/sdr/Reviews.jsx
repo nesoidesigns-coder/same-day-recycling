@@ -84,7 +84,7 @@ export default function Reviews() {
               <span className="font-bold text-[#102B2A]">{r.customer_name}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/15 text-[#187B65] font-bold px-4 py-1.5 text-sm">
                 <BadgeCheck className="w-4 h-4" />
-                Verified customer
+                Customer review
               </span>
               {r.city && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/15 text-[#187B65] font-bold px-4 py-1.5 text-sm">

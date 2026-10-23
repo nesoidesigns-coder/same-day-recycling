@@ -42,7 +42,11 @@ export default async function (req) {
       if (!bookingId) return Response.json({ error: 'booking_id is required' }, { status: 400 });
       const b = await svc.entities.Booking.get(bookingId);
       if (!b || !b.id) return Response.json({ error: 'Booking not found.' }, { status: 404 });
-      const amount = parseQuoteAmount(b.quote_estimate) || Number(b.job_value) || 0;
+      // Never charge more than the approved amount: the customer-approved
+      // figure takes precedence over the preliminary quote estimate.
+      const amount = Number(b.approved_quote_amount) > 0
+        ? Number(b.approved_quote_amount)
+        : parseQuoteAmount(b.quote_estimate) || Number(b.job_value) || 0;
       if (!amount) {
         return Response.json({
           error: "The final price is confirmed by the crew on arrival, so there's nothing to prepay yet. Payment happens after the pickup.",
