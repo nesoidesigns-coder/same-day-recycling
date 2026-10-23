@@ -40,6 +40,9 @@ export default async function(req) {
     }
     if (payload.view === 'command') return Response.json(command);
     // Compatibility payload for the homepage cards, with per-gauge provenance.
+    // Capture is pulled from the latest DemandSnapshot, never stale notes.
+    const snap = await base44.entities.DemandSnapshot.list({ sort: '-refreshed_at', limit: 1 });
+    const latestCapture = snap.items?.[0] || null;
     const clean = cleanObservations(rows).filter((r) => !isTrend(r));
     const scopes = {};
     const toScope = (c) => ({available:c.overview.available,latest_period:c.latest_period,last_updated:c.overview.updated,sources:c.overview.sources,level_note:c.coverage_note,
@@ -51,7 +54,7 @@ export default async function(req) {
     return Response.json({ industry:{available:command.overview.available,latest_period:command.latest_period,total_est_monthly_searches:command.overview.value,by_category:command.categories,by_province:command.provinces,by_city:command.cities},
       market:{available:command.overview.available,latest_period:command.latest_period,geo:command.geography,scopes},
       series:clean.slice(0,800).map(({keyword,geo_type,geo_key,province_code,city,service_category,period,est_monthly_volume,volume_basis,metric_type,source,last_updated,competition}) => ({keyword,geo_type,geo_key,province_code,city,service_category,period,est_monthly_volume,volume_basis,metric_type,source,last_updated,competition})),
-      series_truncated:clean.length>800,provinces:PROVINCES,methodology:{industry:command.methodology,updates:'Keyword Planner historical metrics are published monthly. Trends export samples update only when a new source export is imported.'} });
+      series_truncated:clean.length>800,provinces:PROVINCES,capture:latestCapture?.capture || null,methodology:{industry:command.methodology,updates:'Keyword Planner historical metrics are published monthly. Trends export samples update only when a new source export is imported.'} });
   } catch (error) {
     return Response.json({error:error.message},{status:500});
   }

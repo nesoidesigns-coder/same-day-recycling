@@ -82,13 +82,20 @@ export default function DemandDashboardTab({ report, loading, onOpenInsights, on
     const ps = [...new Set(out.map((r) => r.period).filter(Boolean))].sort();
     const latest = ps[ps.length - 1] || "";
     const prev = prevPeriod(latest);
-    const inLatest = out.filter((r) => r.period === latest);
-    const inPrev = out.filter((r) => r.period === prev);
+    // Monthly values and rolling averages are separate measures: actual
+    // months are preferred, averages are shown with their own label.
+    const inLatestRaw = out.filter((r) => r.period === latest);
+    const inPrevRaw = out.filter((r) => r.period === prev);
+    const isMonthly = (r) => (r.metric_type || "unspecified_estimate") === "monthly_volume";
+    const isAverage = (r) => (r.metric_type || "unspecified_estimate") === "monthly_average";
+    const inLatest = inLatestRaw.some(isMonthly) ? inLatestRaw.filter(isMonthly) : inLatestRaw.filter(isAverage);
+    const inPrev = inPrevRaw.some(isMonthly) ? inPrevRaw.filter(isMonthly) : inPrevRaw.filter(isAverage);
+    const measureLabel = inLatest.some(isAverage) ? "Average monthly searches (rolling window)" : inLatest.some(isMonthly) ? "Monthly search-volume estimates" : "Estimates on file";
 
     const sumVol = (list) => list.reduce((a, r) => a + (Number(r.est_monthly_volume) || 0), 0);
     const latestVol = sumVol(inLatest);
     const prevVol = sumVol(inPrev);
-    const indexOnly = inLatest.filter((r) => !(Number(r.est_monthly_volume) || 0) && (Number(r.trend_index) || 0) > 0);
+    const indexOnly = inLatestRaw.filter((r) => !(Number(r.est_monthly_volume) || 0) && (Number(r.trend_index) || 0) > 0);
 
     const monthly = ps.map((p) => ({ period: p, volume: sumVol(out.filter((r) => r.period === p)) }));
 

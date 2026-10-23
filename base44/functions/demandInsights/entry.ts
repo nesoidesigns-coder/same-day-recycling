@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { dedupeObservations, summarizeDemand, CATEGORY_LABELS, PROVINCES } from '../../shared/demand.ts';
+import { dedupeObservations, summarizeDemand, currentPeriod } from '../../shared/demand.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 
 // Admin-only: Rex analyzes the demand database and produces clearly-labeled
@@ -53,45 +53,53 @@ export default async function(req) {
     };
 
     const llm = await svc.integrations.Core.InvokeLLM({
-      model: 'gemini_3_flash',
-      prompt: `You are Rex, the market-intelligence analyst for Same Day Recycling, a Canadian junk-removal and recycling dispatch platform. Analyze the demand data below and produce business analysis.
+      prompt: `You are Rex, the market-intelligence analyst for Same Day Recycling (a Canadian junk removal / recycling platform).
 
-DATA (JSON):
+Below is a JSON snapshot of verified, source-labeled demand observations plus the company's own measured capture and contractor coverage.
+
 ${JSON.stringify(dataSummary)}
 
-Rules:
-- Every output item is an AI ESTIMATE, not verified fact. Phrase recommendations in plain business English.
-- If industry demand data is unavailable or thin, say so explicitly and base analysis on what exists (capture data, coverage, keyword patterns).
-- Underserved markets = geographies with meaningful demand signals (or clear keyword patterns) but few/no covered cities on file. Never claim a market's absolute size without a recorded volume.
-- Seasonal opportunities must reference actual period data on file if any; otherwise mark as hypothesis.
-- Landing-page recommendations must name a specific city or province and a specific service keyword already present in the data.
-- Contractor recruitment: name the cities/categories where demand signals and thin contractor coverage align.
-- Be specific and concise. 3-6 items per list maximum. Canadian spelling where natural.`,
+Produce an executive-ready analysis. Rules you MUST follow:
+- Every figure you cite must come from the JSON above. Never invent, extrapolate or round numbers into new totals.
+- Clearly distinguish: (a) industry-wide search-demand ESTIMATES (not our performance), (b) Same Day Recycling's measured capture, (c) contractor coverage from platform records.
+- Search-volume estimates are not bookings, market share, or revenue predictions.
+- Never state that demand for a city exists unless an observation for that geography is on file.
+- Relative-interest indices are never search counts.
+- If the data is thin, say so plainly and analyze only what is defensible.
+
+Return STRICT JSON with exactly this shape:
+{
+  "summary": "3-5 sentence executive summary grounded in the data, naming the period",
+  "high_demand_categories": [{"category": "category label", "finding": "1-2 sentences citing on-file figures"}],
+  "underserved_markets": [{"geography": "City or province name", "finding": "1-2 sentences, citing demand on file vs contractor coverage"}],
+  "seasonal_opportunities": ["1-2 sentence observations grounded in period-over-period data, or 'not enough period coverage on file'"],
+  "rising_terms": [{"term": "keyword", "finding": "1 sentence citing its recorded values"}],
+  "contractor_recruitment": ["1-2 sentence recommendations grounded in demand-vs-coverage gaps"],
+  "landing_page_recommendations": [{"location": "City, Province", "keyword": "keyword on file", "rationale": "1 sentence citing the recorded estimate"}]
+}`,
       response_json_schema: {
         type: 'object',
         properties: {
-          summary: { type: 'string', description: '3-5 sentence executive summary of the demand landscape.' },
-          high_demand_categories: { type: 'array', items: { type: 'object', properties: { category: { type: 'string' }, finding: { type: 'string' } }, required: ['category', 'finding'] } },
-          underserved_markets: { type: 'array', items: { type: 'object', properties: { geography: { type: 'string' }, finding: { type: 'string' } }, required: ['geography', 'finding'] } },
+          summary: { type: 'string' },
+          high_demand_categories: { type: 'array', items: { type: 'object', properties: { category: { type: 'string' }, finding: { type: 'string' } } } },
+          underserved_markets: { type: 'array', items: { type: 'object', properties: { geography: { type: 'string' }, finding: { type: 'string' } } } },
           seasonal_opportunities: { type: 'array', items: { type: 'string' } },
-          rising_terms: { type: 'array', items: { type: 'object', properties: { term: { type: 'string' }, finding: { type: 'string' } }, required: ['term', 'finding'] } },
+          rising_terms: { type: 'array', items: { type: 'object', properties: { term: { type: 'string' }, finding: { type: 'string' } } } },
           contractor_recruitment: { type: 'array', items: { type: 'string' } },
-          landing_page_recommendations: { type: 'array', items: { type: 'object', properties: { location: { type: 'string' }, keyword: { type: 'string' }, rationale: { type: 'string' } }, required: ['location', 'keyword', 'rationale'] } },
+          landing_page_recommendations: { type: 'array', items: { type: 'object', properties: { location: { type: 'string' }, keyword: { type: 'string' }, rationale: { type: 'string' } } } },
         },
-        required: ['summary', 'high_demand_categories', 'underserved_markets', 'seasonal_opportunities', 'rising_terms', 'contractor_recruitment', 'landing_page_recommendations'],
+        required: ['summary'],
       },
     });
 
-    const analysis = llm && typeof llm === 'object' ? llm : { summary: 'Analysis could not be generated.' };
-
+    const analysis = llm.analysis || llm;
     const record = await svc.entities.DemandInsight.create({
-      period: industry.latest_period || 'none',
+      period: currentPeriod(),
       analysis,
       summary: String(analysis.summary || '').slice(0, 3000),
       generated_by: 'rex_ai',
-      basis: 'DemandObservation database + verified capture snapshot + contractor coverage, analyzed by AI. All outputs are AI estimates, not verified facts.',
+      basis: `DemandObservation database (period ${industry.latest_period || 'none'}, basis ${(industry.volume_basis || []).join(', ') || 'n/a'}), latest DemandSnapshot capture, ${partners.length} active verified partners.`,
     });
-
     return Response.json({ ok: true, insight: record });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

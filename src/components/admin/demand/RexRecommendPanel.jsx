@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Loader2, Sparkles } from "lucide-react";
+import { Sparkles, Loader2, ChevronRight } from "lucide-react";
+import { CATEGORY_LABELS } from "@/lib/demandShared";
 
-// Rex's demand interpretation, embedded in the dashboard. Compact view: the
-// executive summary plus the most actionable lists. Every output is an AI
-// estimate, clearly labeled — never presented as verified data.
-export default function RexRecommendPanel({ onOpenFull }) {
+// Rex demand interpretation over the CURRENT report snapshot. Latest insights
+// are pulled fresh each view; prior analyses stay in their own records.
+export default function RexRecommendPanel({ report }) {
   const [latest, setLatest] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
@@ -15,7 +15,6 @@ export default function RexRecommendPanel({ onOpenFull }) {
     const { items } = await base44.entities.DemandInsight.filter({}, { sort: "-created_date", limit: 1 });
     setLatest(items?.[0] || null);
   };
-
   useEffect(() => { load(); }, []);
 
   const generate = async () => {
@@ -32,6 +31,7 @@ export default function RexRecommendPanel({ onOpenFull }) {
   };
 
   const a = latest?.analysis || {};
+  const cats = report?.industry?.by_category || [];
   const topLists = [
     ["high_demand_categories", "Services that deserve attention", "category"],
     ["underserved_markets", "Cities & provinces to watch", "geography"],
@@ -45,30 +45,25 @@ export default function RexRecommendPanel({ onOpenFull }) {
           <Sparkles className="w-3.5 h-3.5" /> Rex demand interpretation
         </div>
         <span className="rounded-full bg-amber-100 text-amber-900 px-2.5 py-0.5 text-[10px] font-bold uppercase">AI estimate</span>
-        <div className="ml-auto flex items-center gap-2">
-          {onOpenFull && (
-            <button onClick={onOpenFull} className="text-xs font-bold text-[#187B65] hover:underline">Full analysis →</button>
-          )}
-          <Button onClick={generate} disabled={generating} size="sm" className="gap-1.5 bg-[#187B65] hover:bg-[#125C4E]">
-            {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-            {generating ? "Rex is analyzing…" : latest ? "Re-run" : "Run analysis"}
-          </Button>
-        </div>
+        <Button onClick={generate} disabled={generating} size="sm" className="ml-auto gap-1.5 bg-[#187B65] hover:bg-[#125C4E]">
+          {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+          {generating ? "Rex is analyzing…" : latest ? "Re-run" : "Run analysis"}
+        </Button>
       </div>
-
       {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
-
       {!latest ? (
-        <p className="text-sm text-slate-500">
-          No Rex analysis yet. Run one and Rex will interpret the demand database and recommend which services and
-          cities deserve attention.
-        </p>
+        <p className="text-sm text-slate-500">No analysis yet. Run one and Rex will interpret the current demand report and recommend which services and cities deserve attention.</p>
       ) : (
         <div>
           <div className="text-[10px] text-slate-400 mb-3">
             Data period {latest.period || "—"} · generated {new Date(latest.created_date).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })}
           </div>
           {latest.summary && <p className="text-sm text-[#102B2A] leading-relaxed mb-4">{latest.summary}</p>}
+          {cats.length > 0 && (
+            <div className="mb-4 rounded-xl bg-white border border-slate-100 p-4 text-xs text-slate-600">
+              Report context for this analysis: {cats.slice(0, 4).map((c) => `${c.label} ${Number(c.volume).toLocaleString("en-CA")}`).join(" · ")} est. searches/month ({latest.period || "latest period"}).
+            </div>
+          )}
           <div className="grid md:grid-cols-3 gap-4">
             {topLists.map(([key, label, field]) => (
               <div key={key} className="rounded-xl bg-white border border-slate-100 p-4">

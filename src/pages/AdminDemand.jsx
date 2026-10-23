@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Globe2, Loader2, BookOpen } from "lucide-react";
-import DemandDashboardTab from "@/components/admin/demand/DemandDashboardTab";
+import DemandCommandTab from "@/components/admin/demand/DemandCommandTab";
 import DemandHealthTab from "@/components/admin/demand/DemandHealthTab";
 import DemandDataTab from "@/components/admin/demand/DemandDataTab";
 import DemandImportTab from "@/components/admin/demand/DemandImportTab";
 import DemandInsightsTab from "@/components/admin/demand/DemandInsightsTab";
 
 const TABS = [
-  ["dashboard", "Demand Dashboard"],
+  ["command", "Market Intelligence"],
   ["health", "Source Health"],
   ["data", "Industry Data"],
   ["import", "Import Data"],
@@ -17,7 +17,7 @@ const TABS = [
 ];
 
 export default function AdminDemand() {
-  const [tab, setTab] = useState("dashboard");
+  const [tab, setTab] = useState("command");
   const [report, setReport] = useState(null);
   const [reportLoading, setReportLoading] = useState(true);
 
@@ -33,7 +33,7 @@ export default function AdminDemand() {
     }
   };
 
-  useEffect(() => { loadReport(); }, [tab]);
+  useEffect(() => { if (!report) loadReport(); }, [tab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
@@ -42,7 +42,7 @@ export default function AdminDemand() {
           <Globe2 className="w-5 h-5" />
         </span>
         <div>
-          <h1 className="text-2xl font-extrabold text-[#102B2A]">National Demand Intelligence</h1>
+          <h1 className="text-2xl font-extrabold text-[#102B2A]">Market Intelligence</h1>
           <p className="text-sm text-slate-500">Canadian search-demand measurement across the industry, with Same Day Recycling's verified capture shown separately.</p>
         </div>
       </div>
@@ -62,11 +62,10 @@ export default function AdminDemand() {
       </div>
 
       <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
-        {tab === "dashboard" && (
-          <DemandDashboardTab
+        {tab === "command" && (
+          <DemandCommandTab
             report={report}
             loading={reportLoading}
-            onOpenInsights={() => setTab("insights")}
             onOpenImport={() => setTab("import")}
           />
         )}
@@ -88,7 +87,7 @@ function Methodology() {
       </h2>
       <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
         <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5">
-          <div className="font-bold text-[#102B2A] mb-1">Two intelligence layers</div>
+          <div className="font-bold text-[#102B2A] mb-1">Separate intelligence layers</div>
           <p><span className="font-semibold text-[#102B2A]">Industry Demand</span> — estimated Canadian search demand for removal and recycling services, regardless of which company receives the customer. Sourced from admin-verified, source-labeled observations (Google Ads Keyword Planner estimates, published industry estimates). Deduplicated per keyword + geography + period so overlapping variants are never counted twice.</p>
           <p className="mt-2"><span className="font-semibold text-[#102B2A]">Our Market Capture</span> — Same Day Recycling's own verified performance: Google Search Console impressions and clicks (Canada-filtered, 28-day window), Google Analytics engagement, and verified Recycling OS inquiries, bookings and completed jobs. Internal test records are always excluded.</p>
         </div>
@@ -99,6 +98,10 @@ function Methodology() {
         <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5">
           <div className="font-bold text-[#102B2A] mb-1">Indices are not counts</div>
           <p>Relative-interest indices (Google Trends style, 0-100) express popularity against the geography's own maximum. They are never presented as exact search counts anywhere on the platform.</p>
+        </div>
+        <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5">
+          <div className="font-bold text-[#102B2A] mb-1">Monthly values vs rolling averages</div>
+          <p>When a source publishes a 12-month rolling average (Keyword Planner's default), that average is kept as its own measure and is never added to or compared against an individual month's estimate. The dashboard prefers actual monthly values when both exist and labels whichever measure is shown.</p>
         </div>
         <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5">
           <div className="font-bold text-[#102B2A] mb-1">Update cadence & honesty</div>
