@@ -76,6 +76,41 @@ export default async function(req) {
       return Response.json({ ok: true, resolved, evidence });
     }
 
+    // ---- Ingest (deep research) -----------------------------------------------
+    // Logs findings from an external research pass (e.g. Rex's web deep
+    // research via WhatsApp/Telegram) as tracked, retestable records.
+    if (action === 'ingest') {
+      const items = Array.isArray(payload.findings) ? payload.findings : [];
+      if (!items.length) return Response.json({ error: 'No findings provided.' }, { status: 400 });
+      const scanId = 'research';
+      const existingPage = await base44.entities.RexFinding.filter({ scan_id: scanId }, { limit: 200 });
+      const have = new Set((existingPage.items || existingPage).map((x) => x.finding_text));
+      const fresh = items.filter((i) => i.finding && !have.has(String(i.finding)));
+      if (fresh.length) {
+        await base44.entities.RexFinding.bulkCreate(fresh.map((i) => ({
+          scan_id: scanId,
+          finding_text: String(i.finding).slice(0, 500),
+          finding_kind: i.kind === 'ai_estimate' ? 'ai_estimate' : 'verified',
+          severity: SEVERITIES.includes(i.severity) ? i.severity : 'major',
+          source_url: String(i.source_url || '').startsWith('http') ? i.source_url : 'https://samedayrecycling.ca/',
+          tested_date: today(),
+          actual_result: String(i.actual_result || '').slice(0, 2000),
+          proposed_fix: String(i.proposed_fix || '').slice(0, 2000),
+          status: 'open',
+          history: [{ date: today(), event: 'created', note: `Logged from deep research (${String(payload.label || 'web research').slice(0, 200)})` }],
+        })));
+        await base44.entities.AiActionLog.create({
+          actor: 'rex',
+          action: 'findings_ingested',
+          summary: `Ingested ${fresh.length} deep-research finding(s) into the Evidence Inspector (${String(payload.label || 'web research').slice(0, 120)}).`,
+          outcome: 'success',
+          target_type: 'finding',
+        });
+      }
+      const after = await base44.entities.RexFinding.filter({ scan_id: scanId }, { sort: '-created_date', limit: 100 });
+      return Response.json({ findings: after.items || after, added: fresh.length });
+    }
+
     // ---- Sync (default) ------------------------------------------------------
     const scans = await base44.entities.BrandScan.list({ sort: '-created_date', limit: 1 });
     const scan = (scans.items || scans)[0];
@@ -137,7 +172,13 @@ export default async function(req) {
 
     const afterPage = await base44.entities.RexFinding.filter({ scan_id: scanId }, { sort: '-created_date', limit: 100 });
     const findings = afterPage.items || afterPage;
-    return Response.json({ findings, scan_date: String(scan.created_date || '').slice(0, 10), added: missing.length });
+    const researchPage = await base44.entities.RexFinding.filter({ scan_id: 'research' }, { sort: '-created_date', limit: 100 });
+    return Response.json({
+      findings,
+      research: researchPage.items || researchPage,
+      scan_date: String(scan.created_date || '').slice(0, 10),
+      added: missing.length,
+    });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
