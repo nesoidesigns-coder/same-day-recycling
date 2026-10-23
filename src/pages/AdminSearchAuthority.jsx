@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Loader2, RefreshCw, Search, Eye, MousePointerClick, TrendingUp, MapPin, AlertCircle, Lightbulb, Globe2, FileWarning, Unplug } from "lucide-react";
+import { Loader2, RefreshCw, Search, Eye, MousePointerClick, TrendingUp, MapPin, AlertCircle, Lightbulb, Globe2, Unplug } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import IndexingRecoveryCentre from "@/components/admin/authority/IndexingRecoveryCentre";
+import IndexCoverage from "@/components/admin/authority/IndexCoverage";
 
 const num = (n) => Number(n || 0).toLocaleString("en-CA");
 const pct = (v) => `${v || 0}%`;
@@ -172,59 +174,35 @@ export default function AdminSearchAuthority() {
             </div>
           </div>
 
-          <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
-            <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4 inline-flex items-center gap-2">
-              <FileWarning className="w-4 h-4 text-[#187B65]" /> Index coverage
-            </h2>
-            {data.index.sitemap_error ? (
-              <p className="text-sm text-slate-600">Couldn't read the submitted sitemap from the live site — index coverage is shown as "Not connected" for this section.</p>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  <MiniStat
-                    label="Pages in sitemap"
-                    value={num(data.index.sitemap_pages)}
-                    note={data.index.sitemap_submitted_indexed ? `Google reports ${num(data.index.sitemap_submitted_indexed.indexed)} of ${num(data.index.sitemap_submitted_indexed.submitted)} indexed` : undefined}
-                  />
-                  <MiniStat label="With search impressions (90d)" value={num(data.index.with_impressions)} tone="text-[#187B65]" />
-                  <MiniStat label="Crawled, not indexed (sample)" value={num((data.index.inspection_buckets || {}).crawled_not_indexed || 0)} tone="text-amber-600" />
-                  <MiniStat label="Discovered, not crawled (sample)" value={num((data.index.inspection_buckets || {}).discovered_not_indexed || 0)} tone="text-amber-600" />
-                </div>
-                <p className="text-[11px] text-slate-500 mb-3">
-                  Buckets from real Google evidence: search impressions prove indexing; the remaining sample was verified
-                  with the Search Console URL Inspection API (crawled-not-indexed, discovered-not-indexed, or excluded/blocked).
-                </p>
-                {(data.index.inspection_sample || []).length > 0 && (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                          <th className="py-2 pr-4">Page</th>
-                          <th className="py-2 pr-4">Verdict</th>
-                          <th className="py-2 pr-4">Google status</th>
-                          <th className="py-2 pr-4">Last crawl</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.index.inspection_sample.map((i) => (
-                          <tr key={i.url} className="border-t border-slate-100">
-                            <td className="py-2.5 pr-4 font-mono text-xs text-[#102B2A] break-all">{String(i.url).replace(/^https?:\/\/[^/]+/, "") || "/"}</td>
-                            <td className="py-2.5 pr-4">
-                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${i.bucket === "indexed" ? "bg-[#187B65]/10 text-[#187B65]" : i.bucket === "excluded_or_blocked" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}>
-                                {(i.bucket || "unknown").replace(/_/g, " ")}
-                              </span>
-                            </td>
-                            <td className="py-2.5 pr-4 text-xs text-slate-600">{i.coverage || i.reason || "—"}</td>
-                            <td className="py-2.5 pr-4 text-xs text-slate-600">{i.last_crawl ? new Date(i.last_crawl).toLocaleDateString("en-CA") : "—"}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </>
-            )}
+          {/* Authority summary — every figure is Google evidence, never estimated */}
+          <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStat
+              label="Indexed pages"
+              value={num(data.index.with_impressions)}
+              note="sitemap pages with search impressions (90d)"
+              tone="text-[#187B65]"
+            />
+            <MiniStat
+              label="Awaiting discovery"
+              value={num(data.index.no_impressions)}
+              note="in sitemap, zero impressions (90d)"
+              tone="text-amber-600"
+            />
+            <MiniStat
+              label="Genuine technical blockers"
+              value={num(data.index.genuine_blockers || 0)}
+              note="robots, noindex, canonical, fetch"
+              tone={(data.index.genuine_blockers || 0) > 0 ? "text-red-600" : "text-[#187B65]"}
+            />
+            <MiniStat
+              label="Verified search impressions"
+              value={num(t.impressions)}
+              note={`28 days ending ${data.endDate}`}
+            />
           </div>
+
+          <IndexingRecoveryCentre index={data.index} siteUrl={data.siteUrl} />
+          <IndexCoverage index={data.index} siteUrl={data.siteUrl} />
 
           <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
             <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4 inline-flex items-center gap-2">
