@@ -64,11 +64,11 @@ export default function DemandCommandTab({ report, loading, onOpenImport }) {
 
       {/* Layer 1: current command */}
       <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MarketGauge label="Estimated monthly searches" metric={data.overview} />
-        <MarketGauge label="Month-over-month change" metric={data.overview} change />
+        <MarketGauge label="Estimated monthly searches" metric={data.overview} level={data.level} />
+        <MarketGauge label="Month-over-month change" metric={data.overview} change level={data.level} />
       </div>
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {serviceGauges.map((cat) => <MarketGauge key={cat.category} label={cat.label} metric={cat} />)}
+        {serviceGauges.map((cat) => <MarketGauge key={cat.category} label={cat.label} metric={cat} level={data.level} />)}
       </div>
 
       {/* Layers 2 & 3: history, seasonality, geography */}

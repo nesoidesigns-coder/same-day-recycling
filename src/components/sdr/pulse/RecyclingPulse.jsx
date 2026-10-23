@@ -13,6 +13,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import CategoryDetail from "./CategoryDetail";
+import CaptureGauges from "./CaptureGauges";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CATEGORY_LABELS } from "@/lib/demandShared";
 import PulseRing, { formatCount, prefersReducedMotion, useCountUp } from "./PulseRing";
@@ -338,6 +339,9 @@ export default function RecyclingPulse() {
 
             {/* Interactive comparison chart */}
             <ComparisonChart categories={scope?.categories} period={scope?.latest_period || market.latest_period} />
+
+            {/* Our own verified capture — gold gauges, never mixed with market estimates */}
+            <CaptureGauges capture={data?.capture} />
 
             {/* Selected category detail: trend, YoY, seasonality, geo breakdown */}
             {selected && (

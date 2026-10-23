@@ -1,22 +1,71 @@
+import PulseRing, { formatCount, useCountUp, prefersReducedMotion } from "@/components/sdr/pulse/PulseRing";
+
 const fmt = (v) => v === null || v === undefined ? '—' : Number(v).toLocaleString('en-CA');
 
-export default function MarketGauge({ label, metric, change = false }) {
-  const available = change ? metric.mom_pct !== null && metric.mom_pct !== undefined : metric.available;
+// Geography level badge — national estimates are visually distinct from
+// provincial/city aggregates (emerald ring + badge vs mint).
+const LEVEL_BADGE = {
+  national: { text: 'National level', cls: 'border-[#54D9AE]/40 bg-[#54D9AE]/10 text-[#54D9AE]' },
+  province: { text: 'Provincial level', cls: 'border-market-line bg-white/5 text-market-muted' },
+  city: { text: 'City level', cls: 'border-market-line bg-white/5 text-market-muted' },
+};
+
+// Measure badge — rolling averages never share a ring with monthly volumes.
+function measureBadge(measure) {
+  const m = String(measure || '');
+  if (/rolling/i.test(m)) return { text: 'Rolling average', cls: 'border-amber-400/40 bg-amber-400/10 text-amber-300' };
+  if (/monthly/i.test(m)) return { text: 'Monthly volume', cls: 'border-[#54D9AE]/40 bg-[#54D9AE]/10 text-[#54D9AE]' };
+  return { text: 'Basis not specified', cls: 'border-market-line bg-white/5 text-market-muted' };
+}
+
+export default function MarketGauge({ label, metric, change = false, level = null }) {
+  const available = change ? (metric.mom_pct !== null && metric.mom_pct !== undefined) : !!metric.available;
+  const animate = !prefersReducedMotion();
+  const display = useCountUp(available && !change ? metric.value : 0, { animate });
+  const palette = level === 'national' ? 'emerald' : 'mint';
+  const levelBadge = level ? LEVEL_BADGE[level] : null;
+  const measure = change
+    ? { text: 'Month-over-month', cls: 'border-amber-400/40 bg-amber-400/10 text-amber-300' }
+    : measureBadge(metric.measure);
+
   return (
     <article className="rounded-2xl border border-market-line bg-market-surface p-5 text-market-ink">
-      <h3 className="min-h-10 text-sm font-bold">{label}</h3>
-      <div className="my-4 flex items-center gap-4">
-        <svg viewBox="0 0 80 80" className="h-16 w-16 shrink-0" aria-hidden="true">
-          <circle cx="40" cy="40" r="33" fill="none" stroke="hsl(var(--market-line))" strokeWidth="5" />
-          <circle cx="40" cy="40" r="33" fill="none" stroke="hsl(var(--market-accent))" strokeWidth="5" strokeDasharray={available ? '155 207' : '0 207'} strokeLinecap="round" transform="rotate(-110 40 40)" />
-          <circle cx="40" cy="40" r="5" fill="hsl(var(--market-accent))" />
-        </svg>
-        <div className="min-w-0">
-          <div className="text-2xl font-extrabold tabular-nums">{available ? change ? `${metric.mom_pct > 0 ? '+' : ''}${fmt(metric.mom_pct)}%` : fmt(metric.value) : '—'}</div>
-          <div className="mt-1 text-xs text-market-muted">{available ? change ? 'Month-over-month' : metric.measure : 'Awaiting verified data'}</div>
-        </div>
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="min-h-10 text-sm font-bold">{label}</h3>
+        {levelBadge && (
+          <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${levelBadge.cls}`}>
+            {levelBadge.text}
+          </span>
+        )}
       </div>
-      <dl className="space-y-1 text-xs leading-relaxed text-market-muted">
+      <div className="my-4 flex justify-center">
+        <PulseRing value={available && !change ? metric.value : 1} size={128} thickness={9} kind="activity" palette={palette} spin={available}>
+          {available ? (
+            <>
+              <span className="text-xl font-extrabold tabular-nums text-market-ink">
+                {change ? `${metric.mom_pct > 0 ? '+' : ''}${fmt(metric.mom_pct)}%` : formatCount(display)}
+              </span>
+              <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-market-muted">
+                {change ? 'vs prior month' : 'searches/mo'}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-lg font-bold text-market-muted">—</span>
+              <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-market-muted">pending</span>
+            </>
+          )}
+        </PulseRing>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${measure.cls}`}>{measure.text}</span>
+        {!change && metric.omitted_measures > 0 && (
+          <span className="text-[10px] text-market-muted">
+            {metric.omitted_measures} record{metric.omitted_measures === 1 ? '' : 's'} kept separate (different measure)
+          </span>
+        )}
+      </div>
+      <dl className="mt-3 space-y-1 text-xs leading-relaxed text-market-muted">
         <div><dt className="inline">Type: </dt><dd className="inline">{change ? 'Calculated from comparable estimates' : metric.classification || 'Estimated'}</dd></div>
         <div><dt className="inline">Scope: </dt><dd className="inline">{metric.scope}</dd></div>
         <div><dt className="inline">Period: </dt><dd className="inline">{metric.period || 'Unavailable'}{change && metric.previous_period ? ` vs ${metric.previous_period}` : ''}</dd></div>
