@@ -3,12 +3,8 @@ import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import HomeHero from "@/components/sdr/HomeHero";
-import TrustGauges from "@/components/sdr/TrustGauges";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
-import TransparentPricing from "@/components/sdr/TransparentPricing";
-import RexJourney from "@/components/sdr/RexJourney";
-import QuoteCalculator from "@/components/sdr/QuoteCalculator";
 import Booking from "@/components/sdr/Booking";
 import ItemEstimator from "@/components/sdr/ItemEstimator";
 import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
@@ -17,6 +13,10 @@ import LazySection from "@/components/sdr/LazySection";
 
 // Below-the-fold sections load after first paint; the quote calculator and
 // booking form stay eager so conversion actions are always instantly ready.
+const TrustGauges = lazy(() => import("@/components/sdr/TrustGauges"));
+const RexJourney = lazy(() => import("@/components/sdr/RexJourney"));
+const TransparentPricing = lazy(() => import("@/components/sdr/TransparentPricing"));
+const QuoteCalculator = lazy(() => import("@/components/sdr/QuoteCalculator"));
 const CanadaNetworkMap = lazy(() => import("@/components/sdr/CanadaNetworkMap"));
 const ProvinceImpact = lazy(() => import("@/components/sdr/ProvinceImpact"));
 const FeaturedProviders = lazy(() => import("@/components/sdr/FeaturedProviders"));
@@ -53,15 +53,15 @@ export default function Home() {
       <TopBar />
       <Navbar />
       <HomeHero onCity={(city) => bookFromQuote({ city })} />
-      <RexJourney onBook={bookFromQuote} />
-      <TrustGauges />
+      <LazySection minHeight={440}><RexJourney onBook={bookFromQuote} /></LazySection>
+      <LazySection minHeight={480}><TrustGauges /></LazySection>
       <LazySection minHeight={480}><CanadaNetworkMap /></LazySection>
       <LazySection minHeight={380}><ProvinceImpact /></LazySection>
       <Services />
       <HowItWorks />
       <ItemEstimator onBook={bookFromQuote} />
-      <TransparentPricing />
-      <QuoteCalculator onBook={bookFromQuote} />
+      <LazySection minHeight={520}><TransparentPricing /></LazySection>
+      <LazySection minHeight={560}><QuoteCalculator onBook={bookFromQuote} /></LazySection>
       <Booking prefill={quotePrefill} />
       <LazySection minHeight={320}><FeaturedProviders /></LazySection>
       <LazySection minHeight={360}><NationalCoverage /></LazySection>

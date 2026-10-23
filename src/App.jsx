@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import NotFoundPage from './lib/NotFoundPage';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { appParams } from '@/lib/app-params';
 import ScrollToTop from './components/ScrollToTop';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import ReceptionistChat from '@/components/sdr/ReceptionistChat';
@@ -110,8 +111,11 @@ const RouteFallback = () => (
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
+  // Signed-in users (session token) get the blocking spinner while their
+  // session is verified. Anonymous visitors paint immediately — public pages
+  // render while the checks finish in the background, and any auth error
+  // still replaces the UI below.
+  if (Boolean(appParams.token) && (isLoadingPublicSettings || isLoadingAuth)) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>

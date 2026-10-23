@@ -3,9 +3,15 @@ import { base44 } from "@/api/base44Client";
 
 export default function VisitTracker() {
   useEffect(() => {
-    base44.functions
-      .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer })
-      .catch(() => {});
+    // Deferred off the critical path: the visit is recorded once the page has
+    // had 3 seconds to load and interact, so analytics never competes with
+    // first paint or booking calls.
+    const timer = setTimeout(() => {
+      base44.functions
+        .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer })
+        .catch(() => {});
+    }, 3000);
+    return () => clearTimeout(timer);
   }, []);
   return null;
 }

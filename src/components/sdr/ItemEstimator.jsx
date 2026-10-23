@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { motion } from "framer-motion";
 import {
   Sofa, BedDouble, Refrigerator, WashingMachine, Tv, Table2, Boxes,
   Construction, Trash2, Loader2, Camera, Minus, Plus, ArrowRight, Info, Truck,
@@ -126,10 +125,9 @@ export default function ItemEstimator({ onBook }) {
                 const n = qty[item.key] || 0;
                 const Icon = item.icon;
                 return (
-                  <motion.div
+                  <div
                     key={item.key}
-                    whileTap={{ scale: 0.97 }}
-                    className={`rounded-2xl border p-2.5 sm:p-4 flex flex-col items-center gap-2 text-center transition-colors ${
+                    className={`rounded-2xl border p-2.5 sm:p-4 flex flex-col items-center gap-2 text-center transition-all active:scale-95 ${
                       n > 0 ? "bg-[#187B65] text-white border-[#187B65] shadow-sm" : "bg-white text-[#102B2A] border-slate-200 hover:border-[#187B65]"
                     }`}
                   >
@@ -156,7 +154,7 @@ export default function ItemEstimator({ onBook }) {
                         </button>
                       </div>
                     )}
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>

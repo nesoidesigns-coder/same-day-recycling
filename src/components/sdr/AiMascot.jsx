@@ -1,6 +1,8 @@
 import { Image } from "@/components/ui/image";
 
-const MASCOT_URL = "https://base44.app/api/apps/6ac93990cde830898b8dbc65/files/mp/public/6ac93990cde830898b8dbc65/75031ef67_rex-avatar-transparent.png";
+// media.base44.com URL — the platform pipeline resizes and serves WebP/AVIF
+// (the original avatar PNG is 465 KB full-size).
+const MASCOT_URL = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/75031ef67_rex-avatar-transparent.png";
 
 export default function AiMascot({ size = 44, className = "" }) {
   return (

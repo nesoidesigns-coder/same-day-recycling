@@ -60,6 +60,8 @@ export default function HomeHero({ onCity }) {
             <Image
               src={TRUCK_IMG}
               fittingType="fit"
+              loading="eager"
+              fetchpriority="high"
               alt="Friendly green pickup truck loaded with furniture next to recycling bins"
               className="w-full max-w-md mx-auto h-56 sm:h-72 md:h-96 rounded-3xl"
             />
