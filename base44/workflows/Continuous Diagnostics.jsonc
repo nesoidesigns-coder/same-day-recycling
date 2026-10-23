@@ -1,0 +1,47 @@
+{
+  "name": "Continuous Diagnostics",
+  "description": "Weekly safe site diagnostics: fetches key public pages, checks HTTP status, metadata and rendered content, and queues new findings in the Improvement Queue. Nothing is published or changed automatically.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "continuous_diagnostics",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_scan": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "improvementEngine",
+            "args": {
+              "action": "scan"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run site diagnostics",
+            "description": "Weekly evidence scan into the Improvement Queue"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "name": "Improvement",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Problem identified, stated factually."
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "site_diagnostics",
+        "brand_scan",
+        "evidence_inspector",
+        "manual"
+      ],
+      "default": "manual",
+      "description": "Where this finding came from."
+    },
+    "source_ref": {
+      "type": "string",
+      "default": "",
+      "description": "Id of the RexFinding / BrandScan / scan run this came from."
+    },
+    "evidence_url": {
+      "type": "string",
+      "format": "uri",
+      "default": "",
+      "description": "URL the finding was actually tested against."
+    },
+    "evidence": {
+      "type": "string",
+      "maxLength": 2000,
+      "default": "",
+      "description": "What the test actually observed \u2014 raw evidence, not a conclusion."
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "major",
+        "minor"
+      ],
+      "default": "major"
+    },
+    "business_impact": {
+      "type": "string",
+      "maxLength": 1000,
+      "default": "",
+      "description": "How the problem hurts customers, contractors or revenue."
+    },
+    "recommendation": {
+      "type": "string",
+      "maxLength": 2000,
+      "default": "",
+      "description": "The concrete recommended solution."
+    },
+    "effort": {
+      "type": "string",
+      "enum": [
+        "quick",
+        "moderate",
+        "major"
+      ],
+      "default": "moderate",
+      "description": "Estimated implementation effort."
+    },
+    "owner": {
+      "type": "string",
+      "default": "owner",
+      "description": "Who is responsible for this improvement."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "detected",
+        "reviewed",
+        "approved",
+        "in_progress",
+        "testing",
+        "verified",
+        "completed",
+        "declined"
+      ],
+      "default": "detected",
+      "description": "Lifecycle: Detected \u2192 Reviewed \u2192 Approved \u2192 In Progress \u2192 Testing \u2192 Verified \u2192 Completed."
+    },
+    "verification_test": {
+      "type": "string",
+      "maxLength": 1000,
+      "default": "",
+      "description": "The specific test that will prove the fix worked."
+    },
+    "before_result": {
+      "type": "string",
+      "maxLength": 1000,
+      "default": "",
+      "description": "Measured state before the fix."
+    },
+    "after_result": {
+      "type": "string",
+      "maxLength": 1000,
+      "default": "",
+      "description": "Measured state after verification. Never claimed without a measurement."
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "verified_by": {
+      "type": "string",
+      "default": ""
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable event log: created, reviewed, approved, rex_diagnosed, testing, verified, completed, declined."
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
