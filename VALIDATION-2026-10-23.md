@@ -65,6 +65,24 @@ documentation always survives.
 4. All test records are marked `record_type: internal_test` / `zztest` names and are
    excluded from real metrics, contractor capacity, and offers by design.
 
+## Phase 10 — Failure-path validation (sandbox, 2026-10-23 session 2)
+
+| Test | Result |
+|---|---|
+| Contractor declines an offer | PASS — offer marked `declined`; escalation ran; because every candidate was a test partner (correctly excluded from capacity), the request landed in the matching queue with a single deduped `escalation_alert` in the dispatch log |
+| Offer expiry sweep | PASS — stale offer flipped to `expired` by the escalation action; no duplicate admin alert (dedupe by contact log works) |
+| Booking cancellation | PASS — booking → `cancelled` with assignment released and status history appended |
+| Invalid change-order token | PASS — safely rejected (404, "Change order not found"), no crash, no email |
+| Unsuccessful payment capture | **NOT EXECUTED** — `PAYPAL_MODE` is `live`; requires sandbox credentials before any negative payment test |
+| Tenant isolation | Config-verified — `FinancialTx` RLS anchors every read/write on `owner_email = {{user.email}}` (admins excepted); sandbox service-role sees both tenants, app users cannot. Cross-tenant write tests require a second non-admin user. |
+
+Admin-alert emails from these tests were captured, not delivered (hourly email limit, known issue — non-fatal by design).
+
+### Consumer vs Recycling OS commercial journeys
+- Consumer homepage remains request-focused; the commercial product area lives at `/software` (memberships, white-label licensing, AI dispatch, invoicing, analytics) with the license onboarding wizard.
+- A dedicated top-level navigation item "Recycling OS" now routes commercial visitors to `/software` from every page.
+- Subdomain `operating.samedayrecycling.ca` evaluated and deferred — DNS untouched pending approval, as directed.
+
 ## Recommended next deployment steps
 
 1. Add PayPal sandbox credentials and run the payment capture test end-to-end.
