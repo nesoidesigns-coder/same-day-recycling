@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Globe2, Loader2, BookOpen } from "lucide-react";
+import DemandDashboardTab from "@/components/admin/demand/DemandDashboardTab";
 import DemandHealthTab from "@/components/admin/demand/DemandHealthTab";
 import DemandDataTab from "@/components/admin/demand/DemandDataTab";
 import DemandImportTab from "@/components/admin/demand/DemandImportTab";
 import DemandInsightsTab from "@/components/admin/demand/DemandInsightsTab";
 
 const TABS = [
+  ["dashboard", "Demand Dashboard"],
   ["health", "Source Health"],
   ["data", "Industry Data"],
   ["import", "Import Data"],
@@ -15,19 +17,23 @@ const TABS = [
 ];
 
 export default function AdminDemand() {
-  const [tab, setTab] = useState("health");
+  const [tab, setTab] = useState("dashboard");
   const [report, setReport] = useState(null);
+  const [reportLoading, setReportLoading] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await base44.functions.invoke("demandReport", {});
-        setReport(res.data);
-      } catch {
-        setReport(null);
-      }
-    })();
-  }, [tab]);
+  const loadReport = async () => {
+    setReportLoading(true);
+    try {
+      const res = await base44.functions.invoke("demandReport", {});
+      setReport(res.data);
+    } catch {
+      setReport(null);
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  useEffect(() => { loadReport(); }, [tab]);
 
   return (
     <div>
@@ -56,9 +62,17 @@ export default function AdminDemand() {
       </div>
 
       <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
+        {tab === "dashboard" && (
+          <DemandDashboardTab
+            report={report}
+            loading={reportLoading}
+            onOpenInsights={() => setTab("insights")}
+            onOpenImport={() => setTab("import")}
+          />
+        )}
         {tab === "health" && <DemandHealthTab report={report} />}
         {tab === "data" && <DemandDataTab />}
-        {tab === "import" && <DemandImportTab onImported={() => setReport(null)} />}
+        {tab === "import" && <DemandImportTab onImported={loadReport} />}
         {tab === "insights" && <DemandInsightsTab />}
         {tab === "methodology" && <Methodology />}
       </div>
