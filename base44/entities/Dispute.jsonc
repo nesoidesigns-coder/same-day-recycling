@@ -40,6 +40,12 @@
       "default": {},
       "description": "Snapshot of the case file: original_estimate, approved_quote, approval_method, change_orders, acknowledgements, before_after_uris, contractor_report, final_invoice, payment_status."
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this dispute case."
+    },
     "case_summary": {
       "type": "string",
       "default": "",
