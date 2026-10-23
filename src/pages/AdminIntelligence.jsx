@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, RefreshCw, DollarSign, ArrowRight, Sparkles, Search, ShieldCheck, Briefcase, BarChart3 } from "lucide-react";
+import { RefreshCw, DollarSign, ArrowRight, Search, ShieldCheck, Briefcase, BarChart3 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import RingGauge from "@/components/admin/RingGauge";
 import BrandScanner from "@/components/admin/intel/BrandScanner";
 import MarketOpportunityPanel from "@/components/admin/intel/MarketOpportunityPanel";
 import RexIntelligenceAsk from "@/components/admin/intel/RexIntelligenceAsk";
 import EvidenceInspector from "@/components/admin/intel/EvidenceInspector";
+import OwnerIntelligenceCenter from "@/components/admin/intel/OwnerIntelligenceCenter";
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
@@ -67,6 +68,10 @@ export default function AdminIntelligence() {
         <button onClick={load} disabled={loading} className="p-2.5 rounded-full bg-white border border-slate-200 hover:border-[#187B65] transition-colors" aria-label="Refresh">
           <RefreshCw className={`w-4 h-4 text-[#102B2A] ${loading ? "animate-spin" : ""}`} />
         </button>
+      </div>
+
+      <div className="mt-5">
+        <OwnerIntelligenceCenter />
       </div>
 
       <div className="mt-5 grid md:grid-cols-2 gap-4">

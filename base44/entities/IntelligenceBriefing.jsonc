@@ -1,0 +1,107 @@
+{
+  "name": "IntelligenceBriefing",
+  "type": "object",
+  "properties": {
+    "run_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "triggered_by": {
+      "type": "string",
+      "default": "manual",
+      "description": "manual (owner pressed Run) or scheduled (daily automation)."
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 3000,
+      "description": "Rex's unified cross-module summary for this run."
+    },
+    "modules": {
+      "type": "object",
+      "default": {},
+      "description": "Verified signals per module: market, acquisition, contractor, customer_experience, operations. Unavailable sources are recorded as unavailable, never filled with estimates."
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "highest",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "needs_authorization": {
+            "type": "boolean",
+            "default": false,
+            "description": "True when executing the action requires the owner's explicit approval (spending, publishing, agreements)."
+          }
+        }
+      },
+      "default": []
+    },
+    "forecasts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "prediction": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "data_period": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Rex's demand and workload predictions. Always labeled predictions with confidence and the data period they were derived from; never treated as confirmed bookings or guaranteed revenue."
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

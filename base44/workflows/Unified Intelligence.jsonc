@@ -1,0 +1,47 @@
+{
+  "name": "Unified Intelligence",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Daily Rex briefing: gathers verified signals from market intelligence, customer acquisition, contractor coverage, customer experience and operations, cross-analyzes them and stores an owner briefing with prioritized recommendations and clearly labeled forecasts. Read-only analysis; consequential actions always require owner authorization.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "unified_intelligence",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_engine": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ownerIntelligence",
+            "args": {
+              "triggered_by": "scheduled"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run Rex briefing",
+            "description": "Five-module unified intelligence run"
+          }
+        }
+      }
+    ]
+  }
+}
