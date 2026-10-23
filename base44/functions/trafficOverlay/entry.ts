@@ -5,8 +5,14 @@ import { secrets } from 'base44:runtime';
 // TomTom dashboard); without a key configured the overlay stays off.
 export default async function(req) {
   try {
-    const key = secrets.get("TOMTOM_TRAFFIC_API_KEY");
-    if (!key) return Response.json({ enabled: false, reason: "missing_key" });
+    // The stored value may carry stray whitespace, quotes or a label — clean it.
+    const raw = String(secrets.get("TOMTOM_TRAFFIC_API_KEY") || "").trim().replace(/^["']|["']$/g, "");
+    if (!raw) return Response.json({ enabled: false, reason: "missing_key" });
+    let key = raw.replace(/^(key|TOMTOM_TRAFFIC_API_KEY)\s*=\s*/i, "");
+    // If extra text was saved around the key, use the longest key-like run.
+    const runs = raw.match(/[A-Za-z0-9]{20,}/g);
+    if (!runs?.includes(key) && runs) key = runs.sort((a, b) => b.length - a.length)[0];
+
 
     const flow = `https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key=${key}`;
     const incidents = `https://api.tomtom.com/traffic/map/4/tile/incidents/s1/{z}/{x}/{y}.png?key=${key}`;
