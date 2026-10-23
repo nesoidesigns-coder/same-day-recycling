@@ -5,14 +5,14 @@
 
 export const SERVICE_CATEGORIES = [
   'junk_removal', 'furniture_removal', 'mattress_disposal', 'appliance_removal', 'electronics',
-  'recycling', 'waste_disposal', 'estate_cleanout', 'construction_debris', 'other',
+  'recycling', 'waste_disposal', 'estate_cleanout', 'construction_debris',
+  'yard_waste_removal', 'commercial_waste', 'hot_tub_removal', 'scrap_metal',
+  'bin_rentals', 'same_day_pickup', 'other',
 ];
 
-// The six categories shown as homepage market-demand gauges.
-export const MARKET_CATEGORIES = [
-  'junk_removal', 'furniture_removal', 'appliance_removal',
-  'construction_debris', 'mattress_disposal', 'estate_cleanout',
-];
+// Every tracked service category (all but "other") shown on the homepage
+// market-demand dashboard.
+export const MARKET_CATEGORIES = SERVICE_CATEGORIES.filter((c) => c !== 'other');
 
 export const CATEGORY_LABELS = {
   junk_removal: 'Junk Removal',
@@ -24,6 +24,12 @@ export const CATEGORY_LABELS = {
   waste_disposal: 'Waste Disposal',
   estate_cleanout: 'Estate Cleanouts',
   construction_debris: 'Construction Debris',
+  yard_waste_removal: 'Yard Waste Removal',
+  commercial_waste: 'Commercial Waste Removal',
+  hot_tub_removal: 'Hot Tub Removal',
+  scrap_metal: 'Scrap Metal Recycling',
+  bin_rentals: 'Bin Rentals',
+  same_day_pickup: 'Same-Day Junk Pickup',
   other: 'Other Services',
 };
 
@@ -64,6 +70,16 @@ const CATEGORY_ALIASES = {
   estate: 'estate_cleanout', hoarding: 'estate_cleanout',
   'construction debris': 'construction_debris', 'construction waste': 'construction_debris',
   renovation: 'construction_debris', 'demo debris': 'construction_debris',
+  'yard waste': 'yard_waste_removal', 'yard waste removal': 'yard_waste_removal',
+  'yard cleanup': 'yard_waste_removal', leaves: 'yard_waste_removal', 'branch removal': 'yard_waste_removal',
+  'commercial waste': 'commercial_waste', 'commercial waste removal': 'commercial_waste',
+  'commercial junk removal': 'commercial_waste',
+  'hot tub': 'hot_tub_removal', 'hot tub removal': 'hot_tub_removal', 'spa removal': 'hot_tub_removal',
+  'scrap metal': 'scrap_metal', 'scrap metal recycling': 'scrap_metal', 'metal recycling': 'scrap_metal',
+  'bin rental': 'bin_rentals', 'bin rentals': 'bin_rentals', 'dumpster rental': 'bin_rentals',
+  'disposal bin': 'bin_rentals',
+  'same day junk removal': 'same_day_pickup', 'same day pickup': 'same_day_pickup',
+  'same day junk pickup': 'same_day_pickup',
   other: 'other',
 };
 

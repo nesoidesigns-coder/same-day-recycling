@@ -26,6 +26,12 @@ const SEEDS = [
   'electronics recycling',
   'waste disposal services',
   'recycling pickup',
+  'yard waste removal',
+  'commercial waste removal',
+  'hot tub removal',
+  'scrap metal recycling',
+  'bin rental',
+  'same day junk removal',
 ];
 
 const PROVINCE_NAMES = {

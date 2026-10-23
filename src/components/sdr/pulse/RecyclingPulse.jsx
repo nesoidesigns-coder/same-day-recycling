@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   ArrowRight,
-  CalendarDays,
+  BarChart3,
   Globe2,
-  Info,
   Loader2,
   MapPin,
   RefreshCw,
@@ -13,23 +12,20 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
+import CategoryDetail from "./CategoryDetail";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CATEGORY_LABELS } from "@/lib/demandShared";
 import PulseRing, { formatCount, prefersReducedMotion, useCountUp } from "./PulseRing";
 
-// Canadian Market Search Intelligence — the homepage gauge section.
-// Industry-wide estimated search demand for the six tracked service
-// categories, from source-labeled DemandObservation records (Keyword
-// Planner / licensed datasets / Google Trends indices). Same Day Recycling's
-// own operational counters are never shown here — they stay in the
-// Recycling OS admin dashboards.
+// Canadian Market Search Intelligence — the homepage interactive dashboard.
+// Industry-wide estimated search demand for every tracked service category,
+// from source-labeled DemandObservation records (Keyword Planner API /
+// licensed datasets / Google Trends indices). Same Day Recycling's own
+// operational counters are never shown here — they stay in the Recycling OS
+// admin dashboards. Layers: demand estimates, relative-interest indices, and
+// the site's own Search Console performance (tracked separately, on /demand).
 
-const CATEGORY_DISPLAY = {
-  junk_removal: "Junk Removal",
-  furniture_removal: "Furniture Removal",
-  appliance_removal: "Appliance Recycling",
-  construction_debris: "Construction Waste",
-  mattress_disposal: "Mattress Disposal",
-  estate_cleanout: "Estate Cleanouts",
-};
+const DemandMap = lazy(() => import("./DemandMap"));
 
 const BASIS_LABEL = {
   keyword_planner: "Keyword Planner estimates",
@@ -59,35 +55,43 @@ function TrendBadge({ pct, direction }) {
   );
 }
 
-function GaugeCell({ cat }) {
+function GaugeCell({ cat, selected, onSelect }) {
   const animate = !prefersReducedMotion();
   const display = useCountUp(cat.available ? cat.value : 0, { animate });
   const isIndex = cat.unit === "index";
 
   if (!cat.available) {
     return (
-      <div className="rounded-2xl border border-[#187B65]/20 bg-white/[0.04] px-4 py-5 text-center">
+      <button
+        onClick={onSelect}
+        aria-pressed={selected}
+        className={`rounded-2xl border px-4 py-5 text-center transition-colors ${selected ? "border-[#54D9AE]/60 bg-[#187B65]/15" : "border-[#187B65]/20 bg-white/[0.04] hover:border-[#187B65]/40"}`}
+      >
         <div className="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#187B65]/15">
           <Search className="h-4 w-4 text-[#187B65]" />
         </div>
-        <div className="text-sm font-bold uppercase tracking-wider text-white/80">{CATEGORY_DISPLAY[cat.category]}</div>
+        <div className="text-sm font-bold uppercase tracking-wider text-white/80">{cat.label}</div>
         <div className="mt-1 text-sm font-semibold text-[#54D9AE]">Data pending</div>
         <div className="mt-1 text-[10px] text-white/40">Awaiting a verified source estimate</div>
-      </div>
+      </button>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-[#187B65]/20 bg-white/[0.04] px-4 py-5 flex flex-col items-center gap-2 text-center">
-      <PulseRing value={cat.value} size={112} kind="activity" palette={isIndex ? "mint" : "emerald"}>
-        <span className="text-xl font-extrabold text-white tabular-nums">
+    <button
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={`flex flex-col items-center gap-2 rounded-2xl border px-4 py-5 text-center transition-colors ${selected ? "border-[#54D9AE]/60 bg-[#187B65]/15" : "border-[#187B65]/20 bg-white/[0.04] hover:border-[#187B65]/40"}`}
+    >
+      <PulseRing value={cat.value} size={104} kind="activity" palette={isIndex ? "mint" : "emerald"}>
+        <span className="text-lg font-extrabold text-white tabular-nums">
           {isIndex ? display : formatCount(display)}
         </span>
         <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-white/50">
           {isIndex ? "interest index" : "searches/mo"}
         </span>
       </PulseRing>
-      <div className="text-sm font-bold text-white/90">{CATEGORY_DISPLAY[cat.category]}</div>
+      <div className="text-sm font-bold text-white/90">{cat.label}</div>
       <TrendBadge pct={cat.trend_pct} direction={cat.trend_direction} />
       <div className="text-[10px] text-white/40 leading-tight">
         {cat.last_updated ? `Updated ${cat.last_updated}` : "Update date on file soon"}
@@ -95,6 +99,43 @@ function GaugeCell({ cat }) {
           <span className="block">{BASIS_LABEL[cat.volume_basis[0]] || "Verified source data"}</span>
         )}
       </div>
+    </button>
+  );
+}
+
+// Interactive comparison bar chart across services for the current scope and
+// period. Volume-based categories only — relative-interest indices are never
+// charted on the same axis as search counts.
+function ComparisonChart({ categories, period }) {
+  const rows = (categories || []).filter((c) => c.available && c.unit === "searches");
+  if (rows.length === 0) return null;
+  const data = rows.map((c) => ({ name: c.label, volume: c.value })).sort((a, b) => b.volume - a.volume);
+  const height = 56 + data.length * 30;
+
+  return (
+    <div className="mt-8 rounded-3xl border border-[#187B65]/25 bg-white/[0.04] p-5 sm:p-6">
+      <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">
+        <BarChart3 className="h-3.5 w-3.5 text-[#54D9AE]" /> Demand comparison across services — {period}
+      </div>
+      <div style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} layout="vertical" margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+            <XAxis type="number" tick={{ fontSize: 10, fill: "#94a3b8" }} tickFormatter={(v) => formatCount(v)} />
+            <YAxis type="category" dataKey="name" width={140} tick={{ fontSize: 11, fill: "#e2e8f0" }} />
+            <Tooltip
+              formatter={(v) => [formatCount(v), "Est. searches/mo"]}
+              contentStyle={{ background: "#0a2e24", border: "1px solid rgba(84,217,174,0.3)", borderRadius: 12, color: "#fff" }}
+              labelStyle={{ color: "#54D9AE", fontWeight: 700 }}
+              cursor={{ fill: "rgba(255,255,255,0.04)" }}
+            />
+            <Bar dataKey="volume" fill="#54D9AE" radius={[0, 8, 8, 0]} barSize={16} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <p className="mt-2 text-[10px] text-white/40">
+        Click any service card above for its trend, year-over-year change, seasonal pattern and provincial/city
+        breakdown. Index-only categories are excluded from this chart — indices are never charted as search counts.
+      </p>
     </div>
   );
 }
@@ -105,6 +146,7 @@ export default function RecyclingPulse() {
   const [refreshedAt, setRefreshedAt] = useState(null);
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
+  const [selectedCat, setSelectedCat] = useState("");
   const timerRef = useRef(null);
 
   const load = useCallback(async (silent) => {
@@ -112,7 +154,7 @@ export default function RecyclingPulse() {
     try {
       const res = await base44.functions.invoke("demandReport", {});
       if (res.data?.market) {
-        setData(res.data.market);
+        setData(res.data);
         setRefreshedAt(new Date());
       }
     } catch {
@@ -128,7 +170,8 @@ export default function RecyclingPulse() {
     return () => clearInterval(timerRef.current);
   }, [load]);
 
-  const market = data;
+  const market = data?.market;
+  const series = data?.series || [];
   const provinceList = market?.geo?.provinces || [];
   const cityList = (market?.geo?.cities || []).filter((c) => !province || c.province_code === province);
 
@@ -140,6 +183,19 @@ export default function RecyclingPulse() {
   const scopeKey = city || (province ? province : "CA");
   const scope = market?.scopes?.[scopeKey] || market?.scopes?.[scopeKey.toLowerCase()] || null;
 
+  // City-level demand volumes for the map (deduplicated series rows, latest period).
+  const cityVolumes = (() => {
+    const map = {};
+    for (const r of series) {
+      if (r.geo_type !== "city" || !r.city) continue;
+      const e = map[r.city] || (map[r.city] = { volume: 0, index: 0, updated: "" });
+      e.volume += Number(r.est_monthly_volume) || 0;
+      e.index = Math.max(e.index, Number(r.trend_index) || 0);
+      e.updated = String(r.last_updated || "") > e.updated ? String(r.last_updated || "") : e.updated;
+    }
+    return map;
+  })();
+
   const heroAnimate = !prefersReducedMotion();
   const heroDisplay = useCountUp(scope?.total?.available ? scope.total.value : 0, { duration: 1600, animate: heroAnimate });
   const periodLabel = scope?.latest_period
@@ -147,6 +203,8 @@ export default function RecyclingPulse() {
     : market?.latest_period
       ? `Reporting period ${market.latest_period}`
       : "Reporting period —";
+
+  const selected = selectedCat ? (scope?.categories || []).find((c) => c.category === selectedCat) : null;
 
   return (
     <section aria-label="Canadian Market Search Intelligence" className="admin-console relative overflow-hidden">
@@ -252,7 +310,7 @@ export default function RecyclingPulse() {
                     <Search className="h-4 w-4" /> Estimated Monthly Searches
                   </div>
                   <div className="py-6">
-                    <CalendarDays className="mx-auto mb-2 h-8 w-8 text-[#187B65]" />
+                    <Search className="mx-auto mb-2 h-8 w-8 text-[#187B65]" />
                     <div className="text-lg font-bold text-white">Data pending</div>
                     <p className="mx-auto mt-2 max-w-md text-sm text-white/60">{scope?.total?.note || scope?.note || "No defensible volume-based estimate on file for this geography yet."}</p>
                   </div>
@@ -260,18 +318,59 @@ export default function RecyclingPulse() {
               )}
             </div>
 
-            {/* Six category gauges */}
+            {/* Service demand cards — click any card for its full demand detail */}
             <div className="mt-8">
               <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">
                 <span className="h-px flex-1 bg-white/10" /> Search demand by service category — {scope?.latest_period || market.latest_period}
                 <span className="h-px flex-1 bg-white/10" />
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                 {(scope?.categories || []).map((cat) => (
-                  <GaugeCell key={cat.category} cat={cat} />
+                  <GaugeCell
+                    key={cat.category}
+                    cat={cat}
+                    selected={selectedCat === cat.category}
+                    onSelect={() => setSelectedCat(selectedCat === cat.category ? "" : cat.category)}
+                  />
                 ))}
               </div>
             </div>
+
+            {/* Interactive comparison chart */}
+            <ComparisonChart categories={scope?.categories} period={scope?.latest_period || market.latest_period} />
+
+            {/* Selected category detail: trend, YoY, seasonality, geo breakdown */}
+            {selected && (
+              <CategoryDetail
+                series={series}
+                province={province}
+                city={city}
+                cat={selected}
+                onClose={() => setSelectedCat("")}
+              />
+            )}
+
+            {/* Interactive Canadian demand map */}
+            {(market?.geo?.cities || []).length > 0 && (
+              <div className="mt-8">
+                <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">
+                  <MapPin className="h-3.5 w-3.5 text-[#54D9AE]" /> Select a city on the map
+                  <span className="h-px flex-1 bg-white/10" />
+                </div>
+                <Suspense fallback={<div className="h-[340px] animate-pulse rounded-3xl border border-[#187B65]/25 bg-white/[0.03]" />}>
+                  <DemandMap
+                    cities={market.geo.cities}
+                    volumes={cityVolumes}
+                    selected={city}
+                    onSelect={(key) => { setCity(key); setProvince(""); }}
+                  />
+                </Suspense>
+                <p className="mt-2 text-[10px] text-white/40">
+                  Markers appear only where verified city-level estimates are on file. Provincial and national figures
+                  are never projected down to a city.
+                </p>
+              </div>
+            )}
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[11px] text-white/40">
               <span>{periodLabel}</span>
@@ -284,8 +383,9 @@ export default function RecyclingPulse() {
 
             <p className="mx-auto mt-4 max-w-3xl text-center text-[11px] leading-relaxed text-white/40">
               Estimates, not exact counts, and never a measure of every individual Google search. Figures aggregate
-              deduplicated, source-labeled keyword observations for the selected geography. Google Search Console
-              visibility for Same Day Recycling is tracked separately and is never used as market demand.
+              deduplicated, source-labeled keyword observations for the selected geography. Year-over-year changes
+              appear only when the same month from the prior year is on file. Google Search Console visibility for
+              Same Day Recycling is tracked separately on our demand page and is never used as market demand.
               {(scope?.sources || []).length > 0 && (
                 <span className="block mt-1">Sources: {scope.sources.join(" · ")}</span>
               )}
@@ -306,7 +406,7 @@ export default function RecyclingPulse() {
             to="/demand"
             className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-4 text-sm font-bold text-white/80 transition-colors hover:text-white"
           >
-            <MapPin className="h-4 w-4" /> Explore demand by province & city
+            <MapPin className="h-4 w-4" /> Explore demand by province &amp; city
           </Link>
         </div>
       </div>

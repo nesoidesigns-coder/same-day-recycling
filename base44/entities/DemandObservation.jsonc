@@ -38,6 +38,12 @@
         "estate_cleanout",
         "construction_debris",
         "mattress_disposal",
+        "yard_waste_removal",
+        "commercial_waste",
+        "hot_tub_removal",
+        "scrap_metal",
+        "bin_rentals",
+        "same_day_pickup",
         "other"
       ],
       "default": "other",
