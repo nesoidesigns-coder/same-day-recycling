@@ -22,7 +22,7 @@ export default async function(req) {
     const serviceQuery = { record_type: { $ne: 'internal_test' }, status: { $ne: 'cancelled' } };
     const completedQuery = { ...serviceQuery, assignment_status: { $in: ['completed', 'paid'] } };
 
-    const [grossAgg, earnedAgg, memberAgg, licenseAgg, invoiceAgg, setupAgg, ppRefundAgg, ledgerAgg, provinceAgg] = await Promise.all([
+    const [grossAgg, earnedAgg, memberAgg, licenseAgg, invoiceAgg, setupAgg, ppRefundAgg, ledgerAgg, provinceAgg, externalAgg] = await Promise.all([
       base44.entities.Booking.aggregate({ query: serviceQuery, groupBy: 'status', sum: ['job_value', 'final_invoice'] }),
       base44.entities.Booking.aggregate({ query: completedQuery, groupBy: 'job_source', sum: ['commission_earned', 'commission_paid', 'platform_fee_amount', 'refund_amount'] }),
       base44.entities.ContractorAgreement.aggregate({ query: { status: 'active' }, groupBy: 'status', sum: ['membership_fee_monthly'] }),
@@ -32,6 +32,10 @@ export default async function(req) {
       base44.entities.PaypalTransaction.aggregate({ query: { status: 'refunded' }, groupBy: 'status', sum: ['amount'] }),
       base44.entities.RevenueLedger.aggregate({ query: { direction: { $in: ['payout', 'refund', 'adjustment'] } }, groupBy: 'direction', sum: ['amount'] }),
       base44.entities.Booking.aggregate({ query: completedQuery, groupBy: 'province_code', sum: ['job_value', 'final_invoice', 'platform_fee_amount', 'commission_earned'] }),
+      // Externally paid jobs: customer settled outside Recycling OS. Reported
+      // separately and EXCLUDED from collected platform revenue until the
+      // owner verifies (reconciles) the payment against the books.
+      base44.entities.Booking.aggregate({ query: { ...serviceQuery, payment_status: 'paid_externally' }, groupBy: 'external_payment_verified', sum: ['final_invoice'] }),
     ]);
 
     const commissionEarned = sum(earnedAgg.rows, 'sum_commission_earned');
@@ -82,6 +86,15 @@ export default async function(req) {
         source: r.job_source || 'unspecified',
         earned: r2((Number(r.sum_commission_earned) || 0) + (Number(r.sum_platform_fee_amount) || 0)),
       })),
+      external_payments: (externalAgg.rows || []).reduce(
+        (acc, r) => {
+          const bucket = r.external_payment_verified ? 'verified' : 'pending';
+          acc[bucket].count += Number(r.count) || 0;
+          acc[bucket].amount = r2(acc[bucket].amount + (Number(r.sum_final_invoice) || 0));
+          return acc;
+        },
+        { pending: { count: 0, amount: 0 }, verified: { count: 0, amount: 0 } }
+      ),
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

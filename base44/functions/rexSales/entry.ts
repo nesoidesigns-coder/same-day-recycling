@@ -42,6 +42,16 @@ export default async function (req) {
       if (!bookingId) return Response.json({ error: 'booking_id is required' }, { status: 400 });
       const b = await svc.entities.Booking.get(bookingId);
       if (!b || !b.id) return Response.json({ error: 'Booking not found.' }, { status: 404 });
+      // A booking already paid — through the platform or externally — is never
+      // charged again. Rex relays this explanation to the customer.
+      if (b.payment_status === 'paid' || b.payment_status === 'paid_externally') {
+        return Response.json({
+          error: b.payment_status === 'paid_externally'
+            ? 'Payment for this pickup was already handled outside Recycling OS, so there is nothing further to pay here.'
+            : 'This booking has already been paid, so there is nothing further to pay.',
+          code: 'already_paid',
+        }, { status: 422 });
+      }
       // Never charge more than the approved amount: the customer-approved
       // figure takes precedence over the preliminary quote estimate.
       const amount = Number(b.approved_quote_amount) > 0

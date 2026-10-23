@@ -196,22 +196,53 @@ export default function AdminDispatch() {
     refresh();
   };
 
+  // External payments touch ONLY the operational booking record — no
+  // PaypalTransaction, no RevenueLedger row — so financial reconciliation
+  // later never creates duplicate transactions. The customer is never
+  // re-charged: marking paid externally stores no platform charge at all.
   const markPaid = async (payload) => {
     const b = modal?.booking;
     if (!b) return;
     setBusy(true);
     const today = new Date().toISOString().slice(0, 10);
-    const patch = {
-      payment_status: payload.customer_paid ? "paid" : b.payment_status,
-      commission_paid: (Number(b.commission_paid) || 0) + (payload.commission_paid_amount || 0),
-      commission_paid_date: payload.commission_paid_amount ? today : b.commission_paid_date,
-    };
-    const newOutstanding = Math.max(0, (Number(b.commission_earned) || 0) - patch.commission_paid);
+    const commissionNow = (Number(b.commission_paid) || 0) + (payload.commission_paid_amount || 0);
+    let patch;
+    if (payload.reconcile) {
+      patch = {
+        external_payment_verified: true,
+        commission_paid: commissionNow,
+        commission_paid_date: payload.commission_paid_amount ? today : b.commission_paid_date,
+      };
+    } else if (payload.external) {
+      patch = {
+        payment_status: "paid_externally",
+        external_payment_method: payload.external_method || "",
+        external_payment_note: payload.external_note || "",
+        external_payment_verified: false,
+        reconcile_reminder: !!payload.reconcile_reminder,
+        reconcile_reminder_date: payload.reconcile_reminder_date || "",
+        commission_paid: commissionNow,
+        commission_paid_date: payload.commission_paid_amount ? today : b.commission_paid_date,
+      };
+    } else {
+      patch = {
+        payment_status: payload.customer_paid ? "paid" : b.payment_status,
+        commission_paid: commissionNow,
+        commission_paid_date: payload.commission_paid_amount ? today : b.commission_paid_date,
+      };
+    }
+    const newOutstanding = Math.max(0, (Number(b.commission_earned) || 0) - commissionNow);
     if (newOutstanding <= 0 && b.assignment_status === "completed") patch.assignment_status = "paid";
     await base44.entities.Booking.update(b.id, patch);
     setBusy(false);
     closeModal();
-    flash(`Payments recorded${patch.assignment_status === "paid" ? " · job fully paid" : ""}`);
+    flash(
+      payload.reconcile
+        ? "External payment reconciled"
+        : payload.external
+          ? "Marked paid externally · no platform transaction created"
+          : `Payments recorded${patch.assignment_status === "paid" ? " · job fully paid" : ""}`
+    );
     refresh();
   };
 
@@ -331,7 +362,9 @@ export default function AdminDispatch() {
         {["assigned", "accepted", "scheduled"].includes(b.assignment_status) && b.status !== "completed" && b.status !== "cancelled" && (
           <button onClick={() => setModal({ mode: "complete", booking: b })} className={`${cls} bg-[#187B65] text-[#102B2A] font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:bg-[#125C4E]`}>Complete</button>
         )}
-        {b.status === "completed" && b.assignment_status !== "paid" && (
+        {b.payment_status === "paid_externally" && !b.external_payment_verified ? (
+          <button onClick={() => setModal({ mode: "paid", booking: b })} className={`${cls} bg-amber-500 text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Reconcile external payment</button>
+        ) : b.status === "completed" && b.assignment_status !== "paid" && (
           <button onClick={() => setModal({ mode: "paid", booking: b })} className={`${cls} bg-amber-500 text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Record payments</button>
         )}
         <button onClick={() => { setModal({ mode: "photo", booking: b }); }} className={`${cls} border border-slate-200 text-slate-600 font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:border-[#187B65]`}>
@@ -491,9 +524,17 @@ export default function AdminDispatch() {
               {sorted.map((b) => (
                 <tr key={b.id} className="hover:bg-[#f6f8f7]/60">
                   <td className="px-3 py-3">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-bold text-[#102B2A]">{b.name}</span>
                       {dupBadge(b)}
+                      {b.payment_status === "paid_externally" && (
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${b.external_payment_verified ? "bg-[#187B65]/10 text-[#187B65]" : "bg-amber-100 text-amber-700"}`}>
+                          {b.external_payment_verified ? "External · reconciled" : "External · unreconciled"}
+                        </span>
+                      )}
+                      {b.payment_status === "paid_externally" && !b.external_payment_verified && b.reconcile_reminder && b.reconcile_reminder_date && b.reconcile_reminder_date <= new Date().toISOString().slice(0, 10) && (
+                        <span className="rounded-full px-2 py-0.5 text-[10px] font-bold bg-red-100 text-red-700">Reconcile due</span>
+                      )}
                     </div>
                     <a href={`tel:${b.phone}`} className="flex items-center gap-1 text-xs text-[#187B65] font-semibold"><Phone className="w-3 h-3" />{b.phone}</a>
                   </td>
@@ -541,6 +582,12 @@ export default function AdminDispatch() {
                 {b.final_invoice ? <span>Invoice {money(b.final_invoice)}</span> : null}
                 {b.referred_by_admin && <span>Referral {b.commission_rate}%</span>}
                 {b.referred_by_admin && <span className="text-[#187B65]">Comm. {money(b.commission_earned || 0)}{Math.max(0, (Number(b.commission_earned) || 0) - (Number(b.commission_paid) || 0)) > 0 ? <span className="text-amber-600"> · {money(Math.max(0, (Number(b.commission_earned) || 0) - (Number(b.commission_paid) || 0)))} due</span> : " paid"}</span>}
+                {b.payment_status === "paid_externally" && (
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${b.external_payment_verified ? "bg-[#187B65]/10 text-[#187B65]" : "bg-amber-100 text-amber-700"}`}>
+                    {b.external_payment_verified ? "External · reconciled" : "External · unreconciled"}
+                    {!b.external_payment_verified && b.reconcile_reminder && b.reconcile_reminder_date && b.reconcile_reminder_date <= new Date().toISOString().slice(0, 10) ? " · due" : ""}
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-500 mt-2">{b.address}</p>
               <p className="text-xs text-slate-500 mt-1">{b.items_description}</p>

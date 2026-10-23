@@ -133,6 +133,16 @@ export default async function(req) {
         if (b.status === 'cancelled' && (b.record_type || 'service') !== 'internal_test') {
           return Response.json({ error: 'This booking was cancelled and can no longer be paid.' }, { status: 422 });
         }
+        // A booking the customer already paid — through the platform or
+        // externally — is never charged again.
+        if ((b.payment_status === 'paid' || b.payment_status === 'paid_externally') && (b.record_type || 'service') !== 'internal_test') {
+          return Response.json({
+            error: b.payment_status === 'paid_externally'
+              ? 'This booking was already paid outside Recycling OS, so no further payment is needed.'
+              : 'This booking has already been paid.',
+            code: 'already_paid',
+          }, { status: 422 });
+        }
         amount = parseQuoteAmount(b.quote_estimate) || Number(b.job_value) || 0;
         if (!amount) {
           return Response.json({ error: "The final price is confirmed by the crew on arrival, so there's nothing to pay yet. Call (604) 849-1745 to pay after your pickup." }, { status: 422 });

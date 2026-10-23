@@ -61,9 +61,37 @@
       "enum": [
         "none",
         "paid",
+        "paid_externally",
         "refunded"
       ],
-      "default": "none"
+      "default": "none",
+      "description": "paid_externally = the customer paid outside Recycling OS (cash, e-transfer or the contractor's own checkout). No platform transaction exists for it; the operational job record stays separate from financial accounting."
+    },
+    "external_payment_method": {
+      "type": "string",
+      "default": "",
+      "description": "How an externally paid booking was settled, entered by the owner (cash, e-transfer, contractor POS...). Empty for platform payments."
+    },
+    "external_payment_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500,
+      "description": "Owner's free-text note about the external payment. Never part of financial accounting records."
+    },
+    "external_payment_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the owner has reconciled the external payment against the books. Unverified external payments are excluded from collected platform revenue."
+    },
+    "reconcile_reminder": {
+      "type": "boolean",
+      "default": false,
+      "description": "Optional reminder: flag an externally paid job for financial reconciliation later."
+    },
+    "reconcile_reminder_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the reconciliation reminder becomes due. Only used when reconcile_reminder is true."
     },
     "notified": {
       "type": "object",

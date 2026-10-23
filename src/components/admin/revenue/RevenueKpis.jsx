@@ -4,6 +4,7 @@ const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleSt
 
 export default function RevenueKpis({ data }) {
   const { gross, revenue: r, adjustments: a } = data;
+  const ext = data.external_payments || null;
   return (
     <div className="space-y-6">
       <section>
@@ -41,6 +42,17 @@ export default function RevenueKpis({ data }) {
           <KpiCard label="Adjustments" value={money(a.ledger_adjustments)} sub="Manual ledger entries" />
         </div>
       </section>
+
+      {ext && (
+        <section>
+          <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-[#102B2A] mb-1">Externally handled payments</h2>
+          <p className="text-xs text-slate-500 mb-3">Customer settled outside Recycling OS (cash, e-transfer, contractor checkout). No platform transaction exists — unverified amounts are excluded from collected revenue until reconciled.</p>
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            <KpiCard label="Pending reconciliation" value={`${ext.pending.count} · ${money(ext.pending.amount)}`} sub="Excluded from collected revenue until verified" tone="amber" />
+            <KpiCard label="Reconciled externally" value={`${ext.verified.count} · ${money(ext.verified.amount)}`} sub="Verified against the books" tone="emerald" />
+          </div>
+        </section>
+      )}
     </div>
   );
 }
