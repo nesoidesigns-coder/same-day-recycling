@@ -1,5 +1,5 @@
 const items = [
-  "Same-day slots when booked before noon",
+  "Same-day slots before noon, where contractors are confirmed",
   "Upfront pricing from $139",
   "Service in English, French, Spanish, Mandarin, Tagalog",
   "(604) 849-1745",

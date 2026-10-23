@@ -13,10 +13,13 @@
 //      contractor has accepted a specific job and window.
 //
 // Public status labels (applied identically on every surface):
-//   same_day    → "Provider Available"         (legacy key; never proof of today's capacity or job acceptance)
-//   matching    → "Requests Open — Contractor Matching"
-//   recruiting  → "Provider Recruitment"
+//   same_day    → "Provider Confirmed"         (legacy key; a verified contractor exists on file — never proof of today's capacity or job acceptance)
+//   matching    → "Provider Matching"          (requests open, dispatch arranging a contractor)
+//   recruiting  → "Recruitment Open"           (no contractor on file yet; requests still accepted nationwide)
 //   per-job     → "Booking Confirmed"          (contractor accepted a specific job)
+// "Service Unavailable" is never shown for intake — requests stay open in every
+// Canadian municipality; only guaranteed same-day pickup is unavailable, which
+// the matching/recruiting states above already express.
 
 const FULL_CAPABILITIES = ["junk_removal", "furniture", "appliances", "electronics", "metal_pickup", "cleanouts"];
 
@@ -58,10 +61,10 @@ export const COVERAGE = [
 
 // City-level public status labels — one wording everywhere.
 export const STATUS_LABELS = {
-  same_day: "Provider Available",
-  matching: "Requests Open — Contractor Matching",
-  recruiting: "Provider Recruitment",
-  requests_open: "Requests Open — Contractor Matching",
+  same_day: "Provider Confirmed",
+  matching: "Provider Matching",
+  recruiting: "Recruitment Open",
+  requests_open: "Provider Matching",
 };
 
 // Dispatch fulfillment status — tracked per JOB on each request, never per
