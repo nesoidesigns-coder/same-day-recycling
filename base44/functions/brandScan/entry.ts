@@ -50,14 +50,22 @@ export default async function(req) {
     }
 
     const context = fetched.map((r) =>
-      `URL: ${r.url}\nTITLE: ${r.title}\nMETA DESCRIPTION: ${r.description}\nCONTENT: ${r.text}`
-    ).join('\n\n---\n\n').slice(0, 20000);
+      `URL: ${r.url}\nTITLE: ${r.title}\nMETA DESCRIPTION: ${r.description}\nRAW SERVER HTML CONTENT (non-JS crawler view): ${r.text}`
+    ).join('\n\n---\n\n').slice(0, 12000);
 
     const ai = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
         'You are a brand and market auditor for Same Day Recycling (samedayrecycling.ca), a same-day junk removal ' +
-        'and recycling service operating across Canada through a contractor network. Below is live content fetched ' +
-        'from its own pages' + (socialUrls.length ? ' plus its public social profile(s) listed in the URLs' : '') + '.\n\n' +
+        'and recycling service operating across Canada through a contractor network.\n\n' +
+        'IMPORTANT CONTEXT: samedayrecycling.ca is a JavaScript-rendered web app. The RAW SERVER HTML CONTENT below ' +
+        'is what a non-JS crawler receives: an app shell plus an embedded <noscript> summary (contact details, pricing ' +
+        'tiers, services). It is NOT what visitors or Google see. Use your live web-search context to review the REAL ' +
+        'rendered pages of samedayrecycling.ca (home, /pricing, /contact, /furniture-removal)' +
+        (socialUrls.length ? ' plus its public social profile(s) listed in the URLs' : '') + ' as visitors and search ' +
+        'engines see them. Base your five dimension scores on the rendered site. Separately, treat the non-JS crawler ' +
+        'view as its own finding: note in the relevant explanations how complete or thin the noscript/server-HTML ' +
+        'summary is for AI crawlers that do not execute JavaScript (AI-visibility), and reflect that in the seo and ' +
+        'discoverability explanations rather than claiming the pages are empty.\n\n' +
         'Evaluate the brand on five dimensions, each scored 0-100 with a one-to-two-sentence explanation:\n' +
         '- seo (technical and on-page SEO visible in the fetched content, titles, descriptions, keyword clarity)\n' +
         '- discoverability (how easily a customer would understand and find the core services and booking path)\n' +
@@ -65,12 +73,15 @@ export default async function(req) {
         '- credibility (contact information, pricing transparency, business identity, honest coverage claims)\n' +
         '- positioning (how distinct and compelling the value proposition is versus generic junk removal messaging)\n\n' +
         'Rules:\n' +
-        '- For each dimension set basis to "verified" only when the score rests on content you actually received; ' +
-        'use "ai_estimate" when you had to judge from thin or missing content.\n' +
+        '- For each dimension set basis to "verified" only when the score rests on content you actually received ' +
+        '(fetched server HTML or live web context you could confirm); use "ai_estimate" when you had to judge from ' +
+        'thin or missing content. Never mark the rendered site "empty" based only on the raw app shell.\n' +
         '- verified_findings must each cite concrete evidence from the fetched content (quote or specific element).\n' +
         '- ai_estimates are observations you could not confirm — say why they are unconfirmed.\n' +
         '- Never invent reviews, ratings, traffic numbers, competitor data or environmental statistics.\n\n' +
         'CONTENT:\n' + context,
+      model: 'gemini_3_flash',
+      add_context_from_internet: true,
       response_json_schema: {
         type: 'object',
         properties: {
