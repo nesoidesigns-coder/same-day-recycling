@@ -6,6 +6,12 @@
       "type": "string",
       "description": "Problem identified, stated factually."
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this improvement."
+    },
     "source": {
       "type": "string",
       "enum": [

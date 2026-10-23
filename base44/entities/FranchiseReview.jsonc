@@ -6,6 +6,12 @@
       "type": "string",
       "description": "What is under review, e.g. 'Membership program' or the agreement's partner name."
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this review."
+    },
     "scope": {
       "type": "string",
       "enum": [

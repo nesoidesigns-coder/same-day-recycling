@@ -11,6 +11,12 @@
       "type": "string",
       "description": "The finding exactly as the scanner stated it (unique key per scan)."
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this finding."
+    },
     "finding_kind": {
       "type": "string",
       "enum": [

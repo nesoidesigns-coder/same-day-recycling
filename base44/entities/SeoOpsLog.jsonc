@@ -34,6 +34,12 @@
       ],
       "default": "technical"
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this log entry."
+    },
     "url": {
       "type": "string",
       "default": "",

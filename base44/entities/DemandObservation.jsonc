@@ -77,6 +77,12 @@
       "type": "string",
       "description": "Source canonical keyword. Provider-grouped close variants are not additional searches."
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this observation."
+    },
     "close_variants": {
       "type": "array",
       "items": {

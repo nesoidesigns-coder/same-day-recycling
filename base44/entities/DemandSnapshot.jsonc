@@ -2,6 +2,12 @@
   "name": "DemandSnapshot",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional short description of this snapshot."
+    },
     "capture": {
       "type": "object",
       "default": {},
