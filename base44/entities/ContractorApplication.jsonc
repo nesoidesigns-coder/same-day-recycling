@@ -88,6 +88,16 @@
       },
       "default": []
     },
+    "application_received_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the applicant received the application-confirmation email. Prevents duplicate sends."
+    },
+    "approval_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the applicant received the approval email. Prevents duplicate sends."
+    },
     "reviewed_date": {
       "type": "string",
       "format": "date"

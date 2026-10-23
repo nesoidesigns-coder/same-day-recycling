@@ -9,7 +9,7 @@
       ]
     }
   },
-  "description": "The moment a contractor applies, the AI drafts a warm acknowledgment, emails it instantly and alerts the owner with the draft",
+  "description": "The moment a contractor applies, a branded confirmation email is sent to the applicant and the owner is alerted",
   "name": "Contractor Inquiry Chase",
   "definition": {
     "document": {
@@ -20,19 +20,19 @@
     },
     "do": [
       {
-        "chase_lead": {
+        "confirm_application": {
           "call": "invoke_backend_function",
           "with": {
-            "function_name": "leadChase",
+            "function_name": "applicationNotify",
             "args": {
-              "kind": "contractor_application",
+              "action": "received",
               "id": "${ .trigger.entity_id }"
             }
           },
           "then": "end",
           "x-base44": {
-            "title": "AI chases the contractor application",
-            "description": "Instant personalized acknowledgment email + owner alert"
+            "title": "Confirm application by email",
+            "description": "Branded confirmation to the applicant + owner alert"
           }
         }
       }

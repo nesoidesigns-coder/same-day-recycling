@@ -1,0 +1,41 @@
+{
+  "trigger": {
+    "condition": "${ .trigger.data.status == \"approved\" }",
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "ContractorApplication",
+      "events": [
+        "update"
+      ]
+    }
+  },
+  "description": "When an application is marked approved, the contractor receives a branded approval email with onboarding steps and the owner is alerted",
+  "name": "Contractor Application Approved",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "contractor_application_approved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_approval": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "applicationNotify",
+            "args": {
+              "action": "approved",
+              "id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send approval email",
+            "description": "Branded approval to the contractor + owner alert"
+          }
+        }
+      }
+    ]
+  }
+}
