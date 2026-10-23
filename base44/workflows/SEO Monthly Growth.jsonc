@@ -1,0 +1,68 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 1 * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "First of every month 8am: the SEO autopilot runs its full audit, then analyzes Canadian market coverage and search growth and emails the owner the monthly report",
+  "name": "SEO Monthly Growth",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "seo_monthly_growth",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_growth": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "seoAutoPilot",
+            "args": {
+              "mode": "monthly"
+            }
+          },
+          "then": "send_report",
+          "x-base44": {
+            "title": "Run the monthly SEO autopilot",
+            "description": "Full audit plus Canadian market coverage and growth analysis"
+          }
+        }
+      },
+      {
+        "send_report": {
+          "call": "send_email",
+          "with": {
+            "template_name": "SeoGrowthReport",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Monthly SEO growth report to the owner",
+            "variables": {
+              "summary": "${ .run_growth.growth.summary }",
+              "impressions": "${ .run_growth.growth.impressions }",
+              "clicks": "${ .run_growth.growth.clicks }",
+              "change": "${ .run_growth.growth.change }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the monthly report",
+            "description": "Canadian search growth summary from real Search Console data"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "name": "SeoOpsLog",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "default": "",
+      "description": "Autopilot batch run this entry belongs to."
+    },
+    "run_type": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "repair"
+      ],
+      "default": "daily"
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "area": {
+      "type": "string",
+      "enum": [
+        "technical",
+        "indexing",
+        "content",
+        "sitemap",
+        "broken_link",
+        "approval",
+        "growth"
+      ],
+      "default": "technical"
+    },
+    "url": {
+      "type": "string",
+      "default": "",
+      "description": "Page this entry is about, when one applies."
+    },
+    "issue": {
+      "type": "string",
+      "description": "What was found, stated factually."
+    },
+    "evidence": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000,
+      "description": "Raw evidence from Google or the page fetch \u2014 never a conclusion."
+    },
+    "fix": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "The fix that was applied, or the recommended fix."
+    },
+    "fix_applied": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when the autopilot applied the fix itself."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "detected",
+        "fixed",
+        "submitted",
+        "awaiting_google",
+        "verified_indexed",
+        "needs_approval",
+        "approved",
+        "declined",
+        "failed"
+      ],
+      "default": "detected",
+      "description": "Pipeline: detected \u2192 fixed \u2192 submitted \u2192 awaiting_google \u2192 verified_indexed. Owner-involving changes sit in needs_approval until approved or declined."
+    },
+    "status_detail": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Latest verification detail (Google coverage state or post-fix page fetch)."
+    },
+    "inspection_bucket": {
+      "type": "string",
+      "default": "",
+      "description": "Latest URL Inspection bucket from Google."
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the fix was last verified (post-fix fetch or Google inspection)."
+    },
+    "approved_by": {
+      "type": "string",
+      "default": "",
+      "description": "Owner email who approved a needs_approval item."
+    },
+    "alert_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the owner was alerted about this item."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "default": []
+      },
+      "default": [],
+      "description": "Immutable event log: detected, fixed, submitted, awaiting_google, verified_indexed, approved, declined, failed."
+    }
+  },
+  "required": [
+    "issue"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

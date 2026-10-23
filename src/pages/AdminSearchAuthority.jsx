@@ -3,6 +3,7 @@ import { Loader2, RefreshCw, Search, Eye, MousePointerClick, TrendingUp, MapPin,
 import { base44 } from "@/api/base44Client";
 import IndexingRecoveryCentre from "@/components/admin/authority/IndexingRecoveryCentre";
 import IndexCoverage from "@/components/admin/authority/IndexCoverage";
+import SeoAutopilot from "@/components/admin/authority/SeoAutopilot";
 
 const num = (n) => Number(n || 0).toLocaleString("en-CA");
 const pct = (v) => `${v || 0}%`;
@@ -201,6 +202,7 @@ export default function AdminSearchAuthority() {
             />
           </div>
 
+          <SeoAutopilot />
           <IndexingRecoveryCentre index={data.index} siteUrl={data.siteUrl} />
           <IndexCoverage index={data.index} siteUrl={data.siteUrl} />
 

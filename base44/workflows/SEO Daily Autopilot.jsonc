@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 6 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every morning 6:30am: the SEO autopilot audits technical health and sitemap integrity, automatically repairs safe meta issues and verifies the fix, re-checks indexing for items already fixed or submitted, logs everything, and emails the owner only when a critical item needs approval",
+  "name": "SEO Daily Autopilot",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "seo_daily_autopilot",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_autopilot": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "seoAutoPilot",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run the daily SEO autopilot",
+            "description": "Technical audit, safe automatic repairs, sitemap integrity and indexing verification"
+          }
+        }
+      }
+    ]
+  }
+}
