@@ -67,7 +67,7 @@ export default function Home() {
       <Booking prefill={quotePrefill} />
       <LazySection minHeight={320}><FeaturedProviders /></LazySection>
       <LazySection minHeight={360}><NationalCoverage /></LazySection>
-      <LazySection minHeight={420}><CityLinks /></LazySection>
+      <CityLinks />
       <LazySection minHeight={520}><RecyclingCentersMap showSelector /></LazySection>
       <LazySection minHeight={340}><EnvironmentalImpact /></LazySection>
       <LazySection minHeight={360}><OperatingSystemPitch /></LazySection>
