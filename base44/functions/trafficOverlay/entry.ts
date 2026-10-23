@@ -8,20 +8,23 @@ export default async function(req) {
     // The stored value may carry stray whitespace, quotes or a label — clean it.
     const raw = String(secrets.get("TOMTOM_TRAFFIC_API_KEY") || "").trim().replace(/^["']|["']$/g, "");
     if (!raw) return Response.json({ enabled: false, reason: "missing_key" });
-    let key = raw.replace(/^(key|TOMTOM_TRAFFIC_API_KEY)\s*=\s*/i, "");
-    // If extra text was saved around the key, use the longest key-like run.
-    const runs = raw.match(/[A-Za-z0-9]{20,}/g);
-    if (!runs?.includes(key) && runs) key = runs.sort((a, b) => b.length - a.length)[0];
+    // Candidates: the raw value plus any key-like alphanum runs inside it.
+    const runs = raw.match(/[A-Za-z0-9]{20,}/g) || [];
+    const candidates = [raw, ...runs, ...runs.map((r) => r.slice(0, 32))].filter(Boolean);
 
+    // Probe each candidate — the overlay only turns on once TomTom accepts a key.
+    let accepted = null;
+    for (const candidate of candidates) {
+      const probe = await fetch(`https://api.tomtom.com/traffic/map/4/tile/flow/relative0/3/1/2.png?key=${candidate}`, {
+        signal: AbortSignal.timeout(10000),
+      });
+      if (probe.ok) { accepted = candidate; break; }
+    }
+    if (!accepted) return Response.json({ enabled: false, reason: "key_rejected", status: 401 });
 
+    const key = accepted;
     const flow = `https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key=${key}`;
     const incidents = `https://api.tomtom.com/traffic/map/4/tile/incidents/s1/{z}/{x}/{y}.png?key=${key}`;
-
-    // Probe one tile so the overlay only turns on when the key is accepted.
-    const probe = await fetch(`https://api.tomtom.com/traffic/map/4/tile/flow/relative0/3/1/2.png?key=${key}`, {
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!probe.ok) return Response.json({ enabled: false, reason: "key_rejected", status: probe.status });
 
     return Response.json({
       enabled: true,
