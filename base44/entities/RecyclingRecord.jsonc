@@ -1,0 +1,129 @@
+{
+  "name": "RecyclingRecord",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "Completed job this documentation belongs to."
+    },
+    "job_ref": {
+      "type": "string",
+      "default": "",
+      "description": "The booking's public reference code."
+    },
+    "customer_name": {
+      "type": "string",
+      "default": ""
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "province_code": {
+      "type": "string",
+      "default": ""
+    },
+    "pickup_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "material_categories": {
+      "type": "object",
+      "default": {},
+      "description": "How the actual load was sorted: {donated, recycled, ewaste, disposed} item lists from the job description."
+    },
+    "total_item_groups": {
+      "type": "number",
+      "default": 0
+    },
+    "diverted_groups": {
+      "type": "number",
+      "default": 0
+    },
+    "diversion_percent": {
+      "type": "number",
+      "default": 0
+    },
+    "estimated_weight_kg": {
+      "type": "number",
+      "default": 0,
+      "description": "Estimated or measured load weight. 0 = not measured, never invented."
+    },
+    "weight_source": {
+      "type": "string",
+      "enum": [
+        "not_measured",
+        "estimated",
+        "measured"
+      ],
+      "default": "not_measured"
+    },
+    "destination_facility": {
+      "type": "string",
+      "default": "",
+      "description": "Drop-off facility the load was taken to. Empty until confirmed by an admin \u2014 never guessed."
+    },
+    "destination_facility_id": {
+      "type": "string",
+      "default": ""
+    },
+    "disposal_receipt_uri": {
+      "type": "string",
+      "format": "uri",
+      "default": "",
+      "description": "Private URI of the facility's disposal or donation receipt, uploaded by the contractor."
+    },
+    "impact_report_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the customer's impact report was generated and emailed for this job."
+    },
+    "documentation_status": {
+      "type": "string",
+      "enum": [
+        "reported",
+        "verified"
+      ],
+      "default": "reported",
+      "description": "reported = derived from the job's load description at receipt time; verified = destination facility and diversion outcome confirmed by an administrator."
+    },
+    "verified_by": {
+      "type": "string",
+      "default": ""
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "booking_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

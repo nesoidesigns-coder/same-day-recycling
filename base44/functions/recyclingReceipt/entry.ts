@@ -37,24 +37,87 @@ export default async function (req) {
       commercial,
     });
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      to: booking.email,
-      template_name: 'RecyclingReceipt',
-      attachments: [
-        {
-          filename: 'Same-Day-Recycling-Impact-Report.pdf',
-          content: pdfBase64,
-        },
-      ],
-      variables: {
-        customer_name: booking.name || 'there',
+    // Phase 6 documentation system: persist what this job actually diverted
+    // so the record survives after the PDF is emailed. Destination facility
+    // stays empty until an admin verifies it — never guessed.
+    const groupCount = (key) => (Array.isArray(categories?.[key]) ? categories[key].length : 0);
+    const totalGroups = groupCount('donated') + groupCount('recycled') + groupCount('ewaste') + groupCount('disposed');
+    const divertedGroups = groupCount('donated') + groupCount('recycled') + groupCount('ewaste');
+    const diversionPercent = totalGroups ? Math.round((divertedGroups / totalGroups) * 100) : 0;
+    let facility = null;
+    try {
+      const fPage = await base44.asServiceRole.entities.RecyclingCenter.filter({ city }, { limit: 5 });
+      facility = (Array.isArray(fPage) ? fPage : fPage.items || [])[0] || null;
+    } catch { /* facility match is best-effort */ }
+    let recordId = '';
+    try {
+      // One documentation record per job — reuse the existing one on re-runs.
+      const existing = await base44.asServiceRole.entities.RecyclingRecord.filter({ booking_id: booking.id }, { limit: 1 });
+      const prior = (Array.isArray(existing) ? existing : existing.items || [])[0];
+      if (prior) {
+        recordId = prior.id;
+      } else {
+      const record = await base44.asServiceRole.entities.RecyclingRecord.create({
+        booking_id: booking.id,
+        job_ref: booking.reference_code || '',
+        customer_name: booking.name || '',
         city,
+        province_code: booking.province_code || '',
         pickup_date: pickupDate,
-        items,
-      },
-    });
+        material_categories: {
+          donated: categories?.donated || [],
+          recycled: categories?.recycled || [],
+          ewaste: categories?.ewaste || [],
+          disposed: categories?.disposed || [],
+        },
+        total_item_groups: totalGroups,
+        diverted_groups: divertedGroups,
+        diversion_percent: diversionPercent,
+        impact_report_sent: true,
+        destination_facility: facility ? facility.name : '',
+        destination_facility_id: facility ? facility.id : '',
+        documentation_status: 'reported',
+      });
+        recordId = record?.id || '';
+      }
+    } catch (e) {
+      console.error('Failed to persist RecyclingRecord:', e.message);
+    }
 
-    return Response.json({ sent: true, to: booking.email, pdf: true });
+    // A rate-limited or refused email must not break documentation — the
+    // record is already persisted; report the email outcome separately.
+    let emailSent = true;
+    let emailError = '';
+    try {
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: booking.email,
+        template_name: 'RecyclingReceipt',
+        attachments: [
+          {
+            filename: 'Same-Day-Recycling-Impact-Report.pdf',
+            content: pdfBase64,
+          },
+        ],
+        variables: {
+          customer_name: booking.name || 'there',
+          city,
+          pickup_date: pickupDate,
+          items,
+        },
+      });
+    } catch (e) {
+      emailSent = false;
+      emailError = e.message || 'email send failed';
+      console.error('Impact report email failed:', emailError);
+    }
+
+    return Response.json({
+      sent: emailSent,
+      ...(emailSent ? {} : { reason: emailError }),
+      to: booking.email,
+      pdf: true,
+      recycling_record_id: recordId,
+    });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
