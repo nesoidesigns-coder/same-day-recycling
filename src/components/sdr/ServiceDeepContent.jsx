@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function ServiceDeepContent({ sections }) {
   if (!sections?.length) return null;
@@ -11,6 +12,19 @@ export default function ServiceDeepContent({ sections }) {
             <div className="space-y-4 text-slate-600 leading-relaxed">
               {s.paragraphs.map((p) => <p key={p.slice(0, 32)}>{p}</p>)}
             </div>
+            {s.links?.length > 0 && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {s.links.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    className="rounded-full bg-white border border-slate-200 px-4 py-2 text-sm font-bold text-[#187B65] hover:border-[#187B65] transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            )}
             {s.bullets?.length > 0 && (
               <ul className="mt-5 space-y-2.5">
                 {s.bullets.map((b) => (

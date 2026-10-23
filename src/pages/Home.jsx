@@ -19,6 +19,7 @@ const CanadaNetworkMap = lazy(() => import("@/components/sdr/CanadaNetworkMap"))
 const ProvinceImpact = lazy(() => import("@/components/sdr/ProvinceImpact"));
 const FeaturedProviders = lazy(() => import("@/components/sdr/FeaturedProviders"));
 const NationalCoverage = lazy(() => import("@/components/sdr/NationalCoverage"));
+const CityLinks = lazy(() => import("@/components/sdr/CityLinks"));
 const RecyclingCentersMap = lazy(() => import("@/components/sdr/RecyclingCentersMap"));
 const EnvironmentalImpact = lazy(() => import("@/components/sdr/EnvironmentalImpact"));
 const OperatingSystemPitch = lazy(() => import("@/components/sdr/OperatingSystemPitch"));
@@ -60,6 +61,7 @@ export default function Home() {
       <Booking prefill={quotePrefill} />
       <LazySection minHeight={320}><FeaturedProviders /></LazySection>
       <LazySection minHeight={360}><NationalCoverage /></LazySection>
+      <LazySection minHeight={420}><CityLinks /></LazySection>
       <LazySection minHeight={520}><RecyclingCentersMap showSelector /></LazySection>
       <LazySection minHeight={340}><EnvironmentalImpact /></LazySection>
       <LazySection minHeight={360}><OperatingSystemPitch /></LazySection>

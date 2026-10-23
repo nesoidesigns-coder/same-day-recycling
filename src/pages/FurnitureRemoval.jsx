@@ -70,7 +70,14 @@ const CONFIG = {
     {
       heading: "Areas we serve",
       paragraphs: [
-        "Furniture removal requests are open across Canada, including Vancouver, Burnaby, Surrey, Richmond and Coquitlam. Check the coverage page for current provider status. A listed city is not a confirmed crew or same-day slot: dispatch must match a qualified contractor, obtain their acceptance and agree your price and arrival window before confirming the appointment.",
+        "Furniture removal requests are open across Canada. Each city page carries local pricing, pickup rules and booking, and the dedicated furniture removal service details above apply on every job. A listed city is not a confirmed crew or same-day slot: dispatch must match a qualified contractor, obtain their acceptance and agree your price and arrival window before confirming the appointment.",
+      ],
+      links: [
+        { label: "Furniture removal in Vancouver", to: "/junk-removal-vancouver" },
+        { label: "Junk removal in Burnaby", to: "/junk-removal-burnaby" },
+        { label: "Junk removal in Surrey", to: "/junk-removal-surrey" },
+        { label: "Junk removal in Richmond", to: "/junk-removal-richmond" },
+        { label: "Junk removal in Coquitlam", to: "/junk-removal-coquitlam" },
       ],
     },
   ],
