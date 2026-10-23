@@ -15,6 +15,11 @@
     "city": {
       "type": "string"
     },
+    "province_code": {
+      "type": "string",
+      "default": "",
+      "description": "Province or territory code (BC, ON, QC, NT...) for national operations and tax handling."
+    },
     "equipment": {
       "type": "array",
       "items": {
@@ -50,6 +55,39 @@
     "verified_date": {
       "type": "string",
       "format": "date"
+    },
+    "business_number": {
+      "type": "string",
+      "default": "",
+      "maxLength": 30,
+      "description": "CRA business number (or registration number) of the contractor's business."
+    },
+    "tax_registered": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "gst_registered",
+        "not_registered"
+      ],
+      "default": "unknown",
+      "description": "Whether the contractor is registered to charge sales tax (GST/HST account). Unknown until they confirm."
+    },
+    "coi_uri": {
+      "type": "string",
+      "format": "uri",
+      "default": "",
+      "description": "Private-storage URI of the contractor's liability insurance certificate (COI)."
+    },
+    "coi_expiry": {
+      "type": "string",
+      "format": "date",
+      "description": "Expiry date of the liability insurance policy on the COI. Empty = not on file."
+    },
+    "credentials": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Applicable provincial or municipal credentials (WCB/WorkSafe clearance, commercial disposal accounts...)."
     },
     "description": {
       "type": "string",

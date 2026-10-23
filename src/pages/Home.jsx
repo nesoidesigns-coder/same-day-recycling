@@ -2,6 +2,7 @@ import { useState, lazy } from "react";
 import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
+import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
 import HomeHero from "@/components/sdr/HomeHero";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
@@ -52,6 +53,7 @@ export default function Home() {
     <div className="bg-white pb-20 md:pb-0">
       <TopBar />
       <Navbar />
+      <InstantQuoteFlow />
       <HomeHero onCity={(city) => bookFromQuote({ city })} />
       <LazySection minHeight={440}><RexJourney onBook={bookFromQuote} /></LazySection>
       <LazySection minHeight={480}><TrustGauges /></LazySection>
