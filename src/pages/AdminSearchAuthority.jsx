@@ -89,8 +89,8 @@ export default function AdminSearchAuthority() {
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#102B2A]">Search Authority</h1>
           <p className="text-sm text-slate-600 mt-1 max-w-xl">
-            Live Google Search Console performance and an evidence-based SEO opportunity monitor. Figures come only
-            from Google and this app's own analytics — never estimated.
+            Company search performance and SEO opportunities are shown separately from the independent Canadian
+            market estimates below; market history does not depend on this website's age or activity.
           </p>
         </div>
         <button onClick={load} disabled={loading} className="p-2.5 rounded-full bg-white border border-slate-200 hover:border-[#187B65] transition-colors" aria-label="Refresh">
@@ -127,8 +127,6 @@ export default function AdminSearchAuthority() {
               </div>
             ))}
           </div>
-
-          <MarketDemandGauges />
 
           <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
             <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4">Top search queries (28 days)</h2>
@@ -275,6 +273,7 @@ export default function AdminSearchAuthority() {
           </div>
         </>
       )}
+      <MarketDemandGauges />
     </div>
   );
 }

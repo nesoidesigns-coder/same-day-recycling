@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Loader2, Globe2, ChevronDown, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MarketGauge from '@/components/admin/demand/MarketGauge';
 import MarketHighlights from '@/components/demand/MarketHighlights';
+import MarketDatasetStatus from '@/components/demand/MarketDatasetStatus';
+const MarketArchive = lazy(() => import('@/components/admin/demand/MarketArchive'));
 
 // Automated observatory: no date selectors, reporting-range controls or engine
 // toggles on public surfaces. The report endpoint determines the latest verified
@@ -12,25 +14,26 @@ import MarketHighlights from '@/components/demand/MarketHighlights';
 // background, and the source's published cadence governs when new data arrives
 // (this view only revalidates a stored report — it never implies new provider
 // data). Geography defaults to national; province exploration is optional.
-const CORE = ['junk_removal', 'furniture_removal', 'appliance_removal', 'recycling', 'demolition_cleanup'];
 const PROVINCE_NAMES = { AB: 'Alberta', BC: 'British Columbia', MB: 'Manitoba', NB: 'New Brunswick', NL: 'Newfoundland and Labrador', NS: 'Nova Scotia', NT: 'Northwest Territories', NU: 'Nunavut', ON: 'Ontario', PE: 'Prince Edward Island', QC: 'Quebec', SK: 'Saskatchewan', YT: 'Yukon' };
 
 const chipCls = 'inline-flex items-center gap-1.5 rounded-full border border-market-accent/50 bg-market-accent/10 px-3 py-1.5 text-xs font-bold text-market-accent';
 
-export default function MarketObservatory({ compact = false, onImport }) {
+export default function MarketObservatory({ compact = false, onImport, showHistory = false }) {
   const [province, setProvince] = useState('');
+  const [city, setCity] = useState('');
   const [category, setCategory] = useState('all');
   const [showProvinces, setShowProvinces] = useState(false);
-  const filters = { category, province, engine: 'google', measure: 'monthly_volume' };
+  const filters = { category, province, city, engine: 'google' };
   const query = useQuery({
-    queryKey: ['marketObservatory', province, category],
+    queryKey: ['marketObservatory', province, category, city],
     queryFn: async () => (await base44.functions.invoke('demandReport', { view: 'command', filters })).data,
     staleTime: 60000, refetchInterval: 900000, retry: false,
   });
   const data = query.data;
-  const shown = (data?.categories || []).filter((c) => !compact || CORE.includes(c.category)) || [];
-  const geoLabel = province ? PROVINCE_NAMES[province] || province : '';
-  const scopeLabel = province ? `${geoLabel} (optional province view)` : 'Canada';
+  const shown = data?.categories || [];
+  const geoLabel = city ? `${city}, ${province}` : province ? PROVINCE_NAMES[province] || province : '';
+  const scopeLabel = geoLabel || 'Canada';
+  const selectRegion = (region) => { setProvince(region.province_code || region.key); setCity(region.geo_type === 'city' ? region.name : ''); };
   return <section aria-label="Canadian Market Observatory" className="rounded-3xl bg-market-bg p-4 text-market-ink sm:p-7">
     <div>
       <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-market-accent"><Globe2 className="h-4 w-4" />Canadian Market Search Intelligence</div>
@@ -43,16 +46,12 @@ export default function MarketObservatory({ compact = false, onImport }) {
       {(province || category !== 'all') && (
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-xs text-market-muted">Viewing:</span>
-          {province && <button onClick={() => setProvince('')} className={chipCls}><X className="h-3 w-3" />{geoLabel}</button>}
+          {province && <button onClick={() => { setProvince(''); setCity(''); }} className={chipCls}><X className="h-3 w-3" />{geoLabel}</button>}
           {category !== 'all' && <button onClick={() => setCategory('all')} className={chipCls}><X className="h-3 w-3" />{data.categories.find((c) => c.category === category)?.label || category}</button>}
-          <button onClick={() => { setProvince(''); setCategory('all'); }} className="text-xs font-bold text-market-accent underline">All of Canada</button>
+          <button onClick={() => { setProvince(''); setCity(''); setCategory('all'); }} className="text-xs font-bold text-market-accent underline">All of Canada</button>
         </div>
       )}
-      <div role="status" className="mt-5 rounded-xl border border-market-line px-4 py-3 text-xs leading-relaxed text-market-muted">
-        <strong className="text-market-accent">{data.connection_status}</strong>
-        <span className="mt-1 block">Latest verified period: {data.latest_period || 'Unavailable'} · Scope: {data.scope} · Dataset retrieved: {data.overview.refreshed_at || 'no source refresh on file'}</span>
-        <span className="block">Source: {data.overview.sources.join(' · ') || 'no source observations on file'} · Monthly estimates, not live searches{data.overview.cadences?.length > 0 ? ` · Refreshes: ${data.overview.cadences.join(' · ')}` : ''}</span>
-      </div>
+      <MarketDatasetStatus data={data} />
       <p className="mt-3 text-xs leading-relaxed text-market-muted">{data.coverage_note}</p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <MarketGauge label={province ? `Estimated searches in ${scopeLabel}` : 'Estimated Canadian searches, tracked services'} metric={data.overview} level={data.level} />
@@ -73,7 +72,7 @@ export default function MarketObservatory({ compact = false, onImport }) {
           {showProvinces && (
             <div className="mt-3 flex flex-wrap gap-2">
               {data.provinces.map((p) => (
-                <button key={p.key || p.name} onClick={() => setProvince(p.key)} className="inline-flex items-center gap-2 rounded-full border border-market-line px-3 py-1.5 text-xs font-bold text-market-ink hover:border-market-accent hover:text-market-accent transition-colors">
+                <button key={p.key || p.name} onClick={() => { setProvince(p.key); setCity(''); }} className="inline-flex items-center gap-2 rounded-full border border-market-line px-3 py-1.5 text-xs font-bold text-market-ink hover:border-market-accent hover:text-market-accent transition-colors">
                   {p.name}
                   {Number.isFinite(p.mom_pct) && <span className={p.mom_pct > 0.5 ? 'text-[#54D9AE]' : p.mom_pct < -0.5 ? 'text-amber-300' : 'text-market-muted'}>{p.mom_pct > 0 ? '+' : ''}{p.mom_pct}%</span>}
                 </button>
@@ -82,9 +81,10 @@ export default function MarketObservatory({ compact = false, onImport }) {
           )}
         </div>
       )}
+      {showHistory && <Suspense fallback={<p role="status" className="mt-5 text-xs text-market-muted">Loading historical views…</p>}><MarketArchive data={data} onSelect={selectRegion} /></Suspense>}
       {compact ? <Link to="/demand" className="mt-6 inline-block rounded-full border border-market-accent px-5 py-3 text-sm font-bold text-market-accent">Explore the full Canadian observatory</Link> : null}
       {!data.overview.available && onImport && <button onClick={onImport} className="mt-5 text-sm font-bold text-market-accent underline">Import an independent market dataset</button>}
-      <p className="mt-5 text-[11px] leading-relaxed text-market-muted">{data.methodology} New data appears automatically when the source publishes its next reporting period — monthly search estimates are never live counts.</p>
+      <p className="mt-5 text-[11px] leading-relaxed text-market-muted">{data.methodology} Indicators recalculate automatically when verified observations are retrieved or imported; reloading this page does not fetch new provider history. Source authorization and backfill are managed in administration.</p>
     </>}
   </section>;
 }

@@ -87,11 +87,12 @@ export default function MarketGauge({ label, metric, change = false, level = nul
         <div><dt className="inline">Period: </dt><dd className="inline">{metric.period || 'Unavailable'}{change && metric.previous_period ? ` vs ${metric.previous_period}` : ''}</dd></div>
         {metric.engines?.length > 0 && <div>Engine: {metric.engines.join(' · ')}</div>}
         {metric.reporting_windows?.length > 0 && <div>Reporting window: {metric.reporting_windows.join(' · ')}</div>}
-        <div><dt className="inline">Source: </dt><dd className="inline">{metric.sources?.join(' · ') || 'No source observations on file'}</dd></div>
+        <div><dt className="inline">Source: </dt><dd className="inline">{metric.sources?.join(' · ') || 'Historical observations not yet loaded for this scope'}</dd></div>
         {metric.source_urls?.filter((url) => /^https:\/\//.test(url)).map((url) => <div key={url}><a href={url} target="_blank" rel="noreferrer" className="text-market-accent underline">Original source report</a></div>)}
         {metric.updated && <div>Retrieved: {metric.refreshed_at || metric.updated}</div>}
       </dl>
       {change && <p className="mt-2 text-xs text-market-muted">{metric.change_note}</p>}
+      {!change && metric.included_in_overview === false && metric.available && <p className="mt-2 text-xs text-market-muted">Latest available for this category; excluded from the overview total because its period or measure differs.</p>}
       <p className="mt-3 text-[11px] text-market-muted">Ring is a status indicator, not market share.</p>
     </article>
   );

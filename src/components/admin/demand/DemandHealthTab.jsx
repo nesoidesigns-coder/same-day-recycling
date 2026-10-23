@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import ProviderOptions from '@/components/demand/ProviderOptions';
 import KeywordPlannerAccess from '@/components/demand/KeywordPlannerAccess';
+import MarketSourceAudit from '@/components/demand/MarketSourceAudit';
 
 export default function DemandHealthTab({ onOpenImport, onRefresh }) {
   const [logs,setLogs]=useState([]), [error,setError]=useState('');
   const load=async () => {const page=await base44.entities.DemandSyncLog.filter({source:{$in:['import','google_ads_keyword_planner','google_trends']}},{sort:'-created_date',limit:30});setLogs(page.items || []);};
   useEffect(() => {load().catch(() => setError('Source history could not be loaded.'));},[]);
   return <div className="space-y-5">
+    <MarketSourceAudit/>
     <div className="rounded-3xl bg-market-bg p-5"><ProviderOptions onImport={onOpenImport}/></div>
     <KeywordPlannerAccess onSynced={async () => {await load();await onRefresh?.();}}/>
     <section><h3 className="font-bold">Market-source refresh history</h3><p className="mt-1 text-xs text-muted-foreground">Market data only. Company Search Console, Analytics and operations refresh separately under Private Performance. An imported dataset is not an API connection.</p>

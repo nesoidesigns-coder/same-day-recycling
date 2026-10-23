@@ -9,7 +9,7 @@ export const engineOf = (r) => r.search_engine && r.search_engine !== 'unknown' 
 const isVolume = (r) => ['monthly_volume','monthly_average'].includes(kind(r));
 const family = (r) => `${r.provider || r.volume_basis || 'admin_import'}|${r.source}`;
 const identity = (r) => `${engineOf(r)}|${r.geo_type}|${norm(r.province_code)}|${norm(r.geo_key || r.city)}|${norm(r.keyword)}`;
-const cohortKey = (r) => `${identity(r)}|${family(r)}|${kind(r)}`;
+const cohortKey = (r) => `${identity(r)}|${family(r)}|${kind(r)}|${(r.close_variants || []).map(norm).sort().join(';')}`;
 const sum = (rows) => rows.length ? rows.reduce((n, r) => n + Number(r.est_monthly_volume), 0) : null;
 const pct = (now, before) => before > 0 ? Math.round((now - before) / before * 1000) / 10 : null;
 const sourcePriority = (r) => r.volume_basis === 'keyword_planner' ? 3 : r.volume_basis === 'published_estimate' ? 2 : 1;
@@ -20,8 +20,9 @@ const sourcePriority = (r) => r.volume_basis === 'keyword_planner' ? 3 : r.volum
 export function cleanObservations(rows) {
   const best = new Map();
   for (const r of rows) {
-    if (!validMonth(r.period) || !r.keyword || !r.source) continue;
-    if (r.country_code && r.country_code !== 'CA') continue;
+    if (!validMonth(r.period) || r.period > new Date().toISOString().slice(0,7) || !r.keyword || !r.source) continue;
+    if (r.country_code !== 'CA') continue;
+    if (!['national','province','city'].includes(r.geo_type) || (r.geo_type === 'province' && !PROVINCE_NAMES[r.province_code]) || (r.geo_type === 'city' && (!r.city || !PROVINCE_NAMES[r.province_code]))) continue;
     const trend = isTrend(r), click = kind(r).startsWith('estimated_');
     if (!trend && !click && !isVolume(r)) continue;
     if (trend ? !Number.isFinite(r.trend_index) || r.trend_index < 0 || r.trend_index > 100 || !r.comparison_group : click ? !Number.isFinite(r.estimated_clicks) || r.estimated_clicks < 0 || !r.methodology_note || !r.source_url : !Number.isFinite(r.est_monthly_volume) || r.est_monthly_volume < 0) continue;
@@ -67,7 +68,7 @@ function metric(rows, prev, scope, period) {
 function monthRange(start, end) {
   if (!start || !end) return [];
   const periods = []; let p = start;
-  while (p <= end && periods.length < 60) { periods.push(p); const [y,m] = p.split('-').map(Number); p = `${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2,'0')}`; }
+  while (p <= end) { periods.push(p); const [y,m] = p.split('-').map(Number); p = `${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2,'0')}`; }
   return periods;
 }
 function ranked(rows, field, period, scope) {
@@ -83,7 +84,7 @@ function ranked(rows, field, period, scope) {
     .sort((a,b) => (b.value || 0) - (a.value || 0));
 }
 
-export function buildMarketCommand(input, filters = {}) {
+export function buildMarketCommand(input, filters = {}, storedCount = input.length) {
   const all = cleanObservations(input);
   const province = String(filters.province || '').toUpperCase();
   const city = String(filters.city || '').trim();
@@ -96,7 +97,10 @@ export function buildMarketCommand(input, filters = {}) {
   const volumes = filtered.filter(isVolume);
   const level = city ? 'city' : province ? 'province' : 'national';
   const scoped = volumes.filter((r) => r.geo_type === level);
-  const desired = filters.measure || 'monthly_volume';
+  // Source history, never the website launch or its first booking, sets the range.
+  // An average-only dataset remains visible, explicitly labeled and not converted.
+  const latestAvailable = unique(scoped.filter(within).map((r) => r.period)).sort().at(-1);
+  const desired = filters.measure || (scoped.some((r) => kind(r) === 'monthly_volume' && r.period === latestAvailable) ? 'monthly_volume' : 'monthly_average');
   const relevant = scoped.filter((r) => kind(r) === desired && within(r));
   const periods = unique(relevant.map((r) => r.period)).sort();
   const latest = periods.at(-1) || null;
@@ -108,15 +112,24 @@ export function buildMarketCommand(input, filters = {}) {
   const current = desired === 'monthly_average' ? candidates.filter((r) => `${r.period_start}|${r.period_end}` === averageWindow) : candidates;
   const previous = scoped.filter((r) => r.period === previousPeriod(latest));
   const overview = metric(current, previous, scopeLabel, latest);
-  const categories = MARKET_CATEGORIES.filter((c) => category === 'all' || c === category).map((c) => ({ category: c, label: CATEGORY_LABELS[c],
-    ...metric(current.filter((r) => r.service_category === c), previous.filter((r) => r.service_category === c), scopeLabel, latest) }));
-  const first = periods[0];
+  const categories = MARKET_CATEGORIES.filter((c) => category === 'all' || c === category).map((c) => {
+    const available = scoped.filter((r) => r.service_category === c && within(r));
+    const newest = unique(available.map((r) => r.period)).sort().at(-1);
+    const measure = filters.measure || (available.some((r) => kind(r) === 'monthly_volume' && r.period === newest) ? 'monthly_volume' : 'monthly_average');
+    const eligible = available.filter((r) => kind(r) === measure);
+    const period = unique(eligible.map((r) => r.period)).sort().at(-1) || null;
+    const candidates = eligible.filter((r) => r.period === period);
+    const window = candidates.map((r) => `${r.period_start}|${r.period_end}`).sort()[0];
+    const rows = measure === 'monthly_average' ? candidates.filter((r) => `${r.period_start}|${r.period_end}` === window) : candidates;
+    return { category:c, label:CATEGORY_LABELS[c], ...metric(rows, available.filter((r) => r.period === previousPeriod(period)), scopeLabel, period), included_in_overview:period === latest && measure === desired && (measure !== 'monthly_average' || window === averageWindow) };
+  });
   const monthly = scoped.filter((r) => kind(r) === 'monthly_volume' && within(r));
-  const history = monthRange(first, latest).map((period) => {
+  const monthlyPeriods = unique(monthly.map((r) => r.period)).sort();
+  const history = monthRange(monthlyPeriods[0], monthlyPeriods.at(-1)).map((period) => {
     const rs = monthly.filter((r) => r.period === period); return { period, volume: sum(rs), keywords: rs.length, ...metadata(rs, scopeLabel, period) };
   });
   const complete = history.filter((r) => r.volume !== null);
-  const comparableSeason = complete.length >= 12 && complete.every((p) => sameCohort(monthly.filter((r) => r.period === p.period), monthly.filter((r) => r.period === complete[0].period)));
+  const comparableSeason = complete.length >= 12 && complete.length === history.length && new Set(complete.map((r) => r.period.slice(5))).size === 12 && complete.every((p) => sameCohort(monthly.filter((r) => r.period === p.period), monthly.filter((r) => r.period === complete[0].period)));
   const seasonality = comparableSeason ? Array.from({length:12}, (_,i) => {
     const rs = complete.filter((r) => Number(r.period.slice(5)) === i+1); return { month: new Date(Date.UTC(2000,i,1)).toLocaleString('en-CA',{month:'short',timeZone:'UTC'}), volume: rs.length ? Math.round(rs.reduce((n,r) => n+r.volume,0)/rs.length) : null, samples: rs.length };
   }) : [];
@@ -150,14 +163,18 @@ export function buildMarketCommand(input, filters = {}) {
     const p = unique(rs.map((r) => r.period)).sort().at(-1) || null, latestRows = rs.filter((r) => r.period === p);
     return [measure,{...metadata(latestRows,scopeLabel,p),available:latestRows.length > 0,value:latestRows.length ? latestRows.reduce((n,r) => n+r.estimated_clicks,0) : null,methodologies:unique(latestRows.map((r) => r.methodology_note))}];
   }));
-  const fastest = categories.filter((r) => r.mom_pct > 0).sort((a,b) => b.mom_pct-a.mom_pct)[0] || null;
+  const fastest = categories.filter((r) => r.period === latest && r.mom_pct > 0).sort((a,b) => b.mom_pct-a.mom_pct)[0] || null;
   const provinceCohort = (r) => currentAll.filter((v) => v.geo_type === 'province' && v.province_code === r.key).map((v) => `${norm(v.keyword)}|${family(v)}|${kind(v)}`).sort().join(';');
   const comparableProvinces = provinces.length > 1 && provinces.every((r) => provinceCohort(r) === provinceCohort(provinces[0]));
-  return { overview, categories, latest_period: latest, scope: scopeLabel, level, engine, click_metrics:clickMetrics, fastest_growing:fastest,
+  const dataState = overview.available ? 'available' : storedCount === 0 ? 'not_backfilled' : 'no_matching_observations';
+  return { overview, categories, latest_period: latest, scope: scopeLabel, level, engine, measure:desired, click_metrics:clickMetrics, fastest_growing:fastest,
+    data_status:{state:dataState,stored_observations:storedCount,historical_market_data:overview.available ? 'source_observations_loaded' : 'not_determined_from_internal_database',website_activity_used:false,
+      note:storedCount === 0 ? 'Historical market data has not been backfilled into this app. An empty internal database is not evidence that Canadian market history does not exist. Provider authorization and retrieval are pending.' : overview.available ? 'Indicators use source-reported market periods without a website-launch cutoff. Website visits, bookings and advertising clicks are not inputs.' : 'The app contains market observations, but none match this geography, engine and measure. This is a dataset coverage gap, not evidence of absent market demand.'},
+    history_coverage:{first_period:monthlyPeriods[0] || null,last_period:monthlyPeriods.at(-1) || null,months:complete.length,seasonality_comparable:comparableSeason},
     highest_province:comparableProvinces ? provinces[0] : null, regional_period:latest || regionalLatest,
     provider_coverage:unique(engineRows.map((r) => r.source)).map((source) => ({source,...metadata(engineRows.filter((r) => r.source === source),'Recorded Canadian geographies',null)})),
     coverage_note: level === 'national' ? 'Canada-level estimates for tracked keywords only, not every Canadian search or unique people. Provincial and city observations are never added to the national total.' : `Only source-reported ${level}-level observations are included. No national figure is projected into this geography.`,
-    connection_status:overview.available ? 'Source observations available' : 'Awaiting a verified market dataset for this selection. Use DataForSEO, Semrush, Keyword Planner or another licensed export; no advertising campaign is required.',
+    connection_status:overview.available ? 'Verified market observations loaded; API connection status is managed separately' : storedCount === 0 ? 'Historical data not yet retrieved into this app' : 'No matching source observations for this selection',
     history, seasonality, provinces, cities, keywords: keywords.slice(0,15), opportunities, trends: latestTrends.slice(0,20),
     rising: keywords.filter((r) => r.mom_pct > 0).sort((a,b) => b.mom_pct-a.mom_pct).slice(0,6),
     declining: keywords.filter((r) => r.mom_pct < 0).sort((a,b) => a.mom_pct-b.mom_pct).slice(0,6),

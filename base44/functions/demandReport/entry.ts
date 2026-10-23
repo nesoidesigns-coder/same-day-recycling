@@ -27,7 +27,8 @@ export default async function(req) {
       cursor = page.next_cursor;
     }
     if (cursor) return Response.json({ error: 'This selection exceeds the reporting limit. Narrow the service or date range; no partial total was published.' }, { status: 422 });
-    const command = buildMarketCommand(rows, filters);
+    const storedCount = await base44.entities.DemandObservation.count({});
+    const command = buildMarketCommand(rows, filters, storedCount);
     if (payload.view === 'contractor') {
       const user = await base44.auth.me();
       if (!user || user.role !== 'admin') return Response.json({ error:'Forbidden' },{status:403});
@@ -57,7 +58,7 @@ export default async function(req) {
     for (const code of command.geography.provinces) scopes[code] = toScope(buildMarketCommand(rows,{...filters,province:code}));
     for (const city of command.geography.cities) scopes[`${city.key}|${city.province_code}`] = toScope(buildMarketCommand(rows,{...filters,province:city.province_code,city:city.key}));
     return Response.json({ industry:{available:command.overview.available,latest_period:command.latest_period,total_est_monthly_searches:command.overview.value,by_category:command.categories,by_province:command.provinces,by_city:command.cities},
-      market:{available:command.overview.available,latest_period:command.latest_period,geo:command.geography,scopes},
+      market:{available:command.overview.available,latest_period:command.latest_period,geo:command.geography,scopes,data_status:command.data_status,history_coverage:command.history_coverage},
       series:clean.slice(0,800).map(({keyword,geo_type,geo_key,province_code,city,service_category,period,est_monthly_volume,volume_basis,metric_type,source,last_updated,competition}) => ({keyword,geo_type,geo_key,province_code,city,service_category,period,est_monthly_volume,volume_basis,metric_type,source,last_updated,competition})),
       series_truncated:clean.length>800,provinces:PROVINCES,methodology:{industry:command.methodology,updates:'Keyword Planner historical metrics are published monthly. Trends export samples update only when a new source export is imported.'} });
   } catch (error) {
