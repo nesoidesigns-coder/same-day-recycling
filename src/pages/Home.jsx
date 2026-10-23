@@ -22,7 +22,7 @@ const CanadaNetworkMap = lazy(() => import("@/components/sdr/CanadaNetworkMap"))
 const ProvinceImpact = lazy(() => import("@/components/sdr/ProvinceImpact"));
 const FeaturedProviders = lazy(() => import("@/components/sdr/FeaturedProviders"));
 const NationalCoverage = lazy(() => import("@/components/sdr/NationalCoverage"));
-const CityLinks = lazy(() => import("@/components/sdr/CityLinks"));
+import CityLinks from "@/components/sdr/CityLinks";
 const RecyclingCentersMap = lazy(() => import("@/components/sdr/RecyclingCentersMap"));
 const EnvironmentalImpact = lazy(() => import("@/components/sdr/EnvironmentalImpact"));
 const OperatingSystemPitch = lazy(() => import("@/components/sdr/OperatingSystemPitch"));
