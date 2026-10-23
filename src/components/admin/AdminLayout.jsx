@@ -5,7 +5,7 @@ import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
-  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter,
+  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase,
 } from "lucide-react";
 
 const OPS = [
@@ -25,12 +25,16 @@ const OPS = [
   { to: "/admin/reputation", label: "Reputation", icon: ShieldCheck },
   { to: "/admin/sales", label: "Sales Intelligence", icon: TrendingUp },
 ];
+const INTELLIGENCE = [
+  { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
+  { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
+  { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },
+];
 const CONFIG = [
   { to: "/admin/pricing", label: "Pricing", icon: Tag },
   { to: "/admin/cities", label: "City Management", icon: MapPin },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/keywords", label: "Search Keywords", icon: Search },
-  { to: "/admin/system", label: "System Health", icon: Activity },
 ];
 const ADVANCED = [
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
@@ -69,6 +73,7 @@ function NavList({ pathname, onNavigate }) {
   );
   return (
     <>
+      {group("Intelligence", INTELLIGENCE)}
       {group("Operations", OPS)}
       {group("Configuration", CONFIG)}
       {group("Advanced", ADVANCED)}
