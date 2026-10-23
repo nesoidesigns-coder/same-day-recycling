@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
-  MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart,
+  MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
   Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare,
 } from "lucide-react";
 
@@ -34,6 +34,7 @@ const CONFIG = [
 const ADVANCED = [
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/admin/search-intelligence", label: "Search Intelligence", icon: LineChart },
+  { to: "/admin/seo", label: "SEO Command", icon: Wand2 },
   { to: "/admin/marketing", label: "Marketing Hub", icon: Megaphone },
   { to: "/admin/facebook", label: "Facebook AI", icon: MessagesSquare },
   { to: "/admin/sms", label: "SMS Inbox", icon: MessageSquare },
