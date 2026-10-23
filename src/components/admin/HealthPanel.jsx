@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Activity, Mail, CreditCard, Users, Truck, AlertTriangle, Loader2 } from "lucide-react";
+import SystemsStatusTable from "@/components/admin/SystemsStatusTable";
 
 const num = (n) => (n === null || n === undefined ? "—" : n);
 
@@ -74,6 +75,8 @@ export default function HealthPanel() {
       ],
     },
   ];
+
+  {data.systems?.length > 0 && <SystemsStatusTable systems={data.systems} />}
 
   const alert = (dispatch.pending_requests > 0 && (contractors.active_partners || 0) + (contractors.verified_recruits || 0) === 0)
     ? "No verified contractors in the network while requests are waiting — onboard contractors in the dispatch center."

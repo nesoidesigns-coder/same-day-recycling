@@ -27,7 +27,17 @@ export default function useCoverageStatus() {
     if (!registry.has(key(name))) registry.set(key(name), { name, province: null, href: `/request-service?city=${encodeURIComponent(name)}` });
   }
   return {
-    statusFor: (city) => !isSuccess || isError ? null : verified.has(key(city)) ? "same_day" : matching.has(key(city)) ? "matching" : "recruiting",
+    // Fourth state: locations outside the registry with no open matching
+    // activity show "Currently Unavailable" for guaranteed same-day service —
+    // request intake itself remains open nationwide, never blocked.
+    statusFor: (city) => {
+      if (!isSuccess || isError) return null;
+      const k = key(city);
+      if (verified.has(k)) return "same_day";
+      if (matching.has(k)) return "matching";
+      if (registry.has(k)) return "recruiting";
+      return "currently_unavailable";
+    },
     loaded: isSuccess && !isError,
     error: isError,
     verifiedCities: verified,

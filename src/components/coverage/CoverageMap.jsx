@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaf
 import "leaflet/dist/leaflet.css";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import { cityMeta } from "@/lib/cities";
-import { Map, Loader2, ShieldCheck, UserSearch, Hourglass, MousePointerClick } from "lucide-react";
+import { Map, Loader2, MousePointerClick } from "lucide-react";
 
 // Live national coverage map driven by the same verified-partner status feed as
 // the rest of the Coverage page. Nothing is derived from the directory research
@@ -45,9 +45,20 @@ const STATE_STYLE = {
     radius: 6,
     pulse: false,
   },
+  currently_unavailable: {
+    dot: "bg-slate-400",
+    label: "Currently Unavailable",
+    short: "Currently Unavailable",
+    hint: "No guaranteed same-day service here yet — request intake remains open nationwide",
+    chip: "border-slate-200 bg-slate-50 text-slate-500",
+    fill: "#64748b",
+    text: "#475569",
+    radius: 5,
+    pulse: false,
+  },
 };
 
-const STATE_KEYS = ["same_day", "matching", "recruiting"];
+const STATE_KEYS = ["same_day", "matching", "recruiting", "currently_unavailable"];
 
 // Flies the map to a selected city when the user picks it from the list or legend.
 function FlyToCity({ target }) {

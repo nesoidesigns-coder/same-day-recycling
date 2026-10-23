@@ -65,6 +65,7 @@ export const STATUS_LABELS = {
   matching: "Provider Matching",
   recruiting: "Recruitment Open",
   requests_open: "Provider Matching",
+  currently_unavailable: "Currently Unavailable",
 };
 
 // Dispatch fulfillment status — tracked per JOB on each request, never per

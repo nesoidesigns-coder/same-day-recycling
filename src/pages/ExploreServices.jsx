@@ -31,6 +31,7 @@ const chipFor = (statusFor, loaded, city, error) => {
   if (s === "same_day") return { label: "Provider Available", cls: "bg-[#187B65]/10 text-[#187B65] border-[#187B65]/30", icon: CheckCircle2 };
   if (s === "matching") return { label: "Requests Open — Contractor Matching", cls: "bg-amber-50 text-amber-700 border-amber-200", icon: UserSearch };
   if (s === "recruiting") return { label: "Provider Recruitment", cls: "bg-slate-100 text-slate-500 border-slate-200", icon: Clock };
+  if (s === "currently_unavailable") return { label: "Currently Unavailable — requests still open", cls: "bg-slate-100 text-slate-500 border-slate-200", icon: Clock };
   return { label: error ? "Status unavailable — requests open" : "Checking live status…", cls: "bg-slate-100 text-slate-400 border-slate-200", icon: Clock };
 };
 
