@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Upload, Loader2, CheckCircle2, Camera, Lock } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
 import { isCityActive } from "@/lib/coverage";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
 import { provinceForCity, taxFor } from "@/lib/canadaTax";
 import ReviewInvite from "@/components/sdr/ReviewInvite";
 import PayPalButtons from "@/components/pay/PayPalButtons";
@@ -13,6 +14,12 @@ export default function BookingForm({ prefill }) {
   const [photo, setPhoto] = useState(null);
   const [quoteNote, setQuoteNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  // Uniform scheduling: First Available (default), Same-Day and Next-Day.
+  // Same-day is only selectable where the live coverage feed shows a verified
+  // provider; the noon Vancouver cut-off is explained, never faked.
+  const { statusFor, loaded: coverageLoaded } = useCoverageStatus();
+  const [scheduleMode, setScheduleMode] = useState("first");
+  const vancouverHour = () => parseInt(new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", hour: "numeric", hour12: false }).format(new Date()), 10);
 
   useEffect(() => {
     if (prefill?.items_text) {
@@ -75,6 +82,10 @@ export default function BookingForm({ prefill }) {
   // national — active cities book directly, anywhere else submits as a
   // nationwide service request so dispatch sources the local contractor.
   const notLive = !!form.city && !isCityActive(form.city);
+  const citySameDay = coverageLoaded && !!form.city && statusFor(form.city) === "same_day";
+  const beforeNoon = vancouverHour() < 12;
+  const vancouverDate = (offset) => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(Date.now() + offset * 86400000));
+  const scheduleDate = scheduleMode === "today" && citySameDay ? vancouverDate(0) : scheduleMode === "next" ? form.preferred_date : "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +101,7 @@ export default function BookingForm({ prefill }) {
           city: form.city,
           service_type: 'junk_removal',
           items_description: form.items_description,
-          preferred_date: form.preferred_date,
+          preferred_date: scheduleDate,
           notes: form.curbside ? "Customer requested curbside pickup ($25 discount)." : "",
         });
         setRefCode(natRes?.data?.reference_code || "");
@@ -110,7 +121,7 @@ export default function BookingForm({ prefill }) {
           setQuoteNote((q) => q || "");
         }
       }
-      const res = await base44.functions.invoke('createBooking', { ...form, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside });
+      const res = await base44.functions.invoke('createBooking', { ...form, preferred_date: scheduleDate, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside });
       setBookingId(res?.data?.booking_id || null);
       setRefCode(res?.data?.reference_code || "");
       base44.analytics.track({ eventName: 'booking_submitted' });
@@ -241,8 +252,47 @@ export default function BookingForm({ prefill }) {
           </span>
         </label>
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Preferred pickup date">
-            <input value={form.preferred_date} onChange={update("preferred_date")} type="date" className="input" />
+          <Field label="When do you need it?">
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Scheduling options">
+              {[
+                { key: "first", label: "First available" },
+                { key: "today", label: "Same-day" },
+                { key: "next", label: "Next-day" },
+              ].map((o) => (
+                <button
+                  key={o.key}
+                  type="button"
+                  onClick={() => setScheduleMode(o.key)}
+                  aria-pressed={scheduleMode === o.key}
+                  disabled={o.key === "today" && !citySameDay}
+                  className={`rounded-xl px-2 py-2.5 text-sm font-bold border transition-colors ${
+                    scheduleMode === o.key
+                      ? "bg-[#187B65] text-[#102B2A] border-[#187B65]"
+                      : o.key === "today" && !citySameDay
+                        ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed"
+                        : "bg-white text-[#102B2A] border-slate-200 hover:border-[#187B65]"
+                  }`}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1.5 text-xs text-slate-500">
+              {!coverageLoaded
+                ? "Checking live provider availability…"
+                : scheduleMode === "today"
+                  ? citySameDay && beforeNoon
+                    ? "Verified provider active in your city — your arrival window is confirmed with you before anything is scheduled."
+                    : citySameDay
+                      ? "The noon cut-off has passed, so First Available or Next-day is the surer bet."
+                      : "Same-day unlocks once a verified provider serves your city."
+                  : scheduleMode === "next"
+                    ? "Pick any date — dispatch confirms the window with you."
+                    : "We call you back within 30 minutes and confirm the earliest window."}
+            </p>
+            {scheduleMode === "next" && (
+              <input value={form.preferred_date} onChange={update("preferred_date")} type="date" min={vancouverDate(1)} className="input mt-2" aria-label="Preferred pickup date" />
+            )}
           </Field>
           <Field label="Photo (optional)">
             <label className="flex items-center gap-2 input cursor-pointer hover:border-[#187B65] transition-colors">

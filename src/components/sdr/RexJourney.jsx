@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Camera, Loader2, ArrowRight, CheckCircle2, MapPin, SkipForward, Sparkles } from "lucide-react";
 import RexOrb from "@/components/rex/RexOrb";
@@ -112,6 +113,13 @@ export default function RexJourney({ onBook }) {
               );
             })}
           </div>
+
+          {services.some((s) => s.key === "cleanout") && (
+            <p className="relative mt-2 text-xs text-[#9fd8c8]">
+              Bigger project? We run full clearouts with on-site assessment and recurring service on the subscription plan —{" "}
+              <Link to="/subscriptions" className="underline font-bold">see plans</Link>. We don't rent bins — the crew comes to you, so you pay only for the truck space used.
+            </p>
+          )}
 
           {/* Step 2 — postal match */}
           <PostalMatch onCheck={checkPostal} onPickCity={setCity} city={city} />
