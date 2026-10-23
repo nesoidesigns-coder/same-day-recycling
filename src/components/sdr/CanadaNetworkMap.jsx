@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Circle, Polyline, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Network, Loader2, ShieldCheck, Rocket, Radio } from "lucide-react";
+import { Network, Loader2, ShieldCheck, Rocket, Radio, Boxes } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { base44 } from "@/api/base44Client";
 import { REGIONS } from "@/lib/regions";
@@ -14,12 +14,16 @@ const CITY_BY_NAME = new Map(CITIES.map((c) => [norm(c.name), c]));
 
 const REFRESH_MS = 60_000;
 
+// The 3D board is a heavy renderer — loaded only when the visitor opens it.
+const NetworkMap3D = lazy(() => import("./NetworkMap3D"));
+
 export default function CanadaNetworkMap() {
   const [providers, setProviders] = useState(null);
   const [counts, setCounts] = useState({});
   const [coverage, setCoverage] = useState(null);
   const [traffic, setTraffic] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [view3d, setView3d] = useState(false);
   const [, setTick] = useState(0);
 
   useEffect(() => {
@@ -102,6 +106,42 @@ export default function CanadaNetworkMap() {
           </p>
         </div>
 
+        {/* 2D / 3D view switch — both views are the same live data */}
+        <div className="flex justify-center mb-4">
+          <div className="inline-flex rounded-full bg-white border border-slate-100 shadow-sm p-1">
+            {[
+              { mode: "2d", label: "2D live map", icon: Network },
+              { mode: "3d", label: "3D interactive board", icon: Boxes },
+            ].map(({ mode, label, icon: Icon }) => (
+              <button
+                key={mode}
+                onClick={() => setView3d(mode === "3d")}
+                className={
+                  (view3d ? mode === "3d" : mode === "2d")
+                    ? "rounded-full bg-[#102B2A] text-[#187B65] font-bold px-4 py-2 text-xs sm:text-sm inline-flex items-center gap-1.5"
+                    : "rounded-full text-slate-600 font-medium px-4 py-2 text-xs sm:text-sm inline-flex items-center gap-1.5 hover:bg-slate-100 transition-colors"
+                }
+              >
+                <Icon className="w-4 h-4" /> {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {view3d ? (
+          <Suspense fallback={
+            <div className="rounded-3xl bg-[#051511] h-[400px] md:h-[520px] flex items-center justify-center text-emerald-100/70">
+              <Loader2 className="w-6 h-6 animate-spin mr-2" /> Building the 3D board…
+            </div>
+          }>
+            <NetworkMap3D
+              coverageCities={coverageCities}
+              providers={providers || []}
+              trafficByCity={traffic.byCity}
+              openRegions={openRegions}
+            />
+          </Suspense>
+        ) : (
         <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm h-[400px] md:h-[520px] relative z-0">
           <MapContainer center={[58, -97]} zoom={4} minZoom={3} scrollWheelZoom={false} className="w-full h-full">
             <TileLayer
@@ -209,6 +249,7 @@ export default function CanadaNetworkMap() {
             </CircleMarker>
           </MapContainer>
         </div>
+        )}
 
         {/* live report strip */}
         <div className="mt-5 rounded-2xl border border-slate-100 bg-white px-5 py-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold text-slate-600">
