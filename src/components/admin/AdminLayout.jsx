@@ -27,6 +27,7 @@ const OPS = [
 ];
 const INTELLIGENCE = [
   { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
+  { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
   { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
   { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },
 ];

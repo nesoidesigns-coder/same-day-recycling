@@ -82,6 +82,7 @@ const ElectronicsRecycling = lazyPage(() => import('./pages/ElectronicsRecycling
 const CommercialRecycling = lazyPage(() => import('./pages/CommercialRecycling'));
 const SameDayPickup = lazyPage(() => import('./pages/SameDayPickup'));
 const AdminSearchIntelligence = lazyPage(() => import('./pages/AdminSearchIntelligence'));
+const AdminSearchAuthority = lazyPage(() => import('./pages/AdminSearchAuthority'));
 const AdminSeoCommand = lazyPage(() => import('./pages/AdminSeoCommand'));
 const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
 const RequestService = lazyPage(() => import('./pages/RequestService'));
@@ -212,6 +213,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/keywords" element={<AdminKeywords />} />
           <Route path="/admin/system" element={<AdminSystem />} />
           <Route path="/admin/search-intelligence" element={<AdminSearchIntelligence />} />
+          <Route path="/admin/search-authority" element={<AdminSearchAuthority />} />
           <Route path="/admin/seo" element={<AdminSeoCommand />} />
           <Route path="/admin/routes" element={<AdminRoutes />} />
         </Route>
