@@ -46,6 +46,32 @@ export default async function(req) {
     }
 
     const publicPartner = { id: partner.id, name: partner.name, city: partner.city };
+
+    // Contractor compliance self-serve: business number, tax registration,
+    // liability-insurance certificate (private storage) and expiry. The
+    // contractor can only see and edit their own compliance record.
+    if (action === 'compliance_get') {
+      return Response.json({
+        compliance: {
+          business_number: partner.business_number || '',
+          tax_registered: partner.tax_registered || 'unknown',
+          coi_uri: partner.coi_uri || '',
+          coi_expiry: partner.coi_expiry || '',
+          credentials: partner.credentials || '',
+        },
+      });
+    }
+    if (action === 'compliance_save') {
+      const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+      const patch = {};
+      if (body?.business_number !== undefined) patch.business_number = str(body.business_number, 30);
+      if (['unknown', 'gst_registered', 'not_registered'].includes(body?.tax_registered)) patch.tax_registered = body.tax_registered;
+      if (body?.coi_uri !== undefined) patch.coi_uri = str(body.coi_uri, 500);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(String(body?.coi_expiry || '')) || body?.coi_expiry === '') patch.coi_expiry = String(body.coi_expiry || '');
+      if (body?.credentials !== undefined) patch.credentials = str(body.credentials, 1000);
+      await base44.asServiceRole.entities.Partner.update(partner.id, patch);
+      return Response.json({ ok: true, compliance: patch });
+    }
     // Test (internal_test) and cancelled bookings never reach contractors.
     const loadBookings = () => base44.asServiceRole.entities.Booking.filter(
       { partner_id: partner.id, assignment_status: { $in: ['assigned', 'accepted'] }, record_type: { $ne: 'internal_test' }, status: { $ne: 'cancelled' } },

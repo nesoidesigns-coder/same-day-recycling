@@ -19,6 +19,8 @@ const toPublic = (p) => ({
   website: p.website || '',
   accepts: p.materials_note || (p.accepted_categories || []).join(', '),
   note: p.notes || '',
+  hours: p.hours || '',
+  fees: p.fees || '',
   verification: p.verification || 'researched',
   provider_type: p.provider_type || '',
   researched_date: p.last_confirmed_date || '',

@@ -157,7 +157,25 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                             <strong>Accepts:</strong> {c.accepts}
                           </div>
                         )}
+                        {c.hours && (
+                          <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
+                            <strong>Hours:</strong> {c.hours}
+                          </div>
+                        )}
+                        {c.fees && (
+                          <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
+                            <strong>Fees:</strong> {c.fees}
+                          </div>
+                        )}
                         {c.note && <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{c.note}</div>}
+                        {c.researched_date && (
+                          <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                            {c.verification === "verified" ? "✓ Verified" : "Reported"} {c.researched_date}
+                            {c.source_url && (
+                              <> · <a href={c.source_url} target="_blank" rel="noopener noreferrer">source</a></>
+                            )}
+                          </div>
+                        )}
                         {c.phone && (
                           <div style={{ fontSize: 12, marginTop: 4 }}>
                             <a href={`tel:${c.phone}`}>{c.phone}</a>
@@ -185,6 +203,21 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                   <p className="font-bold text-[#102B2A] text-sm">{c.name}</p>
                   <p className="text-xs text-slate-500 mt-1">{c.address}</p>
                   {c.accepts && <p className="text-xs text-slate-600 mt-2">Accepts: {c.accepts}</p>}
+                  {(c.hours || c.fees) && (
+                    <p className="text-xs text-slate-600 mt-1">
+                      {c.hours && <span>Hours: {c.hours}</span>}
+                      {c.hours && c.fees && <span> · </span>}
+                      {c.fees && <span>Fees: {c.fees}</span>}
+                    </p>
+                  )}
+                  {c.researched_date && (
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      {c.verification === "verified" ? "✓ Verified" : "Reported"} {c.researched_date}
+                      {c.source_url && (
+                        <> · <a href={c.source_url} target="_blank" rel="noopener noreferrer" className="text-[#187B65] hover:underline">source</a></>
+                      )}
+                    </p>
+                  )}
                   <div className="flex flex-wrap items-center gap-3 mt-2 text-xs">
                     {c.phone && (
                       <a href={`tel:${c.phone}`} className="inline-flex items-center gap-1 text-[#187B65] font-semibold">
