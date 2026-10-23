@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Bot, CheckCircle2, XCircle, AlertTriangle, Inbox } from "lucide-react";
+import RexOrb from "@/components/rex/RexOrb";
 
 const OUTCOME_STYLE = {
   success: "bg-emerald-50 text-emerald-700",
@@ -40,6 +41,7 @@ export default function RexMonitor() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2 text-sm font-bold text-[#102B2A]">
           <Bot className="w-5 h-5 text-[#187B65]" /> Rex AI activity
+          <RexOrb state={queue.length > 0 ? "attention" : "success"} size={14} showLabel={false} />
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">last {log.length} logged actions</span>
         </div>
         <div className="flex items-center gap-3 text-xs font-semibold">

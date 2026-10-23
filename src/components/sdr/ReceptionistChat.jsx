@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import AiMascot from "./AiMascot";
 import AiMascotFull from "./AiMascotFull";
 import ChatMedia from "./ChatMedia";
+import RexOrb from "@/components/rex/RexOrb";
 
 const AGENT_NAME = "receptionist";
 
@@ -180,7 +181,7 @@ export default function ReceptionistChat() {
             <AiMascot size={40} />
             <div>
               <div className="font-bold leading-tight">Rex · Same Day Recycling</div>
-              <div className="flex items-center gap-1.5 text-xs text-[#187B65] font-semibold"><span className="w-1.5 h-1.5 rounded-full bg-[#187B65]" />Online · 24/7 booking assistant</div>
+              <RexOrb state={sending ? "processing" : "idle"} size={12} label={sending ? "Thinking…" : "Online · 24/7 booking assistant"} className="text-xs text-[#187B65]" />
             </div>
             <button onClick={() => setOpen(false)} aria-label="Minimize chat" className="ml-auto w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors shrink-0">
               <Minus className="w-4 h-4" />
