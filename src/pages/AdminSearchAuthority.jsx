@@ -56,16 +56,20 @@ export default function AdminSearchAuthority() {
   const cls = funnel?.funnel?.visits.by_class || {};
   const realVisits = (cls.customer || 0) + (cls.contractor || 0);
 
-  // Bucket GSC queries into the term families this business competes for.
-  // Generic "recycling" SERPs are dominated by informational sites, so the
-  // transactional families get the titles' leading keyword positions.
+  // Bucket GSC queries to track the long-tail strategy: item-specific local
+  // queries ("couch removal vancouver", "mattress disposal ottawa") are the
+  // target — buyers with a specific job in hand, less competition than the
+  // generic "junk removal" head terms. Generic families are tracked separately
+  // so the shift toward long-tail is measurable.
+  const SERVICE_ITEM = /couch|sofa|sectional|futon|recliner|mattress|furniture|dresser|bed ?frame|desk|appliance|fridge|stove|washer|dryer|hot ?tub|tv|television|computer|monitor|electronics?|e-?waste/i;
   const FAMILIES = [
-    { key: "Junk removal & pickup", re: /junk|removal|pick ?up|sofa|couch|furniture|appliance|mattress|cleanout/i },
-    { key: "Waste & disposal", re: /waste|disposal|management|dump/i },
-    { key: "Recycling (generic)", re: /recycl|e-?waste|electronic/i },
+    { key: "Service long-tail (item-specific)", test: (q) => SERVICE_ITEM.test(q) },
+    { key: "Junk removal (generic head term)", re: /junk|removal|pick ?up|haul|cleanout/i },
+    { key: "Waste & disposal (generic)", re: /waste|disposal|management|dump/i },
+    { key: "Recycling (generic)", re: /recycl/i },
   ];
   const families = (data?.queries || []).reduce((acc, q) => {
-    const f = FAMILIES.find((r) => r.re.test(q.key));
+    const f = FAMILIES.find((r) => (r.test ? r.test(q.key) : r.re.test(q.key)));
     const key = f ? f.key : "Other / brand";
     let row = acc.find((a) => a.key === key);
     if (!row) { row = { key, impressions: 0, clicks: 0, best: 0, top: q.key }; acc.push(row); }
@@ -134,9 +138,10 @@ export default function AdminSearchAuthority() {
               <Search className="w-4 h-4 text-[#187B65]" /> Keyword positioning (28 days)
             </h2>
             <p className="text-[11px] text-slate-500 mb-4">
-              Real Search Console queries bucketed into the term families this business competes for. Generic
-              "recycling" SERPs are dominated by informational sites, so titles lead with the transactional
-              families — junk removal and same-day pickup — where buyers convert.
+              Real Search Console queries bucketed to track the long-tail strategy: item-specific local queries
+              ("couch removal vancouver", "mattress disposal ottawa") are the target — buyers with a specific job
+              in hand, less competition than generic "junk removal" head terms. City page titles and keywords are
+              generated to lead with these service terms.
             </p>
             <Table
               head={["Term family", "Impressions", "Clicks", "Best position", "Top query"]}
