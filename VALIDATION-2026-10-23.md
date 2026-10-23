@@ -83,6 +83,47 @@ Admin-alert emails from these tests were captured, not delivered (hourly email l
 - A dedicated top-level navigation item "Recycling OS" now routes commercial visitors to `/software` from every page.
 - Subdomain `operating.samedayrecycling.ca` evaluated and deferred — DNS untouched pending approval, as directed.
 
+## Phase 11 — Full transaction validation, session 3 (2026-10-23, this run)
+
+Method: every stage executed through the REAL production code paths via the function test
+harness, using clearly marked fixtures (`ZZTEST`/`REXTEST` names, `record_type: internal_test`,
+sandbox contractor `zztest Lifecycle Contractor`). No real customer notified: owner alerts
+self-addressed to the business inbox (rate-captured), customer SMS **queued, never sent**
+(no verified sending number), no real contractor offered or dispatched.
+
+| # | Stage | Result | Evidence |
+|---|---|---|---|
+| 1 | Rex AI inquiry → auto-booking | **PASS** | `aiBooking` extracted details from one message and confirmed a same-day Vancouver booking (REXTEST1) |
+| 2 | Quotation engine | **PASS** | `quoteEstimate`: sofa + fridge → 2.2 eighths → 1/4 truck, $289–$350 range |
+| 3 | Booking availability guard | **PASS** | Fredericton (outside network) → `422 service_not_available`; Kelowna accepted (it IS an active-network city — correct); owner alert captured, SMS queued |
+| 4 | National intake + dispatch task | **PASS** | `nationalRequest` created request 59E3A67F + auto dispatch task, status `provider_matching`, customer never promised a slot |
+| 5 | Contractor assignment (offer → real accept path) | **PASS** | Sandbox offer accepted via the real `respondToOffer`: booking created with fee snapshot `no_active_agreement` (fee $0, contractor net $199), request → `confirmed`, dispatch task synced to `contractor_accepted` |
+| 6 | No eligible contractor (unavailable) | **PASS** | `admin_match` on a Vancouver request → 0 offers (test partners excluded, only real partner is North Vancouver); request stays in matching queue |
+| 7 | Job completion | **PASS** | scheduled → completed, final invoice $199, arrival `on_time`, commission/payout fields consistent |
+| 8 | Receipt generation | **PASS (generation + persistence)** | `recyclingReceipt` persisted RecyclingRecord (3 groups, 67% diverted, facility matched, status `reported`); PDF built; email **captured, not delivered** (hourly limit — retrigger in-app for real delivery) |
+| 9 | Financial records | **PASS** | job value/invoice/fee/net/commission state all consistent on the booking; platform fee correctly $0 with no active agreement |
+| 10 | Payment guard: cancelled booking | **PASS** | `create_order` on a cancelled service booking → `422 "This booking was cancelled and can no longer be paid."` — no order created |
+| 11 | Payment guard: bogus order capture | **PASS** | capture of a nonexistent order → clean error, no state change, no records touched |
+| 12 | Payment guard: double-capture idempotency | **PASS** | re-capture of the already-paid order returned `already_captured: true` with no second PayPal call |
+| 13 | Cancellation safety | **PASS** | both test bookings cancelled cleanly: status + history appended, assignment released, nothing scheduled afterwards |
+| 14 | SMS safety | **PASS** | every outbound text this run shows status `queued`, `twilio_sid` empty — nothing can send without a verified number |
+
+### Successful sandbox payment capture — NOT EXECUTED (blocker unchanged)
+`PAYPAL_MODE` is still **live**. A successful capture requires buyer approval and must never
+be tested against live credentials. The order → approve → capture happy path remains the
+single unverified stage: switch `PAYPAL_MODE` to `sandbox` (with sandbox client ID/secret),
+run one capture on an `internal_test` booking, then switch back. All payment GUARDS were
+verified this session and behave safely in the current live configuration.
+
+### Minor findings (not blockers, no code changed — awaiting direction)
+1. `aiBooking` returns the notification outcome but never persists it on the booking (`createBooking` does).
+2. `recyclingReceipt` never sets `receipt_sent` / `receipt_sent_date` on the booking.
+3. The Rex self-booking path writes no `AiActionLog` entry.
+4. Bogus-order capture returns HTTP 500 with PayPal's raw message; a 422 with a customer-safe message would be tidier.
+
+**Verdict: all critical transaction stages verified except a successful payment capture,
+which is blocked on sandbox credentials. Do not treat payments as production-proven.**
+
 ## Recommended next deployment steps
 
 1. Add PayPal sandbox credentials and run the payment capture test end-to-end.
