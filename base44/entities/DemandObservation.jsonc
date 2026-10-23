@@ -37,6 +37,7 @@
         "waste_disposal",
         "estate_cleanout",
         "construction_debris",
+        "mattress_disposal",
         "other"
       ],
       "default": "other",

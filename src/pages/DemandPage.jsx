@@ -25,7 +25,7 @@ const CATEGORY_LABELS = {
 export default function DemandPage() {
   useSEO({
     title: "National Recycling Demand Intelligence | Same Day Recycling",
-    description: "Estimated Canadian search demand for junk removal, furniture and appliance removal, recycling and waste disposal by province and city, alongside Same Day Recycling's verified market capture.",
+    description: "Estimated Canadian search demand for junk removal, furniture and appliance removal, recycling and waste disposal by province and city, from verified, source-labeled keyword data.",
     path: "/demand",
   });
   const [data, setData] = useState(null);
@@ -77,7 +77,6 @@ export default function DemandPage() {
 
   const coverage = data?.coverage;
   const industry = data?.industry;
-  const capture = data?.capture;
   const loading = !data && !error;
 
   const cities = industry?.by_city || [];
@@ -117,8 +116,9 @@ export default function DemandPage() {
 
         {data && (
           <>
-            {/* National summary */}
-            <div className="grid sm:grid-cols-3 gap-4 mb-10">
+            {/* National summary — market demand only; Same Day Recycling's own
+                capture metrics stay private in the admin dashboards */}
+            <div className="grid sm:grid-cols-2 gap-4 mb-10">
               <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6">
                 <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2">Industry demand</div>
                 {industry?.available ? (
@@ -129,18 +129,6 @@ export default function DemandPage() {
                   </>
                 ) : (
                   <p className="text-sm text-slate-500">Awaiting a verified volume source. Estimates appear once imported and labeled in the admin panel.</p>
-                )}
-              </div>
-              <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6">
-                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2">Our market capture</div>
-                {capture?.available ? (
-                  <>
-                    <div className="text-3xl font-extrabold text-[#102B2A]">{capture.gsc ? formatCount(capture.gsc.impressions) : "—"}</div>
-                    <div className="text-xs text-slate-500">organic impressions · {capture.gsc?.window?.split(" to ")[1] || "28 days"}</div>
-                    <div className="mt-2 text-[10px] text-slate-400">{formatCount(capture.gsc?.clicks || 0)} clicks · {formatCount(capture.recycling_os?.verified_inquiries || 0)} verified inquiries</div>
-                  </>
-                ) : (
-                  <p className="text-sm text-slate-500">{capture?.note}</p>
                 )}
               </div>
               <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6">

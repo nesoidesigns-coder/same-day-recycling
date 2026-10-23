@@ -1,7 +1,7 @@
 // Shared constants for the Demand Intelligence admin pages — mirrors
 // base44/shared/demand.ts on the server so frontend labels always match.
 export const SERVICE_CATEGORIES = [
-  "junk_removal", "furniture_removal", "appliance_removal", "electronics",
+  "junk_removal", "furniture_removal", "mattress_disposal", "appliance_removal", "electronics",
   "recycling", "waste_disposal", "estate_cleanout", "construction_debris", "other",
 ];
 
@@ -9,6 +9,7 @@ export const CATEGORY_LABELS = {
   junk_removal: "Junk Removal",
   furniture_removal: "Furniture Removal",
   appliance_removal: "Appliance Removal",
+  mattress_disposal: "Mattress Disposal",
   electronics: "Electronics Recycling",
   recycling: "Recycling",
   waste_disposal: "Waste Disposal",

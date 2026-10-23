@@ -4,14 +4,21 @@
 // keyword variants and duplicate geographic records are never counted twice.
 
 export const SERVICE_CATEGORIES = [
-  'junk_removal', 'furniture_removal', 'appliance_removal', 'electronics',
+  'junk_removal', 'furniture_removal', 'mattress_disposal', 'appliance_removal', 'electronics',
   'recycling', 'waste_disposal', 'estate_cleanout', 'construction_debris', 'other',
+];
+
+// The six categories shown as homepage market-demand gauges.
+export const MARKET_CATEGORIES = [
+  'junk_removal', 'furniture_removal', 'appliance_removal',
+  'construction_debris', 'mattress_disposal', 'estate_cleanout',
 ];
 
 export const CATEGORY_LABELS = {
   junk_removal: 'Junk Removal',
   furniture_removal: 'Furniture Removal',
   appliance_removal: 'Appliance Removal',
+  mattress_disposal: 'Mattress Disposal',
   electronics: 'Electronics Recycling',
   recycling: 'Recycling',
   waste_disposal: 'Waste Disposal',
@@ -44,7 +51,9 @@ export function previousPeriod(period) {
 const CATEGORY_ALIASES = {
   'junk removal': 'junk_removal', junk_removal: 'junk_removal', junk: 'junk_removal',
   'garbage removal': 'junk_removal', trash: 'junk_removal', rubbish: 'junk_removal', decluttering: 'junk_removal',
-  'furniture removal': 'furniture_removal', furniture: 'furniture_removal', mattress: 'furniture_removal',
+  'furniture removal': 'furniture_removal', furniture: 'furniture_removal',
+  mattress: 'mattress_disposal', 'mattress disposal': 'mattress_disposal',
+  'mattress removal': 'mattress_disposal', 'mattress recycling': 'mattress_disposal',
   couch: 'furniture_removal', 'couch removal': 'furniture_removal', sofas: 'furniture_removal',
   'appliance removal': 'appliance_removal', appliances: 'appliance_removal', appliance: 'appliance_removal',
   fridge: 'appliance_removal', freezer: 'appliance_removal', washer: 'appliance_removal',
@@ -176,5 +185,168 @@ export function summarizeDemand(deduped) {
     by_city: byCity,
     top_keywords: topKeywords,
     observations_in_latest_period: inLatest.length,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Market intelligence (homepage gauges): per-geography, per-category demand
+// aggregates from deduped observations. Estimates only — never fabricated,
+// never zero-filled, and Search Console visibility is never used here.
+// ---------------------------------------------------------------------------
+
+const normGeo = (s) => String(s || '').trim().toLowerCase();
+
+function sumVol(rows) {
+  return rows.reduce((a, r) => a + (Number(r.est_monthly_volume) || 0), 0);
+}
+
+function summarizeMarketCategory(rows, prevRows, cat) {
+  const catRows = rows.filter((r) => r.service_category === cat);
+  if (!catRows.length) return { category: cat, label: CATEGORY_LABELS[cat], available: false };
+  const volRows = catRows.filter((r) => (Number(r.est_monthly_volume) || 0) > 0);
+  const idxRows = catRows.filter((r) => (Number(r.trend_index) || 0) > 0);
+  let value, unit, prevValue = null;
+  if (volRows.length) {
+    value = sumVol(volRows);
+    unit = 'searches';
+    const prevVolRows = prevRows.filter((r) => r.service_category === cat && (Number(r.est_monthly_volume) || 0) > 0);
+    if (prevVolRows.length) prevValue = sumVol(prevVolRows);
+  } else if (idxRows.length) {
+    value = Math.round(idxRows.reduce((a, r) => a + (Number(r.trend_index) || 0), 0) / idxRows.length);
+    unit = 'index';
+    const prevIdxRows = prevRows.filter((r) => r.service_category === cat && (Number(r.trend_index) || 0) > 0);
+    if (prevIdxRows.length) {
+      prevValue = Math.round(prevIdxRows.reduce((a, r) => a + (Number(r.trend_index) || 0), 0) / prevIdxRows.length);
+    }
+  } else {
+    return { category: cat, label: CATEGORY_LABELS[cat], available: false };
+  }
+  const lastUpdated = catRows.map((r) => String(r.last_updated || '')).sort().pop() || '';
+  return {
+    category: cat,
+    label: CATEGORY_LABELS[cat],
+    available: true,
+    value,
+    unit,
+    prev_value: prevValue,
+    trend_pct: prevValue ? Math.round(((value - prevValue) / prevValue) * 1000) / 10 : null,
+    trend_direction: catRows[0].trend_direction || 'unknown',
+    last_updated: lastUpdated,
+    volume_basis: [...new Set(catRows.map((r) => r.volume_basis).filter(Boolean))],
+    sources: [...new Set(catRows.map((r) => r.source).filter(Boolean))],
+    keywords: catRows.length,
+  };
+}
+
+// One geographic scope. Only rows at the scope's own geography level are
+// aggregated (national rows for Canada, province rows for a province, city
+// rows for a city), with a documented fallback when a level has no data —
+// levels are mutually exclusive, so the same keyword is never double-counted
+// across national, provincial and city summaries of the same period.
+export function marketScopeSummary(deduped, geoType, geoKey) {
+  const periods = [...new Set(deduped.map((r) => r.period).filter(Boolean))].sort();
+  const latest = periods[periods.length - 1] || '';
+  if (!latest) {
+    return { available: false, note: 'No verified demand observations on file yet. Market figures appear once a Keyword Planner or licensed dataset is connected or imported and verified in the admin panel.' };
+  }
+  const prevP = previousPeriod(latest);
+
+  let rows, level, level_note;
+  if (geoType === 'national') {
+    const nat = deduped.filter((r) => r.period === latest && r.geo_type === 'national');
+    const prov = deduped.filter((r) => r.period === latest && r.geo_type === 'province');
+    const city = deduped.filter((r) => r.period === latest && r.geo_type === 'city');
+    if (nat.length) { rows = nat; level = 'national'; level_note = 'National-level estimates'; }
+    else if (prov.length) { rows = prov; level = 'province'; level_note = 'Aggregated from provincial estimates (no overlapping national rows)'; }
+    else { rows = city; level = 'city'; level_note = 'Aggregated from city-level estimates (no overlapping national or provincial rows)'; }
+  } else if (geoType === 'province') {
+    const prov = deduped.filter((r) => r.period === latest && r.geo_type === 'province' && normGeo(r.province_code) === normGeo(geoKey));
+    const city = deduped.filter((r) => r.period === latest && r.geo_type === 'city' && normGeo(r.province_code) === normGeo(geoKey));
+    if (prov.length) { rows = prov; level = 'province'; level_note = `${PROVINCE_NAMES[normGeo(geoKey).toUpperCase()] || geoKey} provincial estimates`; }
+    else { rows = city; level = 'city'; level_note = `Aggregated from city-level estimates in ${PROVINCE_NAMES[normGeo(geoKey).toUpperCase()] || geoKey}`; }
+  } else {
+    rows = deduped.filter((r) => r.period === latest && r.geo_type === 'city' && normGeo(r.city) === normGeo(geoKey));
+    level = 'city';
+    level_note = `${geoKey} city-level estimates`;
+  }
+  if (!rows.length) {
+    return { available: false, latest_period: latest, note: 'Data pending — no observations for this geography and period yet.' };
+  }
+
+  const prevRows = deduped.filter((r) => r.period === prevP && rowsMatchScope(r, geoType, geoKey, level));
+  const categories = MARKET_CATEGORIES.map((cat) => summarizeMarketCategory(rows, prevRows, cat));
+
+  // Scope total: only when at least one volume-based (defensible,
+  // deduplicated) estimate exists. Trend indices are never summed.
+  const volRows = rows.filter((r) => (Number(r.est_monthly_volume) || 0) > 0);
+  const idxOnly = rows.length > 0 && volRows.length === 0;
+  const total = volRows.length
+    ? {
+        available: true,
+        value: sumVol(volRows),
+        unit: 'searches',
+        prev_value: sumVol(deduped.filter((r) => r.period === prevP && rowsMatchScope(r, geoType, geoKey, level) && (Number(r.est_monthly_volume) || 0) > 0)) || null,
+        keywords: volRows.length,
+        index_only_count: rows.length - volRows.length,
+      }
+    : { available: false, note: idxOnly ? 'Only relative interest indices are on file for this scope — indices are never summed into a search total.' : 'No volume-based estimate on file for this scope yet.' };
+
+  return {
+    available: true,
+    geo_type: geoType,
+    geo_key: geoKey,
+    level,
+    level_note,
+    latest_period: latest,
+    previous_period: prevP,
+    categories,
+    total,
+    last_updated: rows.map((r) => String(r.last_updated || '')).sort().pop() || '',
+    sources: [...new Set(rows.map((r) => r.source).filter(Boolean))],
+    volume_basis: [...new Set(rows.map((r) => r.volume_basis).filter(Boolean))],
+  };
+}
+
+function rowsMatchScope(row, geoType, geoKey, level) {
+  if (geoType === 'national') {
+    if (level === 'national') return row.geo_type === 'national';
+    if (level === 'province') return row.geo_type === 'province';
+    return row.geo_type === 'city';
+  }
+  if (geoType === 'province') {
+    const code = normGeo(geoKey);
+    if (level === 'province') return row.geo_type === 'province' && normGeo(row.province_code) === code;
+    return row.geo_type === 'city' && normGeo(row.province_code) === code;
+  }
+  return row.geo_type === 'city' && normGeo(row.city) === normGeo(geoKey);
+}
+
+// Full homepage market-intelligence payload: every geography that has data,
+// pre-aggregated, so the frontend only filters.
+export function marketIntelligence(deduped) {
+  const periods = [...new Set(deduped.map((r) => r.period).filter(Boolean))].sort();
+  const anyRows = deduped.length > 0;
+  const provinces = [...new Set(
+    deduped.filter((r) => r.geo_type === 'province' && r.province_code).map((r) => normGeo(r.province_code).toUpperCase())
+  )];
+  const cityMap = new Map();
+  for (const r of deduped.filter((row) => row.geo_type === 'city' && row.city)) {
+    const key = normGeo(r.city);
+    if (!cityMap.has(key)) cityMap.set(key, { key: String(r.city).trim(), province_code: normGeo(r.province_code || '').toUpperCase() });
+  }
+  const cities = [...cityMap.values()];
+
+  const scopes = {};
+  scopes['CA'] = marketScopeSummary(deduped, 'national', 'CA');
+  for (const code of provinces) scopes[code] = marketScopeSummary(deduped, 'province', code);
+  for (const c of cities) scopes[c.key] = marketScopeSummary(deduped, 'city', c.key);
+
+  return {
+    available: anyRows,
+    latest_period: periods[periods.length - 1] || '',
+    periods,
+    geo: { provinces, cities },
+    scopes,
+    pending_note: 'Estimated monthly search volumes come from Google Ads Keyword Planner or properly licensed keyword datasets; regional interest and seasonality come from Google Trends. Each figure carries its source and reporting date, and overlapping keyword variants are deduplicated before aggregation. Search Console visibility for Same Day Recycling is tracked separately and is never used as market demand.',
   };
 }

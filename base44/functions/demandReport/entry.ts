@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
-import { dedupeObservations, summarizeDemand, PROVINCES } from '../../shared/demand.ts';
+import { dedupeObservations, summarizeDemand, marketIntelligence, PROVINCES } from '../../shared/demand.ts';
 
 // Public (aggregate-only) national demand report:
 //   industry = estimated Canadian search demand, from admin-verified,
@@ -45,6 +45,7 @@ export default async function(req) {
 
     return Response.json({
       industry,
+      market: marketIntelligence(deduped),
       series,
       series_truncated: deduped.length > series.length,
       capture: snapshot ? {
