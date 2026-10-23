@@ -62,6 +62,38 @@ export default async function(req) {
       return data.rows || [];
     };
 
+    // --- Change tracking: per-URL GSC measurement ------------------------------
+    // Used by the Improvement Queue to record impressions/clicks for one page
+    // before and after a fix, from actual Search Console data.
+    if (payload.action === 'measure') {
+      const measureUrl = String(payload.page_url || '');
+      if (!measureUrl) return Response.json({ error: 'page_url is required.' }, { status: 400 });
+      const mf = (d) => d.toISOString().slice(0, 10);
+      const mEnd = new Date(); mEnd.setUTCDate(mEnd.getUTCDate() - 2);
+      const mStart = new Date(mEnd); mStart.setUTCDate(mStart.getUTCDate() - 27);
+      const mPrevEnd = new Date(mStart); mPrevEnd.setUTCDate(mPrevEnd.getUTCDate() - 1);
+      const mPrevStart = new Date(mPrevEnd); mPrevStart.setUTCDate(mPrevStart.getUTCDate() - 27);
+      const [curRows, prevRows] = await Promise.all([
+        query(mf(mStart), mf(mEnd), ['page'], 250),
+        query(mf(mPrevStart), mf(mPrevEnd), ['page'], 250),
+      ]);
+      const normM = (u) => String(u).replace(/\/$/, '');
+      const findPage = (rows) => {
+        const r = rows.find((x) => x.keys[0] === measureUrl)
+          || rows.find((x) => normM(x.keys[0]) === normM(measureUrl))
+          || rows.find((x) => normM(x.keys[0]) + '/' === normM(measureUrl));
+        return r
+          ? { clicks: r.clicks || 0, impressions: r.impressions || 0, position: Math.round((r.position || 0) * 10) / 10 }
+          : { clicks: 0, impressions: 0, position: 0 };
+      };
+      return Response.json({
+        page: measureUrl,
+        window: { start: mf(mStart), end: mf(mEnd) },
+        current: findPage(curRows),
+        previous: findPage(prevRows),
+      });
+    }
+
     const [totalsCur, totalsPrev, byQuery, byPage, byCountry, longPages] = await Promise.all([
       query(fmt(start), fmt(end), [], 1),
       query(fmt(prevStart), fmt(prevEnd), [], 1),
@@ -130,6 +162,55 @@ export default async function(req) {
       else noImpressions.push(u);
     }
 
+    // --- Index verification: Google's own submitted-vs-indexed sitemap counts
+    // and URL Inspection verdicts for a sample of the unclear URLs. Buckets
+    // come from real GSC evidence, never estimates.
+    let sitemapSubmittedIndexed = null;
+    try {
+      const smRes = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(target)}/sitemaps`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (smRes.ok) {
+        const smData = await smRes.json();
+        let submitted = 0, indexedCnt = 0;
+        for (const sm of smData.sitemap || []) {
+          for (const c of sm.contents || []) {
+            if (c.type === 'web') { submitted += c.submitted || 0; indexedCnt += c.indexed || 0; }
+          }
+        }
+        sitemapSubmittedIndexed = { submitted, indexed: indexedCnt };
+      }
+    } catch { /* sitemap status is best-effort */ }
+
+    const inspectionSample = [];
+    for (const u of noImpressions.slice(0, 6)) {
+      try {
+        const res = await fetch('https://searchconsole.googleapis.com/v1/urlInspection/index:inspect', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inspectionUrl: u, siteUrl: target, languageCode: 'en' }),
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!res.ok) {
+          inspectionSample.push({ url: u, bucket: 'unavailable', reason: `Inspection request failed (HTTP ${res.status})` });
+          continue;
+        }
+        const insp = await res.json();
+        const idx = (insp.inspectionResult || {}).indexStatusResult || {};
+        const coverage = idx.coverageState || '';
+        let bucket = 'excluded_or_blocked';
+        if (idx.verdict === 'PASS') bucket = 'indexed';
+        else if (/crawled/i.test(coverage)) bucket = 'crawled_not_indexed';
+        else if (/discovered/i.test(coverage)) bucket = 'discovered_not_indexed';
+        inspectionSample.push({ url: u, bucket, coverage: coverage || idx.verdict || 'unknown', last_crawl: idx.lastCrawlTime || '' });
+      } catch (e) {
+        inspectionSample.push({ url: u, bucket: 'unavailable', reason: e.message });
+      }
+    }
+    const inspectionBuckets = {};
+    for (const s of inspectionSample) inspectionBuckets[s.bucket] = (inspectionBuckets[s.bucket] || 0) + 1;
+
     // --- Opportunity monitor: ranked by business value, effort, confidence ----
     const siteCtr = totals.impressions > 0 ? totals.ctr : 0;
     const opportunities = [];
@@ -176,9 +257,12 @@ export default async function(req) {
       index: {
         sitemap_pages: sitemapPages.length,
         sitemap_error: sitemapError,
+        sitemap_submitted_indexed: sitemapSubmittedIndexed,
         with_impressions: indexed.length,
         no_impressions: noImpressions.length,
         no_impressions_sample: noImpressions.slice(0, 12),
+        inspection_sample: inspectionSample,
+        inspection_buckets: inspectionBuckets,
       },
       opportunities: opportunities.slice(0, 20),
     });

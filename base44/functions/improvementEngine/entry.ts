@@ -219,6 +219,46 @@ export default async function (req) {
       return Response.json({ imported: created.length, items: created });
     }
 
+    // Render test: confirm Google receives useful HTML on service and city
+    // pages. Existing pages only — verified operating markets are improved
+    // before any new URL is created.
+    if (action === 'render_test') {
+      const servicePaths = ['/furniture-removal', '/appliance-removal', '/electronics-recycling', '/commercial-recycling', '/same-day-pickup'];
+      let cityPaths = [];
+      try {
+        const csPage = await svc.entities.CitySeo.filter({}, { limit: 100 });
+        const cs = Array.isArray(csPage) ? csPage : (csPage.items || []);
+        cityPaths = cs
+          .map((c) => '/junk-removal-' + String(c.city || '').toLowerCase().trim().replace(/\s+/g, '-'))
+          .filter((p) => p.length > 14)
+          .slice(0, 12);
+      } catch { /* city pages optional; service pages still tested */ }
+      const targets = [
+        ...servicePaths.map((p) => ({ path: p, label: p })),
+        ...cityPaths.map((p) => ({ path: p, label: p })),
+      ];
+      const results = [];
+      for (let i = 0; i < targets.length; i += 6) {
+        const batch = targets.slice(i, i + 6);
+        const settled = await Promise.allSettled(batch.map((p) => checkPage(p)));
+        settled.forEach((s) => { if (s.status === 'fulfilled') results.push(s.value); });
+      }
+      const openPage = await svc.entities.Improvement.filter({ status: { $in: OPEN_STATUSES } }, { limit: 500 });
+      const existing = Array.isArray(openPage) ? openPage : (openPage.items || []);
+      const newFindings = [];
+      for (const r of results) {
+        for (const f of r.findings) {
+          const rec = await recordFinding(svc, existing, { ...f, evidence_url: r.url }, 'site_diagnostics', 'render_test');
+          if (rec) newFindings.push({ id: rec.id, title: rec.title });
+        }
+      }
+      return Response.json({
+        tested: results.length,
+        results: results.map((r) => ({ url: r.url, http_status: r.http_status || null, issues: r.findings.map((f) => f.title) })),
+        new_findings: newFindings,
+      });
+    }
+
     return Response.json({ error: 'Unknown action.' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message || 'Unexpected error' }, { status: 500 });

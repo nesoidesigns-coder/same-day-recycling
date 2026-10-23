@@ -140,22 +140,46 @@ export default function AdminSearchAuthority() {
               <p className="text-sm text-slate-600">Couldn't read the submitted sitemap from the live site — index coverage is shown as "Not connected" for this section.</p>
             ) : (
               <>
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <MiniStat label="Pages in sitemap" value={num(data.index.sitemap_pages)} />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                  <MiniStat
+                    label="Pages in sitemap"
+                    value={num(data.index.sitemap_pages)}
+                    note={data.index.sitemap_submitted_indexed ? `Google reports ${num(data.index.sitemap_submitted_indexed.indexed)} of ${num(data.index.sitemap_submitted_indexed.submitted)} indexed` : undefined}
+                  />
                   <MiniStat label="With search impressions (90d)" value={num(data.index.with_impressions)} tone="text-[#187B65]" />
-                  <MiniStat label="No impressions (90d)" value={num(data.index.no_impressions)} tone="text-amber-600" />
+                  <MiniStat label="Crawled, not indexed (sample)" value={num((data.index.inspection_buckets || {}).crawled_not_indexed || 0)} tone="text-amber-600" />
+                  <MiniStat label="Discovered, not crawled (sample)" value={num((data.index.inspection_buckets || {}).discovered_not_indexed || 0)} tone="text-amber-600" />
                 </div>
                 <p className="text-[11px] text-slate-500 mb-3">
-                  Evidence-based proxy: a sitemap URL with zero Search Console impressions in 90 days is "not indexed
-                  or not ranking" — verified status requires URL inspection in Search Console.
+                  Buckets from real Google evidence: search impressions prove indexing; the remaining sample was verified
+                  with the Search Console URL Inspection API (crawled-not-indexed, discovered-not-indexed, or excluded/blocked).
                 </p>
-                {data.index.no_impressions_sample.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {data.index.no_impressions_sample.map((u) => (
-                      <span key={u} className="rounded-full bg-amber-50 border border-amber-200 px-2.5 py-1 text-[10px] font-mono text-amber-800">
-                        {String(u).replace(/^https?:\/\/[^/]+/, "") || "/"}
-                      </span>
-                    ))}
+                {(data.index.inspection_sample || []).length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                          <th className="py-2 pr-4">Page</th>
+                          <th className="py-2 pr-4">Verdict</th>
+                          <th className="py-2 pr-4">Google status</th>
+                          <th className="py-2 pr-4">Last crawl</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.index.inspection_sample.map((i) => (
+                          <tr key={i.url} className="border-t border-slate-100">
+                            <td className="py-2.5 pr-4 font-mono text-xs text-[#102B2A] break-all">{String(i.url).replace(/^https?:\/\/[^/]+/, "") || "/"}</td>
+                            <td className="py-2.5 pr-4">
+                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${i.bucket === "indexed" ? "bg-[#187B65]/10 text-[#187B65]" : i.bucket === "excluded_or_blocked" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}>
+                                {(i.bucket || "unknown").replace(/_/g, " ")}
+                              </span>
+                            </td>
+                            <td className="py-2.5 pr-4 text-xs text-slate-600">{i.coverage || i.reason || "—"}</td>
+                            <td className="py-2.5 pr-4 text-xs text-slate-600">{i.last_crawl ? new Date(i.last_crawl).toLocaleDateString("en-CA") : "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </>
@@ -179,11 +203,34 @@ export default function AdminSearchAuthority() {
           </div>
 
           <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
+            <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4">Traffic reconciliation</h2>
+            {traffic && data ? (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <MiniStat label="GSC organic clicks" value={num(data.totals?.clicks || 0)} note={`28d ending ${data.endDate}`} />
+                  <MiniStat label="Search-source visits" value={num(src?.search || 0)} note="30 days, platform tracking" />
+                  <MiniStat label="AI assistant visits" value={num(src?.ai_search || 0)} note="30 days (ChatGPT, Perplexity, …)" />
+                  <MiniStat label="Real visits" value={num(realVisits)} note="bots & owner testing excluded" />
+                </div>
+                <p className="text-[11px] text-slate-500 mt-3">
+                  Differences between GSC clicks and platform search visits are expected, not errors: Google reporting
+                  lags ~2 days, some sessions arrive direct or via bookmarks, and owner testing plus bot crawls are
+                  excluded from platform counts. Quote requests and completed bookings above reconcile the funnel end-to-end.
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-slate-600">Traffic analytics not connected right now.</p>
+            )}
+          </div>
+
+          <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
             <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4 inline-flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-[#187B65]" /> SEO Opportunity Monitor
             </h2>
             <p className="text-[11px] text-slate-500 mb-4">
               Every recommendation cites its Search Console evidence. Ranked by expected business value, then confidence.
+              Strategy: existing pages in verified operating markets are improved first — no new URLs are created while
+              pages still lack indexing evidence.
             </p>
             {data.opportunities.length === 0 ? (
               <p className="text-sm text-slate-600 flex items-start gap-2"><AlertCircle className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" /> No opportunities found in current data — traffic is too low or pages perform at or above site average.</p>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import {
   Loader2, ListChecks, Play, Import, BrainCircuit, ChevronDown, ChevronUp,
-  AlertTriangle, ShieldCheck, ExternalLink, CheckCircle2, ArrowRight, Flag,
+  AlertTriangle, ShieldCheck, ExternalLink, CheckCircle2, ArrowRight, Flag, Monitor, TrendingUp,
 } from "lucide-react";
 
 const FLOW = ["detected", "reviewed", "approved", "in_progress", "testing", "verified", "completed"];
@@ -28,6 +28,9 @@ export default function ImprovementQueue() {
   const [expanded, setExpanded] = useState("");
   const [notice, setNotice] = useState("");
   const [afterDraft, setAfterDraft] = useState({});
+  const [rendering, setRendering] = useState(false);
+  const [renderResults, setRenderResults] = useState([]);
+  const [measuringId, setMeasuringId] = useState("");
 
   const load = useCallback(async () => {
     const page = await base44.entities.Improvement.filter({}, { sort: "-created_date", limit: 200 });
@@ -67,6 +70,41 @@ export default function ImprovementQueue() {
       setNotice("Import failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
     } finally {
       setImporting(false);
+    }
+  };
+
+  const doRenderTest = async () => {
+    setRendering(true);
+    setNotice("");
+    try {
+      const r = await run("render_test");
+      setRenderResults(r.results || []);
+      setNotice(`Render test complete: ${r.tested} pages tested, ${r.new_findings?.length || 0} new findings queued.`);
+      await load();
+    } catch (e) {
+      setNotice("Render test failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+    } finally {
+      setRendering(false);
+    }
+  };
+
+  // Change tracking: record real GSC impressions/clicks for this page in the
+  // improvement's history, so before/after impact is measured, not claimed.
+  const measure = async (item) => {
+    setMeasuringId(item.id);
+    setNotice("");
+    try {
+      const r = await base44.functions.invoke("searchAuthority", { action: "measure", page_url: item.evidence_url });
+      const d = r.data || {};
+      const note = `GSC 28d: ${d.current?.clicks ?? 0} clicks / ${d.current?.impressions ?? 0} impressions (previous 28d: ${d.previous?.clicks ?? 0} / ${d.previous?.impressions ?? 0})`;
+      const history = [...(item.history || []), { date: new Date().toISOString(), event: "measured", note }];
+      await base44.entities.Improvement.update(item.id, { history });
+      setNotice("Measurement recorded: " + note);
+      await load();
+    } catch (e) {
+      setNotice("Measurement failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+    } finally {
+      setMeasuringId("");
     }
   };
 
@@ -126,10 +164,29 @@ export default function ImprovementQueue() {
           <button onClick={doImport} disabled={importing} className="rounded-full border border-[#187B65]/40 text-emerald-50 font-bold px-4 py-2.5 text-xs hover:border-[#187B65] transition-colors disabled:opacity-60 flex items-center gap-2">
             {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Import className="w-3.5 h-3.5" />} Import findings
           </button>
+          <button onClick={doRenderTest} disabled={rendering} className="rounded-full border border-[#187B65]/40 text-emerald-50 font-bold px-4 py-2.5 text-xs hover:border-[#187B65] transition-colors disabled:opacity-60 flex items-center gap-2">
+            {rendering ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Monitor className="w-3.5 h-3.5" />} Render test
+          </button>
         </div>
       </div>
 
       {notice && <div className="rounded-xl border border-[#187B65]/30 bg-[#0a2b1e]/60 px-4 py-2.5 text-xs text-emerald-100/80 mb-4">{notice}</div>}
+
+      {renderResults.length > 0 && (
+        <div className={`${panel} p-5 mb-6`}>
+          <div className={`${label} mb-3`}>Render test — what Google receives (existing pages only)</div>
+          <div className="space-y-2">
+            {renderResults.map((r) => (
+              <div key={r.url} className="flex items-center justify-between gap-3 rounded-xl border border-[#187B65]/20 bg-[#0a2b1e]/40 px-3.5 py-2.5">
+                <span className="text-xs text-emerald-100/70 font-mono truncate">{String(r.url).replace(/^https?:\/\/[^/]+/, "")}</span>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${r.issues.length === 0 ? "bg-[#187B65]/15 text-[#187B65] border border-[#187B65]/30" : "bg-amber-400/10 text-amber-300 border border-amber-400/40"}`}>
+                  {r.issues.length === 0 ? "renders clean" : `${r.issues.length} issue${r.issues.length === 1 ? "" : "s"}`}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-8">
         {FLOW.map((s) => (
@@ -216,6 +273,11 @@ export default function ImprovementQueue() {
                             Save &amp; verify
                           </button>
                         </div>
+                      )}
+                      {/samedayrecycling\.ca/.test(item.evidence_url || "") && (
+                        <button onClick={() => measure(item)} disabled={measuringId === item.id} className="rounded-full border border-[#187B65]/40 text-emerald-50 font-bold px-4 py-2 text-xs hover:border-[#187B65] disabled:opacity-60 flex items-center gap-2">
+                          {measuringId === item.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <TrendingUp className="w-3.5 h-3.5" />} Measure GSC impact
+                        </button>
                       )}
                       <button onClick={() => setStatus(item, "declined", "Owner declined this improvement.")} className="rounded-full border border-emerald-100/20 text-emerald-100/50 font-bold px-4 py-2 text-xs hover:border-red-400/40 hover:text-red-300 transition-colors">
                         Decline
