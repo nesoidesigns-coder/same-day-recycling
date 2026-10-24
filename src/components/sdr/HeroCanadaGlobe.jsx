@@ -87,7 +87,25 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     new THREE.SphereGeometry(R, 48, 32),
     new THREE.MeshStandardMaterial({ color: 0x0d2a33, roughness: 0.9, metalness: 0.1 })
   );
+  // Align the equirectangular texture with the data layer's longitude origin
+  ocean.rotation.y = THREE.MathUtils.degToRad(6);
   globeGroup.add(ocean);
+  // Google-Earth-style surface: a self-hosted NASA Blue Marble texture
+  // (public domain). Falls back to the stylized matte globe if it can't load.
+  new THREE.TextureLoader().load(
+    "/earth-blue-marble.jpg",
+    (tex) => {
+      if (failed) return;
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy?.() || 1;
+      ocean.material = new THREE.MeshPhongMaterial({ map: tex, specular: new THREE.Color(0x16333c), shininess: 14 });
+      graticule.visible = false;
+      worldLines.visible = false;
+      dirty = true;
+    },
+    undefined,
+    () => { /* stylized matte globe stays */ }
+  );
   // Restrained rim glow: a faint fresnel shell reads as cinematic depth.
   const rimMat = new THREE.ShaderMaterial({
     transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false,
@@ -104,15 +122,18 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   for (let lng = -180; lng < 180; lng += 15) {
     for (let lat = -85; lat < 85; lat += 5) graticulePos.push(spherePoint(lat, lng, R * 1.001), spherePoint(lat + 5, lng, R * 1.001));
   }
-  globeGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(graticulePos), graticuleMat));
+  const graticule = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(graticulePos), graticuleMat);
+  globeGroup.add(graticule);
 
   // Coastline: verified Natural Earth geometry as a plain matte line
   const coastMat = new THREE.LineBasicMaterial({ color: 0x76a89b, transparent: true, opacity: 0.9 });
   // Whole-world land silhouette (Natural Earth 110m), with Canada brighter
   const worldMat = new THREE.LineBasicMaterial({ color: 0x5b8d84, transparent: true, opacity: 0.65 });
+  const worldLines = new THREE.Group();
+  globeGroup.add(worldLines);
   WORLD_OUTLINES.forEach((poly) => {
     const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.002));
-    globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), worldMat));
+    worldLines.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), worldMat));
   });
   CANADA_OUTLINES.forEach((poly) => {
     const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.004));
