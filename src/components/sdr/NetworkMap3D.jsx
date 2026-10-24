@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Loader2, Navigation, Sparkles, Send, MousePointerClick, X } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { REGIONS } from "@/lib/regions";
+
 
 // Simple equirectangular projection onto the 3D board (Canada bbox).
 const PROJ = { lat0: 57, lng0: -96, s: 0.55 };
 const pt = (lat, lng) => new THREE.Vector3((lng - PROJ.lng0) * PROJ.s, 0, (PROJ.lat0 - lat) * PROJ.s);
-const HUB = pt(49.2827, -123.1207);
+
 
 // Soft radial glow texture shared by every halo sprite.
 const glowTexture = (() => {
@@ -24,21 +24,9 @@ const glowTexture = (() => {
   return new THREE.CanvasTexture(c);
 })();
 
-const labelTexture = (text) => {
-  const c = document.createElement("canvas");
-  c.width = 256; c.height = 64;
-  const g = c.getContext("2d");
-  g.fillStyle = "rgba(5,21,17,0.85)";
-  g.roundRect(4, 8, 248, 48, 24); g.fill();
-  g.strokeStyle = "rgba(24,123,101,0.6)"; g.lineWidth = 2; g.stroke();
-  g.fillStyle = "#eafff6";
-  g.font = "700 26px Archivo, Arial, sans-serif";
-  g.textAlign = "center"; g.textBaseline = "middle";
-  g.fillText(text, 128, 33, 230);
-  return new THREE.CanvasTexture(c);
-};
 
-export default function NetworkMap3D({ coverageCities = [], providers = [], trafficByCity = {}, openRegions = [] }) {
+
+export default function NetworkMap3D({ coverageCities = [], providers = [], trafficByCity = {}, openRegions = [], territoryLinks = [] }) {
   const mountRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [ask, setAsk] = useState("");
@@ -104,23 +92,19 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       mesh.material.color.setHex(0x94a3b8);
     });
 
-    // Arcs + travelling data pulses from HQ to each live city.
-    const arcMat = new THREE.LineBasicMaterial({ color: 0x187b65, transparent: true, opacity: 0.35 });
-    const pulses = [];
-    coverageCities.forEach(({ name, city }) => {
-      if (!city) return;
-      const a = pt(city.lat, city.lng);
-      const mid = a.clone().add(HUB).multiplyScalar(0.5);
-      mid.y += a.distanceTo(HUB) * 0.35;
-      const curve = new THREE.QuadraticBezierCurve3(a, mid, HUB);
-      world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(48)), arcMat));
-      const pulse = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture, transparent: true, depthWrite: false }));
-      pulse.scale.setScalar(1.1);
-      world.add(pulse);
-      pulses.push({ curve, sprite: pulse, phase: Math.random() });
+    // Connections represent only a contractor's explicitly confirmed territory.
+    const arcMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.7 });
+    territoryLinks.forEach((link) => {
+      const [aCity, bCity] = (link.cities || []).map((name) => coverageCities.find((c) => c.name.toLowerCase() === name.toLowerCase())?.city);
+      if (!aCity || !bCity) return;
+      const a = pt(aCity.lat, aCity.lng), b = pt(bCity.lat, bCity.lng);
+      const mid = a.clone().add(b).multiplyScalar(0.5);
+      mid.y += Math.max(0.5, a.distanceTo(b) * 0.2);
+      const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
+      world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(24)), arcMat));
     });
 
-    // Verified providers as tiny satellite dots.
+    // Independently listed recycling facilities, never pickup partners.
     const dotGeo = new THREE.SphereGeometry(0.16, 8, 8);
     const dotMat = new THREE.MeshBasicMaterial({ color: 0x187b65, transparent: true, opacity: 0.9 });
     providers.forEach((p) => {
@@ -212,11 +196,7 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       const t = clock.getElapsedTime();
       if (!reduced && !dragging) yaw += 0.0012;
       if (!reduced && !dragging) applyView();
-      pulses.forEach((p) => {
-        const k = reduced ? 0.5 : (t * 0.12 + p.phase) % 1;
-        p.sprite.position.copy(p.curve.getPoint(k));
-        p.sprite.position.y += 0.2;
-      });
+
       if (!reduced) rings.forEach((r, i) => { r.scale.setScalar(1 + 0.08 * Math.sin(t * 2 + i)); });
       if (!reduced) nodeMap.forEach((n) => { n.halo.material.opacity = 0.55 + 0.25 * Math.sin(t * 1.5); });
       renderer.render(scene, camera);
@@ -235,7 +215,7 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       scene.traverse((o) => { o.geometry?.dispose?.(); o.material?.dispose?.(); });
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
     };
-  }, [coverageCities, providers, trafficByCity, openRegions]);
+  }, [coverageCities, providers, trafficByCity, openRegions, territoryLinks]);
 
   const askRex = async () => {
     if (!ask.trim() || !selected?.city) return;
@@ -248,7 +228,7 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
     }
   };
 
-  const stateLabel = { same_day: "Same-day pickup live", matching: "Matching in progress", open: "Region opening" };
+  const stateLabel = { same_day: "Verified territory; job acceptance required", matching: "Matching in progress", open: "Directory confirmation pending" };
 
   return (
     <div className="rounded-3xl overflow-hidden border border-[#187b65]/25 bg-[#051511] h-[520px] md:h-[620px] relative z-0">
@@ -269,7 +249,7 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
                 {stateLabel[selected.state]}
               </p>
               {trafficByCity[selected.name] > 0 && (
-                <p className="text-[11px] text-emerald-100/70 mt-0.5">{trafficByCity[selected.name]} active job{trafficByCity[selected.name] === 1 ? "" : "s"}</p>
+                <p className="text-[11px] text-emerald-100/70 mt-0.5">{trafficByCity[selected.name]} open booking record{trafficByCity[selected.name] === 1 ? "" : "s"}</p>
               )}
             </div>
             <button onClick={() => setSelected(null)} className="text-emerald-100/60 hover:text-white" aria-label="Close">
@@ -319,7 +299,7 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
 
       {/* legend */}
       <div className="absolute left-3 bottom-3 flex flex-wrap gap-2 text-[10px] font-semibold text-emerald-100/80">
-        <span className="rounded-full glass-dark px-2.5 py-1 inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#54D9AE]" /> Same-day live</span>
+        <span className="rounded-full glass-dark px-2.5 py-1 inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#54D9AE]" /> Verified territory</span>
         <span className="rounded-full glass-dark px-2.5 py-1 inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> Matching</span>
         <span className="rounded-full glass-dark px-2.5 py-1 inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400" /> Opening</span>
       </div>

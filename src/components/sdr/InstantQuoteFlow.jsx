@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { CITIES } from "@/lib/cities";
+import PickupCoverageNotice from "@/components/sdr/PickupCoverageNotice";
 import { base44 } from "@/api/base44Client";
 import {
   MapPin, Loader2, ArrowRight, ArrowLeft, CheckCircle2, Package, Calculator,
-  Plus, Minus, Trash2, ShieldCheck, Sparkles,
+  Plus, Minus, ShieldCheck, Sparkles,
 } from "lucide-react";
 import {
   normalizePostal, isValidPostal, provinceFromFsa, territoryNeeded, provinceName,
@@ -25,8 +27,8 @@ const T = {
     postalNext: "Continue",
     province: "Province / territory",
     pickTerritory: "Your postal region covers two territories — which one?",
-    coverageNote: "Same-day service is live here — a verified local contractor takes your job.",
-    matchingNote: "Nationwide dispatch is arranging a contractor in your area — nothing is scheduled or charged until one accepts.",
+    coverageNote: "A verified territory is not a confirmed appointment. Contractor acceptance is required.",
+    matchingNote: "Requests are accepted nationwide. Your contractor, final price and pickup window require confirmation before an appointment is booked.",
     materials: "What are we picking up?",
     materialsSub: "Pick as many as you like — quantities can be approximate.",
     estNext: "See my estimate",
@@ -48,7 +50,7 @@ const T = {
       "I've got this — start with your postal code.",
       "Nice. Now tap what you need gone — rough numbers are fine.",
       "Here's your honest estimate. Leave the pricing to me.",
-      "Sent! I'm watching your request and will keep you posted.",
+      "Request received. Dispatch must confirm your contractor, price and pickup window.",
     ],
     errors: {
       postal: "Enter a valid Canadian postal code (like V6B 1A1).",
@@ -66,8 +68,8 @@ const T = {
     postalNext: "Continuer",
     province: "Province / territoire",
     pickTerritory: "Votre région couvre deux territoires — lequel ?",
-    coverageNote: "Le service le jour même est actif ici — un entrepreneur local vérifié prend en charge votre travail.",
-    matchingNote: "Notre répartition nationale trouve un entrepreneur dans votre région — rien n'est planifié ni facturé avant l'acceptation.",
+    coverageNote: "Un territoire vérifié n'est pas un rendez-vous confirmé. L'acceptation d'un entrepreneur est requise.",
+    matchingNote: "Les demandes sont acceptées partout au Canada. L'entrepreneur, le prix final et la plage horaire doivent être confirmés avant le rendez-vous.",
     materials: "Que devons-nous ramasser ?",
     materialsSub: "Choisissez autant d'articles que nécessaire — les quantités peuvent être approximatives.",
     estNext: "Voir mon estimation",
@@ -89,7 +91,7 @@ const T = {
       "Je m'en occupe — commencez par votre code postal.",
       "Parfait. Touchez ce que vous voulez faire enlever — des chiffres approximatifs suffisent.",
       "Voici votre estimation honnête. Laissez-moi gérer le prix.",
-      "Envoyé ! Je surveille votre demande et je vous tiens au courant.",
+      "Demande reçue. L'équipe doit confirmer votre entrepreneur, le prix et la plage horaire.",
     ],
     errors: {
       postal: "Entrez un code postal canadien valide (p. ex. V6B 1A1).",
@@ -120,6 +122,7 @@ export default function InstantQuoteFlow() {
   const [step, setStep] = useState(0); // 0 postal, 1 materials, 2 estimate+contact, 3 done
   const [fsa, setFsa] = useState("");
   const [postalRaw, setPostalRaw] = useState("");
+  const [city, setCity] = useState("");
   const [territory, setTerritory] = useState(""); // for X-prefix: "NT" | "NU"
   const [qty, setQty] = useState({});
   const [estimate, setEstimate] = useState(null);
@@ -147,12 +150,32 @@ export default function InstantQuoteFlow() {
     return top ? top[0] : "junk_removal";
   }, [qty]);
 
+  useEffect(() => {
+    const selectCity = (event) => {
+      const location = event.detail || {};
+      if (!location.city) return;
+      setCity(location.city);
+      const postalProvince = provinceFromFsa(normalizePostal(postalRaw)) || territory;
+      if (postalProvince && location.province && postalProvince !== location.province) {
+        setPostalRaw(""); setFsa(""); setTerritory(""); setStep(0);
+      } else if (step === 2) setStep(1);
+      setEstimate(null);
+    };
+    window.addEventListener("pickup:location", selectCity);
+    return () => window.removeEventListener("pickup:location", selectCity);
+  }, [postalRaw, territory, step]);
+
   const goPostal = () => {
     const norm = normalizePostal(postalRaw);
     if (!isValidPostal(norm)) { setError(t.errors.postal); return; }
+    if (!city.trim()) { setError(lang === "fr" ? "Entrez votre ville ou municipalité." : "Enter your city or municipality."); return; }
+    if (territoryNeeded(norm) && !territory) { setError(t.pickTerritory); return; }
+    const knownCity = CITIES.find((c) => c.name.toLowerCase() === city.trim().toLowerCase());
+    const postalProvince = provinceFromFsa(norm) || territory;
+    if (knownCity && knownCity.province !== postalProvince) { setError(lang === "fr" ? "La ville et le code postal doivent être dans la même province." : "Your city and postal code must be in the same province or territory."); return; }
+    setCity(knownCity?.name || city.trim());
     setError("");
     setFsa(norm);
-    if (territoryNeeded(norm)) setTerritory("");
     setStep(1);
     // Geographic focus on the hero map — booking itself never waits on it.
     try {
@@ -169,8 +192,12 @@ export default function InstantQuoteFlow() {
     setError("");
     setLoading(true);
     try {
-      const items = selected.map((m) => ({ name: lang === "fr" ? m.fr : m.en, quantity: qty[m.key] }));
-      const res = await base44.functions.invoke("quoteEstimate", { items });
+      const names = { sofa: "sofa", mattress: "mattress", dresser: "dresser", fridge: "fridge", washer: "washer", tv: "tv", boxes: "bags/boxes of junk" };
+      const description = selected.map((m) => `${qty[m.key]} × ${m.en}`).join(", ");
+      const payload = selected.every((m) => names[m.key])
+        ? { items: selected.map((m) => ({ name: names[m.key], quantity: qty[m.key] })) }
+        : { description };
+      const res = await base44.functions.invoke("quoteEstimate", { ...payload, city: city.trim() });
       setEstimate(res.data);
       setStep(2);
       base44.analytics.track({ eventName: "quote_calculated", properties: { flow: "instant", province } });
@@ -192,16 +219,17 @@ export default function InstantQuoteFlow() {
         name: form.name.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
-        city: provinceName(province) || province,
+        city: city.trim(),
         province_code: province,
         postal_code: postalRaw,
         service_type: activeService,
         items_description: itemsText,
         preferred_date: form.preferred_date,
       });
+      if (!res.data?.ok || !res.data?.reference_code) throw new Error("Request confirmation unavailable");
       setResult(res.data);
       setStep(3);
-      base44.analytics.track({ eventName: "booking_submitted", properties: { flow: "instant", province, service_type: activeService } });
+      base44.analytics.track({ eventName: "national_request_submitted", properties: { flow: "instant", province, service: activeService } });
     } catch (err) {
       setError(err?.response?.data?.error || t.errors.submit);
     } finally {
@@ -212,16 +240,14 @@ export default function InstantQuoteFlow() {
   const tax = TAX_RATES[province] || null;
 
   return (
-    <section id="book" className="relative overflow-hidden bg-[#102B2A] text-white">
-      {/* Living Canadian network — 3D background, fully independent of the booking flow */}
-      <HeroCanadaBackground />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#102B2A]/65 via-[#102B2A]/15 to-[#102B2A]/65" />
-      <div className="relative z-10 max-w-3xl mx-auto px-4 py-7 md:py-16">
+    <section id="book" className="relative bg-market-bg text-market-ink">
+      <div className="mx-auto grid max-w-7xl items-start lg:grid-cols-2">
+      <div className="min-w-0 px-4 py-7 md:py-10 lg:px-6">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="text-xs font-bold tracking-[0.2em] text-[#54D9AE] uppercase">{t.tag}</div>
           <div className="flex rounded-full border border-white/20 p-0.5" role="group" aria-label="Language">
             {["en", "fr"].map((l) => (
-              <button key={l} onClick={() => setLang(l)} className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase transition-colors ${lang === l ? "bg-[#187B65] text-[#032015]" : "text-white/60 hover:text-white"}`}>
+              <button key={l} onClick={() => setLang(l)} className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase transition-colors ${lang === l ? "bg-brand-emerald text-market-ink" : "text-white/60 hover:text-white"}`}>
                 {l === "en" ? "EN" : "FR"}
               </button>
             ))}
@@ -267,19 +293,19 @@ export default function InstantQuoteFlow() {
                   <span className="block text-sm font-semibold mb-2">{t.pickTerritory}</span>
                   <div className="flex gap-2">
                     {["NT", "NU"].map((c) => (
-                      <button key={c} onClick={() => setTerritory(c)} className={`rounded-full border px-4 py-2 text-sm font-bold transition-colors ${territory === c ? "bg-[#187B65] text-[#032015] border-[#187B65]" : "border-white/25 hover:border-[#187B65]"}`}>
+                      <button key={c} onClick={() => setTerritory(c)} className={`rounded-full border px-4 py-2 text-sm font-bold transition-colors ${territory === c ? "bg-brand-emerald text-market-ink border-[#187B65]" : "border-white/25 hover:border-[#187B65]"}`}>
                         {c === "NT" ? "Northwest Territories" : "Nunavut"}
                       </button>
                     ))}
                   </div>
                 </div>
               )}
-              {postalOk ? (
-                <p className="mt-4 text-[11px] text-emerald-100/60 flex items-start gap-1.5">
-                  <Trash2 className="w-3.5 h-3.5 text-[#187B65] shrink-0 mt-0.5" />
-                  {t.matchingNote}
-                </p>
-              ) : null}
+              <label className="mt-4 block">
+                <span className="mb-1.5 block text-sm font-semibold">{lang === "fr" ? "Ville / municipalité" : "City / municipality"}</span>
+                <input value={city} onChange={(e) => setCity(e.target.value)} list="instant-pickup-cities" maxLength={120} className="input bg-white/95" autoComplete="address-level2" placeholder={lang === "fr" ? "Votre ville au Canada" : "Your Canadian municipality"} />
+                <datalist id="instant-pickup-cities">{CITIES.map((c) => <option key={c.name} value={c.name} />)}</datalist>
+              </label>
+              {postalOk && <PickupCoverageNotice city={city} lang={lang} dark />}
               {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
               <button onClick={goPostal} className="mt-5 w-full rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors flex items-center justify-center gap-2">
                 {t.postalNext} <ArrowRight className="w-5 h-5" />
@@ -296,6 +322,7 @@ export default function InstantQuoteFlow() {
                 </span>
               </div>
               <p className="text-xs text-slate-400 mb-4">{t.materialsSub}</p>
+              <PickupCoverageNotice city={city} lang={lang} dark />
               <div className="grid sm:grid-cols-2 gap-2">
                 {MATERIALS.map((m) => (
                   <div key={m.key} className="flex items-center justify-between bg-white/95 rounded-xl px-3 py-2.5">
@@ -330,24 +357,25 @@ export default function InstantQuoteFlow() {
               <h3 className="text-lg font-bold">{t.estimate}</h3>
               <div className="mt-4 rounded-2xl bg-[#102B2A]/60 border border-[#187B65]/25 p-5">
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{estimate.range}</div>
-                <div className="mt-2 inline-block rounded-full bg-[#187B65]/20 text-[#187B65] font-semibold px-4 py-1.5 text-sm">{estimate.label}</div>
+                <div className="mt-2 inline-block rounded-full border border-market-line bg-market-bg text-market-accent font-semibold px-4 py-1.5 text-sm">{estimate.label}</div>
                 <div className="mt-4 pt-4 border-t border-[#187B65]/20 grid sm:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <div className="text-emerald-100/50 text-xs font-bold uppercase tracking-wider">{t.subtotal}</div>
+                    <div className="text-market-muted text-xs font-bold uppercase tracking-wider">{t.subtotal}</div>
                     <div className="font-bold mt-0.5 tabular-nums">{estimate.range} CAD</div>
                   </div>
                   <div>
-                    <div className="text-emerald-100/50 text-xs font-bold uppercase tracking-wider">{t.taxLabel}</div>
+                    <div className="text-market-muted text-xs font-bold uppercase tracking-wider">{t.taxLabel}</div>
                     <div className="font-bold mt-0.5">{tax ? tax.label : `GST (5%) — ${province || "?"}`}</div>
                   </div>
                 </div>
-                <p className="mt-3 text-[11px] text-emerald-100/50">{t.taxNote}</p>
-                <p className="mt-1 text-[11px] text-emerald-100/50 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />{t.incl}</p>
+                <p className="mt-3 text-[11px] text-market-muted">{t.taxNote}</p>
+                <p className="mt-1 text-[11px] text-market-muted flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />{t.incl}</p>
                 <p className="mt-2 text-[11px] text-slate-400">
-                  {lang === "fr" ? "Estimation préliminaire — le prix final est approuvé sur place." : "Preliminary estimate — you approve the final price on site."}
+                  {lang === "fr" ? "Estimation préliminaire. Le prix final est soumis à votre approbation avant le travail. Tout ajout exige une approbation distincte." : "Preliminary estimate. You approve the final price before work begins. Additional items require a separate quote and your approval."}
                 </p>
               </div>
 
+              <PickupCoverageNotice city={city} lang={lang} dark />
               <h3 className="text-lg font-bold mt-6 mb-3">{t.contact}</h3>
               <div className="grid sm:grid-cols-2 gap-3">
                 <input required placeholder={t.name} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="input bg-white/95" autoComplete="name" />
@@ -376,12 +404,14 @@ export default function InstantQuoteFlow() {
                 {result?.reference_code || "PENDING"}
               </div>
               <p className="mt-4 text-xs text-slate-400">{t.matchingNote}</p>
-              <a href="/request-status" className="mt-5 inline-block rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
+              <a href={`/request-status?reference=${encodeURIComponent(result?.reference_code || "")}`} className="mt-5 inline-block rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
                 {lang === "fr" ? "Suivre ma demande" : "Track my request"}
               </a>
             </div>
           )}
         </div>
+      </div>
+      <div className="min-w-0 px-4 pb-7 lg:py-10 lg:pl-0 lg:pr-6"><HeroCanadaBackground /></div>
       </div>
     </section>
   );

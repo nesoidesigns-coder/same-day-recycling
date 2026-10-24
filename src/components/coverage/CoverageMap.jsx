@@ -49,7 +49,7 @@ const STATE_STYLE = {
     dot: "bg-slate-400",
     label: "Currently Unavailable",
     short: "Currently Unavailable",
-    hint: "No guaranteed same-day service here yet — request intake remains open nationwide",
+    hint: "No current dispatch availability is confirmed here; requests remain open nationwide",
     chip: "border-slate-200 bg-slate-50 text-slate-500",
     fill: "#64748b",
     text: "#475569",

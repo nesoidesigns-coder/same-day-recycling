@@ -1,37 +1,22 @@
-import { CANADA_OUTLINES, PROJ, LAYER_HEX } from "@/lib/canadaOutline";
+import { CANADA_OUTLINES, LAYER_HEX, MAP_BOUNDS, pt } from "@/lib/canadaOutline";
 
-// Static 2D Canada map — the WebGL fallback for the hero background. Same
-// projection, same outline, same layer colours and region selection as the
-// 3D scene, rendered as plain SVG (works in every browser).
-const p = (lat, lng) => [(lng - PROJ.lng0) * PROJ.s, (PROJ.lat0 - lat) * PROJ.s];
-
-export default function HeroCanadaMap2D({ nodes = [], onSelect }) {
-  const path = CANADA_OUTLINES
-    .map((poly) => poly.map(([lat, lng], i) => `${i === 0 ? "M" : "L"}${p(lat, lng).join(",")}`).join(" ") + " Z")
-    .join(" ");
+const path = CANADA_OUTLINES.map((poly) => poly.map(([lat, lng], i) => { const p = pt(lat, lng); return `${i ? "L" : "M"}${p.x},${-p.y}`; }).join(" ") + " Z").join(" ");
+export default function HeroCanadaMap2D({ nodes = [], links = [], focus, selectedKey, onSelect }) {
+  const width = MAP_BOUNDS.maxX - MAP_BOUNDS.minX + 4, height = MAP_BOUNDS.maxY - MAP_BOUNDS.minY + 3;
+  const center = focus ? pt(focus.lat, focus.lng) : null;
+  const viewBox = center ? `${center.x - width * 0.28} ${-center.y - height * 0.32} ${width * 0.56} ${height * 0.64}` : `${MAP_BOUNDS.minX - 2} ${-MAP_BOUNDS.maxY - 1.5} ${width} ${height}`;
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-4" data-testid="hero-canada-2d">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="-24 -16.5 48 25"
-        preserveAspectRatio="xMidYMid meet"
-        role="img"
-        aria-label="Map of Canada showing the Same Day Recycling service network"
-        onClick={(e) => {
-          const node = nodes.find((n) => n.key === e.target.dataset?.city);
-          if (node) onSelect?.(node);
-        }}
-      >
-        <path d={path} fill="#155e4e" stroke="#54d9ae" strokeWidth="0.25" strokeLinejoin="round" />
-        {nodes.map((n) => {
-          const [x, y] = p(n.lat, n.lng);
-          return (
-            <g key={n.key} style={{ cursor: "pointer" }}>
-              <circle data-city={n.key} cx={x} cy={y} r="1" fill={LAYER_HEX[n.layer] || LAYER_HEX.verified} opacity="0.3" />
-              <circle data-city={n.key} cx={x} cy={y} r="0.45" fill={LAYER_HEX[n.layer] || LAYER_HEX.verified} stroke="#0a2e25" strokeWidth="0.08" />
-            </g>
-          );
+    <div className="absolute inset-0 p-2" data-testid="hero-canada-2d">
+      <svg width="100%" height="100%" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" role="group" aria-label="Canadian geography and municipal service nodes">
+        <path d={path} className="fill-brand-emerald stroke-market-accent" strokeWidth="0.12" strokeLinejoin="round" />
+        {links.map((link, i) => { const a = pt(...link.a), b = pt(...link.b); return <path key={i} d={`M${a.x},${-a.y} Q${(a.x + b.x) / 2},${-(a.y + b.y) / 2 - 1} ${b.x},${-b.y}`} fill="none" className="stroke-market-accent" strokeWidth="0.12"><title>Shared explicit contractor territory</title></path>; })}
+        {nodes.map((node) => {
+          const p = pt(node.lat, node.lng), color = LAYER_HEX[node.layer] || LAYER_HEX.unknown;
+          return <g key={node.key} role="button" tabIndex={0} aria-label={`Explore ${node.name}`} onClick={() => onSelect(node)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(node); } }} className="cursor-pointer focus:outline-none focus:[&_circle]:stroke-market-ink">
+            <title>{node.name}, select for coverage and recorded service posts</title>
+            <circle cx={p.x} cy={-p.y} r="0.8" fill="transparent" />
+            <circle cx={p.x} cy={-p.y} r={selectedKey === node.key ? "0.44" : "0.26"} fill={selectedKey === node.key ? LAYER_HEX.selected : color} className="stroke-market-bg" strokeWidth="0.1" />
+          </g>;
         })}
       </svg>
     </div>

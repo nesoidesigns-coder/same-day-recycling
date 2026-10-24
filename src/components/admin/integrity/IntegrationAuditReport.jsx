@@ -1,4 +1,4 @@
-import ReactMarkdown from "react-markdown";
+import AuditReportBody from "@/components/admin/integrity/AuditReportBody";
 import { Download, FileSearch } from "lucide-react";
 import report from "@/components/admin/integrity/IntegrationAudit.md?raw";
 
@@ -19,7 +19,7 @@ export default function IntegrationAuditReport() {
       <details className="mt-4">
         <summary className="cursor-pointer py-2 text-sm font-bold text-brand-emerald">Read the audit and completion report</summary>
         <div className="mt-4 space-y-3 text-sm leading-relaxed [&_h1]:text-xl [&_h1]:font-bold [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-bold [&_h3]:font-bold [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-3 [&_pre]:overflow-x-auto">
-          <ReactMarkdown>{report}</ReactMarkdown>
+          <AuditReportBody report={report} />
         </div>
       </details>
     </section>

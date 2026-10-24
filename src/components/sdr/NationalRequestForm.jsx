@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, CheckCircle2, Camera, Send, BadgeCheck, Rocket, ShieldAlert } from "lucide-react";
+import { Loader2, CheckCircle2, Send, ShieldAlert } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { REGIONS, normalizePostal, provinceFromFsa, territoryNeeded, provinceName, SERVICE_TYPES } from "@/lib/geo";
-import { cityByName } from "@/lib/coverage";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
+import PickupCoverageNotice from "@/components/sdr/PickupCoverageNotice";
 import { CITIES } from "@/lib/cities";
 
 // Nationwide service-request form. Any municipality and any valid postal
@@ -26,11 +27,8 @@ export default function NationalRequestForm() {
 
   const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const coverage = useMemo(() => {
-    const city = cityByName(form.city.trim());
-    if (city) return city.status === "active" ? "verified" : "onboarding";
-    return "unverified";
-  }, [form.city]);
+  const liveCoverage = useCoverageStatus();
+  const coverage = liveCoverage.statusFor(form.city);
 
   const fsa = normalizePostal(form.postal_code);
   const needTerritory = territoryNeeded(fsa);
@@ -94,6 +92,7 @@ export default function NationalRequestForm() {
           </ol>
           <p className="mt-3 text-xs text-slate-500">Nothing is charged and no pickup is scheduled until a provider accepts your job.</p>
         </div>
+        <Link to={`/request-status?reference=${encodeURIComponent(result.reference_code || "")}`} className="mt-6 inline-flex min-h-11 items-center rounded-full bg-brand-emerald px-5 text-sm font-bold text-market-ink">Track my request</Link>
         <button onClick={() => { setResult(null); setForm({ name: "", phone: "", email: "", city: "", province_code: "", postal_code: "", service_type: "junk_removal", items_description: "", preferred_date: "", notes: "" }); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
           Submit another request
         </button>
@@ -101,31 +100,14 @@ export default function NationalRequestForm() {
     );
   }
 
-  const notLive = coverage !== "verified";
+  const notLive = coverage !== "same_day";
 
   return (
     <form onSubmit={submit} className="rounded-3xl bg-white p-6 md:p-8 border border-slate-100 shadow-sm">
       <h3 className="text-2xl font-bold text-[#102B2A]">Request service</h3>
-      <p className="text-sm text-slate-500 mt-1 mb-6">Available in every Canadian province and territory.</p>
+      <p className="text-sm text-slate-500 mt-1 mb-6">Requests accepted in every Canadian province and territory. Pickup requires contractor acceptance.</p>
 
-      {coverage === "verified" && (
-        <div className="mb-6 rounded-xl bg-[#187B65]/10 border border-[#187B65]/30 px-4 py-3 text-sm">
-          <span className="font-bold text-[#102B2A] flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-[#187B65]" /> Same-day pickup is live in {form.city.trim()}.</span>
-          <span className="text-slate-600"> Want it today? <Link to="/#book" className="font-semibold text-[#187B65] hover:underline">Book directly</Link> — or send a request below and we'll route it through provider matching.</span>
-        </div>
-      )}
-      {coverage === "onboarding" && (
-        <div className="mb-6 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm">
-          <span className="font-bold text-amber-800 flex items-center gap-1.5"><Rocket className="w-4 h-4 text-amber-700" /> Provider confirmation required in {form.city.trim()}.</span>
-          <span className="text-amber-800/80"> A partner is being onboarded — your request starts provider matching. Nothing is confirmed until a provider accepts.</span>
-        </div>
-      )}
-      {coverage === "unverified" && form.city.trim() && (
-        <div className="mb-6 rounded-xl bg-slate-100 border border-slate-200 px-4 py-3 text-sm">
-          <span className="font-bold text-[#102B2A] flex items-center gap-1.5"><ShieldAlert className="w-4 h-4 text-slate-500" /> Provider confirmation required in {form.city.trim()}.</span>
-          <span className="text-slate-600"> No verified partner here yet — your request creates a recruitment task for this market.</span>
-        </div>
-      )}
+      <PickupCoverageNotice city={form.city} />
 
       <div className="space-y-4">
         <div className="grid sm:grid-cols-2 gap-4">
@@ -192,7 +174,7 @@ export default function NationalRequestForm() {
         )}
       </div>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      <button disabled={submitting} className="mt-6 w-full rounded-full bg-[#187B65] text-[#102B2A] font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+      <button disabled={submitting} className="mt-6 w-full rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
         {submitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending…</> : <><Send className="w-5 h-5" /> Submit service request</>}
       </button>
     </form>

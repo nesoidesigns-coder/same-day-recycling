@@ -8,6 +8,8 @@ import { base44 } from "@/api/base44Client";
 import { CITIES } from "@/lib/cities";
 import { LETTER_PROVINCE, PROVINCE_NAMES } from "@/components/sdr/PostalCheck";
 import { useSEO, useStructuredData } from "@/lib/seo";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
+import { COVERAGE_COPY } from "@/components/sdr/coveragePresentation";
 
 // Service guidance is static and factual — the assistant never states
 // prices, dates or provider names; it only reports verified coverage
@@ -37,6 +39,7 @@ export default function ServiceFinder() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef(null);
+  const coverage = useCoverageStatus();
 
   useSEO({
     title: "Service Finder — Check Pickup Availability Across Canada | Same Day Recycling",
@@ -62,61 +65,23 @@ export default function ServiceFinder() {
       : null;
     const items = Array.isArray(intent.items) && intent.items.length ? ` (${intent.items.slice(0, 4).join(", ")})` : "";
 
-    if (city) {
-      const lead = `Got it — ${service.label}${items} in ${city.name}, ${city.province}. Here's what I can confirm: `;
-      if (city.status === "active") {
-        return {
-          role: "assistant",
-          text: `${lead} same-day pickup is live and verified in ${city.name}. ${service.requirements} Book before noon for same-day service — pricing is quoted upfront and you approve it before anything is lifted.`,
-          actions: [
-            { label: `Quote & book in ${city.name}`, to: `/junk-removal-${city.slug}` },
-            { label: "See pricing", to: "/pricing" },
-          ],
-        };
-      }
-      if (city.status === "partner_onboarding") {
-        return {
-          role: "assistant",
-          text: `${lead} a verified partner is being onboarded in ${city.name} right now, so same-day service isn't confirmed there yet. I can't promise pickup dates or prices until a partner is verified — but you can register interest or browse the directory in the meantime.`,
-          actions: [
-            { label: "See live coverage", to: "/coverage" },
-            { label: "Request availability", to: "/contact" },
-          ],
-        };
-      }
+    const requestedCity = city?.name || String(intent.city || "").trim();
+    if (requestedCity) {
+      const status = COVERAGE_COPY[coverage.statusFor(requestedCity)];
+      const params = new URLSearchParams({ city: requestedCity });
+      if (city?.province || province) params.set("province", city?.province || province);
       return {
         role: "assistant",
-        text: `${lead} service isn't live in ${city.name} yet — it's on the planned expansion list, so I can't confirm a pickup there today.`,
-        actions: [
-          { label: "See live coverage", to: "/coverage" },
-          { label: "Bring it to your city", to: "/contractor-onboarding" },
-        ],
+        text: `Got it — ${service.label}${items} in ${requestedCity}. ${status ? `${status.label}. ${status.note}` : "Live coverage is not confirmed; no contractor or pickup window is assumed."} Get a regional estimate and approve the final price before work begins.`,
+        actions: [{ label: "Continue my request", to: `/request-service?${params}` }, { label: "View pricing", to: "/pricing" }],
       };
     }
-
-    if (province) {
-      const active = CITIES.filter((c) => c.province === province && c.status === "active");
-      if (active.length) {
-        return {
-          role: "assistant",
-          text: `That postal code is in ${PROVINCE_NAMES[province]}, where same-day pickup is live and verified in ${active.map((c) => c.name).join(", ")}. Which city is the job in?`,
-          actions: active.map((c) => ({ label: `Book in ${c.name}`, to: `/junk-removal-${c.slug}` })),
-        };
-      }
-      return {
-        role: "assistant",
-        text: `That postal code is in ${PROVINCE_NAMES[province]}. Same-day pickup isn't live in this province yet — verified partners are being onboarded. Our national directory still lists recycling facilities near you.`,
-        actions: [
-          { label: "Browse the directory", to: `/recycling?loc=${encodeURIComponent(PROVINCE_NAMES[province])}` },
-          { label: "Bring it to your city", to: "/contractor-onboarding" },
-        ],
-      };
-    }
-
-    return {
+    if (province) return {
       role: "assistant",
-      text: `Got it — you need ${service.label}${items}. Which city is the job in? Tell me the city or your postal code and I'll check verified coverage right away.`,
+      text: `That postal code identifies ${PROVINCE_NAMES[province]}, not your municipality or a confirmed service territory. Which city is the pickup in?`,
+      actions: [{ label: "View coverage", to: "/coverage" }],
     };
+    return { role: "assistant", text: `Got it — ${service.label}${items}. Which city or municipality is the pickup in?` };
   };
 
   const send = async (text) => {
@@ -182,11 +147,11 @@ export default function ServiceFinder() {
                     <div className="mt-3 flex flex-wrap gap-2">
                       {m.actions.map((a) =>
                         a.href ? (
-                          <a key={a.label} href={a.href} className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65] text-[#102B2A] text-xs font-bold px-3.5 py-2 hover:bg-[#125C4E] transition-colors">
+                          <a key={a.label} href={a.href} className="inline-flex items-center gap-1.5 rounded-full bg-brand-emerald text-market-ink text-xs font-bold px-3.5 py-2 hover:bg-[#125C4E] transition-colors">
                             <Phone className="w-3 h-3" /> {a.label}
                           </a>
                         ) : (
-                          <Link key={a.label} to={a.to} className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65] text-[#102B2A] text-xs font-bold px-3.5 py-2 hover:bg-[#125C4E] transition-colors">
+                          <Link key={a.label} to={a.to} className="inline-flex items-center gap-1.5 rounded-full bg-brand-emerald text-market-ink text-xs font-bold px-3.5 py-2 hover:bg-[#125C4E] transition-colors">
                             {a.label} <ArrowRight className="w-3 h-3" />
                           </Link>
                         )
@@ -224,7 +189,7 @@ export default function ServiceFinder() {
                 aria-label="Describe your job"
                 className="input !bg-[#fafcfb]"
               />
-              <button type="submit" disabled={busy || !input.trim()} aria-label="Send message" className="shrink-0 w-12 rounded-xl bg-[#187B65] text-[#102B2A] flex items-center justify-center hover:bg-[#125C4E] transition-colors disabled:opacity-50">
+              <button type="submit" disabled={busy || !input.trim()} aria-label="Send message" className="shrink-0 w-12 rounded-xl bg-brand-emerald text-market-ink flex items-center justify-center hover:bg-[#125C4E] transition-colors disabled:opacity-50">
                 <Send className="w-4 h-4" />
               </button>
             </form>

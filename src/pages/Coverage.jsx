@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSEO } from "@/lib/seo";
-import { MapPin, CheckCircle2, ArrowRight, Phone, Hourglass, RefreshCw, UserSearch } from "lucide-react";
+import { CheckCircle2, ArrowRight, Phone, Hourglass, RefreshCw, UserSearch } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import { REGIONS } from "@/lib/regions";
@@ -25,6 +25,7 @@ export default function Coverage() {
   const sameDayCitiesList = locations.filter((city) => statusFor(city.name) === "same_day");
   const matchingList = locations.filter((city) => statusFor(city.name) === "matching");
   const recruitingList = locations.filter((city) => statusFor(city.name) === "recruiting");
+  const unavailableList = locations.filter((city) => statusFor(city.name) === "currently_unavailable");
 
   const SECTIONS = [
     {
@@ -59,6 +60,13 @@ export default function Coverage() {
       cities: recruitingList,
       bg: "bg-white",
       empty: "Every registry territory currently has verified capacity or active matching.",
+    },
+    {
+      key: "currently_unavailable", title: "Service Not Currently Available",
+      icon: <Hourglass className="w-5 h-5 text-muted-foreground" />, dot: "bg-muted-foreground",
+      intro: "Verified territory records exist, but no current dispatch availability is confirmed. Requests remain open for review; no pickup is promised.",
+      cardLabel: "No current dispatch availability confirmed", cities: unavailableList,
+      bg: "bg-background", empty: "No listed verified territories are currently marked unavailable.",
     },
   ];
 

@@ -63,3 +63,54 @@ Use the Testing Agent with test data and external side effects disabled. No scen
 | H | Analytics distinguish visits, inquiries, confirmed jobs and verified money. | Not run |
 
 No real payments, job offers or production bookings should be generated for this verification. Deployed 3D rendering is **not verified**; a successful build alone cannot establish it.
+
+## Increment 1 completion report
+
+### Repairs applied
+
+- Attached the 3D canvas to its actual container. Moved the existing network out from behind the booking form into its own responsive area inside the same hero. The form stays first on mobile and does not wait for 3D loading.
+- The interactive SVG is the initial map; 3D replaces it only after initialization and an initial rendering call. Null initialization, import errors and WebGL context loss leave the SVG available. Both maps use the same attributed Natural Earth country geometry, including Arctic islands.
+- Added readable opaque panels, municipal and provincial selectors, keyboard-operable SVG nodes, a white selection ring, city detail panels, source definitions and province-level postal focus. The map explicitly states that focus is not precise postal geocoding and municipalities are not service radii.
+- Removed proximity-created hero links, assumed HQ links, moving data pulses and the national map's invented 35 km coverage circles. Shared-territory lines now require an actual explicit multi-city contractor record. With no such record, no lines are invented.
+- The public coverage endpoint now separates actual open-request matching from registry recruitment and returns aggregate capacity without contractor names. The existing shared hook exposes distinct totals, capacity and explicit territory relationships; its data references are stable across pointer interactions.
+- Homepage map, Service Finder, the request-service form, city pages and coverage views now consume the same live coverage hook. Corrected the touched nationwide/same-day claims and added the unavailable state to the coverage page. This is not a claim that every marketing or booking surface has been audited.
+- Corrected the national map's SDK response handling and distinguished independently listed directory facilities from pickup contractors. Its activity measure is labeled open booking records within the latest 100 records, not active work, a complete national count or proof of genuine customers. Unavailable sources are not displayed as verified zeroes.
+- Homepage intake now collects the actual municipality, validates known municipality/province disagreement, retains the selected NT/NU territory, passes city and canonical item identifiers to the existing quote engine, and uses its description-based estimate for general loads. The canonicalization does not introduce a new rate table, heavy-item charge or discount.
+- Selecting a map city transfers it to the existing homepage form. This is a local handoff, not the full requested cross-page draft system.
+- An instant national inquiry emits national_request_submitted instead of falsely emitting booking_submitted. Historical analytics are untouched; other event-emission sites and conversion reporting still need reconciliation.
+- Request confirmation links prefill the existing tracking lookup. Tracking no longer treats the presence of a contractor name as evidence that the contractor accepted the job; it requires the recorded assignment/dispatch acceptance state.
+- Corrected the integrity-check button's accidental click-event-as-full-audit argument and duplicate check-result ordering. No repair-capable integrity run was invoked.
+
+### Existing systems reused and sources connected
+
+Partner, NationalRequest, PublicOpportunity, Provider, the coverageStatus endpoint, useCoverageStatus, explicit territory helpers, quoteEstimate, existing pricing configuration, activeBookingsMap and requestLookup were reused. No competing entities, booking database, payment integration, workflow or AI agent were created. The hero uses aggregate PublicOpportunity counts rather than calculating totals from a truncated list. Natural Earth provides static geographic boundaries, not service or demand evidence.
+
+### New components and supporting files
+
+HeroNetworkHeader, HeroNetworkScene, HeroNetworkSelection, HeroMapCityStats and PickupCoverageNotice split the oversized hero into focused displays. useHeroNetwork and coveragePresentation share existing data and status language. canadaGeography.json is attributed, public-domain geographic data. IntegrationAuditReport and AuditReportBody present this report in the existing Platform Integrity screen and provide a Markdown download.
+
+### Checks completed and results
+
+| Check | Actual result | What it does not prove |
+| --- | --- | --- |
+| Read-only coverageStatus invocation | HTTP 200; 1 verified contractor covering North Vancouver, 0 contractors recording same-day capability, 0 actual matching municipalities; remaining registry municipalities returned as recruitment. | No contractor accepted a test job; no appointment or delivery was tested. |
+| Targeted lint of modified/new frontend modules | Exit 0, no errors. | No browser interaction, network authorization or accessibility certification. |
+| Production build command | Exit 0. | Not publication, deployed-browser visibility or end-to-end operational success. |
+| Initial mobile symptom inspection | Blank hero map and overlapping legend observed before repair; empty mount found in fetched live homepage HTML. | No after-repair deployed screenshot or live rendering confirmation. |
+
+The initial lint check found eight unused-import errors and one unused-helper warning; these were corrected and the subsequent targeted lint returned exit 0. The build reported an outdated browser-support database warning; no package update was performed. No scenario A–H was run or marked passed. No failed payment, dispatch or notification test was performed, because no such side-effecting test was attempted.
+
+### Remaining limitations and next increment
+
+- **Critical next:** nationalInquiry and createBooking still contain registry-based operational eligibility. Their future-record classification and dispatch behavior need to be unified with verified explicit territories before the complete booking journey can be certified. Existing job records were deliberately not backfilled.
+- Rex instructions, live coverage permission, shared cross-page drafts, conversation persistence, canonical service handoffs and consistent final booking confirmation are not completed in this increment. The map supplies only an optional contextual question, not verified new agent powers.
+- AI regional findings are deliberately not plotted or presented as connected yet. Market Pulse/Observatory, relative-interest datasets, local guidance, public opportunity freshness and source-level reliability need their own review. No artificial activity, reviews or demand were generated.
+- Full regional pricing, heavy items, contractor-marketing prices, the unsupported Rex self-load discount and approval/payment reconciliation remain under audit. **No pricing configuration was changed.** Owner approval is required before any change to published rates or commercial policies.
+- Integration grants, all scheduled execution histories, actual notification delivery, partner provisioning, software tenancy, financial reconciliation, legacy traffic confidence and all remaining public claims still require review. Configuration presence is not integration verification.
+- Active-booking public data still comes from the existing limited feed. Its classification and test-record exclusion require a separate data-quality review before making genuine-customer or operational-volume claims.
+- Reduced-motion handling, an offscreen GPU-render guard and a mobile frame cap were implemented for the hero, but no measured speed improvement, field performance score or complete accessibility result is claimed. The older optional network board still requires a separate performance/WebGL-fallback review.
+- **Live map completion is withheld.** The rendering path is repaired in the current app changes; publication state and actual deployed-browser rendering have not been verified here.
+
+### Safe verification instructions
+
+Open **More actions → Testing agent**. Start with: “Check homepage map visibility, SVG fallback, keyboard/city selection and transfer of the selected city into the pickup form without submitting a request or triggering any external action.” Before scenarios A–H that create records or exercise payment/dispatch, establish an isolated test environment and disable real outbound actions; those protections are not assumed to exist. Do not run production checkout, notifications, recruitment or job-offer creation as a test.

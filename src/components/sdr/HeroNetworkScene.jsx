@@ -21,7 +21,7 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
     const timer = setTimeout(start, 1500);
     return () => { cancelled = true; clearTimeout(timer); instance?.dispose(); scene.current = null; };
   }, [nodes, links]);
-  useEffect(() => { if (ready && focus) scene.current?.focusOn(focus.lat, focus.lng); }, [focus, ready]);
+  useEffect(() => { if (!ready) return; if (focus) scene.current?.focusOn(focus.lat, focus.lng); else scene.current?.resetFocus(); }, [focus, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
     <div className="relative h-64 w-full sm:h-80 lg:h-96" data-map-mode={ready ? "3d" : "2d"}>

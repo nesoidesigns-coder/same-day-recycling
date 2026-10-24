@@ -9,7 +9,7 @@ import { Search, Loader2, CheckCircle2, MapPin, CalendarDays, Clock, Wrench, Sea
 const STATUS_META = {
   new: { label: "Received", tone: "bg-sky-500/15 text-sky-300 border-sky-400/30", copy: "We've received your request and our national dispatch team is taking it from here." },
   provider_matching: { label: "Arranging a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "We operate nationwide — our dispatch team is arranging your local contractor." },
-  recruiting: { label: "Sourcing a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor and will contact you as soon as one accepts. If none accepts, dispatch will contact you with next steps. Nothing is scheduled or charged before a contractor accepts." },
+  recruiting: { label: "Sourcing a contractor", tone: "bg-amber-500/15 text-amber-300 border-amber-400/30", copy: "Your request is saved. We accept requests across Canada — our dispatch team is sourcing your local contractor and will contact you as soon as one accepts. If none accepts, dispatch will contact you with next steps. Nothing is scheduled or charged before a contractor accepts." },
   matched: { label: "Contractor matched", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "A local contractor has been matched. They'll confirm scheduling and pricing with you directly." },
   confirmed: { label: "Confirmed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "Your pickup is confirmed. Dispatch has locked in your appointment." },
   completed: { label: "Completed", tone: "bg-[#187B65]/20 text-[#187B65] border-[#187B65]/40", copy: "This request is complete. Thanks for recycling with the network!" },
@@ -40,7 +40,7 @@ export default function RequestStatus() {
     description: "Enter your reference code to see the live status of your Same Day Recycling service request.",
     path: "/request-status",
   });
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(() => (new URLSearchParams(window.location.search).get("reference") || "").replace(/[^a-z0-9]/gi, "").slice(0, 12).toUpperCase());
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [notFound, setNotFound] = useState(false);
@@ -81,7 +81,6 @@ export default function RequestStatus() {
     ? (Number(result.approved_quote_amount) > 0 ? "Price approved by you" : "Estimate — the final price is confirmed on arrival")
     : (APPROVAL_TEXT[result?.quote_status] || "");
   const providerAccepted = Boolean(
-    result?.partner_name ||
     (result?.kind === "booking"
       ? ["accepted", "scheduled", "completed", "paid"].includes(result.assignment_status)
       : ["contractor_accepted", "pickup_scheduled", "job_completed"].includes(result.dispatch_status))
@@ -199,7 +198,7 @@ export default function RequestStatus() {
                   : <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />}
                 <div>
                   <span className="font-semibold text-white">{providerAccepted ? "Provider accepted" : "Provider matching in progress"}</span>
-                  <span className="text-emerald-100/70"> — {providerAccepted ? `your job is with ${result.partner_name}.` : "no contractor has accepted yet; nothing is scheduled or charged."}</span>
+                  <span className="text-emerald-100/70"> — {providerAccepted ? result.partner_name ? `your job is with ${result.partner_name}.` : "a contractor accepted your job." : "no contractor has accepted yet; nothing is scheduled or charged."}</span>
                 </div>
               </div>
               {est > 0 && (
