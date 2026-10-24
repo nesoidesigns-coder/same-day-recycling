@@ -22,10 +22,11 @@ export default async function(req) {
     };
 
     const byClass = (rows) => {
-      const out = { customer: 0, contractor: 0, owner: 0, bot: 0, total: 0 };
+      const out = { customer: 0, contractor: 0, owner: 0, bot: 0, unverified: 0, total: 0 };
       (rows || []).forEach((row) => {
-        // Records created before classification existed count as customer.
-        const cls = String(row.traffic_class || 'customer');
+        // Records created before classification existed are unverified, not
+        // silently counted as customers.
+        const cls = row.traffic_class == null || row.traffic_class === '' ? 'unverified' : String(row.traffic_class);
         if (cls in out) out[cls] += row.count || 0;
         out.total += row.count || 0;
       });
@@ -48,6 +49,52 @@ export default async function(req) {
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo } }, groupBy: 'traffic_class' }),
     ]);
 
+    // ---- Traffic reconciliation ----
+    // Totals: every visit, split into classified and unverified (pre-classification) records.
+    // Confirmed customers: visits whose anonymous session key (sid) matches a
+    // session that produced a quote request or booking. Everything else stays
+    // unverified — no guessing.
+    const fortnightAgo = new Date(now - 14 * 86400000).toISOString();
+    const [classAll, leadSidRows, bookingSidRows] = await Promise.all([
+      base44.asServiceRole.entities.Visit.aggregate({ query: {}, groupBy: 'traffic_class' }),
+      base44.asServiceRole.entities.QuoteLead.filter({ sid: { $ne: '' } }, { limit: 500 }),
+      base44.asServiceRole.entities.Booking.filter({ sid: { $ne: '' } }, { limit: 500 }),
+    ]);
+    const confirmedSids = [...new Set([
+      ...(leadSidRows.items || leadSidRows || []).map((r) => r.sid).filter(Boolean),
+      ...(bookingSidRows.items || bookingSidRows || []).map((r) => r.sid).filter(Boolean),
+    ])];
+    const confirmedVisits = confirmedSids.length
+      ? await base44.asServiceRole.entities.Visit.count({ sid: { $in: confirmedSids } })
+      : 0;
+    const [dailyGenuine, dailyConfirmed] = await Promise.all([
+      base44.asServiceRole.entities.Visit.aggregate({
+        query: { created_date: { $gte: fortnightAgo }, traffic_class: { $nin: ['owner', 'bot'] } },
+        dateBucket: { field: 'created_date', unit: 'day' },
+      }),
+      confirmedSids.length
+        ? base44.asServiceRole.entities.Visit.aggregate({
+            query: { created_date: { $gte: fortnightAgo }, sid: { $in: confirmedSids } },
+            dateBucket: { field: 'created_date', unit: 'day' },
+          })
+        : Promise.resolve({ rows: [] }),
+    ]);
+    const reconciledAll = byClass(classAll?.rows);
+    // Genuine customer activity by day (Vancouver local days), last 14 days,
+    // with confirmed-customer sessions broken out.
+    const dayKey = (iso) => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/Vancouver' });
+    const genuineByDay = new Map((dailyGenuine?.rows || []).map((r) => [dayKey(r.created_date), r.count || 0]));
+    const confirmedByDay = new Map((dailyConfirmed?.rows || []).map((r) => [dayKey(r.created_date), r.count || 0]));
+    const daily = [];
+    for (let i = 13; i >= 0; i--) {
+      const key = new Date(now - i * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Vancouver' });
+      daily.push({
+        date: key.slice(5),
+        visits: genuineByDay.get(key) || 0,
+        confirmed: confirmedByDay.get(key) || 0,
+      });
+    }
+
     const cityRow = (cityRows?.rows || []).find((r) => String(r.city || '').trim());
     return Response.json({
       visits_24h: bySource(todayRows?.rows),
@@ -60,6 +107,12 @@ export default async function(req) {
         '24h': byClass(classesDay?.rows),
         '7d': byClass(classesWeek?.rows),
         '30d': byClass(classesMonth?.rows),
+      },
+      reconciliation: {
+        totals: reconciledAll,
+        confirmed_sessions: confirmedSids.length,
+        confirmed_visits: confirmedVisits,
+        daily,
       },
     });
   } catch (error) {

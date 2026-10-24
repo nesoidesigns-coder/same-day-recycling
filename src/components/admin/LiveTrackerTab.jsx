@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import { Radio, Activity, Globe, Users, CalendarCheck, MousePointerClick, Facebook, Search, Link2, HelpCircle, Truck, ShieldCheck, Bot } from "lucide-react";
+import { Radio, Activity, Globe, Users, CalendarCheck, MousePointerClick, Facebook, Search, Link2, HelpCircle, Truck, ShieldCheck, Bot, Scale, UserCheck } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import EngagementSection from "@/components/admin/EngagementSection";
+import {
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
+} from "recharts";
 
 function SourceCard({ icon, label, value, total }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
@@ -124,6 +127,56 @@ export default function LiveTrackerTab() {
               </p>
             </div>
           )}
+
+          {stats.reconciliation && (() => {
+            const rec = stats.reconciliation;
+            const t = rec.totals || {};
+            const genuine = (t.customer || 0) + (t.contractor || 0);
+            const rows = [
+              { label: "Genuine customer traffic", value: genuine, tone: "text-[#187B65]" },
+              { label: "Confirmed customers (converted sessions)", value: rec.confirmed_visits || 0, tone: "text-[#102B2A]" },
+              { label: "Owner (you)", value: t.owner || 0, tone: "text-slate-500" },
+              { label: "Bot", value: t.bot || 0, tone: "text-slate-500" },
+              { label: "Unverified (pre-classification)", value: t.unverified || 0, tone: "text-amber-600" },
+            ];
+            return (
+              <div>
+                <h3 className="font-bold text-[#102B2A] mb-1 text-sm flex items-center gap-2">
+                  <Scale className="w-4 h-4 text-[#187B65]" /> Traffic reconciliation (all time)
+                </h3>
+                <p className="text-[11px] text-slate-500 mb-3">
+                  {t.total?.toLocaleString()} visits on record: {genuine.toLocaleString()} genuine customer/contractor visits,
+                  {(t.owner || 0).toLocaleString()} owner visits and {(t.bot || 0).toLocaleString()} bot visits excluded from visitor totals,
+                  and {(t.unverified || 0).toLocaleString()} historical records with no classification (counted separately, never as customers).
+                </p>
+                <div className="rounded-2xl border border-slate-100 divide-y divide-slate-50 mb-4">
+                  {rows.map((r) => (
+                    <div key={r.label} className="px-4 py-3 flex items-center justify-between gap-3">
+                      <span className="text-sm text-slate-600">{r.label}</span>
+                      <span className={`text-sm font-bold tabular-nums ${r.tone}`}>{r.value.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-slate-500 mb-3 flex items-start gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 mt-0.5 text-[#187B65] shrink-0" />
+                  Confirmed customers are visits whose session went on to a quote request or booking ({rec.confirmed_sessions || 0} session(s) confirmed).
+                  All other visits stay unverified until their session converts.
+                </p>
+                <h3 className="font-bold text-[#102B2A] mb-3 text-sm">Genuine customer activity by day (14 days)</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={rec.daily || []}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                    <XAxis dataKey="date" fontSize={10} interval={1} tickMargin={6} />
+                    <YAxis fontSize={11} allowDecimals={false} width={30} />
+                    <Tooltip />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Bar dataKey="visits" fill="#187B65" radius={[4, 4, 0, 0]} name="Genuine customer visits" />
+                    <Bar dataKey="confirmed" fill="#102B2A" radius={[4, 4, 0, 0]} name="Confirmed customers" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            );
+          })()}
 
           <div>
             <h3 className="font-bold text-[#102B2A] mb-3 text-sm">Top pages (24h)</h3>
