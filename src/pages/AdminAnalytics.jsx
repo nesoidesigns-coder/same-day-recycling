@@ -12,6 +12,7 @@ import StatusGauge from "@/components/admin/gauges/StatusGauge";
 import TrendBadge from "@/components/admin/gauges/TrendBadge";
 import StatCard from "@/components/admin/gauges/StatCard";
 import EmptyGauge from "@/components/admin/gauges/EmptyGauge";
+import OwnerActivityDashboard from "@/components/admin/OwnerActivityDashboard";
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 const vanToday = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/Vancouver" });
@@ -419,33 +420,9 @@ export default function AdminAnalytics() {
               </>
             )}
 
-            {tab === "owner" && (
-              <>
-                <h2 className={SECTION_TITLE}>Owner activity</h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <StatCard title="Your visits" value={activity ? activity.owner_visits : "—"} sub="Sessions identified as yours" tone="emerald" />
-                  <StatCard title="Testing sessions" value={activity ? activity.owner_sessions : "—"} sub="Distinct sessions in period" tone="slate" />
-                  <StatCard title="Pages explored" value={activity ? activity.owner_pages : "—"} sub="Distinct pages opened" tone="slate" />
-                  <StatCard title="Test bookings created" value={activity ? activity.test_bookings : "—"} sub="Internal test records" tone="slate" />
-                  {activity && activity.owner_paths.length > 0 && (
-                    <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-5">
-                      <div className="text-sm font-bold text-slate-800 mb-3">Pages you opened most</div>
-                      <div className="space-y-1.5">
-                        {activity.owner_paths.slice(0, 8).map((p) => (
-                          <div key={p.path} className="flex items-center justify-between gap-3 text-xs">
-                            <span className="truncate font-semibold text-slate-700">{p.path}</span>
-                            <span className="shrink-0 font-bold text-slate-500">{p.count} views</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-xs text-slate-600 leading-relaxed">
-                    Time spent per session is not tracked yet — it will appear once visit sessions record duration. Owner activity is tracked separately and never inflates customer or contractor statistics.
-                  </div>
-                </div>
-              </>
-            )}
+            {tab === "owner" && (data ? <OwnerActivityDashboard activity={activity} params={data.period} /> : (
+              <div className="text-sm text-slate-500 py-10 text-center">Choose a period to load owner activity metrics.</div>
+            ))}
           </>
         )}
       </div>
