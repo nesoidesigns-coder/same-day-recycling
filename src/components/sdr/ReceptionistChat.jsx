@@ -18,10 +18,7 @@ export default function ReceptionistChat() {
     return () => window.removeEventListener("rex:open", openRex);
   }, []);
 
-  // The Command Centre's admin pages are working dashboards — the floating
-  // launcher never appears there.
-  if (pathname.startsWith("/admin")) return null;
-
+  // Rex is available on every page — customer, contractor and admin alike.
   return (
     <>
       {!open && (
