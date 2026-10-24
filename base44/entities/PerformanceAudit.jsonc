@@ -7,6 +7,14 @@
       "format": "date",
       "description": "Date the audit actually ran (not when it was recorded)."
     },
+    "tested_at": {
+      "type": "string",
+      "description": "Verified execution timestamp (ISO 8601) actually recorded by the tool or runner when known. Never guessed from import order, test labels or names."
+    },
+    "execution_sequence": {
+      "type": "number",
+      "description": "Owner-verified execution order among same-day tests when no execution timestamp is available (1 = ran first). Set only when the ordering is actually verified; never inferred from import order."
+    },
     "run_label": {
       "type": "string",
       "default": "",
@@ -128,10 +136,10 @@
           "note": {
             "type": "string"
           }
-        }
-      },
-      "default": [],
-      "description": "Immutable event log: recorded, compared, analyzed."
+        },
+        "default": [],
+        "description": "Immutable event log: recorded, compared, analyzed. Chronology corrections are appended here without ever altering the raw imported values."
+      }
     }
   },
   "required": [

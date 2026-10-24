@@ -71,6 +71,10 @@ export default async function (req) {
         tested_url: testedUrl,
         strategy,
         observation_type: observation,
+        tested_at: typeof d.tested_at === 'string' && d.tested_at
+          ? d.tested_at.slice(0, 40)
+          : observation === 'measured_run' ? new Date().toISOString() : '',
+        execution_sequence: d.execution_sequence != null && Number.isFinite(Number(d.execution_sequence)) ? Number(d.execution_sequence) : null,
         performance: numOrNull(d.performance),
         accessibility: numOrNull(d.accessibility),
         seo: numOrNull(d.seo),
@@ -90,16 +94,18 @@ export default async function (req) {
       };
 
       // Previous comparable test: same URL + device strategy. Same tool is
-      // preferred (tool changes are surfaced, never hidden); earlier test
-      // dates take precedence over same-day records.
+      // preferred (tool changes are surfaced, never hidden). Chronology is
+      // resolved by verified execution timestamp, then owner-verified same-day
+      // execution order — never import order or the test's label.
       const prior = (await base44.entities.PerformanceAudit.filter({ tested_url: testedUrl, strategy }, { sort: '-test_date', limit: 20 })).items || [];
-      const rank = (p) => {
-        if (p.test_date < testDate) return p.test_source === source ? 0 : 1;
-        if (p.test_date === testDate && p.test_source === source) return 2;
-        return 3;
-      };
-      prior.sort((a, b) => rank(a) - rank(b));
-      const prev = prior[0] || null;
+      const chronDesc = (a, b) =>
+        String(b.test_date).localeCompare(String(a.test_date)) ||
+        String(b.tested_at || '').localeCompare(String(a.tested_at || '')) ||
+        (b.execution_sequence ?? 0) - (a.execution_sequence ?? 0) ||
+        String(b.created_date || '').localeCompare(String(a.created_date || ''));
+      prior.sort(chronDesc);
+      const sameTool = prior.filter((p) => p.test_source === source);
+      const prev = sameTool[0] || prior[0] || null;
 
       const created = await base44.entities.PerformanceAudit.create(record);
       const comparison = prev ? {

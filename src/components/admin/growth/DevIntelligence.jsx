@@ -68,10 +68,17 @@ export default function DevIntelligence() {
   }, []);
   useEffect(() => { load(); }, [load]);
 
-  const list = audits || [];
+  // Chronology first: verified execution timestamp, then owner-verified
+  // same-day execution order — never import order or the test's label.
+  const chronDesc = (a, b) =>
+    String(b.test_date).localeCompare(String(a.test_date)) ||
+    String(b.tested_at || "").localeCompare(String(a.tested_at || "")) ||
+    (b.execution_sequence ?? 0) - (a.execution_sequence ?? 0) ||
+    String(b.created_date || "").localeCompare(String(a.created_date || ""));
+  const list = [...(audits || [])].sort(chronDesc);
   const latest = list[0] || null;
-  // Previous comparable: same URL + device strategy, earlier than the latest.
-  const previous = latest ? list.find((a) => a.id !== latest.id && a.tested_url === latest.tested_url && a.strategy === latest.strategy) || null : null;
+  // Previous comparable: same URL, device and same tool, earlier in chronology.
+  const previous = latest ? list.find((a) => a.id !== latest.id && a.tested_url === latest.tested_url && a.strategy === latest.strategy && a.test_source === latest.test_source) || null : null;
 
   const cmp = (key, invert) => {
     if (!latest || !previous || latest[key] == null || previous[key] == null || latest[key] === previous[key]) return null;
@@ -184,7 +191,7 @@ export default function DevIntelligence() {
                 </div>
                 <div className="text-sm font-bold text-[#102B2A] mt-2">{a.run_label || SOURCE_LABEL[a.test_source]}</div>
                 <div className="text-[11px] text-slate-500">
-                  {SOURCE_LABEL[a.test_source] || a.test_source} · {a.strategy} · {a.observation_type === "independent_observed" ? "independently observed (historical)" : "measured run"}
+                  {SOURCE_LABEL[a.test_source] || a.test_source} · {a.strategy} · {a.observation_type === "independent_observed" ? "independently observed (imported · historical, not live)" : "measured run"}
                 </div>
                 <div className="mt-3 grid grid-cols-3 md:grid-cols-6 gap-2">
                   {scoreChip("Perf", a.performance)}{scoreChip("A11y", a.accessibility)}{scoreChip("SEO", a.seo)}
@@ -205,7 +212,7 @@ export default function DevIntelligence() {
 
           {/* Trend summary */}
           <div className="mt-4 rounded-3xl bg-white border border-slate-100 shadow-sm p-5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65] mb-3">Performance trend · latest vs previous comparable</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65] mb-3">Performance trend · latest vs previous comparable (verified chronology)</div>
             {previous ? (
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
                 {[["Performance", cmp("performance")], ["Accessibility", cmp("accessibility")], ["SEO", cmp("seo")], ["Best Practices", cmp("best_practices")], ["AI assessment", aiCmp]].map(([label, t]) => (
@@ -222,6 +229,55 @@ export default function DevIntelligence() {
               <p className="text-xs text-slate-500">No earlier comparable test (same URL and device) on record — a trend needs at least two comparable tests.</p>
             )}
           </div>
+
+          {/* Trends within each tool: every comparable pair, imported pairs included */}
+          {(() => {
+            const groups = new Map();
+            list.forEach((a) => {
+              const key = `${a.tested_url}|${a.strategy}|${a.test_source}`;
+              if (!groups.has(key)) groups.set(key, []);
+              groups.get(key).push(a);
+            });
+            const pairs = [...groups.values()].filter((g) => g.length >= 2).map((g) => ({ latest: g[0], previous: g[1] }));
+            if (!pairs.length) return null;
+            const deltaOf = (l, p, key) => {
+              if (l[key] == null || p[key] == null || l[key] === p[key]) return null;
+              const delta = l[key] - p[key];
+              return { delta, better: key === "tbt_ms" || key === "lcp_seconds" ? delta < 0 : delta > 0 };
+            };
+            const aiDelta = (l, p) => {
+              if (l.ai_score == null || p.ai_score == null || l.ai_score_max !== p.ai_score_max || l.ai_score === p.ai_score) return null;
+              return { delta: l.ai_score - p.ai_score, better: l.ai_score > p.ai_score };
+            };
+            return (
+              <div className="mt-4 rounded-3xl bg-white border border-slate-100 shadow-sm p-5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65] mb-3">Trends within each tool · latest vs previous comparable</div>
+                <div className="space-y-3">
+                  {pairs.map(({ latest: l, previous: p }) => (
+                    <div key={`${p.id}-${l.id}`} className="rounded-xl bg-[#f4f7f5] px-3 py-2.5">
+                      <div className="text-[11px] font-bold text-[#102B2A]">
+                        {l.run_label || SOURCE_LABEL[l.test_source] || "Latest"} <span className="font-semibold text-slate-400">vs</span> {p.run_label || SOURCE_LABEL[p.test_source] || "previous"}
+                      </div>
+                      <div className="text-[10px] text-slate-500">
+                        {SOURCE_LABEL[l.test_source] || l.test_source} · {l.strategy} · {l.test_date} vs {p.test_date}
+                        {l.observation_type === "independent_observed" ? " · imported, historical (not live)" : ""}
+                      </div>
+                      <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold text-[#102B2A]">
+                        {[["accessibility", deltaOf(l, p, "accessibility")], ["AI assessment", aiDelta(l, p)], ["performance", deltaOf(l, p, "performance")], ["SEO", deltaOf(l, p, "seo")], ["Best Practices", deltaOf(l, p, "best_practices")]].map(([label, t]) => (
+                          t ? (
+                            <span key={label} className="inline-flex items-center gap-1">
+                              {trendIcon(t.better ? "improved" : "regressed")} {label} {t.delta > 0 ? "+" : ""}{t.delta}
+                              {label === "AI assessment" ? ` (${p.ai_score}→${l.ai_score}/${l.ai_score_max})` : ""}
+                            </span>
+                          ) : null
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Targets */}
           <div className="mt-4 rounded-3xl bg-white border border-slate-100 shadow-sm p-5">
