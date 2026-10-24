@@ -22,6 +22,7 @@ const links = [
   { label: "Track Your Request", to: "/request-status" },
   { label: "Recycling Centers", to: "/recycling-centers" },
   { label: "Blog", to: "/blog" },
+  { label: "Community Forum", to: "/community" },
   { label: "Fleet Gallery", to: "/gallery" },
   { label: "Pricing", to: "/pricing" },
   { label: "Software OS", to: "/software" },

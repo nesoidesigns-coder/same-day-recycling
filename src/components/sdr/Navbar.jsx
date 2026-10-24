@@ -9,6 +9,7 @@ const primaryLinks = [
   { label: "How It Works", to: "/#how-it-works" },
   { label: "Service Area", to: "/#service-area" },
   { label: "Business Solutions", to: "/subscriptions" },
+  { label: "Community", to: "/community" },
   { label: "Recycling OS", to: "/software" },
   { label: "Contact", to: "/contact" },
 ];
