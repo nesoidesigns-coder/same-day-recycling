@@ -3,7 +3,9 @@ import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
-import HomeHero from "@/components/sdr/HomeHero";
+import DiscoveryHero from "@/components/home/DiscoveryHero";
+import HomeDiscoveryFeed from "@/components/home/HomeDiscoveryFeed";
+import AuroraBackdrop from "@/components/home/AuroraBackdrop";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
 import Booking from "@/components/sdr/Booking";
@@ -55,7 +57,16 @@ export default function Home() {
       <TopBar />
       <Navbar />
       <InstantQuoteFlow />
-      <HomeHero onCity={(city) => bookFromQuote({ city })} />
+      <div className="aurora-canvas relative">
+        <AuroraBackdrop />
+        <div className="relative">
+          <InstantQuoteFlow />
+          <DiscoveryHero />
+          <section id="live-discovery" className="relative max-w-6xl mx-auto px-4 pb-12 md:pb-16">
+            <HomeDiscoveryFeed />
+          </section>
+        </div>
+      </div>
       <RecyclingPulse />
       <LazySection minHeight={440}><RexJourney onBook={bookFromQuote} /></LazySection>
       <LazySection minHeight={480}><TrustGauges /></LazySection>

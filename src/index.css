@@ -381,6 +381,57 @@ h1, h2, h3, h4, p, a, span, li, button {
   background: radial-gradient(circle at 30% 30%, #fbbf24, #b45309);
 }
 
+/* ---- Aurora Glass discovery network (home) ---- */
+
+.aurora-canvas {
+  background:
+    radial-gradient(620px 420px at 6% 0%, rgba(24, 123, 101, 0.14), transparent 65%),
+    radial-gradient(560px 400px at 96% 2%, rgba(14, 155, 181, 0.13), transparent 62%),
+    radial-gradient(760px 560px at 50% 30%, rgba(24, 123, 101, 0.08), transparent 70%),
+    linear-gradient(180deg, #fbfdfc 0%, #f6fbf9 100%);
+}
+
+.aurora-grid-overlay {
+  background-image:
+    linear-gradient(rgba(16, 43, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 43, 42, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000 0%, transparent 100%);
+  mask-image: radial-gradient(70% 60% at 50% 0%, #000 0%, transparent 100%);
+}
+
+.aurora-blob {
+  border-radius: 9999px;
+  filter: blur(48px);
+  background: radial-gradient(circle, rgba(24, 123, 101, 0.22), transparent 70%);
+  animation: aurora-drift 14s ease-in-out infinite;
+}
+
+.aurora-blob--cyan {
+  background: radial-gradient(circle, rgba(14, 155, 181, 0.2), transparent 70%);
+}
+
+@keyframes aurora-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(12px, -16px, 0) scale(1.08); }
+}
+
+.aurora-rise {
+  animation: aurora-rise 0.5s ease-out both;
+}
+
+@keyframes aurora-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.aurora-grad-text {
+  background: linear-gradient(92deg, #187B65 10%, #0E9BB5 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* ---- Reduced motion: calm every ambient animation at once ---- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -396,7 +447,9 @@ h1, h2, h3, h4, p, a, span, li, button {
   .pulse-arc-spin,
   .rex-orb--processing::before,
   .rex-orb--listening,
-  .rex-orb--processing .rex-orb__core {
+  .rex-orb--processing .rex-orb__core,
+  .aurora-blob,
+  .aurora-rise {
     animation: none !important;
   }
 
