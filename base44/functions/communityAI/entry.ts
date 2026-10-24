@@ -18,9 +18,9 @@ export default async function(req) {
     if (!question) return Response.json({ error: 'A question is required.' }, { status: 400 });
 
     const [posts, resources, comments] = await Promise.all([
-      base44.asServiceRole.entities.CommunityPost.list({ status: 'published' }, { limit: 150, sort: '-created_date' }),
-      base44.asServiceRole.entities.CommunityResource.list({ status: 'published' }, { limit: 100, sort: '-created_date' }),
-      base44.asServiceRole.entities.CommunityComment.list({ status: 'published' }, { limit: 300, sort: '-created_date' }),
+      base44.asServiceRole.entities.CommunityPost.filter({ status: 'published' }, { limit: 150, sort: '-created_date' }),
+      base44.asServiceRole.entities.CommunityResource.filter({ status: 'published' }, { limit: 100, sort: '-created_date' }),
+      base44.asServiceRole.entities.CommunityComment.filter({ status: 'published' }, { limit: 300, sort: '-created_date' }),
     ]);
     const postRows = items(posts);
     const commentRows = items(comments);

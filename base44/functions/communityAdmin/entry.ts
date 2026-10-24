@@ -69,9 +69,9 @@ export default async function(req) {
 
     if (action === 'queue') {
       const [reports, flaggedPosts, pendingResources] = await Promise.all([
-        base44.asServiceRole.entities.CommunityReport.list({ status: 'open' }, { limit: 100, sort: '-created_date' }),
-        base44.asServiceRole.entities.CommunityPost.list({ status: 'pending_review' }, { limit: 100, sort: '-created_date' }),
-        base44.asServiceRole.entities.CommunityResource.list({ status: 'pending_review' }, { limit: 100, sort: '-created_date' }),
+        base44.asServiceRole.entities.CommunityReport.filter({ status: 'open' }, { limit: 100, sort: '-created_date' }),
+        base44.asServiceRole.entities.CommunityPost.filter({ status: 'pending_review' }, { limit: 100, sort: '-created_date' }),
+        base44.asServiceRole.entities.CommunityResource.filter({ status: 'pending_review' }, { limit: 100, sort: '-created_date' }),
       ]);
       return Response.json({
         reports: items(reports),
@@ -144,8 +144,8 @@ export default async function(req) {
 
     if (action === 'insights') {
       const [posts, comments, profiles, opportunities] = await Promise.all([
-        base44.asServiceRole.entities.CommunityPost.list({ status: 'published' }, { limit: 300, sort: '-created_date' }),
-        base44.asServiceRole.entities.CommunityComment.list({ status: 'published' }, { limit: 500, sort: '-created_date' }),
+        base44.asServiceRole.entities.CommunityPost.filter({ status: 'published' }, { limit: 300, sort: '-created_date' }),
+        base44.asServiceRole.entities.CommunityComment.filter({ status: 'published' }, { limit: 500, sort: '-created_date' }),
         base44.asServiceRole.entities.CommunityProfile.list({ limit: 500 }),
         base44.asServiceRole.entities.CommunityOpportunity.list({ limit: 200, sort: '-created_date' }),
       ]);
