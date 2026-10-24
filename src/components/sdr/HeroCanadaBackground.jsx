@@ -113,7 +113,9 @@ export default function HeroCanadaBackground() {
       if (disposed || instance || !mountRef.current || !nodes.length) return;
       const mod = await import("./HeroCanadaMap3D");
       if (disposed) return;
-      instance = mod.mountHeroCanadaScene(mountRef.current, {
+      const mountFn = mod.mountHeroCanadaScene || mod.default;
+      if (typeof mountFn !== "function") return; // scene module failed to load — page stays fully usable
+      instance = mountFn(mountRef.current, {
         nodes, links, focusRef, mobile: window.innerWidth < 640,
         onSelect: (node) => {
           setSelected(node);
