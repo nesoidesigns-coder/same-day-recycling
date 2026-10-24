@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { PUBLIC_POST_QUERY } from "@/components/sdr/useHeroNetwork";
+import { networkCopy, networkServiceName, networkTimestamp } from "@/components/sdr/heroNetworkCopy";
 
-export default function HeroMapCityStats({ node }) {
+export default function HeroMapCityStats({ node, lang = "en" }) {
+  const t = networkCopy(lang);
   const services = useQuery({
     queryKey: ["hero-city-post-services", node.name],
     queryFn: () => base44.entities.PublicOpportunity.aggregate({ query: { ...PUBLIC_POST_QUERY, city: node.name }, groupBy: "service_category" }),
@@ -10,12 +12,12 @@ export default function HeroMapCityStats({ node }) {
   });
   return (
     <div className="mt-3 space-y-2 border-t border-market-line pt-3 text-sm text-market-ink">
-      <p>{node.contractors} verified contractor{node.contractors === 1 ? "" : "s"} covering this municipality.</p>
-      <p>{node.stats.open === null ? "Public-post counts unavailable." : `${node.stats.open} open public service post${node.stats.open === 1 ? "" : "s"} recorded.`}</p>
-      {(services.data?.rows || []).map((r) => <span key={r.service_category} className="mr-2 inline-block rounded-full border border-market-line px-2 py-1 text-xs">{String(r.service_category || "other").replaceAll("_", " ")}: {r.count}</span>)}
-      {services.isError && <p className="text-xs text-market-muted">Service breakdown unavailable.</p>}
-      {node.capacity && <p className="text-xs text-market-muted">{node.capacity.available} accepting dispatch; {node.capacity.same_day} record same-day capability. No slot is confirmed by these counts.</p>}
-      <p className="text-xs text-market-muted">Source: explicit contractor territories and open public posts, current snapshot. Posts are not bookings or search volumes.</p>
+      <p>{t.contractorRecords}: <strong>{node.contractors ?? "—"}</strong>.</p>
+      <p>{node.stats.open === null ? t.publicUnavailable : `${t.publicRecords}: ${node.stats.open}.`}</p>
+      {(services.data?.rows || []).map((r) => <span key={r.service_category} className="mr-2 inline-block rounded-full border border-market-line px-2 py-1 text-xs">{networkServiceName(r.service_category, lang)}: {r.count}</span>)}
+      {services.isError && <p className="text-xs text-market-muted">{t.serviceError}</p>}
+      {node.capacity && <p className="text-xs leading-relaxed text-market-muted">{node.capacity.available} {t.accepting}; {node.capacity.same_day} {t.sameDay}</p>}
+      <p className="text-xs leading-relaxed text-market-muted">{t.citySource} · {node.name}. {t.notBookings}<br />{t.contractors}: {networkTimestamp(node.coverageAt, lang)}<br />{t.posts}: {networkTimestamp(node.publicAt, lang)}</p>
     </div>
   );
 }

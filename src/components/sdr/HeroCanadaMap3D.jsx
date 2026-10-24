@@ -73,8 +73,9 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
 
   // Dimensional landmass — bright enough to read against the hero background
   const landGroup = new THREE.Group();
-  const landMat = new THREE.MeshStandardMaterial({ color: 0x247b68, roughness: 0.85, metalness: 0.15 });
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.9 });
+  // Neutral geography keeps emerald reserved for actual verified-territory nodes.
+  const landMat = new THREE.MeshStandardMaterial({ color: 0x3c4b50, roughness: 0.85, metalness: 0.15 });
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0xa4bab8, transparent: true, opacity: 0.9 });
   CANADA_OUTLINES.forEach((poly) => {
     const geo = new THREE.ExtrudeGeometry(landShape(poly), { depth: 0.8, bevelEnabled: false });
     const mesh = new THREE.Mesh(geo, landMat);

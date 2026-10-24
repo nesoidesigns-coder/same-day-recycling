@@ -3,14 +3,16 @@ import { CITIES } from "@/lib/cities";
 import PickupCoverageNotice from "@/components/sdr/PickupCoverageNotice";
 import { base44 } from "@/api/base44Client";
 import {
-  MapPin, Loader2, ArrowRight, ArrowLeft, CheckCircle2, Package, Calculator,
-  Plus, Minus, ShieldCheck, Sparkles,
+  MapPin, Loader2, ArrowRight, ArrowLeft, CheckCircle2, Calculator,
+  Plus, Minus, ShieldCheck,
 } from "lucide-react";
 import {
   normalizePostal, isValidPostal, provinceFromFsa, territoryNeeded, provinceName,
 } from "@/lib/geo";
 import { TAX_RATES } from "@/lib/canadaTax";
 import HeroCanadaBackground from "@/components/sdr/HeroCanadaBackground";
+import PickupHeroHeading from "@/components/sdr/PickupHeroHeading";
+import { networkRegionName } from "@/components/sdr/heroNetworkCopy";
 
 // Canada-first guided booking experience: postal code → materials → labeled
 // estimate → pickup request. Bilingual (EN/FR), CAD, province-level tax shown
@@ -20,8 +22,8 @@ import HeroCanadaBackground from "@/components/sdr/HeroCanadaBackground";
 const T = {
   en: {
     tag: "Instant pickup request",
-    title: "Get your pickup started in under a minute.",
-    sub: "Enter your Canadian postal code, pick your items, see an honest estimate — done.",
+    title: "Junk removal. Recycling. Your next pickup.",
+    sub: "Start with your postal code. Choose your items, review an estimate and request a pickup anywhere in Canada.",
     postal: "Your postal code",
     postalPh: "e.g. V6B 1A1",
     postalNext: "Continue",
@@ -49,7 +51,7 @@ const T = {
     rexCues: [
       "I've got this — start with your postal code.",
       "Nice. Now tap what you need gone — rough numbers are fine.",
-      "Here's your honest estimate. Leave the pricing to me.",
+      "This is a preliminary estimate. You approve the final price before work begins.",
       "Request received. Dispatch must confirm your contractor, price and pickup window.",
     ],
     errors: {
@@ -61,8 +63,8 @@ const T = {
   },
   fr: {
     tag: "Demande de collecte instantanée",
-    title: "Démarrez votre collecte en moins d'une minute.",
-    sub: "Entrez votre code postal canadien, choisissez vos articles, obtenez une estimation honnête — c'est fait.",
+    title: "Débarras. Recyclage. Votre prochaine collecte.",
+    sub: "Commencez par votre code postal. Choisissez vos articles, consultez une estimation et demandez une collecte au Canada.",
     postal: "Votre code postal",
     postalPh: "p. ex. V6B 1A1",
     postalNext: "Continuer",
@@ -90,7 +92,7 @@ const T = {
     rexCues: [
       "Je m'en occupe — commencez par votre code postal.",
       "Parfait. Touchez ce que vous voulez faire enlever — des chiffres approximatifs suffisent.",
-      "Voici votre estimation honnête. Laissez-moi gérer le prix.",
+      "Il s'agit d'une estimation préliminaire. Vous approuvez le prix final avant le travail.",
       "Demande reçue. L'équipe doit confirmer votre entrepreneur, le prix et la plage horaire.",
     ],
     errors: {
@@ -114,8 +116,6 @@ const MATERIALS = [
   { key: "boxes", en: "Bags / boxes of junk", fr: "Sacs / boîtes de déchets", service: "junk_removal" },
   { key: "cleanout", en: "Garage / estate cleanout", fr: "Nettoyage de garage / succession", service: "cleanouts" },
 ];
-
-const STEP_ICONS = [MapPin, Package, Calculator];
 
 export default function InstantQuoteFlow() {
   const [lang, setLang] = useState("en");
@@ -241,41 +241,13 @@ export default function InstantQuoteFlow() {
 
   return (
     <section id="book" className="relative bg-market-bg text-market-ink">
-      <div className="mx-auto grid max-w-7xl items-start lg:grid-cols-2">
-      <div className="min-w-0 px-4 py-7 md:py-10 lg:px-6">
-        <div className="flex items-center justify-between gap-3 mb-6">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#54D9AE] uppercase">{t.tag}</div>
-          <div className="flex rounded-full border border-white/20 p-0.5" role="group" aria-label="Language">
-            {["en", "fr"].map((l) => (
-              <button key={l} onClick={() => setLang(l)} className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase transition-colors ${lang === l ? "bg-brand-emerald text-market-ink" : "text-white/60 hover:text-white"}`}>
-                {l === "en" ? "EN" : "FR"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight">{step === 3 ? t.done : t.title}</h2>
-        {step !== 3 && <p className="mt-3 text-slate-300 text-sm md:text-base">{t.sub}</p>}
-
-        {/* Progress */}
-        <div className="mt-5 flex items-center gap-2">
-          {STEP_ICONS.map((Icon, i) => (
-            <div key={i} className={`h-1.5 rounded-full flex-1 ${step > i ? "bg-[#187B65]" : step === i ? "bg-[#187B65]/50" : "bg-white/10"}`} />
-          ))}
-        </div>
-
-        {/* Rex assist bar */}
-        <div className="mt-5 flex items-center gap-3 rounded-2xl bg-white/5 border border-[#187B65]/30 px-4 py-3">
-          <span className="rex-orb rex-orb--listening w-9 h-9"><span className="rex-orb__core" /></span>
-          <p className="text-sm text-emerald-50/90 flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-[#187B65] shrink-0" />
-            {t.rexCues[Math.min(step, t.rexCues.length - 1)]}
-          </p>
-        </div>
-
-        <div className="mt-6">
+      <div className="mx-auto grid max-w-screen-2xl items-start gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(21rem,0.85fr)_minmax(0,1.4fr)] lg:gap-7 lg:py-6">
+      <div className="min-w-0">
+        <PickupHeroHeading lang={lang} onLanguage={setLang} step={step} copy={t} />
+        <div className="mt-4">
           {step === 0 && (
-            <div className="rounded-3xl bg-white/5 border border-white/10 p-6 md:p-8">
+            <div className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
+              <div className="grid grid-cols-2 gap-3">
               <label className="block">
                 <span className="block text-sm font-semibold mb-1.5">{t.postal}</span>
                 <input
@@ -289,39 +261,40 @@ export default function InstantQuoteFlow() {
                 />
               </label>
               {territoryNeeded(normalizePostal(postalRaw)) && (
-                <div className="mt-4">
+                <div className="order-3 col-span-2 mt-1">
                   <span className="block text-sm font-semibold mb-2">{t.pickTerritory}</span>
                   <div className="flex gap-2">
                     {["NT", "NU"].map((c) => (
                       <button key={c} onClick={() => setTerritory(c)} className={`rounded-full border px-4 py-2 text-sm font-bold transition-colors ${territory === c ? "bg-brand-emerald text-market-ink border-[#187B65]" : "border-white/25 hover:border-[#187B65]"}`}>
-                        {c === "NT" ? "Northwest Territories" : "Nunavut"}
+                        {networkRegionName({ code: c, name: c === "NT" ? "Northwest Territories" : "Nunavut" }, lang)}
                       </button>
                     ))}
                   </div>
                 </div>
               )}
-              <label className="mt-4 block">
+              <label className="block">
                 <span className="mb-1.5 block text-sm font-semibold">{lang === "fr" ? "Ville / municipalité" : "City / municipality"}</span>
-                <input value={city} onChange={(e) => setCity(e.target.value)} list="instant-pickup-cities" maxLength={120} className="input bg-white/95" autoComplete="address-level2" placeholder={lang === "fr" ? "Votre ville au Canada" : "Your Canadian municipality"} />
+                <input value={city} onChange={(e) => setCity(e.target.value)} list="instant-pickup-cities" maxLength={120} className="input bg-white/95" autoComplete="address-level2" placeholder={lang === "fr" ? "Votre ville" : "City name"} />
                 <datalist id="instant-pickup-cities">{CITIES.map((c) => <option key={c.name} value={c.name} />)}</datalist>
               </label>
+              </div>
               {postalOk && <PickupCoverageNotice city={city} lang={lang} dark />}
               {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
-              <button onClick={goPostal} className="mt-5 w-full rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors flex items-center justify-center gap-2">
+              <button onClick={goPostal} className="mt-5 w-full rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors flex items-center justify-center gap-2">
                 {t.postalNext} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           )}
 
           {step === 1 && (
-            <div className="rounded-3xl bg-white/5 border border-white/10 p-6 md:p-8">
+            <div className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h3 className="text-lg font-bold">{t.materials}</h3>
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#54D9AE]">
-                  <MapPin className="w-3.5 h-3.5" /> {postalRaw || fsa} · {provinceName(province) || province}
+                  <MapPin className="w-3.5 h-3.5" /> {postalRaw || fsa} · {networkRegionName({ code: province, name: provinceName(province) || province }, lang)}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mb-4">{t.materialsSub}</p>
+              <p className="text-xs text-market-muted mb-4">{t.materialsSub}</p>
               <PickupCoverageNotice city={city} lang={lang} dark />
               <div className="grid sm:grid-cols-2 gap-2">
                 {MATERIALS.map((m) => (
@@ -344,7 +317,7 @@ export default function InstantQuoteFlow() {
                 <button onClick={() => setStep(0)} className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold hover:border-white/50 transition-colors inline-flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" /> {lang === "fr" ? "Retour" : "Back"}
                 </button>
-                <button onClick={getEstimate} disabled={loading} className="flex-1 rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <button onClick={getEstimate} disabled={loading} className="flex-1 rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Calculator className="w-5 h-5" />}
                   {loading ? t.submitting : t.estNext}
                 </button>
@@ -353,7 +326,7 @@ export default function InstantQuoteFlow() {
           )}
 
           {step === 2 && estimate && (
-            <form onSubmit={submit} className="rounded-3xl bg-white/5 border border-white/10 p-6 md:p-8">
+            <form onSubmit={submit} className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
               <h3 className="text-lg font-bold">{t.estimate}</h3>
               <div className="mt-4 rounded-2xl bg-[#102B2A]/60 border border-[#187B65]/25 p-5">
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{estimate.range}</div>
@@ -370,7 +343,7 @@ export default function InstantQuoteFlow() {
                 </div>
                 <p className="mt-3 text-[11px] text-market-muted">{t.taxNote}</p>
                 <p className="mt-1 text-[11px] text-market-muted flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />{t.incl}</p>
-                <p className="mt-2 text-[11px] text-slate-400">
+                <p className="mt-2 text-[11px] text-market-muted">
                   {lang === "fr" ? "Estimation préliminaire. Le prix final est soumis à votre approbation avant le travail. Tout ajout exige une approbation distincte." : "Preliminary estimate. You approve the final price before work begins. Additional items require a separate quote and your approval."}
                 </p>
               </div>
@@ -388,7 +361,7 @@ export default function InstantQuoteFlow() {
                 <button type="button" onClick={() => setStep(1)} className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold hover:border-white/50 transition-colors inline-flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" /> {lang === "fr" ? "Retour" : "Back"}
                 </button>
-                <button type="submit" disabled={loading} className="flex-1 rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <button type="submit" disabled={loading} className="flex-1 rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
                   {loading ? t.submitting : t.submit}
                 </button>
@@ -399,11 +372,11 @@ export default function InstantQuoteFlow() {
           {step === 3 && (
             <div className="rounded-3xl bg-white/5 border border-[#187B65]/40 p-6 md:p-8 text-center">
               <CheckCircle2 className="w-12 h-12 text-[#187B65] mx-auto" />
-              <p className="mt-3 text-sm text-emerald-100/70">{t.doneSub}</p>
+              <p className="mt-3 text-sm text-market-muted">{t.doneSub}</p>
               <div className="mt-3 inline-block rounded-2xl bg-[#102B2A]/70 border border-[#187B65]/30 px-6 py-3 font-mono text-xl font-bold tracking-[0.25em] text-white">
                 {result?.reference_code || "PENDING"}
               </div>
-              <p className="mt-4 text-xs text-slate-400">{t.matchingNote}</p>
+              <p className="mt-4 text-xs text-market-muted">{t.matchingNote}</p>
               <a href={`/request-status?reference=${encodeURIComponent(result?.reference_code || "")}`} className="mt-5 inline-block rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
                 {lang === "fr" ? "Suivre ma demande" : "Track my request"}
               </a>
@@ -411,7 +384,7 @@ export default function InstantQuoteFlow() {
           )}
         </div>
       </div>
-      <div className="min-w-0 px-4 pb-7 lg:py-10 lg:pl-0 lg:pr-6"><HeroCanadaBackground /></div>
+      <div className="min-w-0"><HeroCanadaBackground lang={lang} /></div>
       </div>
     </section>
   );

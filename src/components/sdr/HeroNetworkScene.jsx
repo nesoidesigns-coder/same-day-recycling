@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import HeroCanadaMap2D from "@/components/sdr/HeroCanadaMap2D";
+import { networkCopy } from "@/components/sdr/heroNetworkCopy";
 
-export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover }) {
+export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover, lang = "en" }) {
+  const t = networkCopy(lang);
   const mount = useRef(null), scene = useRef(null), callbacks = useRef({ onSelect, onHover });
   const [ready, setReady] = useState(false);
   callbacks.current = { onSelect, onHover };
@@ -24,10 +26,10 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
   useEffect(() => { if (!ready) return; if (focus) scene.current?.focusOn(focus.lat, focus.lng); else scene.current?.resetFocus(); }, [focus, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
-    <div className="relative h-64 w-full sm:h-80 lg:h-96" data-map-mode={ready ? "3d" : "2d"}>
-      {!ready && <HeroCanadaMap2D nodes={nodes} links={links} focus={focus} selectedKey={selectedKey} onSelect={onSelect} />}
+    <div className="relative h-72 w-full sm:h-96 lg:h-[28rem] xl:h-[30rem]" data-map-mode={ready ? "3d" : "2d"}>
+      {!ready && <HeroCanadaMap2D nodes={nodes} links={links} focus={focus} selectedKey={selectedKey} onSelect={onSelect} lang={lang} />}
       <div ref={mount} aria-hidden="true" className={ready ? "absolute inset-0" : "invisible absolute inset-0"} />
-      <span className="pointer-events-none absolute bottom-2 left-3 rounded-full bg-market-bg px-2 py-1 text-xs font-semibold text-market-ink">{ready ? "3D network" : "Interactive 2D map"}</span>
+      <span className="pointer-events-none absolute bottom-3 left-4 rounded-full border border-market-line bg-market-bg px-3 py-1 text-xs font-semibold text-market-ink">{ready ? t.network3d : t.network2d}</span>
     </div>
   );
 }

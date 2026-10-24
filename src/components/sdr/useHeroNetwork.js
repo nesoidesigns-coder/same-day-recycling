@@ -25,7 +25,7 @@ export default function useHeroNetwork() {
       const status = coverage.statusFor(city.name);
       const open = demand.isSuccess ? counts.get(norm(city.name)) || 0 : null;
       const layer = coverage.verifiedCities.has(norm(city.name)) ? "verified" : open > 0 ? "demand" : status === "matching" ? "matching" : status ? "recruiting" : "unknown";
-      return { key: city.name, name: city.name, lat: city.lat, lng: city.lng, city, layer, availability: status, contractors: coverage.contractorCounts[city.name] || 0, capacity: coverage.capacityFor(city.name), stats: { open } };
+      return { key: city.name, name: city.name, lat: city.lat, lng: city.lng, city, layer, availability: status, contractors: coverage.loaded ? coverage.contractorCounts[city.name] || 0 : null, coverageAt: coverage.loaded ? coverage.generatedAt : null, publicAt: demand.isSuccess ? demand.data?.observedAt : null, capacity: coverage.loaded ? coverage.capacityFor(city.name) : null, stats: { open } };
     });
     const byName = new Map(nodes.map((n) => [norm(n.name), n]));
     const links = coverage.territoryLinks.flatMap((link) => {
