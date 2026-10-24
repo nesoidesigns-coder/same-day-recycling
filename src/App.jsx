@@ -29,6 +29,7 @@ const AdminLayout = lazyPage(() => import('@/components/admin/AdminLayout'));
 const AdminDispatch = lazyPage(() => import('./pages/AdminDispatch'));
 const AdminLeads = lazyPage(() => import('./pages/AdminLeads'));
 const AdminPipeline = lazyPage(() => import('./pages/AdminPipeline'));
+const AdminGbpPipeline = lazyPage(() => import('./pages/AdminGbpPipeline'));
 const AdminAssignments = lazyPage(() => import('./pages/AdminAssignments'));
 const AdminPartners = lazyPage(() => import('./pages/AdminPartners'));
 const AdminPayouts = lazyPage(() => import('./pages/AdminPayouts'));
@@ -214,6 +215,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/jobs" element={<AdminDispatch />} />
           <Route path="/admin/leads" element={<AdminLeads />} />
           <Route path="/admin/pipeline" element={<AdminPipeline />} />
+          <Route path="/admin/gbp" element={<AdminGbpPipeline />} />
           <Route path="/admin/assignments" element={<AdminAssignments />} />
           <Route path="/admin/partners" element={<AdminPartners />} />
           <Route path="/admin/applications" element={<AdminApplications />} />

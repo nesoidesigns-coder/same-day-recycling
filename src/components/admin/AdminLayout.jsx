@@ -21,6 +21,7 @@ const OPS = [
   { to: "/admin/payouts", label: "Payouts", icon: Wallet },
   { to: "/admin/revenue", label: "Revenue Intelligence", icon: PieChart },
   { to: "/admin/conversion", label: "Conversion Funnel", icon: Filter },
+  { to: "/admin/gbp", label: "GBP Funnel", icon: MapPin },
   { to: "/admin/agreements", label: "Agreements", icon: FileSignature },
   { to: "/admin/disputes", label: "Disputes", icon: Scale },
   { to: "/admin/reputation", label: "Reputation", icon: ShieldCheck },

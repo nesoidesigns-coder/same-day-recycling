@@ -50,6 +50,12 @@
       ],
       "default": "new"
     },
+    "source": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40,
+      "description": "Attribution tag set by the owner for manually captured inquiries (e.g. google_business). Session-based attribution uses the sid field."
+    },
     "sid": {
       "type": "string",
       "default": "",

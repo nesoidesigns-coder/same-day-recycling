@@ -74,6 +74,15 @@ export default async function(req) {
       source = 'other';
     }
 
+    // Google Business Profile / Maps traffic: attributed ahead of generic
+    // search so the GBP funnel (visit -> inquiry -> quote -> completed job
+    // -> commission) can be tracked end-to-end.
+    const srcParam = String(body?.src || '').toLowerCase();
+    const GBP_HOSTS = ['business.google.com', 'maps.google', 'google.com/maps', 'goo.gl/maps', 'maps.app.goo.gl'];
+    if (srcParam === 'gbp' || srcParam === 'google_business' || GBP_HOSTS.some((h) => r.includes(h))) {
+      source = 'google_business';
+    }
+
     await base44.asServiceRole.entities.Visit.create({ source, path, referrer, traffic_class, sid, country });
     return Response.json({ ok: true, traffic_class });
   } catch (error) {

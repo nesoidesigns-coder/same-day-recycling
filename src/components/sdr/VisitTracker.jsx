@@ -8,8 +8,10 @@ export default function VisitTracker() {
     // had 3 seconds to load and interact, so analytics never competes with
     // first paint or booking calls.
     const timer = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const src = params.get("utm_source") || params.get("src") || "";
       base44.functions
-        .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer, sid: getSessionId(), country: visitorCountry() })
+        .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer, sid: getSessionId(), country: visitorCountry(), src })
         .catch(() => {});
     }, 3000);
     return () => clearTimeout(timer);

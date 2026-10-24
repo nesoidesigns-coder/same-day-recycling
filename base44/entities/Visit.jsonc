@@ -9,9 +9,11 @@
         "search",
         "direct",
         "ai_search",
+        "google_business",
         "other"
       ],
-      "default": "direct"
+      "default": "direct",
+      "description": "google_business = the visit arrived from the Google Business Profile or a Maps listing (referrer), or via a link tagged ?src=gbp."
     },
     "path": {
       "type": "string",
