@@ -1,0 +1,104 @@
+{
+  "name": "CommunityOpportunity",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "overflow_job",
+        "subcontracting",
+        "partnership",
+        "equipment_available",
+        "crew_available",
+        "collaboration"
+      ],
+      "default": "overflow_job"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 3000
+    },
+    "city": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80
+    },
+    "province_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 20
+    },
+    "service_category": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60
+    },
+    "requirements": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date"
+    },
+    "contact_method": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200,
+      "description": "How members can apply or inquire. Never a customer's address or private contact details."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "filled",
+        "expired",
+        "removed"
+      ],
+      "default": "open"
+    },
+    "poster_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    },
+    "poster_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Snapshot of the poster's verification status at posting time."
+    }
+  },
+  "required": [
+    "type",
+    "title"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

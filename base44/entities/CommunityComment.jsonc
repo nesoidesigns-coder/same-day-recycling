@@ -1,0 +1,54 @@
+{
+  "name": "CommunityComment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string",
+      "default": "",
+      "maxLength": 3000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "removed"
+      ],
+      "default": "published"
+    },
+    "author_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    }
+  },
+  "required": [
+    "post_id",
+    "body"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

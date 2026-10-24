@@ -112,6 +112,8 @@ const AdminDisputes = lazyPage(() => import('./pages/AdminDisputes'));
 const AdminReputation = lazyPage(() => import('./pages/AdminReputation'));
 const AdminSms = lazyPage(() => import('./pages/AdminSms'));
 const ChangeOrderRespond = lazyPage(() => import('./pages/ChangeOrderRespond'));
+const Community = lazyPage(() => import('./pages/Community'));
+const AdminCommunity = lazyPage(() => import('./pages/AdminCommunity'));
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
@@ -189,6 +191,7 @@ const AuthenticatedApp = () => {
       <Route path="/request-service" element={<RequestService />} />
       <Route path="/request-status" element={<RequestStatus />} />
       <Route path="/change-order" element={<ChangeOrderRespond />} />
+      <Route path="/community" element={<Community />} />
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/demand" element={<DemandPage />} />
       <Route path="/gallery" element={<Gallery />} />
@@ -231,6 +234,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/business-master" element={<AdminBusinessMaster />} />
           <Route path="/admin/growth" element={<AdminGrowth />} />
           <Route path="/admin/improvements" element={<AdminImprovements />} />
+          <Route path="/admin/community" element={<AdminCommunity />} />
           <Route path="/admin/demand" element={<AdminDemand />} />
           <Route path="/admin/seo" element={<AdminSeoCommand />} />
           <Route path="/admin/routes" element={<AdminRoutes />} />

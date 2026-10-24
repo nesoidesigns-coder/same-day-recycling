@@ -1,0 +1,87 @@
+{
+  "name": "CommunityResource",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "starting_out",
+        "pricing",
+        "customer_service",
+        "recycling_practices",
+        "equipment_fleet",
+        "financial_management",
+        "administration",
+        "partnerships"
+      ],
+      "default": "starting_out"
+    },
+    "body": {
+      "type": "string",
+      "default": "",
+      "maxLength": 8000
+    },
+    "source_post_id": {
+      "type": "string",
+      "default": "",
+      "description": "Community discussion this resource was developed from, when one exists."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_review",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "review_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Human reviewer's note. Required context for legal, tax, safety or regulatory topics."
+    },
+    "author_label": {
+      "type": "string",
+      "default": "Same Day Recycling editorial team",
+      "maxLength": 120
+    }
+  },
+  "required": [
+    "title",
+    "body"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

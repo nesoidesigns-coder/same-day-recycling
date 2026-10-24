@@ -1,0 +1,114 @@
+{
+  "name": "CommunityProfile",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The member's account email. Set at creation, used for profile lookup and existing-account linking."
+    },
+    "member_type": {
+      "type": "string",
+      "enum": [
+        "independent_contractor",
+        "recycling_business_owner",
+        "junk_removal_operator",
+        "property_management_professional",
+        "recycling_industry_professional",
+        "general_member"
+      ],
+      "default": "general_member"
+    },
+    "business_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "Self-reported business name. Distinguished from verified credentials."
+    },
+    "bio": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "city": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80
+    },
+    "province_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 20
+    },
+    "website": {
+      "type": "string",
+      "default": "",
+      "maxLength": 300
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending",
+        "verified",
+        "declined"
+      ],
+      "default": "none"
+    },
+    "verification_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Member's own summary of the evidence they submitted."
+    },
+    "verification_evidence_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "Private-storage URI of submitted evidence (business registration, insurance). Never shown publicly."
+    },
+    "verified_details": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Admin-entered summary of what was actually verified. Empty = nothing verified."
+    },
+    "contribution_score": {
+      "type": "number",
+      "default": 0,
+      "description": "Community participation recognition (helpful answers). Never a review of service quality."
+    },
+    "suspended": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "display_name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

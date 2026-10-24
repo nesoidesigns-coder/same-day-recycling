@@ -1,0 +1,89 @@
+{
+  "name": "CommunityPost",
+  "type": "object",
+  "properties": {
+    "channel": {
+      "type": "string",
+      "enum": [
+        "general",
+        "contractor_exchange",
+        "ai_academy",
+        "recycling_exchange",
+        "equipment_ops",
+        "provincial",
+        "ideas_feedback",
+        "announcements"
+      ],
+      "default": "general"
+    },
+    "province": {
+      "type": "string",
+      "enum": [
+        "national",
+        "BC",
+        "AB",
+        "SK",
+        "MB",
+        "ON",
+        "QC",
+        "atlantic",
+        "northern"
+      ],
+      "default": "national"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "body": {
+      "type": "string",
+      "default": "",
+      "maxLength": 5000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "pending_review",
+        "removed"
+      ],
+      "default": "published"
+    },
+    "pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "author_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    }
+  },
+  "required": [
+    "title",
+    "body"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
