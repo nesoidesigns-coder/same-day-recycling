@@ -49,7 +49,7 @@ export default function Home() {
     document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <div className="bg-white pb-20 md:pb-0">
+    <div className="bg-warm-white pb-20 md:pb-0">
       <TopBar />
       <Navbar />
       <InstantQuoteFlow />

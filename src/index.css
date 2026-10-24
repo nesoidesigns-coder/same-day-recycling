@@ -53,6 +53,12 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Recycling OS unified design identity — brand tokens (constant in light & dark) */
+    --brand-navy: 212 58% 13%;
+    --brand-emerald: 164 67% 29%;
+    --brand-softmint: 144 46% 93%;
+    --warm-white: 48 60% 98%;
+    --brand-amber: 38 88% 52%;
   }
 
   .dark {

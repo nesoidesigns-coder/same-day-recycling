@@ -42,6 +42,11 @@ module.exports = {
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
   			gold: 'hsl(var(--brand-gold))',
+  			'brand-navy': 'hsl(var(--brand-navy))',
+  			'brand-emerald': 'hsl(var(--brand-emerald))',
+  			'brand-softmint': 'hsl(var(--brand-softmint))',
+  			'warm-white': 'hsl(var(--warm-white))',
+  			'brand-amber': 'hsl(var(--brand-amber))',
   			'gold-dark': 'hsl(var(--brand-gold-dark))',
   			'brand-cyan': 'hsl(var(--brand-cyan))',
 			mint: 'hsl(var(--brand-mint))',
