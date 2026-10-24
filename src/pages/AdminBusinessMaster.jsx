@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { BrainCircuit, FlaskConical, History, MessageCircle, NotebookPen, ShieldCheck } from 'lucide-react';
+import { BrainCircuit, FlaskConical, History, MessageCircle, NotebookPen, ShieldCheck, Target } from 'lucide-react';
+import OsOversightPanel from '@/components/admin/OsOversightPanel';
 import BizMasterChat from '@/components/bizmaster/BizMasterChat';
 import LifetimePanels from '@/components/bizmaster/LifetimePanels';
 import DecisionSimulator from '@/components/bizmaster/DecisionSimulator';
@@ -12,6 +13,7 @@ const TABS = [
   { id: 'lifetime', label: 'Lifetime Intelligence', icon: History },
   { id: 'simulator', label: 'Decision Simulator', icon: FlaskConical },
   { id: 'memory', label: 'Business Memory', icon: NotebookPen },
+  { id: 'strategy', label: 'Strategic Oversight', icon: Target },
 ];
 
 export default function AdminBusinessMaster() {
@@ -58,6 +60,7 @@ export default function AdminBusinessMaster() {
         {tab === 'lifetime' && <LifetimePanels data={lifetime.data} loading={lifetime.isPending} error={lifetime.error} />}
         {tab === 'simulator' && <DecisionSimulator />}
         {tab === 'memory' && <MemoryPanel />}
+        {tab === 'strategy' && <OsOversightPanel />}
       </div>
     </div>
   );

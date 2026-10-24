@@ -10,6 +10,7 @@ import ComplianceCard from "@/components/partner/ComplianceCard";
 import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
 import LeadOffers from "@/components/partner/LeadOffers";
 import DisputeResponse from "@/components/partner/DisputeResponse";
+import BusinessHQ from "@/components/partner/BusinessHQ";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -146,6 +147,8 @@ export default function PartnersDashboard() {
             <p className="text-xs text-emerald-100/40 mt-2">Payouts already marked paid</p>
           </div>
         </div>
+
+        <div className="mb-10"><BusinessHQ /></div>
 
         <Financials />
 
