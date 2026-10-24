@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { CANADA_OUTLINES, LAYER_COLORS } from "@/lib/canadaOutline";
+import { WORLD_OUTLINES } from "@/lib/worldOutline";
 
 // Google-Earth-style globe of Canada. Pure rendering, picking and gestures;
 // data and UI live in the wrapper. Longitude -96 sits at the view centre.
@@ -9,7 +10,7 @@ const R = 10;
 const DEG = Math.PI / 180;
 const VIEW_LAT = 58; // latitude framed at screen centre in the default view
 const ROT = 0.0055; // radians of globe rotation per dragged pixel
-const CAM_MIN = 13, CAM_MAX = 21;
+const CAM_MIN = 14, CAM_MAX = 36, WORLD_DIST = 31, FOCUS_DIST = 18;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
@@ -21,8 +22,9 @@ const spherePoint = (lat, lng, radius = R) => {
 };
 
 const targetQuaternion = (lat, lng) => {
+  // Rotate the location onto the meridian facing the straight-on camera.
   const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -(lng + 96) * DEG);
-  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), ((90 - lat) - (90 - VIEW_LAT)) * DEG);
+  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), (90 - lat) * DEG);
   return qx.multiply(qy);
 };
 
@@ -57,9 +59,9 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
 
   let raf = 0, visible = true, failed = false, dirty = true, lastFrame = 0;
   const scene = new THREE.Scene();
-  const TARGET = new THREE.Vector3(0, 0.5, 0);
-  const camDir = new THREE.Vector3(0, 8, 15).normalize();
-  let camDist = 17;
+  const TARGET = new THREE.Vector3(0, 0, 0);
+  const camDir = new THREE.Vector3(0, 0, 1);
+  let camDist = WORLD_DIST; // the whole world fits in the panel by default
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   const updateCamera = () => {
     camera.position.copy(camDir).multiplyScalar(camDist);
@@ -92,6 +94,12 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
 
   // Coastline: verified Natural Earth geometry as a plain matte line
   const coastMat = new THREE.LineBasicMaterial({ color: 0x76a89b, transparent: true, opacity: 0.9 });
+  // Whole-world land silhouette (Natural Earth 110m), with Canada brighter
+  const worldMat = new THREE.LineBasicMaterial({ color: 0x5b8d84, transparent: true, opacity: 0.5 });
+  WORLD_OUTLINES.forEach((poly) => {
+    const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.002));
+    globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), worldMat));
+  });
   CANADA_OUTLINES.forEach((poly) => {
     const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.004));
     globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([...points, points[0]]), coastMat));
@@ -100,7 +108,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   // Nodes and invisible pick targets (in the rotating group)
   const world = new THREE.Group();
   globeGroup.add(world);
-  const nodeGeo = new THREE.SphereGeometry(0.14, 12, 12);
+  const nodeGeo = new THREE.SphereGeometry(0.085, 10, 10);
   const pickGeo = new THREE.SphereGeometry(mobile ? 0.9 : 0.65, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
   const picks = [];
@@ -341,8 +349,17 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
         ring.visible = false;
       }
     },
-    focusOn: (lat, lng, instant) => { dirty = true; applyFocus(lat, lng, instant); },
-    resetFocus: () => { dirty = true; focus.active = false; applyFocus(VIEW_LAT, 0, reduced); },
+    focusOn: (lat, lng, instant) => {
+      dirty = true;
+      camDist = FOCUS_DIST; updateCamera(); // zoom in to the selected region
+      applyFocus(lat, lng, instant);
+    },
+    resetFocus: () => {
+      dirty = true;
+      camDist = WORLD_DIST; updateCamera(); // back to the whole-world view
+      focus.active = false;
+      applyFocus(VIEW_LAT, 0, reduced);
+    },
     zoomBy: (factor) => {
       dirty = true;
       camDist = Math.min(CAM_MAX, Math.max(CAM_MIN, camDist * factor));
