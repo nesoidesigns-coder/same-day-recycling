@@ -81,7 +81,7 @@ const faqs = [
   },
   {
     q: "Who sets prices?",
-    a: "Network pricing starts from $139. Your territory, your rates above the floor — you keep the margin you earn.",
+    a: "Network pricing starts from $139. You set your own rates above the network floor — you keep the margin you earn. Territories are membership seats in a shared market, not exclusive rights.",
   },
   {
     q: "Can I keep my own customers?",
@@ -202,7 +202,7 @@ export default function Contractors() {
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">The pages</div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Your territory, owned</h2>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Your city pages, built for you</h2>
             <p className="mt-4 text-lg text-slate-600">
               A city page built under the name that <em>is</em> the search term — "junk removal [your city]" —
               plus service pages for furniture, appliances, estate cleanouts and more. Every page is written,

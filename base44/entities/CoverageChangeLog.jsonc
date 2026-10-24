@@ -1,0 +1,76 @@
+{
+  "name": "CoverageChangeLog",
+  "type": "object",
+  "properties": {
+    "city": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "City the change applies to."
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "contractor_capacity",
+        "registry",
+        "matching_activity"
+      ],
+      "default": "contractor_capacity",
+      "description": "Which coverage layer changed. Contractor availability and matching activity are recorded separately and never merged."
+    },
+    "field": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "What changed, e.g. verified_contractor_count."
+    },
+    "previous_value": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200,
+      "description": "Value before the change (empty when first observed)."
+    },
+    "new_value": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200,
+      "description": "Value after the change."
+    },
+    "changed_by": {
+      "type": "string",
+      "default": "integrity-automation",
+      "maxLength": 120,
+      "description": "Responsible actor: automation name, admin name, or system. Never invented."
+    },
+    "note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "city",
+    "change_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

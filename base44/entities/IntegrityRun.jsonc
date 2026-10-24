@@ -1,0 +1,107 @@
+{
+  "name": "IntegrityRun",
+  "type": "object",
+  "properties": {
+    "run_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "warning",
+        "failed"
+      ],
+      "default": "success",
+      "description": "success = no errors (warnings allowed); warning = warnings only; failed = at least one error or the run itself broke."
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "affected_pages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "check",
+          "severity"
+        ]
+      },
+      "description": "Every executed check with its result. Only verified findings are recorded."
+    },
+    "error_count": {
+      "type": "number",
+      "default": 0
+    },
+    "warning_count": {
+      "type": "number",
+      "default": 0
+    },
+    "coverage_snapshot": {
+      "type": "object",
+      "default": {},
+      "description": "Verified-capacity snapshot used to diff coverage changes against the previous run."
+    },
+    "error": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

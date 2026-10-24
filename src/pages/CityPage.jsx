@@ -54,7 +54,8 @@ export default function CityPage() {
   const isActive = cityStatus === "same_day";
   const region = city ? regionByCode(city.province) : null;
 
-  const [prices, setPrices] = useState(FALLBACK_PRICES);
+  const [prices, setPrices] = useState(null);
+  const [pricingState, setPricingState] = useState("loading"); // loading | ready | unavailable
   const [centers, setCenters] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [quotePrefill, setQuotePrefill] = useState(null);
@@ -92,8 +93,14 @@ export default function CityPage() {
     (async () => {
       try {
         const res = await base44.functions.invoke("cityPricing", { city: city.name });
-        if (!cancelled && res?.data?.prices) setPrices({ ...FALLBACK_PRICES, ...res.data.prices });
-      } catch { /* fallback rates already set */ }
+        if (!cancelled && res?.data?.prices) {
+          setPrices({ ...FALLBACK_PRICES, ...res.data.prices });
+          setPricingState("ready");
+        } else if (!cancelled) setPricingState("unavailable");
+      } catch {
+        // Honest state: no prices are shown rather than a national substitute.
+        if (!cancelled) setPricingState("unavailable");
+      }
       try {
         const c = await base44.entities.Provider.filter({ city: city.name }, { limit: 12 });
         if (!cancelled) setCenters(Array.isArray(c) ? c : c.items || []);
@@ -164,7 +171,9 @@ export default function CityPage() {
                 </div>
                 <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-600">
                   <span className="flex items-center gap-1.5 font-semibold"><CheckCircle2 className="w-4 h-4 text-[#187B65]" /> Same-day availability when a contractor confirms your window</span>
-                  <span className="flex items-center gap-1.5 font-semibold"><ShieldCheck className="w-4 h-4 text-[#187B65]" /> Upfront pricing from ${prices.minimum_pickup}</span>
+                  {pricingState === "ready" && prices && (
+                    <span className="flex items-center gap-1.5 font-semibold"><ShieldCheck className="w-4 h-4 text-[#187B65]" /> Upfront pricing from ${prices.minimum_pickup}</span>
+                  )}
                   <a href="tel:+16048491745" className="flex items-center gap-1.5 font-semibold text-[#102B2A] hover:text-[#187B65]"><Phone className="w-4 h-4 text-[#187B65]" /> (604) 849-1745</a>
                 </div>
               </>
@@ -225,16 +234,26 @@ export default function CityPage() {
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Upfront, approved by you</div>
           <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">Junk removal prices in {city.name}</h2>
           <p className="mt-3 text-slate-600 max-w-2xl">Published starting estimates are shown below, not a confirmed local quote or service window. Applicable taxes and any scope-specific charges are shown for your approval before work begins; pickup requires a qualified contractor to accept your job.</p>
-          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {BANDS.map((b) => (
-              <div key={b.key} className="rounded-2xl border border-slate-100 bg-white p-5">
-                <div className="font-bold text-[#102B2A]">{b.size}</div>
-                <div className="text-sm text-slate-500">{b.weight}</div>
-                <div className="mt-2 text-2xl font-bold text-[#187B65]">from ${prices[b.key]}</div>
-              </div>
-            ))}
-          </div>
-          {prices.minimum_pickup !== 139 && (
+          {pricingState === "loading" && (
+            <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-6 text-sm font-semibold text-slate-600" role="status">Loading current {city.name} rates…</div>
+          )}
+          {pricingState === "unavailable" && (
+            <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm font-semibold text-amber-800" role="status">
+              {city.name} rates couldn't be loaded right now, so no prices are shown rather than a national placeholder. Call (604) 849-1745 or submit a request — your quote always shows your exact rate before anything is scheduled.
+            </div>
+          )}
+          {pricingState === "ready" && prices && (
+            <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {BANDS.map((b) => (
+                <div key={b.key} className="rounded-2xl border border-slate-100 bg-white p-5">
+                  <div className="font-bold text-[#102B2A]">{b.size}</div>
+                  <div className="text-sm text-slate-500">{b.weight}</div>
+                  <div className="mt-2 text-2xl font-bold text-[#187B65]">from ${prices[b.key]}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          {pricingState === "ready" && prices && prices.minimum_pickup !== 139 && (
             <p className="mt-4 text-sm text-slate-500">Rates in {city.name} are set to local disposal costs, which differ from the national standard tier ($139 minimum). Your quote always shows your rate, and you approve the final price before anything is loaded.</p>
           )}
           <p className="mt-4 text-sm text-slate-500 flex items-center gap-1.5"><Leaf className="w-4 h-4 text-[#187B65]" /> Recycling and donation are always included — you never pay extra for eco disposal.</p>
@@ -339,7 +358,7 @@ export default function CityPage() {
 
 const ACTIVE_FAQ = (city) => [
   { q: `Is same-day pickup available in ${city.name}?`, a: "Same-day pickup is offered when a verified local contractor confirms your window — book before noon for the best chance of a same-day slot. Your arrival window and price are always confirmed with you before anything is scheduled or charged." },
-  { q: "What does junk removal cost here?", a: `Our ${city.name} rates start at $${FALLBACK_PRICES.minimum_pickup} for a minimum pickup and scale by truck space — see the pricing table above. You approve the final price before we lift anything.` },
+  { q: "What does junk removal cost here?", a: `Our ${city.name} rates scale by truck space — see the pricing table above for the current published starting rates. You approve the final price before we lift anything.` },
   { q: "Do you take mattresses and appliances?", a: "Yes. Mattresses, fridges, washers and stoves all go out with the crew — appliances are recycled as scrap metal." },
   { q: "What happens to my junk?", a: "Every load is sorted: furniture in good shape is donated, metal and electronics are recycled, and only the true remainder is responsibly disposed." },
 ];

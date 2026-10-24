@@ -41,6 +41,7 @@ const INTELLIGENCE = [
   { to: "/admin/demand", label: "Market Intelligence", icon: Globe2 },
   { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
   { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },
+  { to: "/admin/integrity", label: "Platform Integrity", icon: ShieldCheck, exact: true },
 ];
 const CONFIG = [
   { to: "/admin/pricing", label: "Pricing", icon: Tag },

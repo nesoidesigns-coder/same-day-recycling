@@ -168,17 +168,17 @@ export default function RealtorOnePager() {
                     <tr className="bg-[#102B2A] text-white">
                       <th className="text-left px-4 py-3 font-bold">Load size</th>
                       <th className="text-left px-4 py-3 font-bold">What that looks like</th>
-                      <th className="text-right px-4 py-3 font-bold">Flat rate</th>
+                      <th className="text-right px-4 py-3 font-bold">Starting rate</th>
                     </tr>
                   </thead>
                   <tbody>
                     {[
-                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$149"],
-                      ["1/8 truck", "Single mattress, end tables, a few garbage bags", "$199"],
-                      ["1/4 truck", "One sofa or loveseat, small appliance, boxes from one room", "$289"],
-                      ["1/2 truck", "Living-room furniture set, fridge + stove, basement corner", "$439"],
-                      ["3/4 truck", "Full bedroom + living room set, garage cleanout", "$579"],
-                      ["Full truck", "Whole-house estate cleanout, hot tub, renovation debris", "$679"],
+                      ["Minimum pickup", "A few boxes, one chair, small curbside pile", "$139"],
+                      ["1/8 truck", "Single mattress, end tables, a few garbage bags", "$189"],
+                      ["1/4 truck", "One sofa or loveseat, small appliance, boxes from one room", "$269"],
+                      ["1/2 truck", "Living-room furniture set, fridge + stove, basement corner", "$419"],
+                      ["3/4 truck", "Full bedroom + living room set, garage cleanout", "$549"],
+                      ["Full truck", "Whole-house estate cleanout, hot tub, renovation debris", "$649"],
                     ].map(([size, example, rate], i) => (
                       <tr key={size} className={i % 2 ? "bg-[#f4f7f5]" : "bg-white"}>
                         <td className="px-4 py-3 font-bold text-[#102B2A]">{size}</td>
@@ -190,7 +190,7 @@ export default function RealtorOnePager() {
                 </table>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                Flat rates by truck space, confirmed before we lift anything. Scrap metal picked up free. Rates shown are national network pricing. Realtor referral credit applies to every completed job.
+                Starting rates by truck space at the national standard rate — your quote always shows your city's exact rate, and you approve the final price before we lift anything. Scrap metal picked up free where a network partner is live. Realtor referral credit applies to every completed job.
               </p>
             </section>
 

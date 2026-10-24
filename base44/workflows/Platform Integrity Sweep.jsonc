@@ -1,0 +1,47 @@
+{
+  "description": "Runs the platform integrity checks daily: coverage, pricing, booking, contractor status, payments, reviews, page rendering, broken links and conflicting claims. Results appear in Admin > Platform Integrity.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "platform_integrity_sweep",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_integrity_checks": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "platformIntegrity",
+            "args": {
+              "action": "run"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run integrity checks",
+            "description": "Verify every surface matches operational reality"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Platform Integrity Sweep"
+}

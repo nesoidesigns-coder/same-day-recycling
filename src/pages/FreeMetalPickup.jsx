@@ -10,8 +10,8 @@ import { isCityActive } from "@/lib/coverage";
 
 export default function FreeMetalPickup() {
   const meta = useServiceMeta("/free-metal-pickup", {
-    title: "Free Scrap Metal Pickup | Same Day Recycling",
-    description: "Check free scrap metal pickup in confirmed service areas. Describe your metal items, request collection and confirm eligibility with the team.",
+    title: "Free Scrap Metal Pickup — Eligibility Check | Same Day Recycling",
+    description: "Free scrap metal pickup eligibility depends on your items and location. Check eligibility in confirmed service areas before requesting a pickup.",
   });
   useSEO({ ...meta, path: "/free-metal-pickup" });
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", metal: "" });
