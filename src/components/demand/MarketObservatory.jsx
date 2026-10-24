@@ -68,7 +68,7 @@ export default function MarketObservatory({ compact = false, onImport, showHisto
         {periodLabel ? <>Latest verified reporting period: <span className="font-bold text-market-ink">{periodLabel}</span> · Google</> : 'No verified reporting period available yet.'}
       </p>
       <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <BlockShell title="Canadian National Search Demand" question="How much demand is there, nationally, for the latest verified period?">
+        <BlockShell title="Canadian National Search Demand" question="How much demand is there across Canada's services industry at large, and where is momentum building?">
           <SearchDemandGauge data={data} />
           {!data.overview?.available && <Unavailable message={data.data_status?.state === 'not_backfilled'
             ? 'Verified monthly volume estimates have not been backfilled yet. The verified signal currently available is Trends relative interest, shown below.'
