@@ -109,18 +109,20 @@ export default function ChatPanel({ onClose }) {
   };
 
   return (
-    <div className="fixed z-[60] inset-x-2 bottom-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] sm:w-[min(24rem,calc(100vw-2rem))] h-[min(32rem,calc(100dvh-4.5rem-env(safe-area-inset-bottom)))] sm:h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-3xl sm:rounded-3xl rounded-t-2xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
-      <div className="bg-[#102B2A] text-white px-5 py-3.5 flex items-center gap-3">
-        <AiMascot size={40} />
-        <div>
-          <div className="font-bold leading-tight">Rex · Same Day Recycling</div>
-          <RexOrb state={sending ? "processing" : "idle"} size={12} label={sending ? "Thinking…" : "Online · 24/7 booking assistant"} className="text-xs text-[#187B65]" />
+    <div className="fixed z-[60] inset-x-2 bottom-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] sm:w-[min(24rem,calc(100vw-2rem))] h-[min(32rem,calc(100dvh-4.5rem-env(safe-area-inset-bottom)))] sm:h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-t-2xl sm:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+      <div className="bg-[#102B2A] text-white px-4 sm:px-5 py-3 flex items-center gap-3">
+        <AiMascot size={36} />
+        <div className="min-w-0 flex-1">
+          <div className="font-bold leading-tight text-sm sm:text-base">Rex · Same Day Recycling</div>
+          <div className="min-w-0 overflow-hidden">
+            <RexOrb state={sending ? "processing" : "idle"} size={12} label={sending ? "Thinking…" : "Online · 24/7 booking"} className="text-xs text-[#187B65] whitespace-nowrap" />
+          </div>
         </div>
         <button onClick={onClose} aria-label="Minimize chat" className="ml-auto w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors shrink-0">
           <Minus className="w-4 h-4" />
         </button>
       </div>
-      <div className="flex items-center gap-2 border-b border-slate-100 bg-[#f4f7f5] px-4 py-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 bg-[#f4f7f5] px-3 sm:px-4 py-2 text-xs">
         <span className="font-semibold text-slate-500">Chat with Rex on</span>
         <a href={base44.agents.getWhatsAppConnectURL(AGENT_NAME)} target="_blank" rel="noreferrer" className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 font-bold text-[#102B2A] hover:border-[#187B65] transition-colors">
           <MessageCircle className="w-3.5 h-3.5 text-[#187B65]" /> WhatsApp
@@ -192,7 +194,7 @@ export default function ChatPanel({ onClose }) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
           placeholder="Type a message…"
-          className="flex-1 rounded-full border border-slate-200 px-4 py-2.5 text-sm focus:border-[#187B65] focus:outline-none"
+          className="flex-1 min-w-0 rounded-full border border-slate-200 px-4 py-2.5 text-base sm:text-sm focus:border-[#187B65] focus:outline-none"
         />
         <button onClick={send} disabled={(!input.trim() && !attached.length) || sending || uploading} aria-label="Send" className="w-10 h-10 rounded-full bg-[#187B65] text-[#102B2A] flex items-center justify-center disabled:opacity-50 shrink-0">
           <Send className="w-4 h-4" />

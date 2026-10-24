@@ -35,7 +35,7 @@ export default function ReceptionistChat() {
       )}
       {open && (
         <Suspense fallback={
-          <div className="fixed z-[60] inset-x-2 bottom-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] sm:w-[min(24rem,calc(100vw-2rem))] h-[min(32rem,calc(100dvh-4.5rem-env(safe-area-inset-bottom)))] sm:h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-3xl rounded-t-2xl shadow-2xl border border-slate-100 flex items-center justify-center" role="status" aria-label="Opening chat">
+          <div className="fixed z-[60] inset-x-2 bottom-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-4 sm:bottom-[calc(5.75rem_+_env(safe-area-inset-bottom))] sm:w-[min(24rem,calc(100vw-2rem))] h-[min(32rem,calc(100dvh-4.5rem-env(safe-area-inset-bottom)))] sm:h-[min(28rem,calc(100dvh-8.5rem))] bg-white rounded-t-2xl sm:rounded-3xl shadow-2xl border border-slate-100 flex items-center justify-center" role="status" aria-label="Opening chat">
             <MessageCircle className="w-5 h-5 text-slate-300 animate-pulse" />
           </div>
         }>
