@@ -6,6 +6,7 @@ import {
   providerMatchesLocation,
   extractLocationHint,
 } from '../../shared/recyclingTaxonomy.ts';
+import { broadcastInquiry } from '../../shared/inquiryBroadcast.ts';
 
 export default async function (req) {
   try {
@@ -39,6 +40,18 @@ export default async function (req) {
       local = (located.length ? located : queryMatches).slice(0, 6);
     } catch {
       local = [];
+    }
+
+    // Capture the chat as a service inquiry and post it when the message reads
+    // as a removal/pickup request (informational chats are not posted).
+    const SERVICE_HINTS = /\b(pick ?up|removal|haul|junk|dispose|disposal|get rid of|take away|quote)\b/i;
+    if (SERVICE_HINTS.test(last)) {
+      await broadcastInquiry(base44, {
+        source: 'recycling assistant chat',
+        title: `Assistant inquiry${loc ? ' - ' + loc : ''}`,
+        description: last,
+        city: loc || '',
+      });
     }
 
     const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({

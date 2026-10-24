@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
+import { broadcastInquiry } from '../../shared/inquiryBroadcast.ts';
 
 const OWNER_EMAIL = 'nesoidesigns@gmail.com';
 
@@ -35,6 +36,13 @@ export default async function(req) {
         ${phone ? `<p style="margin:4px 0"><strong>Phone:</strong> ${phone}</p>` : ''}
         <p style="margin:12px 0;white-space:pre-wrap">${message}</p>
       </div>`,
+    });
+
+    await broadcastInquiry(base44, {
+      source: 'contact form',
+      title: `Website message from ${name}`,
+      description: message,
+      city: '',
     });
 
     return Response.json({ ok: true });

@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
+import { broadcastInquiry } from '../../shared/inquiryBroadcast.ts';
 
 const OWNER_EMAIL = 'nesoidesigns@gmail.com';
 
@@ -38,6 +39,13 @@ export default async function(req) {
       estimate,
       status: 'new',
       sid,
+    });
+
+    await broadcastInquiry(base44, {
+      source: 'quote calculator',
+      title: `Same-day quote request${city ? ' - ' + city : ''}`,
+      description: `${itemsText || 'Items not specified'}. Instant estimate shown: ${estimate || 'n/a'}.`,
+      city,
     });
 
     await base44.asServiceRole.integrations.Core.SendEmail({
