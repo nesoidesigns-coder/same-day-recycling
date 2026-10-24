@@ -1,14 +1,12 @@
-import { useState, lazy } from "react";
+import { lazy } from "react";
 import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
 import DiscoveryHero from "@/components/home/DiscoveryHero";
 import HomeDiscoveryFeed from "@/components/home/HomeDiscoveryFeed";
-import AuroraBackdrop from "@/components/home/AuroraBackdrop";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
-import Booking from "@/components/sdr/Booking";
 import ItemEstimator from "@/components/sdr/ItemEstimator";
 import FAQ, { faqs as HOME_FAQS } from "@/components/sdr/FAQ";
 import Footer from "@/components/sdr/Footer";
@@ -47,9 +45,7 @@ export default function Home() {
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   });
-  const [quotePrefill, setQuotePrefill] = useState(null);
-  const bookFromQuote = (prefill) => {
-    setQuotePrefill(prefill);
+  const bookFromQuote = () => {
     document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
@@ -57,37 +53,30 @@ export default function Home() {
       <TopBar />
       <Navbar />
       <InstantQuoteFlow />
-      <div className="aurora-canvas relative">
-        <AuroraBackdrop />
-        <div className="relative">
-          <InstantQuoteFlow />
-          <DiscoveryHero />
-          <section id="live-discovery" className="relative max-w-6xl mx-auto px-4 pb-12 md:pb-16">
-            <HomeDiscoveryFeed />
-          </section>
-        </div>
-      </div>
+      <DiscoveryHero />
+      <section id="live-discovery" className="relative max-w-6xl mx-auto px-4 pb-10 md:pb-14">
+        <HomeDiscoveryFeed />
+      </section>
       <RecyclingPulse />
-      <LazySection minHeight={440}><RexJourney onBook={bookFromQuote} /></LazySection>
-      <LazySection minHeight={480}><TrustGauges /></LazySection>
-      <LazySection minHeight={480}><CanadaNetworkMap /></LazySection>
-      <LazySection minHeight={380}><ProvinceImpact /></LazySection>
+      <LazySection minHeight={120}><RexJourney onBook={bookFromQuote} /></LazySection>
+      <LazySection minHeight={120}><TrustGauges /></LazySection>
+      <LazySection minHeight={120}><CanadaNetworkMap /></LazySection>
+      <LazySection minHeight={120}><ProvinceImpact /></LazySection>
       <Services />
       <HowItWorks />
       <ItemEstimator onBook={bookFromQuote} />
-      <LazySection minHeight={520}><TransparentPricing /></LazySection>
-      <LazySection minHeight={560}><QuoteCalculator onBook={bookFromQuote} /></LazySection>
-      <Booking prefill={quotePrefill} />
-      <LazySection minHeight={320}><FeaturedProviders /></LazySection>
-      <LazySection minHeight={360}><NationalCoverage /></LazySection>
+      <LazySection minHeight={140}><TransparentPricing /></LazySection>
+      <LazySection minHeight={140}><QuoteCalculator onBook={bookFromQuote} /></LazySection>
+      <LazySection minHeight={100}><FeaturedProviders /></LazySection>
+      <LazySection minHeight={120}><NationalCoverage /></LazySection>
       <CityLinks />
-      <LazySection minHeight={520}><RecyclingCentersMap showSelector /></LazySection>
-      <LazySection minHeight={340}><EnvironmentalImpact /></LazySection>
-      <LazySection minHeight={360}><OperatingSystemPitch /></LazySection>
-      <LazySection minHeight={340}><BusinessSolutions /></LazySection>
-      <LazySection minHeight={360}><Reviews /></LazySection>
+      <LazySection minHeight={140}><RecyclingCentersMap showSelector /></LazySection>
+      <LazySection minHeight={100}><EnvironmentalImpact /></LazySection>
+      <LazySection minHeight={120}><OperatingSystemPitch /></LazySection>
+      <LazySection minHeight={100}><BusinessSolutions /></LazySection>
+      <LazySection minHeight={120}><Reviews /></LazySection>
       <FAQ />
-      <LazySection minHeight={300}><FinalCTA /></LazySection>
+      <LazySection minHeight={100}><FinalCTA /></LazySection>
       <Footer />
     </div>
   );

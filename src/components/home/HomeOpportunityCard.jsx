@@ -43,8 +43,7 @@ export default function HomeOpportunityCard({ item, index = 0 }) {
 
   return (
     <article
-      className="glass aurora-rise rounded-2xl p-4 flex flex-col hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(16,43,42,0.12)] transition-all"
-      style={{ animationDelay: `${Math.min(index * 60, 480)}ms` }}
+      className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col transition-shadow hover:shadow-md"
     >
       <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider">
         <span className="inline-flex items-center gap-1 rounded-full bg-[#187B65]/10 text-[#187B65] px-2.5 py-1">

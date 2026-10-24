@@ -13,6 +13,13 @@ export default function LibraryTab() {
     queryFn: async () => (await base44.entities.CommunityResource.filter({ status: 'published' }, { sort: '-created_date', limit: 100 })).items || [],
   });
 
+  // AI-generated educational guides live here (secondary tab), never in the
+  // main discovery feed.
+  const aiGuides = useQuery({
+    queryKey: ['communityAiGuides'],
+    queryFn: async () => (await base44.entities.CommunityPost.filter({ status: 'published', ai_generated: true }, { sort: '-created_date', limit: 30 })).items || [],
+  });
+
   const grouped = useMemo(() => {
     const map = {};
     for (const r of resources.data || []) {
@@ -63,6 +70,26 @@ export default function LibraryTab() {
           </div>
         </div>
       ))}
+
+      {(aiGuides.data || []).length > 0 && (
+        <div className="pt-2">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-[#187B65] mb-2">AI Business Master guides</h4>
+          <div className="space-y-2">
+            {aiGuides.data.map((g) => (
+              <div key={g.id} className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                <button onClick={() => setOpenId(openId === g.id ? null : g.id)} className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left">
+                  <div className="min-w-0">
+                    <div className="text-sm font-bold text-[#102B2A] break-words">{g.title}</div>
+                    <div className="text-[11px] text-slate-500">Recycling OS Intelligence · {new Date(g.created_date).toLocaleDateString('en-CA')}</div>
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform ${openId === g.id ? 'rotate-180' : ''}`} />
+                </button>
+                {openId === g.id && <div className="px-4 pb-4 text-sm text-slate-700 whitespace-pre-line leading-relaxed border-t border-slate-100 pt-3">{g.body}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

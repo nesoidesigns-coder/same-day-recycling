@@ -44,7 +44,7 @@ export default function Community() {
 
   const [me, setMe] = useState(null);
   const [checked, setChecked] = useState(false);
-  const [tab, setTab] = useState('discover');
+  const [tab, setTab] = useState(() => (new URLSearchParams(window.location.search).get('post') ? 'feed' : 'discover'));
   const [aiOpen, setAiOpen] = useState(false);
 
   // GA4: which community areas get the most traffic.

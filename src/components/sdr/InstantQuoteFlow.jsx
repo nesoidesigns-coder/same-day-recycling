@@ -203,7 +203,7 @@ export default function InstantQuoteFlow() {
   const tax = TAX_RATES[province] || null;
 
   return (
-    <section id="instant-quote" className="bg-[#102B2A] text-white">
+    <section id="book" className="bg-[#102B2A] text-white">
       <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase">{t.tag}</div>

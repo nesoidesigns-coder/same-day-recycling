@@ -72,7 +72,7 @@ export default function HomeDiscoveryFeed() {
           <button
             key={c.id}
             onClick={() => pickCategory(c.id)}
-            className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${category === c.id ? "border-[#187B65] bg-[#187B65] text-white" : "border-white/70 bg-white/70 text-slate-600 hover:border-[#187B65] hover:text-[#187B65]"}`}
+            className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${category === c.id ? "border-[#187B65] bg-[#187B65] text-white" : "border-slate-200 bg-white text-slate-600 hover:border-[#187B65] hover:text-[#187B65]"}`}
           >
             {c.label}
           </button>
@@ -90,7 +90,7 @@ export default function HomeDiscoveryFeed() {
         </p>
       )}
       {feed.data && items.length === 0 && (
-        <div className="glass rounded-2xl p-6 sm:p-8 text-center">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 text-center">
           <p className="text-sm font-bold text-[#102B2A]">No verified requests match this view yet.</p>
           <p className="mt-1.5 text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
             Discovery runs on a schedule and only lists requests it has actually sourced from public posts — nothing here is estimated or filled in. Check back as the next run completes.
