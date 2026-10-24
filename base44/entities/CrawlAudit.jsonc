@@ -1,0 +1,164 @@
+{
+  "name": "CrawlAudit",
+  "type": "object",
+  "properties": {
+    "run_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "partial",
+        "failed"
+      ],
+      "default": "success",
+      "description": "success = every page fetched; partial = some pages unreachable; failed = no page could be fetched."
+    },
+    "base_url": {
+      "type": "string",
+      "default": ""
+    },
+    "platform_url": {
+      "type": "string",
+      "default": "",
+      "description": "The platform's published URL used for the staleness comparison."
+    },
+    "domain_stale": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when the custom domain serves materially less rendered content than the platform's published URL \u2014 i.e. the domain is behind the current deployment."
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "http_status": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "title_length": {
+            "type": "number"
+          },
+          "has_description": {
+            "type": "boolean"
+          },
+          "description_length": {
+            "type": "number"
+          },
+          "has_canonical": {
+            "type": "boolean"
+          },
+          "h1_count": {
+            "type": "number"
+          },
+          "h2_count": {
+            "type": "number"
+          },
+          "ld_json_blocks": {
+            "type": "number"
+          },
+          "word_count": {
+            "type": "number"
+          },
+          "internal_links": {
+            "type": "number"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "default": [],
+      "description": "One entry per audited page, measured from the server HTML exactly as a non-JS crawler receives it."
+    },
+    "issue_count": {
+      "type": "number",
+      "default": 0
+    },
+    "robots_ok": {
+      "type": "boolean",
+      "default": false,
+      "description": "robots.txt reachable and parseable."
+    },
+    "sitemap_ok": {
+      "type": "boolean",
+      "default": false,
+      "description": "sitemap.xml reachable and declares URLs."
+    },
+    "sitemap_urls": {
+      "type": "number",
+      "default": 0
+    },
+    "improvements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "issue": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Issues present in the previous run that are verified resolved in this run."
+    },
+    "recommendations_created": {
+      "type": "number",
+      "default": 0,
+      "description": "SeoRecommendation records created from confirmed metadata gaps (pending admin approval)."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "error": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

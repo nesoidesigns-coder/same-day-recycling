@@ -61,6 +61,22 @@ export default function BrandScanner({ scan, history, running, onRun }) {
 
           <p className="text-sm text-slate-700 leading-relaxed">{scan.summary}</p>
 
+          {scan.measured_signals?.length > 0 && (
+            <div className="mt-4 rounded-2xl border border-[#187B65]/25 bg-[#eef4f0] px-4 py-3">
+              <div className="font-bold text-[#187B65] uppercase tracking-wider text-[10px] mb-1.5">
+                Measured signals — directly measured, separate from the AI scores
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-[#102B2A]">
+                {scan.measured_signals.map((m, i) => (
+                  <div key={i} className="rounded-xl bg-white px-3 py-2">
+                    <div className="font-bold tabular-nums">{String(m.value)}</div>
+                    <div className="text-[11px] text-slate-500">{m.metric}{m.window ? ` · ${m.window}` : ""}{m.source ? ` · ${m.source}` : ""}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mt-4 grid md:grid-cols-3 gap-4 text-sm">
             <ListBlock title="Strengths" icon={<CheckCircle2 className="w-3.5 h-3.5 text-[#187B65]" />} items={scan.strengths} />
             <ListBlock title="Weaknesses" icon={<AlertTriangle className="w-3.5 h-3.5 text-amber-500" />} items={scan.weaknesses} />
@@ -94,6 +110,12 @@ export default function BrandScanner({ scan, history, running, onRun }) {
             <Clock className="w-3 h-3 inline mr-1 -mt-0.5" />
             Scanned {String(scan.created_date || "").slice(0, 16).replace("T", " ")} · sources: {(scan.sources || []).map((s) => String(s).replace(/^https?:\/\//, "")).join(", ")}
           </div>
+          {scan.score_change_explanation && (
+            <p className="mt-2 text-[11px] text-slate-600"><span className="font-bold">Why the score moved:</span> {scan.score_change_explanation}</p>
+          )}
+          {scan.methodology && (
+            <p className="mt-1 text-[11px] text-slate-500"><span className="font-bold">Methodology:</span> {scan.methodology}</p>
+          )}
         </>
       )}
 

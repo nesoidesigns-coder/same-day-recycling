@@ -112,6 +112,65 @@ export default async function(req) {
     const history = await base44.entities.BrandScan.list({ sort: '-created_date', limit: 1 });
     const prev = Array.isArray(history) ? history[0] : history?.items?.[0];
 
+    // Scoring formula recorded with every scan, so a score movement is always
+    // explainable — including when the methodology itself changed.
+    const METHODOLOGY = 'Formula v2 (2026-10-24): overall score = straight average of the five 0-100 dimension scores (seo, discoverability, reputation, credibility, positioning). Each dimension is judged from the live fetched pages plus web-search context; dimensions resting on thin or unconfirmable evidence are labelled ai_estimate and never counted as verified. Measured search performance (Google Search Console), approved review counts and verified contractor coverage are recorded separately as measured signals and are NOT part of the AI score. A methodology version change can move scores without the site changing.';
+
+    // Directly measured signals — kept strictly separate from the AI scores.
+    const measured_signals = [];
+    try {
+      const snaps = (await base44.asServiceRole.entities.SeoPerformanceSnapshot.filter({}, { sort: '-snapshot_date', limit: 20 })).items || [];
+      const latestPer = {};
+      for (const s of snaps) if (!latestPer[s.page_path]) latestPer[s.page_path] = s;
+      let clicks = 0; let impressions = 0; let weighted = 0;
+      for (const s of Object.values(latestPer)) {
+        clicks += Number(s.clicks) || 0;
+        impressions += Number(s.impressions) || 0;
+        if (Number(s.impressions) > 0) weighted += (Number(s.avg_position) || 0) * Number(s.impressions);
+      }
+      if (impressions > 0) {
+        measured_signals.push({ metric: 'Google organic clicks', value: String(clicks), window: '28d, latest per-page snapshots', source: 'google_search_console' });
+        measured_signals.push({ metric: 'Google organic impressions', value: String(impressions), window: '28d, latest per-page snapshots', source: 'google_search_console' });
+        measured_signals.push({ metric: 'Avg search position', value: String(Math.round((weighted / impressions) * 10) / 10), window: '28d, impressions-weighted', source: 'google_search_console' });
+      } else {
+        measured_signals.push({ metric: 'Google organic performance', value: 'no snapshot data yet', window: '—', source: 'google_search_console' });
+      }
+    } catch {}
+    try {
+      const approvedReviews = await base44.asServiceRole.entities.Review.count({ approved: true });
+      measured_signals.push({ metric: 'Approved customer reviews', value: String(approvedReviews), window: 'all-time', source: 'app records' });
+    } catch {}
+    try {
+      const partners = (await base44.asServiceRole.entities.Partner.filter({ active: true, verified: true }, { limit: 200 })).items || [];
+      const cities = new Set();
+      for (const p of partners) {
+        if (p.city) cities.add(p.city);
+        for (const c of (p.service_cities || [])) cities.add(c);
+      }
+      measured_signals.push({ metric: 'Verified active contractors', value: String(partners.length), window: 'current', source: 'partner territory records' });
+      measured_signals.push({ metric: 'Municipalities with confirmed coverage', value: String(cities.size), window: 'current', source: 'partner territory records' });
+    } catch {}
+
+    // Why the score moved: dimension movements, methodology changes and
+    // measured-signal shifts — computed, never invented.
+    let score_change_explanation = prev ? 'No comparable previous dimension scores stored.' : 'First scan — no previous score to compare.';
+    if (prev && prev.scores) {
+      const moves = [];
+      for (const key of ['seo', 'discoverability', 'reputation', 'credibility', 'positioning']) {
+        const before = Number(prev.scores?.[key]?.score);
+        const after = Number(ai.scores?.[key]?.score);
+        if (!Number.isNaN(before) && !Number.isNaN(after) && Math.abs(after - before) >= 5) {
+          moves.push(`${key} ${Math.round(before)}→${Math.round(after)}`);
+        }
+      }
+      const delta = Math.round(ai.overall_score || 0) - (Number(prev.overall_score) || 0);
+      const parts = [];
+      parts.push(delta === 0 ? 'Overall score unchanged' : `Overall score ${delta > 0 ? 'up' : 'down'} ${Math.abs(delta)} points`);
+      if (moves.length) parts.push(`dimension movement: ${moves.join(', ')}`);
+      if (prev.methodology && prev.methodology !== METHODOLOGY) parts.push('the scoring methodology changed since the previous scan — compare with care');
+      score_change_explanation = parts.join('; ') + '.';
+    }
+
     const record = await base44.entities.BrandScan.create({
       target: 'samedayrecycling.ca',
       overall_score: Math.round(ai.overall_score || 0),
@@ -124,6 +183,9 @@ export default async function(req) {
       sources,
       summary: String(ai.summary || '').slice(0, 3000),
       previous_overall_score: prev ? prev.overall_score : null,
+      methodology: METHODOLOGY,
+      measured_signals,
+      score_change_explanation,
       run_by: user.email || '',
     });
 

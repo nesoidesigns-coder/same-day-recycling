@@ -14,6 +14,38 @@
       "default": {},
       "description": "Per-dimension sub-scores: {seo, discoverability, reputation, credibility, positioning}, each {score, explanation, basis: verified|ai_estimate}."
     },
+    "methodology": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "The scoring formula recorded at scan time (weights, evidence requirements, version). A methodology change is recorded here so score movements are explainable even when the site itself didn't change."
+    },
+    "measured_signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "value": {},
+          "window": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Directly measured search performance and business facts (GSC clicks/impressions/position, approved review count, verified contractor coverage). Always kept separate from AI-estimated scores."
+    },
+    "score_change_explanation": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Why the overall score moved since the previous scan: which dimensions changed, methodology changes, or measured-signal movements."
+    },
     "strengths": {
       "type": "array",
       "items": {

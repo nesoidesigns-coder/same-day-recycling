@@ -5,6 +5,7 @@ import IndexingRecoveryCentre from "@/components/admin/authority/IndexingRecover
 import IndexCoverage from "@/components/admin/authority/IndexCoverage";
 import SeoAutopilot from "@/components/admin/authority/SeoAutopilot";
 import MarketDemandGauges from "@/components/admin/authority/MarketDemandGauges";
+import CrawlAuditPanel from "@/components/admin/authority/CrawlAuditPanel";
 
 const num = (n) => Number(n || 0).toLocaleString("en-CA");
 const pct = (v) => `${v || 0}%`;
@@ -204,6 +205,7 @@ export default function AdminSearchAuthority() {
           </div>
 
           <SeoAutopilot />
+          <CrawlAuditPanel />
           <IndexingRecoveryCentre index={data.index} siteUrl={data.siteUrl} />
           <IndexCoverage index={data.index} siteUrl={data.siteUrl} />
 
