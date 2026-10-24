@@ -58,6 +58,7 @@ const RealtorDashboard = lazyPage(() => import('./pages/RealtorDashboard'));
 const Realtors = lazyPage(() => import('./pages/Realtors'));
 const AdminFacebook = lazyPage(() => import('./pages/AdminFacebook'));
 const AdminMarketing = lazyPage(() => import('./pages/AdminMarketing'));
+const AdminMarketingCommand = lazyPage(() => import('./pages/AdminMarketingCommand'));
 const RecyclingCenters = lazyPage(() => import('./pages/RecyclingCenters'));
 const Blog = lazyPage(() => import('./pages/Blog'));
 const BlogPost = lazyPage(() => import('./pages/BlogPost'));
@@ -268,6 +269,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
         <Route path="/admin/gallery" element={<AdminGallery />} />
         <Route path="/admin/marketing" element={<AdminMarketing />} />
+      <Route path="/admin/marketing-command" element={<AdminMarketingCommand />} />
         <Route path="/admin/software" element={<AdminSoftware />} />
         <Route path="/admin/national" element={<AdminNational />} />
         <Route path="/company" element={<CompanyDashboard />} />
