@@ -100,11 +100,13 @@ export default async function(req) {
     const now = Date.now();
     const since30 = new Date(now - 30 * DAY_MS).toISOString();
     const since45 = new Date(now - 45 * DAY_MS).toISOString();
+    const since60 = new Date(now - 60 * DAY_MS).toISOString();
+    const since90 = new Date(now - 90 * DAY_MS).toISOString();
     const todayStart = new Date(new Date().toISOString().slice(0, 10) + 'T00:00:00Z').toISOString();
 
     const [bookings, leads, apps, inquiries, partners, opps, runs, observations, seoSnapshots] = await Promise.all([
-      base44.asServiceRole.entities.Booking.filter({ record_type: 'service', created_date: { $gte: since30 } }, { sort: '-created_date', limit: 200 }),
-      base44.asServiceRole.entities.QuoteLead.filter({ created_date: { $gte: since30 } }, { sort: '-created_date', limit: 200 }),
+      base44.asServiceRole.entities.Booking.filter({ record_type: 'service', created_date: { $gte: since90 } }, { sort: '-created_date', limit: 500 }),
+      base44.asServiceRole.entities.QuoteLead.filter({ created_date: { $gte: since90 } }, { sort: '-created_date', limit: 500 }),
       base44.asServiceRole.entities.ContractorApplication.filter({ created_date: { $gte: since30 } }, { sort: '-created_date', limit: 50 }),
       base44.asServiceRole.entities.SoftwareInquiry.filter({ created_date: { $gte: since30 } }, { sort: '-created_date', limit: 50 }),
       base44.asServiceRole.entities.Partner.filter({}, { limit: 500 }),
@@ -114,12 +116,16 @@ export default async function(req) {
       base44.asServiceRole.entities.SeoPerformanceSnapshot.list({ sort: '-created_date', limit: 5 }),
     ]);
     const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
+    // 30-day working sets; the 90-day fetch also powers the previous-window
+    // comparison for the Regional Demand Activity gauge.
+    const b30 = items(bookings).filter((b) => b.created_date >= since30);
+    const l30 = items(leads).filter((l) => l.created_date >= since30);
 
     // ---- Activity feed (anonymized internal events + public opportunities) ----
     // Cancelled requests are recorded in dispatch but never presented as
     // confirmed demand in the Observatory feed or counters.
     const events = [];
-    for (const b of items(bookings).filter((b) => b.status !== 'cancelled')) {
+    for (const b of b30.filter((b) => b.status !== 'cancelled')) {
       events.push({
         id: `bk_${b.id}`, category: 'booking', layer: 'live',
         source_platform: 'Recycling OS (internal)',
@@ -130,7 +136,7 @@ export default async function(req) {
         link: null,
       });
     }
-    for (const l of items(leads)) {
+    for (const l of l30) {
       events.push({
         id: `ql_${l.id}`, category: l.source === 'google_business' ? 'service_inquiry' : 'quote_request', layer: 'live',
         source_platform: 'Recycling OS (internal)',
@@ -197,11 +203,11 @@ export default async function(req) {
     const openOpps = items(opps);
     const qualifiedOpps = openOpps.filter((o) => ['active_request', 'potential_opportunity'].includes(o.classification));
     const awaitingMatching = openOpps.filter((o) => ['potential_lead', 'verified_request'].includes(o.job_status)).length
-      + items(bookings).filter((b) => !b.partner_id && b.status !== 'cancelled').length;
-    const confirmedBookings = items(bookings).filter((b) => CONFIRMED.includes(b.status)).length;
-    const completedJobs = items(bookings).filter((b) => b.status === 'completed').length;
-    const requestsToday = items(bookings).filter((b) => b.created_date >= todayStart && b.status !== 'cancelled').length
-      + items(leads).filter((l) => l.created_date >= todayStart).length;
+      + b30.filter((b) => !b.partner_id && b.status !== 'cancelled').length;
+    const confirmedBookings = b30.filter((b) => CONFIRMED.includes(b.status)).length;
+    const completedJobs = b30.filter((b) => b.status === 'completed').length;
+    const requestsToday = b30.filter((b) => b.created_date >= todayStart && b.status !== 'cancelled').length
+      + l30.filter((l) => l.created_date >= todayStart).length;
     const verifiedCities = new Set();
     let territoryCount = 0;
     for (const p of items(partners)) {
@@ -219,8 +225,8 @@ export default async function(req) {
       regional[k] = regional[k] || { city, province_code: province || '', demand_events: 0, public_opportunities: 0, bookings_30d: 0 };
       regional[k][key] += n;
     };
-    for (const b of items(bookings)) bump(b.city, b.province_code, 'demand_events');
-    for (const l of items(leads)) bump(l.city, '', 'demand_events');
+    for (const b of b30.filter((b) => b.status !== 'cancelled')) bump(b.city, b.province_code, 'demand_events');
+    for (const l of l30) bump(l.city, '', 'demand_events');
     for (const o of openOpps) bump(o.city, o.province_code, 'public_opportunities');
     for (const p of items(partners)) {
       if (!p.active || !p.verified) continue;
@@ -250,13 +256,65 @@ export default async function(req) {
     }
     const historicalSignals = Object.values(obsByKeyword).slice(0, 6);
 
+    // ---- Regional Demand Activity gauge (observed service requests) ----
+    // Internal platform requests plus qualified public opportunities within a
+    // 30-day window. Each internal record counts once; public opportunities
+    // are deduplicated by their source external id. Google search interest is
+    // never counted as a service request.
+    const gaugeOpps = [];
+    const seenExternal = new Set();
+    for (const o of openOpps) {
+      const key = o.external_id || o.id;
+      if (seenExternal.has(key)) continue;
+      seenExternal.add(key);
+      if (['active_request', 'potential_opportunity'].includes(o.classification)) gaugeOpps.push(o);
+    }
+    const oppAt = (o) => o.posted_at || o.created_date || '';
+    const provBreakdown = (from, to) => {
+      const map = {};
+      const add = (province, city) => {
+        const p = province || 'unspecified';
+        map[p] = map[p] || { province: p, requests: 0, cities: {} };
+        map[p].requests += 1;
+        if (city) map[p].cities[city] = (map[p].cities[city] || 0) + 1;
+      };
+      for (const b of items(bookings)) if (b.created_date >= from && b.created_date < to && b.status !== 'cancelled') add(b.province_code, b.city);
+      for (const l of items(leads)) if (l.created_date >= from && l.created_date < to) add(l.province_code, l.city);
+      for (const o of gaugeOpps) { const t = oppAt(o); if (t >= from && t < to) add(o.province_code, o.city); }
+      return Object.values(map).map((p) => ({ province: p.province, requests: p.requests, cities: Object.entries(p.cities).map(([city, requests]) => ({ city, requests })).sort((a, b) => b.requests - a.requests) })).sort((a, b) => b.requests - a.requests);
+    };
+    const distinctRegions = (provs) => {
+      const s = new Set();
+      for (const p of provs) { if (p.cities.length) for (const c of p.cities) s.add(`${p.province}|${c.city}`); else s.add(p.province); }
+      return s.size;
+    };
+    const provincesNow = provBreakdown(since30, '9999-12-31');
+    const gaugeNow = provincesNow.reduce((n, p) => n + p.requests, 0);
+    const provincesPrev = provBreakdown(since60, since30);
+    const gaugePrev = provincesPrev.reduce((n, p) => n + p.requests, 0);
+    const strongestRegions = regions.filter((r) => r.demand_events + r.public_opportunities > 0).slice(0, 6)
+      .map((r) => ({ city: r.city, requests: r.demand_events + r.public_opportunities, covered: r.covered }));
+    const regional_gauge = {
+      window_days: 30,
+      verified_requests: gaugeNow,
+      previous_window_requests: gaugePrev,
+      regions_with_demand: distinctRegions(provincesNow),
+      strongest_regions: strongestRegions,
+      provinces: provincesNow,
+      previous_provinces: provincesPrev,
+      service_breakdown: trending,
+      qualified_opportunities_open: gaugeOpps.length,
+      dedupe_note: 'Each internal record counts once; public opportunities are deduplicated by their source external id.',
+      computed_at: new Date().toISOString(),
+    };
+
     // ---- Source connection status ----
     const latest = (rows, field = 'created_date') => (rows.length ? rows.map((r) => r[field]).filter(Boolean).sort().pop() : null);
     const redditRuns = items(runs).filter((r) => r.source === 'reddit');
     const lastReddit = redditRuns[0];
     const trendsLatest = latest(items(observations).map((o) => ({ created_date: o.retrieved_at || o.created_date })));
     const seoLatest = latest(items(seoSnapshots));
-    const internalLatest = [latest(items(bookings)), latest(items(leads)), latest(items(apps))].filter(Boolean).sort().pop();
+    const internalLatest = [latest(b30), latest(l30), latest(items(apps))].filter(Boolean).sort().pop();
     const sources = [
       { key: 'platform', label: 'Recycling OS platform (bookings, inquiries, contractors)', status: 'connected', last_sync: internalLatest, cadence: 'Real time', layer: 'live' },
       {
@@ -283,6 +341,7 @@ export default async function(req) {
       },
       regions,
       trending,
+      regional_gauge,
       historical_signals: historicalSignals,
       sources,
       privacy_note: 'Internal platform events are anonymized: city, service level and timestamps only. Public opportunities link to their original public source.',

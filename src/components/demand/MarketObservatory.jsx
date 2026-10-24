@@ -3,11 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Loader2, Globe2, TrendingUp, TrendingDown, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import SearchDemandGauge from '@/components/demand/SearchDemandGauge';
+import RegionalActivityGauge from '@/components/demand/RegionalActivityGauge';
 const MarketArchive = lazy(() => import('@/components/admin/demand/MarketArchive'));
 
-// Compact public observatory: four components, each answering one question
-// about Canadian consumer demand with verified data only. No circular gauges,
-// no user-facing date/range controls, no diagnostics on the public surface.
+// Compact public observatory: large intelligence gauges in the two headline
+// panels, each answering one question about Canadian demand with verified
+// data only. No user-facing date/range controls, no diagnostics on the public
+// surface.
 // The report endpoint picks the latest verified reporting period itself.
 const PROVINCE_NAMES = { AB: 'Alberta', BC: 'British Columbia', MB: 'Manitoba', NB: 'New Brunswick', NL: 'Newfoundland and Labrador', NS: 'Nova Scotia', NT: 'Northwest Territories', NU: 'Nunavut', ON: 'Ontario', PE: 'Prince Edward Island', QC: 'Quebec', SK: 'Saskatchewan', YT: 'Yukon' };
 
@@ -66,16 +69,10 @@ export default function MarketObservatory({ compact = false, onImport, showHisto
       </p>
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <BlockShell title="Canadian National Search Demand" question="How much demand is there, nationally, for the latest verified period?">
-          {data.overview?.available
-            ? <div>
-                <p className="text-4xl font-extrabold text-market-ink">{fmt(data.overview.value)}</p>
-                <p className="mt-1 text-xs text-market-muted">{data.overview.measure} · {data.overview.keywords} tracked terms · {data.overview.scope}</p>
-                <div className="mt-2"><MomBadge pct={data.overview.mom_pct} /></div>
-                <p className="mt-2 text-[11px] text-market-muted">Sources: {(data.overview.sources || []).join(', ') || '—'}</p>
-              </div>
-            : <Unavailable message={data.data_status?.state === 'not_backfilled'
-                ? 'Verified monthly volume estimates have not been backfilled yet. The verified signal currently available is Trends relative interest, shown below.'
-                : 'No verified monthly volume estimates match this period. The verified signal currently available is Trends relative interest, shown below.'} />}
+          <SearchDemandGauge data={data} />
+          {!data.overview?.available && <Unavailable message={data.data_status?.state === 'not_backfilled'
+            ? 'Verified monthly volume estimates have not been backfilled yet. The verified signal currently available is Trends relative interest, shown below.'
+            : 'No verified monthly volume estimates match this period. The verified signal currently available is Trends relative interest, shown below.'} />}
         </BlockShell>
         <BlockShell title="Market Demand Momentum" question="Which services are gaining or losing search interest?">
           {data.overview?.available && Number.isFinite(data.overview.mom_pct) && (
@@ -101,6 +98,8 @@ export default function MarketObservatory({ compact = false, onImport, showHisto
           ) : <Unavailable message="No verified service-level search data is available for this period yet." />}
         </BlockShell>
         <BlockShell title="Regional Demand Distribution" question="Where in Canada is the demand concentrated?">
+          <RegionalActivityGauge />
+          <p className="mt-4 border-t border-market-line pt-3 text-[10px] font-bold uppercase tracking-widest text-market-muted">Search-interest distribution (historical dataset — never counted as service requests)</p>
           {regions.length ? (
             <div className="space-y-2.5">
               {regions.map((r) => <div key={r.key}>
