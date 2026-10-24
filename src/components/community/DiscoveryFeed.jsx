@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Radar, TriangleAlert, Bookmark, MessageSquarePlus, Briefcase, Compass, Search } from 'lucide-react';
@@ -6,6 +6,7 @@ import DiscoveryCard from '@/components/community/DiscoveryCard';
 import DiscoverySearch from '@/components/community/DiscoverySearch';
 import { PROVINCES } from '@/lib/communityShared';
 import { SERVICE_CATEGORIES, CLASSIFICATIONS } from '@/lib/discoveryShared';
+import { trackGA } from '@/lib/communityAnalytics';
 
 const PATHS = [
   { icon: MessageSquarePlus, label: 'I need a service', desc: 'Post a request and discover providers', onClick: 'discussions' },
@@ -20,6 +21,10 @@ export default function DiscoveryFeed({ me, onGoOpportunities, onGoDiscussions }
   const [days, setDays] = useState('30');
   const [savedOnly, setSavedOnly] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    trackGA('community_discovery_view', {});
+  }, []);
 
   const opportunities = useQuery({
     queryKey: ['discoveryOpportunities', province, category, classification, days],
@@ -77,7 +82,7 @@ export default function DiscoveryFeed({ me, onGoOpportunities, onGoDiscussions }
             <p className="mt-1 text-xs text-slate-600 leading-relaxed">Real, publicly posted service requests discovered from authorized public sources across Canada — verified, attributed and linked to the original. Free for everyone.</p>
           </div>
           <div className="flex shrink-0 flex-col gap-1.5">
-            <button onClick={() => setSearchOpen(true)} className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#187B65] px-4 py-2 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors"><Search className="w-3.5 h-3.5" /> Ask the AI</button>
+            <button onClick={() => { trackGA('community_discovery_search_open', {}); setSearchOpen(true); }} className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#187B65] px-4 py-2 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors"><Search className="w-3.5 h-3.5" /> Ask the AI</button>
             {me && (
               <button onClick={() => setSavedOnly((s) => !s)} className={`inline-flex items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${savedOnly ? 'border-[#187B65] bg-white text-[#187B65]' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>
                 <Bookmark className={`w-3.5 h-3.5 ${savedOnly ? 'fill-current' : ''}`} /> Saved {(saved.data || []).length || ''}

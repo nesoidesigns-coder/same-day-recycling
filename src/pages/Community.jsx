@@ -12,6 +12,7 @@ import LocalOpportunitiesStrip from '@/components/community/LocalOpportunitiesSt
 import OpportunityBoard from '@/components/community/OpportunityBoard';
 import MemberDirectory from '@/components/community/MemberDirectory';
 import DiscoveryFeed from '@/components/community/DiscoveryFeed';
+import { trackGA } from '@/lib/communityAnalytics';
 import LibraryTab from '@/components/community/LibraryTab';
 import MyProfile from '@/components/community/MyProfile';
 import AiAssistant from '@/components/community/AiAssistant';
@@ -45,6 +46,11 @@ export default function Community() {
   const [checked, setChecked] = useState(false);
   const [tab, setTab] = useState('discover');
   const [aiOpen, setAiOpen] = useState(false);
+
+  // GA4: which community areas get the most traffic.
+  useEffect(() => {
+    trackGA('community_tab_view', { tab });
+  }, [tab]);
 
   useEffect(() => {
     (async () => {

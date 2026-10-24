@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Briefcase, BadgeCheck, MapPin, CalendarDays, Plus, X } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { OPPORTUNITY_TYPES, PROVINCES, opportunityTypeLabel } from '@/lib/communityShared';
+import { trackGA } from '@/lib/communityAnalytics';
 
 const CATS = ['junk_removal', 'furniture_removal', 'appliance_removal', 'electronics', 'scrap_metal', 'bin_rentals', 'cleanouts', 'other'];
 
@@ -27,6 +28,10 @@ export default function OpportunityBoard({ me }) {
   });
 
   const eligible = !!eligibility.data?.eligible;
+
+  useEffect(() => {
+    trackGA('community_board_view', {});
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();

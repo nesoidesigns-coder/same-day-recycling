@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { classificationMeta, serviceCategoryLabel } from '@/lib/discoveryShared';
 import { provinceLabel } from '@/lib/communityShared';
+import { trackGA } from '@/lib/communityAnalytics';
 
 const CATEGORY_ICONS = {
   junk_removal: Truck,
@@ -39,6 +40,13 @@ export default function DiscoveryCard({ item, savedRow, me }) {
   const verifiedDate = item.last_verified_at ? new Date(item.last_verified_at).toLocaleDateString('en-CA') : '';
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['discoverySaved'] });
+
+  // GA4: which discovered opportunities attract attention.
+  const openOriginal = () => trackGA('community_opportunity_open', {
+    service_category: item.service_category,
+    province: item.province_code || '',
+    classification: item.classification,
+  });
 
   const save = async () => {
     setBusy(true);
@@ -75,7 +83,7 @@ export default function DiscoveryCard({ item, savedRow, me }) {
         <span className={`rounded-full px-2 py-0.5 ${cls.tone}`}>{cls.label}</span>
         <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5"><CatIcon className="w-3 h-3" />{serviceCategoryLabel(item.service_category)}</span>
       </div>
-      <a href={item.source_url} target="_blank" rel="noopener noreferrer nofollow" className="block mt-2">
+      <a href={item.source_url} onClick={openOriginal} target="_blank" rel="noopener noreferrer nofollow" className="block mt-2">
         <h3 className="font-bold text-[#102B2A] leading-snug line-clamp-2">{item.title}</h3>
       </a>
       {item.excerpt && <p className="mt-1 text-xs text-slate-600 leading-relaxed line-clamp-2">{item.excerpt}</p>}
@@ -89,7 +97,7 @@ export default function DiscoveryCard({ item, savedRow, me }) {
         {verifiedDate && <span className="inline-flex items-center gap-1" title={`Last verified ${verifiedDate}`}><ShieldCheck className="w-3 h-3 text-[#187B65]" /> Verified</span>}
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <a href={item.source_url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors"><ExternalLink className="w-3 h-3" /> Open original</a>
+        <a href={item.source_url} onClick={openOriginal} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors"><ExternalLink className="w-3 h-3" /> Open original</a>
         {me ? (
           savedRow ? (
             <button onClick={unsave} disabled={busy} className="inline-flex items-center gap-1.5 rounded-full border border-[#187B65] px-3.5 py-1.5 text-xs font-bold text-[#187B65] hover:bg-[#187B65] hover:text-white transition-colors"><BookmarkCheck className="w-3 h-3" /> Saved</button>

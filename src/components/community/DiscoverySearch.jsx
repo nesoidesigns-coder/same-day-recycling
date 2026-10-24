@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, ArrowLeft, Radar, Search } from 'lucide-react';
 import DiscoveryCard from '@/components/community/DiscoveryCard';
+import { trackGA } from '@/lib/communityAnalytics';
 
 const EXAMPLES = [
   'Find public furniture removal requests in Vancouver',
@@ -20,6 +21,7 @@ export default function DiscoverySearch({ me, onExit }) {
     e.preventDefault();
     const query = q.trim();
     if (!query) return;
+    trackGA('community_discovery_search', {});
     setBusy(true);
     setError('');
     try {
