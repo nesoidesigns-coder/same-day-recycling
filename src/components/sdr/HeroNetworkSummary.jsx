@@ -4,7 +4,7 @@ import { networkCopy, networkTimestamp } from "@/components/sdr/heroNetworkCopy"
 export default function HeroNetworkSummary({ coverage, demand, lang = "en" }) {
   const t = networkCopy(lang);
   return (
-    <details className="border-t border-market-line px-4 py-3 text-xs leading-relaxed text-market-muted">
+    <details className="border-t border-market-line px-4 py-2.5 text-xs leading-relaxed text-market-muted sm:py-3">
       <summary className="min-h-11 cursor-pointer font-semibold text-market-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-market-ink">{t.provenance}</summary>
       <div className="mt-3 space-y-3">
         <dl className="grid grid-cols-3 gap-3 text-market-ink">
