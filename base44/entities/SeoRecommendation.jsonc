@@ -1,0 +1,109 @@
+{
+  "name": "SeoRecommendation",
+  "type": "object",
+  "properties": {
+    "page_path": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The page this recommendation targets, e.g. /junk-removal-vancouver."
+    },
+    "page_label": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    },
+    "target_keyword": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "The search query or keyword this change targets, drawn from verified GSC data or demand observations."
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "metadata",
+        "content"
+      ],
+      "default": "metadata",
+      "description": "metadata = title/description change (applied on approval). content = a new on-page section suggestion (approval records the direction; the copy edit is implemented in code)."
+    },
+    "proposed_title": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    },
+    "proposed_description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 320
+    },
+    "proposed_content_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "For content recommendations: the proposed section heading and what it should cover."
+    },
+    "rationale": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Why this change is proposed, citing the data (GSC query, position, demand estimate). Never invented."
+    },
+    "gsc_context": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Snapshot of the verified Search Console data that drove this recommendation."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "applied",
+        "declined"
+      ],
+      "default": "pending_review",
+      "description": "Rex recommends; an admin approves or declines. Nothing publishes without approval."
+    },
+    "review_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "change_id": {
+      "type": "string",
+      "default": "",
+      "description": "SeoChangeLog record created when a metadata recommendation was applied."
+    },
+    "recommended_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "page_path",
+    "target_keyword"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

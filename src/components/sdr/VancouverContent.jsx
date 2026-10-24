@@ -37,6 +37,21 @@ const BLOCKS = [
     p: "Single-item pickup is the most requested Vancouver job: a sofa leaving a basement suite in Renfrew-Collingwood, a recliner heading out of a Fairview apartment, a futon from a student rental near UBC. One-piece removal keeps the price at the minimum pickup rate, and neighbourhood coverage runs from Dunbar and Point Grey through Mount Pleasant, Hastings-Sunrise and Victoria Drive.",
     keywords: ["sofa removal vancouver", "recliner pickup vancouver", "single item furniture removal vancouver"],
   },
+  {
+    h2: "Same-Day Junk Removal in Vancouver",
+    p: "Same-day junk removal in Vancouver is possible when a verified local contractor is available to take your window — book before noon and dispatch confirms the earliest afternoon slot a crew can genuinely commit to. Every Vancouver load, from a single couch to a full house clear-out, is priced by truck space and approved by you before anything is loaded.",
+    keywords: ["same day junk removal vancouver", "same-day pickup vancouver bc", "last minute junk removal vancouver"],
+  },
+  {
+    h2: "Junk Pickup Across Vancouver — How It Works",
+    p: "Junk pickup in Vancouver starts with a quote: list your items or send a photo, and pricing is based on the truck space your load takes rather than a per-item charge. A uniformed crew arrives in your booked window, carries everything out of any room — basement suites, high-rise parkades, laneway houses — and sorts the load afterward for donation, scrap metal and recycling.",
+    keywords: ["junk pickup vancouver", "junk removal vancouver bc", "household junk removal vancouver"],
+  },
+  {
+    h2: "Garage Cleanouts in Vancouver",
+    p: "Garage cleanouts in Vancouver clear years of accumulated clutter in one visit: old paint cans and propane tanks handled separately, e-waste like monitors and small appliances routed to certified processors, scrap metal to recyclers, and still-usable items to donation. Driveway access and parkade clearance are worked out ahead of the booking so the truck fits where your garage is.",
+    keywords: ["garage cleanout vancouver", "garage junk removal vancouver", "estate garage clearing vancouver"],
+  },
 ];
 
 const AREAS = [

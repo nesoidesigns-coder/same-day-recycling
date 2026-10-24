@@ -1,0 +1,73 @@
+{
+  "name": "SeoPerformanceSnapshot",
+  "type": "object",
+  "properties": {
+    "page_path": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The tracked page this snapshot belongs to."
+    },
+    "snapshot_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0,
+      "description": "Google Search Console clicks in the reporting window. Verified data."
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_position": {
+      "type": "number",
+      "default": 0
+    },
+    "bookings": {
+      "type": "number",
+      "default": 0,
+      "description": "Bookings created in the same window. City pages count bookings in that city; service pages count site-wide bookings. Labelled by basis, never attributed by guessing."
+    },
+    "booking_basis": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "How the booking count was scoped: 'city' or 'site_wide'."
+    },
+    "window_days": {
+      "type": "number",
+      "default": 28
+    },
+    "source": {
+      "type": "string",
+      "default": "google_search_console"
+    }
+  },
+  "required": [
+    "page_path",
+    "snapshot_date"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

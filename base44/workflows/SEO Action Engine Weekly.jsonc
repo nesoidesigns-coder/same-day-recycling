@@ -1,0 +1,63 @@
+{
+  "description": "Weekly: snapshots verified Search Console performance for tracked pages, then lets Rex generate improvement recommendations for admin review. Nothing publishes without admin approval.",
+  "name": "SEO Action Engine Weekly",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "seo_action_engine_weekly",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "snapshot_performance": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "seoActionEngine",
+            "args": {
+              "action": "snapshot"
+            }
+          },
+          "then": "generate_recommendations",
+          "x-base44": {
+            "title": "Snapshot performance",
+            "description": "Verified GSC clicks, impressions, position and bookings per tracked page"
+          }
+        }
+      },
+      {
+        "generate_recommendations": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "seoActionEngine",
+            "args": {
+              "action": "recommend"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Generate recommendations",
+            "description": "Rex proposes improvements for admin review (never auto-published)"
+          }
+        }
+      }
+    ]
+  }
+}

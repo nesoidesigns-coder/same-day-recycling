@@ -68,6 +68,13 @@ const CONFIG = {
       ],
     },
     {
+      heading: "Single-item furniture removal",
+      paragraphs: [
+        "You don't need a full clear-out to book. One couch, one mattress, one dresser or a single appliance is the most common furniture pickup — and it prices at the minimum truck rate, not a full load. That makes single-item removal the cheapest responsible option when a piece is too heavy or awkward for a curb-side collection day, or your municipality won't take upholstered items at all.",
+        "A single couch pickup works the same way as any other job: the crew carries the piece out of the room it's in — down stairs, through elevators, around tight corners — and the final price is approved with you on arrival before anything is lifted. If the item is already staged at the curb or in the garage, the Curbside Discount takes $25 off and you don't need to be home.",
+      ],
+    },
+    {
       heading: "Areas we serve",
       paragraphs: [
         "Furniture removal requests are open across Canada. Each city page carries local pricing, pickup rules and booking, and the dedicated furniture removal service details above apply on every job. A listed city is not a confirmed crew or same-day slot: dispatch must match a qualified contractor, obtain their acceptance and agree your price and arrival window before confirming the appointment.",
@@ -87,6 +94,8 @@ const CONFIG = {
     { q: "Do I need to be home?", a: "Not for curbside pickup. Stage items in your driveway, lane or garage front and take $25 off with our Curbside Discount." },
     { q: "Can you take furniture from upstairs or an apartment?", a: "Yes. The crew carries items from any floor, including stairs, elevators and tight corners. For condo and strata buildings we coordinate elevator bookings with building management." },
     { q: "Do you disassemble furniture for removal?", a: "Where a piece needs it, the crew handles the disassembly as part of the pickup. You don't need to dismantle anything beforehand." },
+    { q: "Can you remove just one item?", a: "Yes — single-item pickup is the most common booking. A couch, mattress, dresser or appliance prices at the minimum truck rate, and you approve the exact price before the crew lifts anything." },
+    { q: "How fast can a single couch be picked up?", a: "You can request a same-day or next-day window when you book. It is confirmed only after a qualified contractor accepts your specific job — a city page listing never guarantees a slot." },
     { q: "What happens to my old furniture?", a: "Every load is sorted: reusable pieces go to donation partners, metal frames and mattress springs are recycled, and only residual material is landfilled. You can request a Recycling Impact Report for the record." },
     { q: "Can I get same-day furniture pickup?", a: "You can request same-day furniture pickup. It is not guaranteed by a city listing or the time you submit: a qualified contractor must accept your specific job and confirm the arrival window first." },
     { q: "Do you remove hot tubs?", a: "Yes. Hot tubs and other bulky outdoor items are quoted from a photo to price them accurately — send one in the quote tool and we'll book the pickup." },

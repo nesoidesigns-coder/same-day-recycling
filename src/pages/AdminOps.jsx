@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import {
   Radio, Truck, Users, PackageCheck, CheckCircle2, CircleDollarSign, Wallet,
-  ShieldCheck, AlertTriangle, Info, Loader2, RefreshCw, XCircle, Filter,
+  ShieldCheck, AlertTriangle, Info, Loader2, RefreshCw, XCircle, Filter, Search,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import DispatchMap from "@/components/admin/DispatchMap";
 import JobDrawer from "@/components/ops/JobDrawer";
 import { labelFor } from "@/lib/opsShared";
@@ -21,6 +22,12 @@ export default function AdminOps() {
   });
   const [filters, setFilters] = useState({ province: "all", city: "all", contractor: "all", days: "30" });
   const [selected, setSelected] = useState(null);
+  // Search opportunities from the SEO Action Engine (verified GSC + pending Rex recommendations).
+  const seoSummary = useQuery({
+    queryKey: ["opsSeoSummary"],
+    queryFn: async () => (await base44.functions.invoke("seoActionEngine", { action: "summary" })).data,
+    refetchInterval: 120000,
+  });
 
   const bookings = data?.bookings || [];
   const cities = useMemo(() => [...new Set(bookings.map((b) => b.city).filter(Boolean))].sort(), [bookings]);
@@ -92,6 +99,32 @@ export default function AdminOps() {
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Search opportunities — SEO Action Engine */}
+      {seoSummary.data && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-sm font-bold text-[#102B2A] flex items-center gap-2"><Search className="w-4 h-4 text-[#187B65]" /> Search opportunities</h2>
+            <Link to="/admin/seo-action" className="text-[11px] font-bold text-[#187B65] hover:underline">Open SEO Action Engine →</Link>
+          </div>
+          <p className="mt-1 text-[11px] text-slate-500">Verified Search Console performance per tracked page, plus Rex improvement suggestions awaiting approval.</p>
+          <div className="mt-3 grid sm:grid-cols-2 gap-2">
+            {(seoSummary.data.pages || []).map((p) => (
+              <div key={p.path} className="rounded-xl bg-[#f4f7f5] px-3 py-2">
+                <p className="text-xs font-bold text-[#102B2A]">{p.label}</p>
+                {p.latest ? (
+                  <p className="text-[11px] text-slate-600 tabular-nums">{p.latest.clicks} clicks · {p.latest.impressions} impressions · pos {p.latest.avg_position || "—"} ({p.latest.snapshot_date})</p>
+                ) : (
+                  <p className="text-[11px] text-slate-400">No snapshot yet</p>
+                )}
+              </div>
+            ))}
+          </div>
+          {seoSummary.data.pending_count > 0 && (
+            <p className="mt-3 text-[11px] font-bold text-amber-800">{seoSummary.data.pending_count} SEO recommendation(s) awaiting your approval in the SEO Action Engine.</p>
+          )}
         </div>
       )}
 

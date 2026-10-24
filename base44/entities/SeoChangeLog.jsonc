@@ -1,0 +1,124 @@
+{
+  "name": "SeoChangeLog",
+  "type": "object",
+  "properties": {
+    "page_path": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The page that was modified."
+    },
+    "target_keyword": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    },
+    "previous_title": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "previous_description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 400
+    },
+    "new_title": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "new_description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 400
+    },
+    "change_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reason": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Why the change was made, citing the data that motivated it."
+    },
+    "gsc_before_clicks": {
+      "type": "number",
+      "default": 0
+    },
+    "gsc_before_impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "gsc_before_position": {
+      "type": "number",
+      "default": 0
+    },
+    "gsc_after_clicks": {
+      "type": "number",
+      "default": 0,
+      "description": "Filled from the first performance snapshot taken after the change. 0 = not yet measured."
+    },
+    "gsc_after_impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "gsc_after_position": {
+      "type": "number",
+      "default": 0
+    },
+    "gsc_after_measured": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once an after-snapshot has been attached."
+    },
+    "gsc_window_days": {
+      "type": "number",
+      "default": 28
+    },
+    "recommendation_id": {
+      "type": "string",
+      "default": ""
+    },
+    "changed_by": {
+      "type": "string",
+      "default": "seo-action-engine",
+      "maxLength": 120,
+      "description": "Admin who approved the change."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "applied",
+        "reverted"
+      ],
+      "default": "applied"
+    }
+  },
+  "required": [
+    "page_path",
+    "change_date"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
