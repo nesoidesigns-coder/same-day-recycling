@@ -19,7 +19,6 @@ const TrustGauges = lazy(() => import("@/components/sdr/TrustGauges"));
 const RexJourney = lazy(() => import("@/components/sdr/RexJourney"));
 const TransparentPricing = lazy(() => import("@/components/sdr/TransparentPricing"));
 const QuoteCalculator = lazy(() => import("@/components/sdr/QuoteCalculator"));
-const CanadaNetworkMap = lazy(() => import("@/components/sdr/CanadaNetworkMap"));
 const ProvinceImpact = lazy(() => import("@/components/sdr/ProvinceImpact"));
 const FeaturedProviders = lazy(() => import("@/components/sdr/FeaturedProviders"));
 const NationalCoverage = lazy(() => import("@/components/sdr/NationalCoverage"));
@@ -61,7 +60,6 @@ export default function Home() {
       <RecyclingPulse />
       <LazySection minHeight={120}><RexJourney onBook={bookFromQuote} /></LazySection>
       <LazySection minHeight={120}><TrustGauges /></LazySection>
-      <LazySection minHeight={120}><CanadaNetworkMap /></LazySection>
       <LazySection minHeight={120}><ProvinceImpact /></LazySection>
       <Services />
       <HowItWorks />

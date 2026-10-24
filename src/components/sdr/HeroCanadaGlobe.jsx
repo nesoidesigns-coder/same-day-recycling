@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { LAYER_COLORS } from "@/lib/canadaOutline";
 import { WORLD_OUTLINES } from "@/lib/worldOutline";
 
 // Google-Earth-style globe of Canada. Pure rendering, picking and gestures;
@@ -8,38 +7,27 @@ import { WORLD_OUTLINES } from "@/lib/worldOutline";
 // to select it — selection rotates the globe so the municipality faces you.
 const R = 10;
 const DEG = Math.PI / 180;
-const VIEW_LAT = 58; // latitude framed at screen centre in the default view
-const ROT = 0.0055; // radians of globe rotation per dragged pixel
-const CAM_MIN = 14, CAM_MAX = 36, FOCUS_DIST = 18, CANADA_DIST = 21;
+const VIEW_LAT = 58, VIEW_LNG = -96;
+const ROT = 0.0055;
+const CAM_MIN = 14, FOCUS_DIST = 18;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
   return new THREE.Vector3(
-    radius * Math.cos(phi) * Math.sin(theta),
-    radius * Math.sin(phi),
-    radius * Math.cos(phi) * Math.cos(theta)
+    radius * Math.sin(phi) * Math.sin(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.cos(theta)
   );
 };
 
 const targetQuaternion = (lat, lng) => {
   // Rotate the location onto the meridian facing the straight-on camera.
   const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -(lng + 96) * DEG);
-  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), (90 - lat) * DEG);
+  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), lat * DEG);
   return qx.multiply(qy);
 };
 
-// Territory arcs: spherical interpolation lifted off the surface.
-const arcPoints = (a, b) => {
-  const start = spherePoint(a[0], a[1]), end = spherePoint(b[0], b[1]);
-  const angle = start.angleTo(end);
-  const lift = 0.3 + angle * 0.8;
-  const points = [];
-  for (let i = 0; i <= 24; i++) {
-    const t = i / 24;
-    points.push(start.clone().lerp(end, t).normalize().multiplyScalar(R + Math.sin(Math.PI * t) * lift));
-  }
-  return { points };
-};
+
 
 export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], onSelect, onHover, onFailure, mobile = false }) {
   if (!mount) return null;
@@ -54,17 +42,17 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.25 : 1.5));
   renderer.domElement.style.display = "block";
   renderer.domElement.style.cursor = "grab";
-  renderer.domElement.style.touchAction = "pan-y";
+  renderer.domElement.style.touchAction = "none";
   mount.appendChild(renderer.domElement);
 
   let raf = 0, visible = true, failed = false, dirty = true, lastFrame = 0;
   const scene = new THREE.Scene();
   const TARGET = new THREE.Vector3(0, 0, 0);
   const camDir = new THREE.Vector3(0, 0, 1);
-  // Canada framed toward the camera by default; distances glide smoothly.
-  let camDist = CANADA_DIST, camTarget = CANADA_DIST;
+  // Fit the whole Earth inside the viewport, rather than cropping its edges.
+  let homeDist = 34, camDist = homeDist, camTarget = homeDist;
   const setCamDist = (d) => {
-    camTarget = Math.min(CAM_MAX, Math.max(CAM_MIN, d));
+    camTarget = Math.min(homeDist * 2.2, Math.max(CAM_MIN, d));
     if (reduced) camDist = camTarget;
     dirty = true;
   };
@@ -127,47 +115,30 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     worldLines.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), worldMat));
   });
 
-  // Data layer (nodes, pick targets, arcs): rebuilt in place when fresh data
-  // arrives, so live refreshes never tear the whole scene down.
-  const world = new THREE.Group();
-  globeGroup.add(world);
+  // City hit targets stay interactive without drawing dots, glows or arcs.
+  // Surface, targets and selection all rotate together in globeGroup.
   const dataGroup = new THREE.Group();
-  world.add(dataGroup);
-  const nodeGeo = new THREE.SphereGeometry(0.085, 10, 10);
+  globeGroup.add(dataGroup);
   const pickGeo = new THREE.SphereGeometry(mobile ? 0.9 : 0.65, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
-  const arcMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.7 });
   let picks = [];
   const nodeMap = new Map();
-  let dataCleanup = [];
-  const setData = (nextNodes = [], nextLinks = []) => {
+  const setData = (nextNodes = []) => {
     dataGroup.clear();
-    dataCleanup.forEach(({ geometry, material }) => { geometry?.dispose?.(); material?.dispose?.(); });
-    dataCleanup = [];
     picks = [];
     nodeMap.clear();
     nextNodes.forEach((node) => {
       const position = spherePoint(node.lat, node.lng, R * 1.015);
-      const mesh = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({ color: LAYER_COLORS[node.layer] || 0x2fd4a0 }));
-      mesh.position.copy(position);
-      dataCleanup.push({ material: mesh.material });
-      dataGroup.add(mesh);
       const pick = new THREE.Mesh(pickGeo, pickMat);
       pick.position.copy(position);
       pick.userData = node;
       dataGroup.add(pick);
       picks.push(pick);
-      nodeMap.set(node.key, { mesh, position, node });
-    });
-    nextLinks.forEach((link) => {
-      const { points } = arcPoints(link.a, link.b);
-      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), arcMat);
-      dataCleanup.push({ geometry: line.geometry });
-      dataGroup.add(line);
+      nodeMap.set(node.key, { position, node });
     });
     dirty = true;
   };
-  setData(nodes, links);
+  setData(nodes);
 
   // Selection ring, oriented along the node's surface normal
   const ring = new THREE.Mesh(
@@ -191,14 +162,14 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
 
   const pointers = new Map();
   let dragging = false, moved = 0, lastX = 0, lastY = 0, lastT = 0, velX = 0, velY = 0, pinchDist = 0;
-  const baseQuat = targetQuaternion(VIEW_LAT, 0);
-  world.quaternion.copy(baseQuat);
+  const baseQuat = targetQuaternion(VIEW_LAT, VIEW_LNG);
+  globeGroup.quaternion.copy(baseQuat);
 
   // Drag rotation in camera-relative axes: fully free 360° spin in every
   // direction. Far-side cities stay unreachable via the ocean occluder.
   const applyDrag = (dxPx, dyPx) => {
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(dyPx * ROT, dxPx * ROT, 0));
-    world.quaternion.premultiply(q);
+    globeGroup.quaternion.premultiply(q);
     dirty = true;
   };
 
@@ -206,10 +177,8 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const setHovered = (node) => {
     if (hovered === node) return;
     dirty = true;
-    if (hovered) nodeMap.get(hovered.key)?.mesh.scale.setScalar(1);
     hovered = node;
     if (hovered) {
-      nodeMap.get(hovered.key)?.mesh.scale.setScalar(1.35);
       if (!dragging) renderer.domElement.style.cursor = "pointer";
     } else if (!dragging) {
       renderer.domElement.style.cursor = "grab";
@@ -225,10 +194,12 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       lastX = e.clientX; lastY = e.clientY; lastT = performance.now();
       velX = velY = 0;
       focus.active = false;
-      baseQuat.copy(world.quaternion);
+      baseQuat.copy(globeGroup.quaternion);
       renderer.domElement.style.cursor = "grabbing";
     } else if (pointers.size === 2) {
       dragging = false;
+      moved = Infinity;
+      velX = velY = 0;
       const [a, b] = [...pointers.values()];
       pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
     }
@@ -265,13 +236,18 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       dragging = false;
       renderer.domElement.style.cursor = hovered ? "pointer" : "grab";
       // A tiny movement is a tap, not a drag: select the city under it.
-      if (wasDragging && moved < 8) {
+      if (e.type === "pointerup" && wasDragging && moved < 8) {
         const hit = pickAt(e.clientX, e.clientY);
         if (hit) onSelect?.(hit);
       }
-      if (reduced || moved === 0) baseQuat.copy(world.quaternion);
-    } else {
-      pinchDist = 0;
+      baseQuat.copy(globeGroup.quaternion);
+      if (reduced || performance.now() - lastT > 100) velX = velY = 0;
+    } else if (pointers.size === 1) {
+      const remaining = [...pointers.values()][0];
+      dragging = true;
+      lastX = remaining.x; lastY = remaining.y; lastT = performance.now();
+      moved = Infinity;
+      velX = velY = pinchDist = 0;
     }
   };
   const onPointerLeave = () => setHovered(null);
@@ -294,6 +270,10 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     renderer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    const atHome = Math.abs(camTarget - homeDist) < 0.01;
+    const halfFov = Math.atan(Math.tan(camera.fov * DEG / 2) * Math.min(1, camera.aspect));
+    homeDist = R / Math.sin(halfFov) * 1.14;
+    if (atHome) { camDist = camTarget = homeDist; updateCamera(); }
   };
   resize();
   const ro = new ResizeObserver(resize);
@@ -305,10 +285,10 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     baseQuat.copy(targetQuaternion(lat, lng));
     velX = velY = 0;
     if (instant || reduced) {
-      world.quaternion.copy(baseQuat);
+      globeGroup.quaternion.copy(baseQuat);
       focus.active = false; focus.t = 1;
     } else {
-      focus.from.copy(world.quaternion);
+      focus.from.copy(globeGroup.quaternion);
       focus.to.copy(baseQuat);
       focus.active = true; focus.t = 0;
     }
@@ -336,7 +316,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     if (focus.active && focus.t < 1) {
       focus.t = Math.min(1, focus.t + dt);
       const k = focus.t < 0.5 ? 2 * focus.t * focus.t : 1 - Math.pow(-2 * focus.t + 2, 2) / 2;
-      world.quaternion.slerpQuaternions(focus.from, focus.to, k);
+      globeGroup.quaternion.slerpQuaternions(focus.from, focus.to, k);
       if (focus.t >= 1) focus.active = false;
     } else if (dragging) {
       // rotation applied directly by the gesture handlers
@@ -345,13 +325,8 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       applyDrag(velX * dt * 1000, velY * dt * 1000);
       const damping = Math.exp(-dt * 4.5);
       velX *= damping; velY *= damping;
-      if (Math.abs(velX) <= 0.02 && Math.abs(velY) <= 0.02) { velX = velY = 0; baseQuat.copy(world.quaternion); }
-    } else if (!reduced) {
-      // Gentle ambient sway around the current base view
-      const sway = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.sin(clock.elapsedTime * 0.1) * 0.02, Math.sin(clock.elapsedTime * 0.13) * 0.045, 0));
-      world.quaternion.copy(baseQuat).multiply(sway);
+      if (Math.abs(velX) <= 0.02 && Math.abs(velY) <= 0.02) { velX = velY = 0; baseQuat.copy(globeGroup.quaternion); }
     }
-    if (ring.visible) ring.scale.setScalar(1 + 0.1 * Math.sin(clock.elapsedTime * 3));
     renderer.render(scene, camera);
   };
   tick();
@@ -391,11 +366,11 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     },
     resetFocus: () => {
       dirty = true;
-      setCamDist(CANADA_DIST); // back to the Canada-forward view
+      setCamDist(homeDist);
       focus.active = false;
-      applyFocus(VIEW_LAT, 0, reduced);
+      applyFocus(VIEW_LAT, VIEW_LNG, reduced);
     },
-    updateData: (nextNodes, nextLinks) => setData(nextNodes, nextLinks),
+    updateData: (nextNodes) => setData(nextNodes),
     zoomBy: (factor) => {
       dirty = true;
       setCamDist(camTarget * factor);
