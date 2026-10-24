@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { CANADA_OUTLINES, LAYER_COLORS } from "@/lib/canadaOutline";
+import { LAYER_COLORS } from "@/lib/canadaOutline";
 import { WORLD_OUTLINES } from "@/lib/worldOutline";
 
 // Google-Earth-style globe of Canada. Pure rendering, picking and gestures;
@@ -8,9 +8,9 @@ import { WORLD_OUTLINES } from "@/lib/worldOutline";
 // to select it — selection rotates the globe so the municipality faces you.
 const R = 10;
 const DEG = Math.PI / 180;
-const VIEW_LAT = 58; // latitude framed at screen centre in the default view
+const VIEW_LAT = 30; // latitude framed at screen centre in the default view
 const ROT = 0.0055; // radians of globe rotation per dragged pixel
-const CAM_MIN = 14, CAM_MAX = 36, FOCUS_DIST = 18, CANADA_DIST = 20;
+const CAM_MIN = 14, CAM_MAX = 36, FOCUS_DIST = 18, CANADA_DIST = 30;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
@@ -125,19 +125,14 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const graticule = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(graticulePos), graticuleMat);
   globeGroup.add(graticule);
 
-  // Coastline: verified Natural Earth geometry as a plain matte line
-  const coastMat = new THREE.LineBasicMaterial({ color: 0x76a89b, transparent: true, opacity: 0.9 });
-  // Whole-world land silhouette (Natural Earth 110m), with Canada brighter
+  // Whole-world land silhouette (Natural Earth 110m) — fallback only; hidden
+  // once the photorealistic Earth texture loads.
   const worldMat = new THREE.LineBasicMaterial({ color: 0x5b8d84, transparent: true, opacity: 0.65 });
   const worldLines = new THREE.Group();
   globeGroup.add(worldLines);
   WORLD_OUTLINES.forEach((poly) => {
     const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.002));
     worldLines.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), worldMat));
-  });
-  CANADA_OUTLINES.forEach((poly) => {
-    const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.004));
-    globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([...points, points[0]]), coastMat));
   });
 
   // Data layer (nodes, pick targets, arcs): rebuilt in place when fresh data
