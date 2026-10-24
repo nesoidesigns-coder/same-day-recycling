@@ -396,5 +396,10 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     },
     focusOn: (lat, lng, instant) => { dirty = true; applyFocus(lat, lng, instant); },
     resetFocus: () => { dirty = true; focus.active = false; applyFocus(VIEW_LAT, 0, reduced); },
+    zoomBy: (factor) => {
+      dirty = true;
+      camDist = Math.min(CAM_MAX, Math.max(CAM_MIN, camDist * factor));
+      updateCamera();
+    },
   };
 }
