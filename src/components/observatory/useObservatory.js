@@ -16,10 +16,21 @@ export default function useObservatory() {
   });
 
   useEffect(() => {
-    const unsub = base44.entities.PublicOpportunity.subscribe(() => {
-      queryClient.invalidateQueries({ queryKey: ['observatoryFeed'] });
-    });
-    return unsub;
+    // Real-time: any new booking, quote request or public opportunity
+    // revalidates the feed immediately, so the demand map and counters
+    // update without waiting for the 60s poll.
+    const unsubs = [
+      base44.entities.PublicOpportunity.subscribe(() => {
+        queryClient.invalidateQueries({ queryKey: ['observatoryFeed'] });
+      }),
+      base44.entities.Booking.subscribe(() => {
+        queryClient.invalidateQueries({ queryKey: ['observatoryFeed'] });
+      }),
+      base44.entities.QuoteLead.subscribe(() => {
+        queryClient.invalidateQueries({ queryKey: ['observatoryFeed'] });
+      }),
+    ];
+    return () => unsubs.forEach((unsub) => unsub());
   }, [queryClient]);
 
   return query;
