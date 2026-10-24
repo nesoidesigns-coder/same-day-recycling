@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { sendSms } from '../../shared/twilio.ts';
+import { recordTrackingEvent } from '../../shared/tracking.ts';
 
 const PARTNER_SHARE = 0.75;
 
@@ -71,6 +72,66 @@ export default async function(req) {
       if (body?.credentials !== undefined) patch.credentials = str(body.credentials, 1000);
       await base44.asServiceRole.entities.Partner.update(partner.id, patch);
       return Response.json({ ok: true, compliance: patch });
+    }
+
+    // Chain-of-custody: the assigned contractor documents what was collected,
+    // the weight and the destination facility, and files the facility receipt
+    // (private storage). Restricted to this partner's own jobs; records always
+    // start as 'reported' until a Same Day Recycling admin verifies them.
+    if (action === 'custody_get') {
+      const booking = await base44.asServiceRole.entities.Booking.get(String(body.booking_id || ''));
+      if (!booking || booking.partner_id !== partner.id) {
+        return Response.json({ error: 'Job not found.' }, { status: 404 });
+      }
+      const { items } = await base44.asServiceRole.entities.RecyclingRecord.filter({ booking_id: booking.id }, { limit: 1 });
+      return Response.json({
+        custody: items[0] || null,
+        job: { id: booking.id, reference_code: booking.reference_code || '', name: booking.name || '', city: booking.city || '' },
+      });
+    }
+    if (action === 'custody_save') {
+      const booking = await base44.asServiceRole.entities.Booking.get(String(body.booking_id || ''));
+      if (!booking || booking.partner_id !== partner.id) {
+        return Response.json({ error: 'Job not found.' }, { status: 404 });
+      }
+      const cats = body.material_categories && typeof body.material_categories === 'object' ? body.material_categories : {};
+      const totalGroups = Math.max(0, Number(body.total_item_groups) || 0);
+      const diverted = Math.min(totalGroups, Math.max(0, Number(body.diverted_groups) || 0));
+      const weight = Math.max(0, Number(body.estimated_weight_kg) || 0);
+      const weightSource = ['not_measured', 'estimated', 'measured'].includes(body.weight_source)
+        ? body.weight_source
+        : (weight > 0 ? 'estimated' : 'not_measured');
+      const payload = {
+        booking_id: booking.id,
+        job_ref: booking.reference_code || '',
+        customer_name: booking.name || '',
+        city: booking.city || '',
+        province_code: booking.province_code || '',
+        pickup_date: booking.preferred_date || new Date().toISOString().slice(0, 10),
+        material_categories: cats,
+        total_item_groups: totalGroups,
+        diverted_groups: diverted,
+        diversion_percent: totalGroups > 0 ? Math.round((diverted / totalGroups) * 100) : 0,
+        estimated_weight_kg: weight,
+        weight_source: weightSource,
+        destination_facility: String(body.destination_facility || '').trim().slice(0, 200),
+        disposal_receipt_uri: String(body.disposal_receipt_uri || '').trim().slice(0, 500),
+        documentation_status: 'reported',
+        notes: String(body.notes || '').slice(0, 1000),
+      };
+      const { items } = await base44.asServiceRole.entities.RecyclingRecord.filter({ booking_id: booking.id }, { limit: 1 });
+      const record = items[0]
+        ? await base44.asServiceRole.entities.RecyclingRecord.update(items[0].id, payload)
+        : await base44.asServiceRole.entities.RecyclingRecord.create(payload);
+      await recordTrackingEvent(base44.asServiceRole, {
+        booking_id: booking.id,
+        reference_code: booking.reference_code || '',
+        stage: 'disposal_documented',
+        actor: partner.name || user.email,
+        source: 'contractor',
+        note: 'Chain-of-custody record submitted by the assigned contractor.',
+      });
+      return Response.json({ ok: true, custody: record });
     }
     // Test (internal_test) and cancelled bookings never reach contractors.
     const loadBookings = () => base44.asServiceRole.entities.Booking.filter(

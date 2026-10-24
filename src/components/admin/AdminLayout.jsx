@@ -6,11 +6,12 @@ import {
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
   Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles, BrainCircuit,
-  Target, FileSearch, ListChecks, UsersRound, Radar,
+  Target, FileSearch, ListChecks, UsersRound, Radar, Radio,
 } from "lucide-react";
 
 const OPS = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+  { to: "/admin/ops", label: "Live Operations", icon: Radio },
   { to: "/admin/national", label: "National Ops", icon: Globe2 },
   { to: "/admin/jobs", label: "Jobs & Dispatch", icon: Truck },
   { to: "/admin/leads", label: "Leads", icon: UserPlus },

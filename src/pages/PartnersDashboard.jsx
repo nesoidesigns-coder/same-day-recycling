@@ -11,6 +11,7 @@ import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
 import LeadOffers from "@/components/partner/LeadOffers";
 import DisputeResponse from "@/components/partner/DisputeResponse";
 import BusinessHQ from "@/components/partner/BusinessHQ";
+import CustodyRecorder from "@/components/partner/CustodyRecorder";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -235,6 +236,8 @@ export default function PartnersDashboard() {
             ))}
           </div>
         )}
+
+        <div className="mt-10"><CustodyRecorder history={history} onChanged={load} /></div>
 
         <h2 className="text-xl font-bold text-white tracking-tight mt-10 mb-4">Completed history</h2>
         {history.length === 0 ? (

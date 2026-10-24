@@ -1,0 +1,98 @@
+{
+  "name": "TrackingEvent",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "The job (Booking or NationalRequest) this lifecycle event belongs to."
+    },
+    "reference_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 12,
+      "description": "The job's public tracking code, so the customer portal can load the timeline."
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "inquiry_received",
+        "quote_generated",
+        "quote_approved",
+        "payment_captured",
+        "contractor_matching",
+        "contractor_assigned",
+        "contractor_en_route",
+        "contractor_arrived",
+        "pickup_in_progress",
+        "materials_loaded",
+        "disposal_documented",
+        "job_completed",
+        "receipt_issued",
+        "exception_cancelled",
+        "exception_rescheduled",
+        "exception_payment_failed",
+        "exception_price_adjusted",
+        "exception_additional_items",
+        "exception_other"
+      ],
+      "description": "One of the 13 lifecycle stages, or an exception event."
+    },
+    "exception": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for cancellation, rescheduling, failed payment, price adjustment and other exception events."
+    },
+    "title": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "actor": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "Who did this: system, admin name, contractor name. Never invented."
+    },
+    "source": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "Where the event came from: system, admin, contractor, customer, payment_webhook."
+    },
+    "note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "occurred_at": {
+      "type": "string",
+      "description": "When the event happened."
+    }
+  },
+  "required": [
+    "booking_id",
+    "stage"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
