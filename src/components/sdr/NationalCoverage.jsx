@@ -26,7 +26,7 @@ export default function NationalCoverage() {
   }, []);
 
   return (
-    <section id="national-coverage" className="bg-white py-16 md:py-20">
+    <section id="service-area" className="bg-white py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-10">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Coverage</div>

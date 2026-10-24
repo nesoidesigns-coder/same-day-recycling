@@ -11,7 +11,7 @@ export default function FinalCTA() {
         </div>
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Ready to Reclaim Your Space?</h2>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a href="#estimator" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-8 py-4 hover:bg-[#1FA184] transition-colors">
+          <a href="#estimate" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-8 py-4 hover:bg-[#1FA184] transition-colors">
             Get My Estimate
           </a>
           <Link to="/contact" className="rounded-full border-2 border-white/30 text-white font-bold px-8 py-4 hover:bg-white/10 transition-colors">
