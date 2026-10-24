@@ -53,6 +53,16 @@ export const RESOURCE_CATEGORIES = [
   { id: 'partnerships', label: 'Contractor partnerships' },
 ];
 
+// Interest presets map to feed channels, powering the personalization bar.
+export const INTERESTS = [
+  { id: 'business', label: 'Business & contracting', channels: ['contractor_exchange', 'ai_academy'] },
+  { id: 'recycling', label: 'Recycling & reuse', channels: ['recycling_exchange'] },
+  { id: 'equipment', label: 'Equipment & ops', channels: ['equipment_ops'] },
+  { id: 'local', label: 'Local & regional', channels: ['provincial'] },
+  { id: 'ideas', label: 'Ideas & feedback', channels: ['ideas_feedback'] },
+  { id: 'news', label: 'News & general', channels: ['general', 'announcements'] },
+];
+
 export const channelLabel = (id) => (CHANNELS.find((c) => c.id === id) || {}).label || id;
 export const provinceLabel = (id) => (PROVINCES.find((p) => p.id === id) || {}).label || id;
 export const memberTypeLabel = (id) => (MEMBER_TYPES.find((m) => m.id === id) || {}).label || id;

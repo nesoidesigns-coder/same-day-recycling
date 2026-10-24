@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, PenLine, X } from 'lucide-react';
+import { Loader2, PenLine, X, Camera } from 'lucide-react';
 import { CHANNELS, PROVINCES } from '@/lib/communityShared';
 
 export default function PostComposer({ me, profileName, onDone, defaultChannel = 'general' }) {
   const [open, setOpen] = useState(false);
+  const [photo, setPhoto] = useState(null);
   const [form, setForm] = useState({ channel: defaultChannel, province: 'national', title: '', body: '' });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -16,14 +17,23 @@ export default function PostComposer({ me, profileName, onDone, defaultChannel =
     setBusy(true);
     setError('');
     try {
+      let image_url = '';
+      if (photo) {
+        // Community photos are public by nature — stored publicly so every
+        // visitor (guests included) can view them.
+        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file: photo });
+        image_url = file_url;
+      }
       await base44.entities.CommunityPost.create({
         channel: form.channel,
         province: form.channel === 'provincial' ? form.province : 'national',
         title: form.title,
         body: form.body,
+        image_url,
         author_name: profileName || (me.email ? me.email.split('@')[0] : 'Member'),
       });
       setForm({ channel: defaultChannel, province: 'national', title: '', body: '' });
+      setPhoto(null);
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ['communityPosts'] });
       onDone?.();
@@ -50,6 +60,11 @@ export default function PostComposer({ me, profileName, onDone, defaultChannel =
           </div>
           <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required maxLength={200} className="input" placeholder="Topic title — make it searchable, e.g. 'Dump fees rising in the Lower Mainland?'" />
           <textarea value={form.body} onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))} required rows={4} maxLength={5000} className="input resize-none" placeholder="Share the details, context or question." />
+          <label className="flex items-center gap-2 input cursor-pointer hover:border-[#187B65] transition-colors">
+            <Camera className="w-4 h-4 text-[#187B65]" />
+            <span className="text-slate-500 truncate text-sm">{photo ? photo.name : 'Add a photo (optional)'}</span>
+            <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] || null)} className="hidden" />
+          </label>
           <div className="grid sm:grid-cols-2 gap-3">
             <select value={form.channel} onChange={(e) => setForm((f) => ({ ...f, channel: e.target.value }))} className="input">
               {channels.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}

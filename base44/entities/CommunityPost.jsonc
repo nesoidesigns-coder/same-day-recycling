@@ -40,6 +40,12 @@
       "default": "",
       "maxLength": 5000
     },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500,
+      "description": "Optional public photo attached by the author. Never a private customer photo."
+    },
     "status": {
       "type": "string",
       "enum": [

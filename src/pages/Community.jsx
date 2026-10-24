@@ -6,6 +6,7 @@ import TopBar from '@/components/sdr/TopBar';
 import Navbar from '@/components/sdr/Navbar';
 import Footer from '@/components/sdr/Footer';
 import { Users, Sparkles, Megaphone, UserPlus, LogIn } from 'lucide-react';
+import CommunityHero from '@/components/community/CommunityHero';
 import CommunityFeed from '@/components/community/CommunityFeed';
 import OpportunityBoard from '@/components/community/OpportunityBoard';
 import MemberDirectory from '@/components/community/MemberDirectory';
@@ -67,11 +68,26 @@ export default function Community() {
   const announcement = (announcements.data || [])[0];
   const guest = !me;
 
+  const onAskAI = () => {
+    if (guest) window.location.assign('/register?returnTo=/community');
+    else setAiOpen(true);
+  };
+  const onShareSomething = () => {
+    if (guest) window.location.assign('/register?returnTo=/community');
+    else {
+      setTab('feed');
+      setTimeout(() => document.getElementById('composer-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen">
       <TopBar />
       <Navbar />
-      <section className="bg-[#102B2A] text-white">
+      <div className="max-w-5xl mx-auto px-4 pt-6">
+        <CommunityHero isMember={!guest} onAskAI={onAskAI} onShareSomething={onShareSomething} />
+      </div>
+      <section className="mt-6 bg-[#102B2A] text-white">
         <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-2 flex items-center gap-2"><Users className="w-4 h-4" /> Recycling Business Network</div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Community</h1>

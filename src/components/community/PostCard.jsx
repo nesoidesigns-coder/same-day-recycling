@@ -1,8 +1,10 @@
-import { MessageSquare, ThumbsUp, Flag, BadgeCheck, MapPin, Megaphone } from 'lucide-react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { channelLabel, provinceLabel } from '@/lib/communityShared';
+import { Image } from '@/components/ui/image';
+import { MessageSquare, ThumbsUp, Flag, BadgeCheck, MapPin, Megaphone, Bookmark, Share2, Check } from 'lucide-react';
 
-export default function PostCard({ post, replyCount, helpfulCount, mineVoted, onVote, onOpen, onReport, onAiAnswer }) {
+export default function PostCard({ post, replyCount, helpfulCount, mineVoted, saved, copied, onBookmark, onShare, onVote, onOpen, onReport, onAiAnswer }) {
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-4 hover:border-[#187B65]/40 transition-colors">
       <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
@@ -13,6 +15,11 @@ export default function PostCard({ post, replyCount, helpfulCount, mineVoted, on
         {post.channel === 'announcements' && <span className="rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 flex items-center gap-1"><Megaphone className="w-3 h-3" />Official</span>}
       </div>
       <button onClick={onOpen} className="mt-2 block w-full text-left">
+        {post.image_url && (
+          <div className="mb-3 overflow-hidden rounded-xl border border-slate-100">
+            <Image src={post.image_url} alt="" className="max-h-72 w-full" fittingType="fill" />
+          </div>
+        )}
         <h3 className="text-base font-bold text-[#102B2A] leading-snug">{post.title}</h3>
         <p className="mt-1.5 text-sm text-slate-600 leading-relaxed line-clamp-3">{post.body}</p>
       </button>
@@ -30,6 +37,12 @@ export default function PostCard({ post, replyCount, helpfulCount, mineVoted, on
           )}
           <button onClick={onOpen} className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 font-bold text-slate-600 hover:border-[#187B65] hover:text-[#187B65] transition-colors">
             <MessageSquare className="w-3.5 h-3.5" /> {replyCount || 0}
+          </button>
+          <button onClick={onBookmark} aria-pressed={saved} title={saved ? 'Remove bookmark' : 'Save for later'} className={`rounded-full p-1.5 transition-colors ${saved ? 'text-[#187B65]' : 'text-slate-400 hover:text-[#187B65]'}`}>
+            <Bookmark className={`w-3.5 h-3.5 ${saved ? 'fill-current' : ''}`} />
+          </button>
+          <button onClick={onShare} title="Share this discussion" className="rounded-full p-1.5 text-slate-400 hover:text-[#187B65] transition-colors">
+            {copied ? <Check className="w-3.5 h-3.5 text-[#187B65]" /> : <Share2 className="w-3.5 h-3.5" />}
           </button>
           {onAiAnswer && <button onClick={onAiAnswer} className="rounded-full border border-slate-200 px-3 py-1.5 font-bold text-slate-600 hover:border-[#187B65] hover:text-[#187B65] transition-colors" title="AI Business Master summary">AI</button>}
           {onReport && <button onClick={onReport} className="rounded-full p-1.5 text-slate-400 hover:text-red-500 transition-colors" title="Log in to report to moderators"><Flag className="w-3.5 h-3.5" /></button>}

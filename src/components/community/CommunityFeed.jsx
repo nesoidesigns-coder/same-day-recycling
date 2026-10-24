@@ -1,26 +1,56 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Search, TriangleAlert } from 'lucide-react';
+import { Loader2, Search, TriangleAlert, Share2, Check } from 'lucide-react';
 import PostComposer from '@/components/community/PostComposer';
 import PostCard from '@/components/community/PostCard';
 import PostThread from '@/components/community/PostThread';
-import { CHANNELS, PROVINCES } from '@/lib/communityShared';
+import InterestBar from '@/components/community/InterestBar';
+import { CHANNELS, PROVINCES, INTERESTS } from '@/lib/communityShared';
+
+const readPrefs = (key, fallback) => {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+};
 
 export default function CommunityFeed({ me, profileName }) {
-  void profileName;
   const [channel, setChannel] = useState('all');
-  const [province, setProvince] = useState('national');
   const [search, setSearch] = useState('');
-  const [openId, setOpenId] = useState(null);
+  const [interests, setInterests] = useState(() => readPrefs('communityInterests', []));
+  const [region, setRegion] = useState(() => readPrefs('communityRegion', 'national'));
+  const [savedOnly, setSavedOnly] = useState(false);
+  const savedKey = `communitySaved:${me?.email || 'guest'}`;
+  const [saved, setSaved] = useState(() => new Set(readPrefs(savedKey, [])));
+  const [copiedId, setCopiedId] = useState(null);
+  const [openId, setOpenId] = useState(() => new URLSearchParams(window.location.search).get('post'));
   const queryClient = useQueryClient();
 
+  const toggleInterest = (id) => {
+    const next = interests.includes(id) ? interests.filter((i) => i !== id) : [...interests, id];
+    setInterests(next);
+    localStorage.setItem('communityInterests', JSON.stringify(next));
+  };
+
+  const toggleSaved = (id) => {
+    const next = new Set(saved);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSaved(next);
+    localStorage.setItem(savedKey, JSON.stringify([...next]));
+  };
+
+  const share = async (post) => {
+    const url = `${window.location.origin}/community?post=${post.id}`;
+    try {
+      if (navigator.share) await navigator.share({ title: post.title, url });
+      else { await navigator.clipboard.writeText(url); setCopiedId(post.id); setTimeout(() => setCopiedId(null), 2000); }
+    } catch { /* user cancelled */ }
+  };
+
   const posts = useQuery({
-    queryKey: ['communityPosts', channel, province],
+    queryKey: ['communityPosts', channel, region],
     queryFn: async () => {
       const q = { status: 'published' };
       if (channel !== 'all') q.channel = channel;
-      if (channel === 'provincial' && province !== 'national') q.province = province;
+      if (channel === 'provincial' && region !== 'national') q.province = region;
       return (await base44.entities.CommunityPost.filter(q, { sort: '-created_date', limit: 60 })).items || [];
     },
   });
@@ -51,17 +81,22 @@ export default function CommunityFeed({ me, profileName }) {
     queryFn: async () => (await base44.entities.CommunityReaction.filter({ target_type: 'post' }, { limit: 200 })).items || [],
   });
 
+  const interestChannels = INTERESTS.filter((i) => interests.includes(i.id)).flatMap((i) => i.channels);
+
   const visible = useMemo(() => {
     let list = posts.data || [];
     if (search.trim()) {
       const s = search.toLowerCase();
       list = list.filter((p) => (p.title || '').toLowerCase().includes(s) || (p.body || '').toLowerCase().includes(s));
     }
+    if (savedOnly) list = list.filter((p) => saved.has(p.id));
     if (channel === 'all') {
-      return list.sort((a, b) => Number(b.pinned) - Number(a.pinned));
+      if (interestChannels.length) list = list.filter((p) => interestChannels.includes(p.channel));
+      if (region !== 'national') list = list.filter((p) => p.province === region || p.province === 'national');
+      return [...list].sort((a, b) => Number(b.pinned) - Number(a.pinned));
     }
     return list;
-  }, [posts.data, search, channel]);
+  }, [posts.data, search, channel, savedOnly, saved, region, interests]);
 
   const trending = useMemo(() => {
     const counts = replyCounts.data || {};
@@ -69,6 +104,15 @@ export default function CommunityFeed({ me, profileName }) {
   }, [posts.data, replyCounts.data]);
 
   const openPost = (posts.data || []).find((p) => p.id === openId);
+
+  const openThread = (id) => {
+    setOpenId(id);
+    window.history.replaceState(null, '', `/community?post=${id}`);
+  };
+  const closeThread = () => {
+    setOpenId(null);
+    window.history.replaceState(null, '', '/community');
+  };
 
   const vote = async (post) => {
     if (!me) return;
@@ -85,11 +129,11 @@ export default function CommunityFeed({ me, profileName }) {
   };
 
   if (openPost) {
-    return <PostThread post={openPost} me={me} profileName={profileName} onBack={() => setOpenId(null)} />;
+    return <PostThread post={openPost} me={me} profileName={profileName} onBack={closeThread} />;
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" id="community-feed">
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Channels">
         <button onClick={() => setChannel('all')} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === 'all' ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>All channels</button>
         {CHANNELS.map((c) => (
@@ -97,38 +141,34 @@ export default function CommunityFeed({ me, profileName }) {
         ))}
       </div>
 
+      <InterestBar
+        interests={interests}
+        onToggleInterest={toggleInterest}
+        region={region}
+        onRegion={setRegion}
+        savedOnly={savedOnly}
+        onToggleSaved={() => setSavedOnly((s) => !s)}
+        savedCount={saved.size}
+      />
+
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input value={search} onChange={(e) => setSearch(e.target.value)} className="input pl-9" placeholder="Search conversations…" aria-label="Search conversations" />
         </div>
         {channel === 'provincial' && (
-          <select value={province} onChange={(e) => setProvince(e.target.value)} className="input sm:w-52" aria-label="Filter by region">
+          <select value={provinceValue(region)} onChange={(e) => setRegion(e.target.value)} className="input sm:w-52" aria-label="Filter by region">
             {PROVINCES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
           </select>
         )}
       </div>
 
-      {channel === 'all' && !search && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#187B65]">Discussion channels</h3>
-          <div className="mt-2.5 grid sm:grid-cols-2 gap-2.5">
-            {CHANNELS.map((c) => (
-              <button key={c.id} onClick={() => setChannel(c.id)} className="rounded-xl border border-slate-200 bg-[#f4f7f5] p-3 text-left hover:border-[#187B65] transition-colors">
-                <div className="text-xs font-bold text-[#102B2A]">{c.label}</div>
-                <p className="mt-1 text-[11px] text-slate-500 leading-relaxed">{c.desc}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {trending.length > 0 && channel === 'all' && !search && (
+      {trending.length > 0 && channel === 'all' && !search && !savedOnly && (
         <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#187B65]">Trending questions</h3>
           <div className="mt-2 space-y-1.5">
             {trending.map((t) => (
-              <button key={t.id} onClick={() => setOpenId(t.id)} className="block w-full text-left text-sm font-semibold text-[#102B2A] hover:text-[#187B65] transition-colors">
+              <button key={t.id} onClick={() => openThread(t.id)} className="block w-full text-left text-sm font-semibold text-[#102B2A] hover:text-[#187B65] transition-colors">
                 {t.title} <span className="font-normal text-slate-500">· {(replyCounts.data || {})[t.id] || 0} replies</span>
               </button>
             ))}
@@ -137,7 +177,7 @@ export default function CommunityFeed({ me, profileName }) {
       )}
 
       {me
-        ? <PostComposer me={me} profileName={profileName} />
+        ? <div id="composer-anchor"><PostComposer me={me} profileName={profileName} /></div>
         : (
           <div className="rounded-2xl border border-[#187B65]/30 bg-[#f4f7f5] p-4 flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs font-semibold text-[#102B2A]">Reading as a guest. Join free to start discussions, reply and vote.</p>
@@ -149,8 +189,9 @@ export default function CommunityFeed({ me, profileName }) {
       {posts.isError && <p className="flex items-center gap-2 py-8 text-sm text-red-600" role="alert"><TriangleAlert className="w-4 h-4" /> Discussions could not be loaded right now.</p>}
       {posts.data && visible.length === 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-          <p className="text-sm font-bold text-[#102B2A]">No discussions here yet.</p>
-          <p className="mt-1 text-xs text-slate-500">Be the first to start one — real questions and real answers are what make this community useful.</p>
+          {savedOnly
+            ? <><p className="text-sm font-bold text-[#102B2A]">Nothing saved yet.</p><p className="mt-1 text-xs text-slate-500">Bookmark posts you want to come back to — they stay on this device.</p></>
+            : <><p className="text-sm font-bold text-[#102B2A]">No discussions match your filters yet.</p><p className="mt-1 text-xs text-slate-500">Try clearing interests or being the first to start one.</p></>}
         </div>
       )}
       <div className="space-y-3">
@@ -161,8 +202,12 @@ export default function CommunityFeed({ me, profileName }) {
             replyCount={(replyCounts.data || {})[p.id]}
             helpfulCount={(helpfulCounts.data || {})[p.id]}
             mineVoted={(myVotes.data || []).some((r) => r.target_id === p.id && r.owner_email === me?.email)}
+            saved={saved.has(p.id)}
+            copied={copiedId === p.id}
+            onBookmark={() => toggleSaved(p.id)}
+            onShare={() => share(p)}
             onVote={me ? () => vote(p) : undefined}
-            onOpen={() => setOpenId(p.id)}
+            onOpen={() => openThread(p.id)}
             onReport={me ? () => report(p) : undefined}
           />
         ))}
@@ -170,3 +215,5 @@ export default function CommunityFeed({ me, profileName }) {
     </div>
   );
 }
+
+const provinceValue = (region) => (PROVINCES.some((p) => p.id === region) ? region : 'national');
