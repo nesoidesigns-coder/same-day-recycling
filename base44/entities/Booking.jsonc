@@ -281,6 +281,12 @@
     "refund_amount": {
       "type": "number",
       "default": 0
+    },
+    "sid": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40,
+      "description": "Anonymous browser-session key linking this booking to its originating visit (traffic source, country, service viewed) and any quote request in the same session."
     }
   },
   "required": [

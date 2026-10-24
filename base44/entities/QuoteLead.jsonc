@@ -44,6 +44,12 @@
       ],
       "default": "new"
     },
+    "sid": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40,
+      "description": "Anonymous browser-session key linking this quote request to its originating visit (traffic source, country, service viewed) and any booking in the same session."
+    },
     "description": {
       "type": "string",
       "default": "",

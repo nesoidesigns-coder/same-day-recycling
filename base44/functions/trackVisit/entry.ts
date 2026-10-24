@@ -27,6 +27,10 @@ export default async function(req) {
     const body = await req.json().catch(() => ({}));
     const referrer = String(body?.referrer || '').slice(0, 200);
     const path = String(body?.path || '/').slice(0, 200) || '/';
+    // Anonymous browser-session key + coarse country (device timezone), so
+    // visits join to later quote requests and bookings in the same session.
+    const sid = String(body?.sid || '').slice(0, 40);
+    const country = body?.country === 'CA' || body?.country === 'other' ? body.country : 'CA';
 
     const ua = String(req.headers.get('user-agent') || '').toLowerCase();
     if (!ua || BOT_PATTERN.test(ua)) {
@@ -36,7 +40,7 @@ export default async function(req) {
       let botSource = 'direct';
       if (r.includes('google.') || r.includes('bing.')) botSource = 'search';
       else if (r) botSource = 'other';
-      await base44.asServiceRole.entities.Visit.create({ source: botSource, path, referrer, traffic_class: 'bot' });
+      await base44.asServiceRole.entities.Visit.create({ source: botSource, path, referrer, traffic_class: 'bot', sid, country });
       return Response.json({ ok: true, traffic_class: 'bot' });
     }
 
@@ -70,7 +74,7 @@ export default async function(req) {
       source = 'other';
     }
 
-    await base44.asServiceRole.entities.Visit.create({ source, path, referrer, traffic_class });
+    await base44.asServiceRole.entities.Visit.create({ source, path, referrer, traffic_class, sid, country });
     return Response.json({ ok: true, traffic_class });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

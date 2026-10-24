@@ -19,12 +19,13 @@ export default async function(req) {
     const startIso = new Date(startMs).toISOString();
     const prevStartIso = new Date(prevStartMs).toISOString();
 
-    const [visitsCurAgg, visitsPrevAgg, leadsPage, bookingsPage, testBookingsPage] = await Promise.all([
+    const [visitsCurAgg, visitsPrevAgg, leadsPage, bookingsPage, testBookingsPage, visitsJourneyPage] = await Promise.all([
       base44.entities.Visit.aggregate({ query: { created_date: { $gte: startIso } }, groupBy: 'traffic_class' }),
       base44.entities.Visit.aggregate({ query: { created_date: { $gte: prevStartIso, $lt: startIso } }, groupBy: 'traffic_class' }),
       base44.entities.QuoteLead.filter({ created_date: { $gte: prevStartIso } }, { limit: 500 }),
       base44.entities.Booking.filter({ record_type: 'service', created_date: { $gte: prevStartIso } }, { limit: 500 }),
       base44.entities.Booking.filter({ record_type: 'internal_test', created_date: { $gte: prevStartIso } }, { limit: 500 }),
+      base44.entities.Visit.filter({ created_date: { $gte: prevStartIso }, sid: { $ne: '' } }, { limit: 500, sort: '-created_date' }),
     ]);
 
     const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
@@ -80,6 +81,35 @@ export default async function(req) {
     }
     const cities = Object.values(byCity).sort((a, b) => b.requests - a.requests).slice(0, 8);
 
+    // Journey linkage: quote leads and bookings joined back to their origin
+    // visit (traffic source, visitor country, service page viewed) via the
+    // anonymous browser-session key recorded at visit time. The visit map is
+    // built newest-first, so overwriting leaves the session's entry visit.
+    const visitBySid = new Map();
+    for (const v of items(visitsJourneyPage)) {
+      if (v.sid) visitBySid.set(v.sid, v);
+    }
+    const byOriginKey = (rows, pick) => {
+      const out = {};
+      for (const row of rows) {
+        const v = row.sid ? visitBySid.get(row.sid) : null;
+        const k = v ? pick(v) : 'unlinked';
+        out[k] = (out[k] || 0) + 1;
+      }
+      return Object.entries(out).sort((a, b) => b[1] - a[1]);
+    };
+    const countryLabel = (v) => (v.country === 'CA' ? 'Canada' : v.country === 'other' ? 'Outside Canada' : 'unlinked');
+    const linked = (rows) => rows.filter((r) => r.sid && visitBySid.has(r.sid)).length;
+    const journeys = {
+      bookings_by_source: byOriginKey(bookings, (v) => v.source),
+      bookings_by_country: byOriginKey(bookings, countryLabel),
+      quote_leads_by_source: byOriginKey(leadsCur, (v) => v.source),
+      linked_bookings: linked(bookings),
+      linked_quote_leads: linked(leadsCur),
+      linked_booking_pct: pct(linked(bookings), bookings.length),
+      linked_lead_pct: pct(linked(leadsCur), leadsCur.length),
+    };
+
     return Response.json({
       days,
       generated_at: new Date().toISOString(),
@@ -109,6 +139,7 @@ export default async function(req) {
         commission_earned: sum(completed, (b) => b.commission_earned),
       },
       cities,
+      journeys,
       tests: { current: testsCur.length, previous: testsPrev.length, records: testRecords },
       truncated: Boolean(leadsPage?.has_more || bookingsPage?.has_more),
     });

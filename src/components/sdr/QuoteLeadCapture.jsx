@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
+import { getSessionId } from "@/lib/visitSession";
 
 export default function QuoteLeadCapture({ itemsText, estimate, city }) {
   const [contact, setContact] = useState("");
@@ -15,6 +16,7 @@ export default function QuoteLeadCapture({ itemsText, estimate, city }) {
         items_text: itemsText,
         estimate,
         city,
+        sid: getSessionId(),
       });
       base44.analytics.track("quote_lead_captured", { city: city || "" });
       setState("done");

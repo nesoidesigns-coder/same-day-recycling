@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getSessionId } from "@/lib/visitSession";
 import { Upload, Loader2, CheckCircle2, Camera, Lock } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
 import { isCityActive } from "@/lib/coverage";
@@ -138,7 +139,7 @@ export default function BookingForm({ prefill }) {
           setQuoteNote((q) => q || "");
         }
       }
-      const res = await base44.functions.invoke('createBooking', { ...form, preferred_date: scheduleDate, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside });
+      const res = await base44.functions.invoke('createBooking', { ...form, preferred_date: scheduleDate, quote_estimate: quoteNote, photo_uri, curbside: !!form.curbside, sid: getSessionId() });
       setBookingId(res?.data?.booking_id || null);
       setRefCode(res?.data?.reference_code || "");
       base44.analytics.track({ eventName: 'booking_submitted' });

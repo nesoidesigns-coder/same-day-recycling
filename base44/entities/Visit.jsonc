@@ -32,6 +32,21 @@
       "default": "customer",
       "description": "Who the visit is: customer = exploring services and requesting quotes; contractor = providers exploring partnerships and software; owner = the admin's own testing and administration; bot = automated crawlers and suspicious requests. Conversions are measured on real (customer + contractor) traffic only."
     },
+    "sid": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40,
+      "description": "Anonymous browser-session key linking this visit to a later quote request or booking in the same session. No cookies, no personal data."
+    },
+    "country": {
+      "type": "string",
+      "enum": [
+        "CA",
+        "other"
+      ],
+      "default": "CA",
+      "description": "Coarse visitor country inferred from device timezone (CA or other). Not precise geolocation."
+    },
     "description": {
       "type": "string",
       "default": "",

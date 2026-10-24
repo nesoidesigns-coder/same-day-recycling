@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSEO } from "@/lib/seo";
 import { useServiceMeta } from "@/components/seo/useServiceMeta";
 import { base44 } from "@/api/base44Client";
+import { getSessionId } from "@/lib/visitSession";
 import RexBanner from "@/components/sdr/RexBanner";
 import { CheckCircle2, Loader2, Phone, Wrench } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
@@ -51,6 +52,7 @@ export default function FreeMetalPickup() {
         city: form.city,
         items_description: `FREE METAL PICKUP — ${form.metal}`,
         quote_estimate: "Free-pickup eligibility and price pending confirmation",
+        sid: getSessionId(),
       });
       base44.analytics.track({ eventName: 'booking_submitted' });
       if (typeof window.gtag === "function") {

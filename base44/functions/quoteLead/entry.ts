@@ -17,6 +17,7 @@ export default async function(req) {
     const itemsText = str(body?.items_text, 1000);
     const estimate = str(body?.estimate, 120);
     const city = str(body?.city, 80);
+    const sid = str(body?.sid, 40);
 
     if (!contact) {
       return Response.json({ error: 'Enter a phone number or email address.' }, { status: 400 });
@@ -36,6 +37,7 @@ export default async function(req) {
       city,
       estimate,
       status: 'new',
+      sid,
     });
 
     await base44.asServiceRole.integrations.Core.SendEmail({

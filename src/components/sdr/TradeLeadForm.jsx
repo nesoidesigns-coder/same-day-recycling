@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { getSessionId } from "@/lib/visitSession";
 
 export default function TradeLeadForm({ title, subtitle, fields, submitLabel, buildPayload }) {
   const [form, setForm] = useState({});
@@ -19,7 +20,7 @@ export default function TradeLeadForm({ title, subtitle, fields, submitLabel, bu
     }
     setStatus("sending");
     try {
-      await base44.functions.invoke("createBooking", buildPayload(form));
+      await base44.functions.invoke("createBooking", { ...buildPayload(form), sid: getSessionId() });
       setStatus("done");
     } catch (err) {
       setStatus("idle");

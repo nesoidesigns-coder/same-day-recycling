@@ -118,6 +118,21 @@ export default function AdminConversion() {
             </div>
           )}
 
+          {data.journeys && (
+            <div className="mt-5 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
+              <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500">Journey attribution — visit origin behind this period's conversions</h2>
+              <p className="mt-1 text-xs text-slate-500 mb-4">Each booking and quote lead is linked back to the visit that started its session (traffic source, visitor country, service page viewed) via an anonymous browser-session key. "unlinked" = submitted before session tracking existed.</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <JourneyList title="Bookings by traffic source" rows={data.journeys.bookings_by_source} />
+                <JourneyList title="Bookings by visitor country" rows={data.journeys.bookings_by_country} />
+                <JourneyList title="Quote leads by traffic source" rows={data.journeys.quote_leads_by_source} />
+                <div className="rounded-2xl bg-slate-50 px-4 py-4 text-xs text-slate-600 leading-relaxed">
+                  Linked journeys this period: <strong>{data.journeys.linked_bookings}</strong> of {f.booking_requests.current} bookings ({fmtPct(data.journeys.linked_booking_pct)}) and <strong>{data.journeys.linked_quote_leads}</strong> of {f.quote_leads.current} quote leads ({fmtPct(data.journeys.linked_lead_pct)}). Country is inferred from device timezone (Canada vs outside Canada), not precise geolocation.
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <MoneyCard label="Completed job value" value={money(m.completed_job_value)} note="All completed jobs, incl. externally settled" />
             <MoneyCard label="Platform-processed" value={money(m.platform_paid_value)} note="Paid through this platform" />
@@ -181,6 +196,27 @@ function ClassCard({ label, value, note }) {
       <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
       <div className="mt-1 text-xl font-extrabold text-[#102B2A]">{(Number(value) || 0).toLocaleString("en-CA")}</div>
       <div className="mt-0.5 text-[11px] text-slate-500">{note}</div>
+    </div>
+  );
+}
+
+function JourneyList({ title, rows }) {
+  const max = Math.max(...(rows || []).map(([, n]) => n), 1);
+  return (
+    <div className="rounded-2xl bg-slate-50 px-4 py-4">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{title}</div>
+      {(rows || []).length === 0 ? (
+        <p className="mt-2 text-xs text-slate-500">No records in this period.</p>
+      ) : (
+        <div className="mt-2 space-y-1.5">
+          {rows.map(([k, n]) => (
+            <div key={k}>
+              <div className="flex justify-between text-xs"><span className="font-semibold text-[#102B2A]">{k}</span><span>{n}</span></div>
+              <div className="mt-0.5 h-1.5 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-[#187B65]" style={{ width: `${Math.max((n / max) * 100, 3)}%` }} /></div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

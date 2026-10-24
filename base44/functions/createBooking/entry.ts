@@ -30,6 +30,7 @@ export default async function(req) {
     const curbside = body?.curbside === true;
     const discount_amount = curbside ? 25 : 0;
     const province_code = provinceForCity(city);
+    const sid = str(body?.sid, 40);
 
     // Booking integrity: confirmed bookings are only accepted in active service
     // territories. The frontend routes non-live cities to the ServiceWaitlist;
@@ -58,6 +59,7 @@ export default async function(req) {
       ...(photo_uri ? { photo_uri } : {}),
       ...(curbside ? { curbside_discount: true, discount_amount: 25 } : {}),
       ...(province_code ? { province_code } : {}),
+      ...(sid ? { sid } : {}),
     });
 
     const notified = await sendBookingNotifications(base44.asServiceRole, {

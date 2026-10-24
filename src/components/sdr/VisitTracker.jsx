@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { getSessionId, visitorCountry } from "@/lib/visitSession";
 
 export default function VisitTracker() {
   useEffect(() => {
@@ -8,7 +9,7 @@ export default function VisitTracker() {
     // first paint or booking calls.
     const timer = setTimeout(() => {
       base44.functions
-        .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer })
+        .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer, sid: getSessionId(), country: visitorCountry() })
         .catch(() => {});
     }, 3000);
     return () => clearTimeout(timer);
