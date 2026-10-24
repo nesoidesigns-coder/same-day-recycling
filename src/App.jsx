@@ -123,6 +123,7 @@ const AdminDiscovery = lazyPage(() => import('./pages/AdminDiscovery'));
 const AdminIntegrity = lazyPage(() => import('./pages/AdminIntegrity'));
 const AdminBI = lazyPage(() => import('./pages/AdminBI'));
 const AdminOps = lazyPage(() => import('./pages/AdminOps'));
+const AdminGauges = lazyPage(() => import('./pages/AdminGauges'));
 const Track = lazyPage(() => import('./pages/Track'));
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
@@ -251,6 +252,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/discovery" element={<AdminDiscovery />} />
           <Route path="/admin/integrity" element={<AdminIntegrity />} />
           <Route path="/admin/bi" element={<AdminBI />} />
+          <Route path="/admin/gauges" element={<AdminGauges />} />
           <Route path="/admin/ops" element={<AdminOps />} />
           <Route path="/admin/ads" element={<AdminAds />} />
           <Route path="/admin/publisher" element={<AdminCommunityPublisher />} />

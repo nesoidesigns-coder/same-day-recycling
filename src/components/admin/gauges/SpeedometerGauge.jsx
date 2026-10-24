@@ -72,7 +72,7 @@ export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%"
       </svg>
       <div className="mt-1 text-center text-[11px] font-semibold" style={{ color }}>
         <span className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style={{ background: color }} />
-        {STATUS_TEXT[status]}
+        {target == null ? "No target set" : STATUS_TEXT[status]}
       </div>
     </div>
   );

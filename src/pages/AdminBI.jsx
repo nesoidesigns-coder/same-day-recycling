@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Loader2, RefreshCw, Users, Target, TrendingUp, Wrench, Activity, Globe, Bot, ShieldCheck, UserCheck, MousePointerClick, CalendarCheck, CircleDollarSign, Truck, AlertTriangle, CheckCircle2, Info, Wallet, MapPin, Repeat2, Sparkles } from "lucide-react";
+import { Loader2, RefreshCw, Users, Target, TrendingUp, Wrench, Activity, Globe, Bot, ShieldCheck, UserCheck, MousePointerClick, CalendarCheck, CircleDollarSign, Truck, AlertTriangle, CheckCircle2, Info, Wallet, MapPin, Repeat2, Sparkles, Gauge } from "lucide-react";
 import InsightsPanel from "@/components/bi/InsightsPanel";
+import BiGaugeBattery from "@/components/admin/gauges/BiGaugeBattery";
 import { base44 } from "@/api/base44Client";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
@@ -15,6 +16,7 @@ const num = (n) => (Number(n) || 0).toLocaleString("en-CA");
 const pctLabel = (v) => (v === null || v === undefined ? "—" : `${v}%`);
 
 const TABS = [
+  { key: "gauges", label: "Gauges", icon: Gauge },
   { key: "acquisition", label: "Acquisition", icon: Users },
   { key: "traffic", label: "Traffic", icon: Globe },
   { key: "performance", label: "Performance", icon: TrendingUp },
@@ -35,7 +37,7 @@ export default function AdminBI() {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState("acquisition");
+  const [tab, setTab] = useState("gauges");
 
   const load = async () => {
     setLoading(true);
@@ -86,6 +88,10 @@ export default function AdminBI() {
               </button>
             ))}
           </div>
+
+          {tab === "gauges" && (
+            <BiGaugeBattery data={data} />
+          )}
 
           {tab === "acquisition" && a && (
             <div className="space-y-4">

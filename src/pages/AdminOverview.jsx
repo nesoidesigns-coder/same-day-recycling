@@ -9,6 +9,7 @@ import CoveragePanel from "@/components/admin/CoveragePanel";
 import FinanceGauges from "@/components/admin/FinanceGauges";
 import RexMonitor from "@/components/admin/RexMonitor";
 import ScoreExplainer from "@/components/admin/ScoreExplainer";
+import BiGaugeBattery from "@/components/admin/gauges/BiGaugeBattery";
 import { Loader2 } from "lucide-react";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
@@ -86,6 +87,11 @@ export default function AdminOverview() {
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] tracking-tight">Operations Overview</h1>
         <p className="text-sm text-slate-500 mt-1">Live network status across all Canadian service cities · all figures from real records{testCount > 0 ? ` · ${testCount} test booking${testCount === 1 ? "" : "s"} excluded from all figures` : ""}</p>
+      </div>
+
+      <div>
+        <h2 className="text-lg font-bold text-[#102B2A] tracking-tight mb-3">Business gauges</h2>
+        <BiGaugeBattery />
       </div>
 
       <AlertCentre bookings={live} partners={partners} reviewPending={reviewPending} />
