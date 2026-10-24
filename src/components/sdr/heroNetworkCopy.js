@@ -1,6 +1,6 @@
 const COPY = {
   en: {
-    title: "Canada’s living service network", intro: "Explore a municipality. Coverage is not a confirmed pickup.",
+    title: "Explore your city. Discover your options.", intro: "Tap any municipality to see verified coverage and open service posts. Coverage is not a confirmed pickup.",
     region: "Province or territory", canada: "All Canada", city: "Explore a city", chooseCity: "Select a city",
     network3d: "3D globe", network2d: "Interactive 2D map", mapLabel: "Canadian geography and municipal service nodes", explore: "Explore",
     legend: "Network colour key", noRecords: "no observations", notConnected: "not connected", selectRegion: "select a region",
@@ -16,7 +16,7 @@ const COPY = {
     serviceError: "Service breakdown unavailable.", accepting: "accepting dispatch", sameDay: "record same-day capability; no slot is confirmed by these counts.",
     citySource: "Sources: explicit contractor territories and open public posts", notBookings: "Posts are not bookings or search volumes.",
     demandTitle: "Junk removal demand", topServices: "Open posts by service", noPosts: "No open posts recorded",
-    modeNetwork: "Network", modePulse: "Market Pulse", modeRex: "Ask Rex",
+    modeNetwork: "Service Network", modePulse: "Market Pulse", modeRex: "Ask Rex",
     pulseTitle: "Market Pulse", pulseIntro: "Verified records only — nothing here is estimated or projected.",
     pulseVerified: "Verified contractors", pulseCities: "Cities with verified capacity", pulsePosts: "Open public posts",
     pulseTopCities: "Most active municipalities", pulseTopServices: "Most requested services",
@@ -27,7 +27,7 @@ const COPY = {
     rexChips: ["Which municipalities have verified contractors right now?", "What does a preliminary estimate include?", "How are additional items approved during a job?", "How does contractor matching work?"],
   },
   fr: {
-    title: "Le réseau vivant du Canada", intro: "Explorez une municipalité. La couverture ne confirme pas une collecte.",
+    title: "Explorez votre ville. Découvrez vos options.", intro: "Touchez une municipalité pour voir la couverture vérifiée et les publications ouvertes. La couverture ne confirme pas une collecte.",
     region: "Province ou territoire", canada: "Tout le Canada", city: "Explorer une ville", chooseCity: "Choisir une ville",
     network3d: "Globe 3D", network2d: "Carte 2D interactive", mapLabel: "Géographie du Canada et points de service municipaux", explore: "Explorer",
     legend: "Légende des couleurs", noRecords: "aucune observation", notConnected: "non connecté", selectRegion: "sélectionnez une région",
@@ -43,7 +43,7 @@ const COPY = {
     serviceError: "Répartition des services indisponible.", accepting: "acceptent la répartition", sameDay: "déclarent une capacité le jour même; ces nombres ne confirment aucun créneau.",
     citySource: "Sources : territoires explicites et publications publiques ouvertes", notBookings: "Les publications ne sont ni des réservations ni des volumes de recherche.",
     demandTitle: "Demande d’enlèvement", topServices: "Publications ouvertes par service", noPosts: "Aucune publication ouverte",
-    modeNetwork: "Réseau", modePulse: "Pouls du marché", modeRex: "Demander à Rex",
+    modeNetwork: "Réseau de services", modePulse: "Pouls du marché", modeRex: "Demander à Rex",
     pulseTitle: "Pouls du marché", pulseIntro: "Données vérifiées uniquement — rien n’est estimé ni projeté.",
     pulseVerified: "Entrepreneurs vérifiés", pulseCities: "Villes à capacité vérifiée", pulsePosts: "Publications ouvertes",
     pulseTopCities: "Municipalités les plus actives", pulseTopServices: "Services les plus demandés",

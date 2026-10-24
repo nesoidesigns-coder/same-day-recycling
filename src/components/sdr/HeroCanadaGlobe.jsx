@@ -8,9 +8,9 @@ import { WORLD_OUTLINES } from "@/lib/worldOutline";
 // to select it — selection rotates the globe so the municipality faces you.
 const R = 10;
 const DEG = Math.PI / 180;
-const VIEW_LAT = 30; // latitude framed at screen centre in the default view
+const VIEW_LAT = 58; // latitude framed at screen centre in the default view
 const ROT = 0.0055; // radians of globe rotation per dragged pixel
-const CAM_MIN = 14, CAM_MAX = 36, FOCUS_DIST = 18, CANADA_DIST = 30;
+const CAM_MIN = 14, CAM_MAX = 36, FOCUS_DIST = 18, CANADA_DIST = 21;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;

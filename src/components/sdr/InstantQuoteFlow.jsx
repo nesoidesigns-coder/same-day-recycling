@@ -21,9 +21,9 @@ import { networkRegionName } from "@/components/sdr/heroNetworkCopy";
 
 const T = {
   en: {
-    tag: "Instant pickup request",
-    title: "Junk removal. Recycling. Your next pickup.",
-    sub: "Start with your postal code. Choose your items, review an estimate and request a pickup anywhere in Canada.",
+    tag: "Canada's intelligent removal & recycling network",
+    title: "Junk Removal. Recycling. Intelligent Service Across Canada.",
+    sub: "Your next pickup starts here. Enter your postal code, see a transparent estimate before you book — and Rex is with you the whole way.",
     postal: "Your postal code",
     postalPh: "e.g. V6B 1A1",
     postalNext: "Continue",
@@ -62,9 +62,9 @@ const T = {
     },
   },
   fr: {
-    tag: "Demande de collecte instantanée",
-    title: "Débarras. Recyclage. Votre prochaine collecte.",
-    sub: "Commencez par votre code postal. Choisissez vos articles, consultez une estimation et demandez une collecte au Canada.",
+    tag: "Le réseau intelligent de débarras et de recyclage du Canada",
+    title: "Débarras. Recyclage. Un service intelligent partout au Canada.",
+    sub: "Votre prochaine collecte commence ici. Entrez votre code postal, consultez une estimation transparente avant de réserver — et Rex vous accompagne à chaque étape.",
     postal: "Votre code postal",
     postalPh: "p. ex. V6B 1A1",
     postalNext: "Continuer",
@@ -241,7 +241,7 @@ export default function InstantQuoteFlow() {
 
   return (
     <section id="book" className="relative bg-market-bg text-market-ink">
-      <div className="mx-auto grid max-w-screen-2xl items-start gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(21rem,0.85fr)_minmax(0,1.4fr)] lg:gap-7 lg:py-6">
+      <div className="mx-auto grid max-w-screen-2xl items-start gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.7fr)] lg:gap-7 lg:py-6">
       <div className="min-w-0">
         <PickupHeroHeading lang={lang} onLanguage={setLang} step={step} copy={t} />
         <div className="mt-4">
