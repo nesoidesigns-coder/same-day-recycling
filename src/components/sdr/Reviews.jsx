@@ -53,7 +53,7 @@ export default function Reviews() {
   if (reviews === null) {
     return (
       <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 text-center">
+        <div className="max-w-7xl mx-auto px-4 py-10 md:py-24 text-center">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Reviews</div>
           <div className="mt-6 flex justify-center gap-1">
             {[...Array(5)].map((_, i) => <div key={i} className="w-2.5 h-2.5 rounded-full bg-slate-200 animate-pulse" />)}
@@ -66,7 +66,7 @@ export default function Reviews() {
   if (reviews.length === 0) {
     return (
       <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 text-center">
+        <div className="max-w-7xl mx-auto px-4 py-10 md:py-24 text-center">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Reviews</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">
             Reviews coming soon — be our first to review.
@@ -86,7 +86,7 @@ export default function Reviews() {
 
   return (
     <section className="bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 py-10 md:py-24">
         <div className="text-center mb-10">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Reviews</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">
@@ -103,7 +103,7 @@ export default function Reviews() {
           </p>
         </div>
         <div className="max-w-3xl mx-auto">
-          <div className="relative rounded-3xl bg-[#f4f7f5] border border-slate-100 p-8 md:p-12 text-center">
+          <div className="relative rounded-3xl bg-[#f4f7f5] border border-slate-100 p-5 md:p-12 text-center">
             <div className="flex justify-center gap-1 text-[#187B65]">
               {[1, 2, 3, 4, 5].map((n) => (
                 <Star key={n} className={`w-5 h-5 ${n <= (r.rating || 5) ? "fill-[#187B65]" : "text-slate-200"}`} />

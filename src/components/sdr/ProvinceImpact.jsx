@@ -12,7 +12,7 @@ export default function ProvinceImpact() {
     .sort((a, b) => b.rate - a.rate);
 
   return (
-    <section className="bg-white py-16 md:py-20" aria-label="Provincial recycling impact statistics">
+    <section className="bg-white py-10 md:py-20" aria-label="Provincial recycling impact statistics">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-sm font-semibold text-[#102B2A]">

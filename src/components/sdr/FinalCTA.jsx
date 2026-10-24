@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function FinalCTA() {
   return (
     <section className="bg-[#102B2A] text-white">
-      <div className="max-w-5xl mx-auto px-4 py-16 md:py-24 text-center">
+      <div className="max-w-5xl mx-auto px-4 py-10 md:py-24 text-center">
         <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-gold uppercase mb-5">
           <span className="w-8 h-px bg-gold" />
           Smart Removal · Responsible Recycling · Reliable Service

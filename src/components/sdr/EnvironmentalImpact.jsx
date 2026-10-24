@@ -33,7 +33,7 @@ export default function EnvironmentalImpact() {
 
   return (
     <section id="environmental-impact" className="bg-[#f4f7f5]">
-      <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
+      <div className="max-w-6xl mx-auto px-4 py-10 md:py-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">
@@ -52,7 +52,7 @@ export default function EnvironmentalImpact() {
 
         <div className="grid md:grid-cols-3 gap-5">
           {highlights.map(({ key, icon: Icon, title, fact }) => (
-            <div key={key} className="rounded-3xl bg-white border border-slate-100 shadow-sm p-8 flex flex-col">
+            <div key={key} className="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-8 flex flex-col">
               <span className="w-11 h-11 rounded-2xl bg-[#187B65]/15 text-[#187B65] flex items-center justify-center mb-5">
                 <Icon className="w-5 h-5" />
               </span>

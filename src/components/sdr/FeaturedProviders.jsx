@@ -17,7 +17,7 @@ export default function FeaturedProviders() {
   }, []);
 
   return (
-    <section className="bg-[#f4f7f5] py-16 md:py-20">
+    <section className="bg-[#f4f7f5] py-10 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div className="max-w-2xl">

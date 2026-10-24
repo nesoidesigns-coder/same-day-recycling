@@ -46,7 +46,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
 
   return (
     <section id="quote" className="bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 py-10 md:py-24">
         <div className="max-w-2xl mb-12">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">No guesswork</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Get an instant quote</h2>
@@ -120,7 +120,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
             </button>
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
           </div>
-          <div className="rounded-3xl bg-[#102B2A] text-white p-8 md:p-10">
+          <div className="rounded-3xl bg-[#102B2A] text-white p-5 md:p-10">
             {!quote ? (
               <div className="text-center py-10">
                 <Calculator className="w-10 h-10 text-[#187B65] mx-auto mb-4" />

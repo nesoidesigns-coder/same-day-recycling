@@ -4,7 +4,7 @@ import { Truck, MonitorSmartphone, ArrowRight, ShieldCheck } from "lucide-react"
 export default function BusinessSolutions() {
   return (
     <section className="bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-16 md:py-20">
+      <div className="max-w-6xl mx-auto px-4 py-10 md:py-20">
         <div className="max-w-2xl mb-10">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-xs font-bold tracking-[0.16em] uppercase text-[#102B2A]">
             <ShieldCheck className="w-4 h-4 text-[#187B65]" /> Business &amp; operators

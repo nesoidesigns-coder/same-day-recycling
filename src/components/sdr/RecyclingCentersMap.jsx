@@ -76,7 +76,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
     : null;
 
   return (
-    <section id="recycling-centers" className="bg-white py-16 md:py-20">
+    <section id="recycling-centers" className="bg-white py-10 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-8">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-sm font-semibold text-[#102B2A]">

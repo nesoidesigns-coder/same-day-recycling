@@ -75,7 +75,7 @@ export default function CanadaNetworkMap() {
 
   if (providers === null || coverage === null || traffic === null) {
     return (
-      <section className="bg-[#f4f7f5] py-16 md:py-20">
+      <section className="bg-[#f4f7f5] py-10 md:py-20">
         <div className="flex items-center justify-center py-20 text-slate-500">
           <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading the national network…
         </div>
@@ -90,7 +90,7 @@ export default function CanadaNetworkMap() {
   ].filter((c) => c.city);
 
   return (
-    <section className="bg-[#f4f7f5] py-16 md:py-20">
+    <section className="bg-[#f4f7f5] py-10 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-8">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65]/10 px-4 py-1.5 text-sm font-semibold text-[#102B2A]">

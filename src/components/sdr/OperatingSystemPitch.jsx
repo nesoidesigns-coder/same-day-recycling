@@ -13,7 +13,7 @@ const PILLARS = [
 export default function OperatingSystemPitch() {
   return (
     <section className="bg-[#102B2A]">
-      <div className="max-w-6xl mx-auto px-4 py-16 md:py-20">
+      <div className="max-w-6xl mx-auto px-4 py-10 md:py-20">
         <div className="max-w-3xl">
           <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
             Grow Your Recycling Business With a Smarter Operating System

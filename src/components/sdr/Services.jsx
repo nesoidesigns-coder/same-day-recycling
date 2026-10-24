@@ -12,7 +12,7 @@ const services = [
 export default function Services() {
   return (
     <section id="services" className="bg-[#f4f7f5]">
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 py-10 md:py-24">
         <div className="max-w-2xl mb-12">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">What we haul</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#102B2A]">Services</h2>

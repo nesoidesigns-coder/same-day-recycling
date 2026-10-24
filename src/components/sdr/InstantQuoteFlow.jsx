@@ -204,7 +204,7 @@ export default function InstantQuoteFlow() {
 
   return (
     <section id="book" className="bg-[#102B2A] text-white">
-      <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <div className="max-w-3xl mx-auto px-4 py-7 md:py-16">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase">{t.tag}</div>
           <div className="flex rounded-full border border-white/20 p-0.5" role="group" aria-label="Language">

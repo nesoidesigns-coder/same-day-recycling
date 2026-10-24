@@ -10,7 +10,7 @@ export default function CityLinks() {
   const others = CITIES.filter((c) => c.name !== vancouver.name);
 
   return (
-    <section id="city-directory" className="bg-[#f4f7f5] py-16 md:py-20">
+    <section id="city-directory" className="bg-[#f4f7f5] py-10 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-2xl mb-10">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Service directory</div>

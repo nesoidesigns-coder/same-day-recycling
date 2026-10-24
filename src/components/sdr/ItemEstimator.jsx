@@ -111,7 +111,7 @@ export default function ItemEstimator({ onBook }) {
 
   return (
     <section id="estimate" className="bg-[#f4f7f5]">
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 py-10 md:py-20">
         <div className="max-w-2xl mb-8">
           <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-3">Tap, see the price</div>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#102B2A]">See your estimate in seconds</h2>
