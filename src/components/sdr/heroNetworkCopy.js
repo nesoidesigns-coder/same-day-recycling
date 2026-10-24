@@ -2,7 +2,7 @@ const COPY = {
   en: {
     title: "Canada’s living service network", intro: "Explore a municipality. Coverage is not a confirmed pickup.",
     region: "Province or territory", canada: "All Canada", city: "Explore a city", chooseCity: "Select a city",
-    network3d: "3D network", network2d: "Interactive 2D map", mapLabel: "Canadian geography and municipal service nodes", explore: "Explore",
+    network3d: "3D globe", network2d: "Interactive 2D map", mapLabel: "Canadian geography and municipal service nodes", explore: "Explore",
     legend: "Network colour key", noRecords: "no observations", notConnected: "not connected", selectRegion: "select a region",
     verified: "Verified territory", demand: "Public service posts", ai: "AI findings", matching: "Contractor matching", selected: "Selected region", recruiting: "Recruitment / unverified",
     contractors: "Verified contractors", territories: "Municipal territories", posts: "Open public posts",
@@ -19,7 +19,7 @@ const COPY = {
   fr: {
     title: "Le réseau vivant du Canada", intro: "Explorez une municipalité. La couverture ne confirme pas une collecte.",
     region: "Province ou territoire", canada: "Tout le Canada", city: "Explorer une ville", chooseCity: "Choisir une ville",
-    network3d: "Réseau 3D", network2d: "Carte 2D interactive", mapLabel: "Géographie du Canada et points de service municipaux", explore: "Explorer",
+    network3d: "Globe 3D", network2d: "Carte 2D interactive", mapLabel: "Géographie du Canada et points de service municipaux", explore: "Explorer",
     legend: "Légende des couleurs", noRecords: "aucune observation", notConnected: "non connecté", selectRegion: "sélectionnez une région",
     verified: "Territoire vérifié", demand: "Publications de services", ai: "Constats de l’IA", matching: "Recherche d’un entrepreneur", selected: "Région sélectionnée", recruiting: "Recrutement / non vérifié",
     contractors: "Entrepreneurs vérifiés", territories: "Territoires municipaux", posts: "Publications ouvertes",

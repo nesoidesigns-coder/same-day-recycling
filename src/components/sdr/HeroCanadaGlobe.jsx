@@ -1,15 +1,28 @@
 import * as THREE from "three";
-import { CANADA_OUTLINES, LAYER_COLORS, MAP_BOUNDS, pt } from "@/lib/canadaOutline";
+import { CANADA_OUTLINES, LAYER_COLORS } from "@/lib/canadaOutline";
 
-function landShape(points) {
-  const shape = new THREE.Shape();
-  points.forEach(([lat, lng], i) => {
-    const p = pt(lat, lng);
-    if (i === 0) shape.moveTo(p.x, p.y); else shape.lineTo(p.x, p.y);
-  });
-  shape.closePath();
-  return shape;
-}
+// Google-Earth-style globe of Canada. Pure rendering + picking; data and UI
+// live in the wrapper. Longitude -96 sits at the view centre, camera is tilted
+// to frame the populated south, and selection rotates the globe (never the
+// camera) so the chosen municipality faces the viewer.
+const R = 10;
+const DEG = Math.PI / 180;
+const VIEW_LAT = 58; // latitude framed at screen centre in the default view
+
+const spherePoint = (lat, lng, radius = R) => {
+  const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
+  return new THREE.Vector3(
+    radius * Math.cos(phi) * Math.sin(theta),
+    radius * Math.sin(phi),
+    radius * Math.cos(phi) * Math.cos(theta)
+  );
+};
+
+const targetQuaternion = (lat, lng) => {
+  const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -(lng + 96) * DEG);
+  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), ((90 - lat) - (90 - VIEW_LAT)) * DEG);
+  return qx.multiply(qy);
+};
 
 const createGlowTexture = () => {
   if (typeof document === "undefined") return null;
@@ -26,10 +39,20 @@ const createGlowTexture = () => {
   return new THREE.CanvasTexture(c);
 };
 
-// Hero 3D scene: dimensional Canada landmass, layer-coloured nodes, regional
-// connection arcs, camera focus animation. Pure rendering + picking — all
-// data and UI chrome live in the wrapper component.
-export default function mountHeroCanadaScene(mount, { nodes = [], links = [], focusRef, onSelect, onHover, onFailure, mobile = false }) {
+// Territory arcs: spherical interpolation lifted off the surface.
+const arcPoints = (a, b) => {
+  const start = spherePoint(a[0], a[1]), end = spherePoint(b[0], b[1]);
+  const angle = start.angleTo(end);
+  const lift = 0.3 + angle * 0.8;
+  const points = [];
+  for (let i = 0; i <= 24; i++) {
+    const t = i / 24;
+    points.push(start.clone().lerp(end, t).normalize().multiplyScalar(R + Math.sin(Math.PI * t) * lift));
+  }
+  return { points };
+};
+
+export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], onSelect, onHover, onFailure, mobile = false }) {
   if (!mount) return null;
   const glowTexture = createGlowTexture();
   if (!glowTexture) return null;
@@ -48,95 +71,88 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
 
   let raf = 0, visible = true, failed = false, dirty = true, lastFrame = 0;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 400);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  camera.position.set(0, 8.5, 15.5);
+  camera.lookAt(0, 0.5, 0);
 
-  // Camera framing is computed to fit the FULL Canadian silhouette in view on
-  // any screen size, so visitors recognize Canada immediately.
-  const MAP_W = MAP_BOUNDS.maxX - MAP_BOUNDS.minX, MAP_H = MAP_BOUNDS.maxY - MAP_BOUNDS.minY;
-  const MAP_CENTER = new THREE.Vector3((MAP_BOUNDS.minX + MAP_BOUNDS.maxX) / 2, 0, -(MAP_BOUNDS.minY + MAP_BOUNDS.maxY) / 2);
-  const CAM_DIR = new THREE.Vector3(0, 0.72, 0.7).normalize();
-  const fit = { dist: 34, dest: new THREE.Vector3() };
-  const lookAtPoint = new THREE.Vector3().copy(MAP_CENTER);
-  const refit = () => {
-    const tanHalf = Math.tan((camera.fov * Math.PI) / 360);
-    fit.dist = Math.max((MAP_W / 2 + 2) / (tanHalf * camera.aspect), (MAP_H / 2 + 2) / tanHalf);
-    fit.dest.copy(MAP_CENTER).addScaledVector(CAM_DIR, fit.dist);
-    camera.position.copy(fit.dest);
-    camera.lookAt(lookAtPoint);
-  };
-  refit();
-
-  scene.add(new THREE.HemisphereLight(0xd8fff2, 0x0a2e25, 1.3));
-  const dir = new THREE.DirectionalLight(0xffffff, 1.0);
-  dir.position.set(10, 20, 10);
+  scene.add(new THREE.HemisphereLight(0xd8fff2, 0x081c26, 1.35));
+  const dir = new THREE.DirectionalLight(0xffffff, 1.1);
+  dir.position.set(6, 10, 12);
   scene.add(dir);
 
-  // Dimensional landmass — bright enough to read against the hero background
-  const landGroup = new THREE.Group();
-  // Neutral geography keeps emerald reserved for actual verified-territory nodes.
-  const landMat = new THREE.MeshStandardMaterial({ color: 0x3c4b50, roughness: 0.85, metalness: 0.15 });
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0xa4bab8, transparent: true, opacity: 0.9 });
-  CANADA_OUTLINES.forEach((poly) => {
-    const geo = new THREE.ExtrudeGeometry(landShape(poly), { depth: 0.8, bevelEnabled: false });
-    const mesh = new THREE.Mesh(geo, landMat);
-    mesh.rotation.x = -Math.PI / 2;
-    landGroup.add(mesh);
-    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 12), edgeMat);
-    edges.rotation.x = -Math.PI / 2;
-    edges.position.y = 0.01;
-    landGroup.add(edges);
-  });
-  landGroup.position.y = -0.35;
-  scene.add(landGroup);
+  // Ocean sphere + subtle graticule for geographic depth
+  const globeGroup = new THREE.Group();
+  scene.add(globeGroup);
+  const ocean = new THREE.Mesh(
+    new THREE.SphereGeometry(R, 48, 32),
+    new THREE.MeshStandardMaterial({ color: 0x0d2a33, roughness: 0.9, metalness: 0.1 })
+  );
+  globeGroup.add(ocean);
+  const graticuleMat = new THREE.LineBasicMaterial({ color: 0x3b6a72, transparent: true, opacity: 0.45 });
+  const graticulePos = [];
+  for (let lat = -60; lat <= 75; lat += 15) {
+    for (let lng = -180; lng < 180; lng += 5) {
+      graticulePos.push(spherePoint(lat, lng, R * 1.001), spherePoint(lat, lng + 5, R * 1.001));
+    }
+  }
+  for (let lng = -180; lng < 180; lng += 15) {
+    for (let lat = -85; lat < 85; lat += 5) {
+      graticulePos.push(spherePoint(lat, lng, R * 1.001), spherePoint(lat + 5, lng, R * 1.001));
+    }
+  }
+  const graticuleGeo = new THREE.BufferGeometry().setFromPoints(graticulePos);
+  globeGroup.add(new THREE.LineSegments(graticuleGeo, graticuleMat));
 
-  // Nodes (floating, colour-coded) + invisible pick targets
+  // Coastline glow: verified Natural Earth geometry lifted just off the surface
+  const coastGroup = new THREE.Group();
+  globeGroup.add(coastGroup);
+  const coastMat = new THREE.LineBasicMaterial({ color: 0x8fe6cd, transparent: true, opacity: 0.95 });
+  CANADA_OUTLINES.forEach((poly) => {
+    const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.004));
+    coastGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([...points, points[0]]), coastMat));
+  });
+
+  // Nodes, halos and invisible pick targets
   const world = new THREE.Group();
-  scene.add(world);
-  const nodeGeo = new THREE.SphereGeometry(0.38, 14, 14);
-  const pickGeo = new THREE.SphereGeometry(mobile ? 1.9 : 1.4, 8, 8);
+  globeGroup.add(world);
+  const nodeGeo = new THREE.SphereGeometry(0.14, 12, 12);
+  const pickGeo = new THREE.SphereGeometry(mobile ? 0.85 : 0.62, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
   const picks = [];
   const nodeMap = new Map();
   const addNode = (node) => {
-    const pos = pt(node.lat, node.lng);
-    const y = mobile ? 0.9 : 1.1;
+    const position = spherePoint(node.lat, node.lng, R * 1.015);
     const mesh = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({ color: LAYER_COLORS[node.layer] || 0x2fd4a0 }));
-    mesh.position.set(pos.x, y, -pos.y);
+    mesh.position.copy(position);
     world.add(mesh);
     const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture, transparent: true, opacity: 0.75, depthWrite: false }));
-    halo.scale.setScalar(2.8);
+    halo.scale.setScalar(0.85);
     halo.material.color.setHex(LAYER_COLORS[node.layer] || 0x2fd4a0);
-    halo.position.copy(mesh.position);
+    halo.position.copy(position);
     world.add(halo);
     const pick = new THREE.Mesh(pickGeo, pickMat);
-    pick.position.copy(mesh.position);
+    pick.position.copy(position);
     pick.userData = node;
     world.add(pick);
     picks.push(pick);
-    nodeMap.set(node.key, { mesh, halo, node });
+    nodeMap.set(node.key, { mesh, halo, position, node });
   };
   nodes.forEach(addNode);
 
-  // These links come only from a shared, explicitly confirmed contractor
-  // territory. They never indicate truck movement, routing or new activity.
+  // Territory arcs: only explicitly confirmed shared contractor territories
   const arcMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.7 });
   links.forEach((link) => {
-    const a = pt(...link.a), b = pt(...link.b);
-    const start = new THREE.Vector3(a.x, 1.1, -a.y), end = new THREE.Vector3(b.x, 1.1, -b.y);
-    const mid = start.clone().add(end).multiplyScalar(0.5);
-    mid.y += Math.max(0.5, start.distanceTo(end) * 0.2);
-    const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
-    world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(24)), arcMat));
+    const { points } = arcPoints(link.a, link.b);
+    world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), arcMat));
   });
 
-  // Selection ring
+  // Selection ring, oriented along the node's surface normal
   const ring = new THREE.Mesh(
-    new THREE.TorusGeometry(0.9, 0.08, 8, 40),
+    new THREE.TorusGeometry(0.4, 0.035, 8, 40),
     new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95 })
   );
-  ring.rotation.x = -Math.PI / 2;
   ring.visible = false;
-  scene.add(ring);
+  globeGroup.add(ring);
 
   // Picking
   const raycaster = new THREE.Raycaster();
@@ -154,8 +170,7 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
   renderer.domElement.addEventListener("pointerup", onPointer);
   renderer.domElement.style.touchAction = "pan-y";
 
-  // Hover feedback: the node under the pointer grows and reports itself so the
-  // wrapper can show that region's demand + availability tooltip.
+  // Hover feedback
   let hovered = null;
   const setHovered = (node) => {
     if (hovered === node) return;
@@ -181,30 +196,26 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
     renderer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    refit();
   };
   resize();
   const ro = new ResizeObserver(resize);
   ro.observe(mount);
 
-  // Focus animation (postal-code / selection events). Drift continues around
-  // the focused view so the camera never snaps back mid-session.
-  const focus = { active: false, target: new THREE.Vector3(), from: new THREE.Vector3(), t: 1 };
+  // Focus: slerp the globe so the target municipality faces the camera
+  const focus = { active: false, t: 1, from: new THREE.Quaternion(), to: new THREE.Quaternion() };
+  let baseQuat = targetQuaternion(VIEW_LAT, 0);
+  world.quaternion.copy(baseQuat);
   const applyFocus = (lat, lng, instant = false) => {
-    const p = pt(lat, lng);
-    focus.target.set(p.x, 0, -p.y);
-    focus.from.copy(camera.position);
-    lookAtPoint.copy(focus.target);
-    fit.dest.copy(focus.target).addScaledVector(CAM_DIR, fit.dist * 0.55);
+    baseQuat = targetQuaternion(lat, lng);
     if (instant || reduced) {
-      camera.position.copy(fit.dest);
-      camera.lookAt(lookAtPoint);
+      world.quaternion.copy(baseQuat);
       focus.active = false; focus.t = 1;
     } else {
+      focus.from.copy(world.quaternion);
+      focus.to.copy(baseQuat);
       focus.active = true; focus.t = 0;
     }
   };
-  if (focusRef?.current) applyFocus(focusRef.current.lat, focusRef.current.lng, true);
 
   const onContextLost = (event) => { event.preventDefault(); failed = true; onFailure?.(); };
   renderer.domElement.addEventListener("webglcontextlost", onContextLost);
@@ -223,17 +234,15 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
     if (focus.active && focus.t < 1) {
       focus.t = Math.min(1, focus.t + dt);
       const k = focus.t < 0.5 ? 2 * focus.t * focus.t : 1 - Math.pow(-2 * focus.t + 2, 2) / 2;
-      camera.position.lerpVectors(focus.from, fit.dest, k);
-      camera.lookAt(lookAtPoint);
+      world.quaternion.slerpQuaternions(focus.from, focus.to, k);
       if (focus.t >= 1) focus.active = false;
     } else if (!reduced) {
-      // Gentle ambient drift around the current base view
-      camera.position.copy(fit.dest).add(new THREE.Vector3(Math.sin(t * 0.1) * 1.6, Math.sin(t * 0.23) * 0.5, 0));
-      camera.lookAt(lookAtPoint);
+      // Gentle ambient sway around the current base view
+      const sway = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.sin(t * 0.1) * 0.02, Math.sin(t * 0.13) * 0.045, 0));
+      world.quaternion.copy(baseQuat).multiply(sway);
     }
     if (!reduced) {
       nodeMap.forEach((n) => { n.halo.material.opacity = 0.55 + 0.3 * Math.sin(t * 1.6 + n.node.lat); });
-
       if (ring.visible) ring.scale.setScalar(1 + 0.1 * Math.sin(t * 3));
     }
     renderer.render(scene, camera);
@@ -259,13 +268,13 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
       const n = nodeMap.get(key);
       if (n) {
         ring.visible = true;
-        ring.position.copy(n.mesh.position);
-        ring.position.y = 1.2;
+        ring.position.copy(n.position.clone().multiplyScalar(1.005));
+        ring.lookAt(n.position.clone().multiplyScalar(2));
       } else {
         ring.visible = false;
       }
     },
     focusOn: (lat, lng, instant) => { dirty = true; applyFocus(lat, lng, instant); },
-    resetFocus: () => { dirty = true; focus.active = false; lookAtPoint.copy(MAP_CENTER); refit(); },
+    resetFocus: () => { dirty = true; focus.active = false; applyFocus(VIEW_LAT, 0, reduced); },
   };
 }

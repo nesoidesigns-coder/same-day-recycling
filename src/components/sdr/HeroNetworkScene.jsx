@@ -12,7 +12,7 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
     setReady(false);
     const start = async () => {
       try {
-        const { default: createScene } = await import("@/components/sdr/HeroCanadaMap3D");
+        const { default: createScene } = await import("@/components/sdr/HeroCanadaGlobe");
         if (cancelled || !mount.current) return;
         instance = createScene(mount.current, { nodes, links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onFailure: () => setReady(false) });
         if (!instance) return;
@@ -29,7 +29,7 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
     <div className="relative h-72 w-full sm:h-96 lg:h-[28rem] xl:h-[30rem]" data-map-mode={ready ? "3d" : "2d"}>
       {!ready && <HeroCanadaMap2D nodes={nodes} links={links} focus={focus} selectedKey={selectedKey} onSelect={onSelect} lang={lang} />}
       <div ref={mount} aria-hidden="true" className={ready ? "absolute inset-0" : "invisible absolute inset-0"} />
-      <span className="pointer-events-none absolute bottom-3 left-4 rounded-full border border-market-line bg-market-bg px-3 py-1 text-xs font-semibold text-market-ink">{ready ? t.network3d : t.network2d}</span>
+      <span className="pointer-events-none absolute bottom-3 left-4 rounded-full border border-market-line bg-market-bg px-3 py-1 text-xs font-semibold text-market-ink">{ready ? (lang === "fr" ? "Globe 3D" : "3D globe") : t.network2d}</span>
     </div>
   );
 }
