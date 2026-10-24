@@ -211,7 +211,7 @@ export default function ItemEstimator({ onBook }) {
                   <li>· Labour and loading included within the tier band</li>
                   <li>· Recycling and donation sorting at no extra charge</li>
                 </ul>
-                <p className="mt-4 text-xs text-slate-400">Preliminary estimate only — not a final quote. The final price is approved by you before any work starts.</p>
+                <p className="mt-4 text-xs text-slate-500">Preliminary estimate only — not a final quote. The final price is approved by you before any work starts.</p>
                 <button
                   onClick={() => onBook({ ...(itemsText ? { items_text: itemsText } : {}), estimate_text: `${quote.range} (${quote.label})` })}
                   className="mt-6 w-full min-h-[52px] rounded-full bg-[#187B65] text-white font-bold px-7 py-3.5 hover:bg-[#125C4E] transition-colors flex items-center justify-center gap-2"

@@ -52,6 +52,7 @@ export default function Home() {
     <div className="bg-warm-white pb-20 md:pb-0">
       <TopBar />
       <Navbar />
+      <main>
       <InstantQuoteFlow />
       <DiscoveryHero />
       <section id="live-discovery" className="relative max-w-6xl mx-auto px-4 pb-10 md:pb-14">
@@ -77,6 +78,7 @@ export default function Home() {
       <LazySection minHeight={120}><Reviews /></LazySection>
       <FAQ />
       <LazySection minHeight={100}><FinalCTA /></LazySection>
+      </main>
       <Footer />
     </div>
   );

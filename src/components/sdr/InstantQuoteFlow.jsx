@@ -206,7 +206,7 @@ export default function InstantQuoteFlow() {
     <section id="book" className="bg-[#102B2A] text-white">
       <div className="max-w-3xl mx-auto px-4 py-7 md:py-16">
         <div className="flex items-center justify-between gap-3 mb-6">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase">{t.tag}</div>
+          <div className="text-xs font-bold tracking-[0.2em] text-[#54D9AE] uppercase">{t.tag}</div>
           <div className="flex rounded-full border border-white/20 p-0.5" role="group" aria-label="Language">
             {["en", "fr"].map((l) => (
               <button key={l} onClick={() => setLang(l)} className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase transition-colors ${lang === l ? "bg-[#187B65] text-[#032015]" : "text-white/60 hover:text-white"}`}>
@@ -269,7 +269,7 @@ export default function InstantQuoteFlow() {
                 </p>
               ) : null}
               {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
-              <button onClick={goPostal} className="mt-5 w-full rounded-full bg-[#187B65] text-[#032015] font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors flex items-center justify-center gap-2">
+              <button onClick={goPostal} className="mt-5 w-full rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors flex items-center justify-center gap-2">
                 {t.postalNext} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
@@ -279,7 +279,7 @@ export default function InstantQuoteFlow() {
             <div className="rounded-3xl bg-white/5 border border-white/10 p-6 md:p-8">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h3 className="text-lg font-bold">{t.materials}</h3>
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#187B65]">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#54D9AE]">
                   <MapPin className="w-3.5 h-3.5" /> {postalRaw || fsa} · {provinceName(province) || province}
                 </span>
               </div>
@@ -305,7 +305,7 @@ export default function InstantQuoteFlow() {
                 <button onClick={() => setStep(0)} className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold hover:border-white/50 transition-colors inline-flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" /> {lang === "fr" ? "Retour" : "Back"}
                 </button>
-                <button onClick={getEstimate} disabled={loading} className="flex-1 rounded-full bg-[#187B65] text-[#032015] font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <button onClick={getEstimate} disabled={loading} className="flex-1 rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Calculator className="w-5 h-5" />}
                   {loading ? t.submitting : t.estNext}
                 </button>
@@ -348,7 +348,7 @@ export default function InstantQuoteFlow() {
                 <button type="button" onClick={() => setStep(1)} className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold hover:border-white/50 transition-colors inline-flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" /> {lang === "fr" ? "Retour" : "Back"}
                 </button>
-                <button type="submit" disabled={loading} className="flex-1 rounded-full bg-[#187B65] text-[#032015] font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <button type="submit" disabled={loading} className="flex-1 rounded-full bg-[#187B65] text-white font-bold px-7 py-4 hover:bg-[#1FA184] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
                   {loading ? t.submitting : t.submit}
                 </button>
@@ -364,7 +364,7 @@ export default function InstantQuoteFlow() {
                 {result?.reference_code || "PENDING"}
               </div>
               <p className="mt-4 text-xs text-slate-400">{t.matchingNote}</p>
-              <a href="/request-status" className="mt-5 inline-block rounded-full bg-[#187B65] text-[#032015] font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
+              <a href="/request-status" className="mt-5 inline-block rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
                 {lang === "fr" ? "Suivre ma demande" : "Track my request"}
               </a>
             </div>

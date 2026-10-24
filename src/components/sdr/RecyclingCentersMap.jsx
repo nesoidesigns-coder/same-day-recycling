@@ -214,7 +214,7 @@ export default function RecyclingCentersMap({ city = null, showSelector = false 
                     <p className="text-[11px] text-slate-400 mt-1">
                       {c.verification === "verified" ? "✓ Verified" : "Reported"} {c.researched_date}
                       {c.source_url && (
-                        <> · <a href={c.source_url} target="_blank" rel="noopener noreferrer" className="text-[#187B65] hover:underline">source</a></>
+                        <> · <a href={c.source_url} target="_blank" rel="noopener noreferrer" className="text-[#0E6B52] font-semibold hover:underline">source</a></>
                       )}
                     </p>
                   )}

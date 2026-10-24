@@ -7,7 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://media.base44.com" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" />
+    <!-- Fonts load non-blocking: the stylesheet no longer delays first paint. -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all';this.onload=null" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" /></noscript>
     <link rel="manifest" href="/manifest.json" />
     <title>Same Day Recycling | Nationwide Junk Removal &amp; Recycling Network in Canada</title>
     <meta name="description" content="Same Day Recycling connects customers nationwide across Canada with junk removal, furniture pickup, and responsible recycling services. Request service and local availability is confirmed with you." />
@@ -80,12 +83,20 @@
       @keyframes sdr-splash-spin { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) { #app-splash > div[style*="sdr-splash"] { animation: none; } }
     </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-77FTJJBHE1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-77FTJJBHE1');
+      // GA's ~180 KB script downloads only after the page finishes loading so
+      // it never competes with the booking experience on mobile bandwidth.
+      // Events pushed before then are queued in dataLayer and sent on load.
+      window.addEventListener('load', function () {
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-77FTJJBHE1';
+        s.async = true;
+        document.head.appendChild(s);
+      });
     </script>
   </head>
   <body>

@@ -67,7 +67,7 @@ export default function HomeDiscoveryFeed() {
         onCity={setCity}
       />
 
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Service categories">
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="group" aria-label="Service categories">
         {CATEGORY_CHIPS.map((c) => (
           <button
             key={c.id}

@@ -152,8 +152,10 @@ export default function Reviews() {
                   key={rev.id}
                   onClick={() => setIndex(i)}
                   aria-label={`Review ${i + 1}`}
-                  className={`h-2.5 rounded-full transition-all ${i === index ? "w-7 bg-[#187B65]" : "w-2.5 bg-slate-200 hover:bg-slate-300"}`}
-                />
+                  className={`h-6 flex items-center justify-center rounded-full transition-all ${i === index ? "w-7" : "w-6"}`}
+                >
+                  <span className={`rounded-full ${i === index ? "w-5 h-2.5 bg-[#187B65]" : "w-2.5 h-2.5 bg-slate-200"}`} />
+                </button>
               ))}
             </div>
           )}
