@@ -1,0 +1,139 @@
+{
+  "name": "CommunityDraft",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "body": {
+      "type": "string",
+      "default": "",
+      "maxLength": 5000
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "business_intelligence",
+        "recycling_knowledge",
+        "homeowner_advice",
+        "industry_insights"
+      ],
+      "default": "business_intelligence",
+      "description": "Recycling OS Intelligence content category."
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "educational",
+        "question",
+        "insight",
+        "feature"
+      ],
+      "default": "educational",
+      "description": "educational = how-to post. question = discussion prompt. insight = weekly business insight. feature = weekly recycling/sustainability feature."
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "general",
+        "contractor_exchange",
+        "ai_academy",
+        "recycling_exchange",
+        "equipment_ops",
+        "provincial",
+        "ideas_feedback",
+        "announcements"
+      ],
+      "default": "general"
+    },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "approved",
+        "published",
+        "declined"
+      ],
+      "default": "pending_review",
+      "description": "Lifecycle: pending_review \u2192 approved \u2192 published (or declined)."
+    },
+    "source_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 300,
+      "description": "AI's own statement of factual grounding. Empty = general advice with no factual claims."
+    },
+    "source_status": {
+      "type": "string",
+      "enum": [
+        "no_claims",
+        "grounded",
+        "needs_verification"
+      ],
+      "default": "no_claims",
+      "description": "Owner-assessed verification status. needs_verification blocks auto-publish."
+    },
+    "post_id": {
+      "type": "string",
+      "default": "",
+      "description": "CommunityPost created when this draft was published."
+    },
+    "review_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Owner's review note when approving or declining."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable audit trail: generated, approved, published, declined."
+    }
+  },
+  "required": [
+    "title",
+    "body"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

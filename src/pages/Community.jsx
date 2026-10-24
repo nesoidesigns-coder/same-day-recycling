@@ -5,9 +5,11 @@ import { useSEO } from '@/lib/seo';
 import TopBar from '@/components/sdr/TopBar';
 import Navbar from '@/components/sdr/Navbar';
 import Footer from '@/components/sdr/Footer';
-import { Users, Sparkles, Megaphone, UserPlus, LogIn } from 'lucide-react';
-import CommunityHero from '@/components/community/CommunityHero';
+import { Megaphone, UserPlus, LogIn, Sparkles, Recycle } from 'lucide-react';
 import CommunityFeed from '@/components/community/CommunityFeed';
+import CommunitySpotlight from '@/components/community/CommunitySpotlight';
+import SuggestedQuestions from '@/components/community/SuggestedQuestions';
+import LocalOpportunitiesStrip from '@/components/community/LocalOpportunitiesStrip';
 import OpportunityBoard from '@/components/community/OpportunityBoard';
 import MemberDirectory from '@/components/community/MemberDirectory';
 import LibraryTab from '@/components/community/LibraryTab';
@@ -15,7 +17,7 @@ import MyProfile from '@/components/community/MyProfile';
 import AiAssistant from '@/components/community/AiAssistant';
 
 const TABS = [
-  { id: 'feed', label: 'Discussions' },
+  { id: 'feed', label: 'Feed' },
   { id: 'opportunities', label: 'Opportunity Board' },
   { id: 'directory', label: 'Members' },
   { id: 'library', label: 'Knowledge Library' },
@@ -33,8 +35,8 @@ const GUIDELINES = [
 
 export default function Community() {
   useSEO({
-    title: 'Recycling Business Community | Same Day Recycling',
-    description: "Canada's free professional community for junk removal operators, recycling businesses and contractors: public discussions, business education, an opportunity board and member networking.",
+    title: 'Recycling OS Community | Same Day Recycling',
+    description: "Canada's free professional community for junk removal operators, recycling businesses and contractors: practical AI-published knowledge, real discussions, an opportunity board and member networking.",
     path: '/community',
   });
 
@@ -79,50 +81,74 @@ export default function Community() {
       setTimeout(() => document.getElementById('composer-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
     }
   };
+  const openPostDirect = (post) => window.location.assign(`/community?post=${post.id}`);
 
   return (
     <div className="bg-white min-h-screen">
       <TopBar />
       <Navbar />
-      <div className="max-w-5xl mx-auto px-4 pt-6">
-        <CommunityHero isMember={!guest} onAskAI={onAskAI} onShareSomething={onShareSomething} />
-      </div>
-      <section className="mt-6 bg-[#102B2A] text-white">
-        <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
-          <div className="text-xs font-bold tracking-[0.2em] text-[#187B65] uppercase mb-2 flex items-center gap-2"><Users className="w-4 h-4" /> Recycling Business Network</div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Community</h1>
-          <p className="mt-3 text-slate-300 max-w-2xl text-sm leading-relaxed">
-            Connect with Canadian recycling and junk removal professionals. Free membership, real conversations, optional software.
-          </p>
-          {announcement && (
-            <div className="mt-5 rounded-2xl border border-[#187B65]/40 bg-[#187B65]/10 px-4 py-3 max-w-2xl">
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#187B65]"><Megaphone className="w-3.5 h-3.5" /> Announcement</div>
-              <button onClick={() => setTab('feed')} className="mt-1 block w-full text-left text-sm font-bold text-white hover:underline">{announcement.title}</button>
+
+      {/* Compact branded header: content starts one screen-fraction down */}
+      <header className="border-b border-slate-100 bg-white/90">
+        <div className="max-w-5xl mx-auto px-4 pt-4 pb-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-9 h-9 shrink-0 rounded-xl bg-[#187B65] text-white flex items-center justify-center">
+                <Recycle className="w-5 h-5" />
+              </span>
+              <div className="min-w-0">
+                <h1 className="text-lg font-bold text-[#102B2A] leading-tight">Recycling OS Community</h1>
+                <p className="text-[11px] text-slate-500 leading-snug">Practical knowledge & real conversations for Canada's recycling and removal pros</p>
+              </div>
             </div>
+            {guest ? (
+              <div className="flex shrink-0 flex-col gap-1.5">
+                <a href="/register?returnTo=/community" className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-2 text-[11px] font-bold text-white hover:bg-[#125C4E] transition-colors"><UserPlus className="w-3 h-3" /> Join free</a>
+                <a href="/login?returnTo=/community" className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 px-3.5 py-2 text-[11px] font-bold text-slate-600 hover:border-[#187B65] transition-colors"><LogIn className="w-3 h-3" /> Log in</a>
+              </div>
+            ) : (
+              <button onClick={onAskAI} className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-2 text-[11px] font-bold text-white hover:bg-[#125C4E] transition-colors">
+                <Sparkles className="w-3 h-3" /> Ask the AI
+              </button>
+            )}
+          </div>
+          {announcement && (
+            <button onClick={() => { setTab('feed'); }} className="mt-2.5 flex w-full items-center gap-2 rounded-xl border border-[#187B65]/30 bg-[#f4f7f5] px-3 py-2 text-left">
+              <Megaphone className="w-3.5 h-3.5 shrink-0 text-[#187B65]" />
+              <span className="truncate text-xs font-bold text-[#102B2A]">{announcement.title}</span>
+            </button>
           )}
         </div>
-      </section>
+      </header>
 
       {guest && (
         <div className="bg-[#f4f7f5] border-b border-slate-200">
-          <div className="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs font-semibold text-[#102B2A]">You're browsing as a guest — every discussion, opportunity and resource is open to read. A free profile lets you post, reply, vote and list opportunities.</p>
-            <div className="flex gap-2">
-              <a href="/register?returnTo=/community" className="inline-flex items-center gap-1.5 rounded-full bg-[#187B65] px-4 py-2 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors"><UserPlus className="w-3.5 h-3.5" /> Create free profile</a>
-              <a href="/login?returnTo=/community" className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:border-[#187B65] transition-colors"><LogIn className="w-3.5 h-3.5" /> Log in</a>
-            </div>
-          </div>
+          <p className="max-w-5xl mx-auto px-4 py-2 text-[11px] font-semibold text-[#102B2A]">
+            You're browsing as a guest — every discussion, opportunity and resource is open to read. Posting, replies and votes need a free profile.
+          </p>
         </div>
       )}
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 mb-6" role="tablist" aria-label="Community sections">
+      <div className="max-w-5xl mx-auto px-4 py-5">
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 mb-5" role="tablist" aria-label="Community sections">
           {TABS.map((t) => (
-            <button key={t.id} onClick={() => setTab(t.id)} role="tab" aria-selected={tab === t.id} className={`shrink-0 rounded-full border px-4 py-2.5 text-sm font-bold transition-colors ${tab === t.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{t.label}</button>
+            <button key={t.id} onClick={() => setTab(t.id)} role="tab" aria-selected={tab === t.id} className={`shrink-0 rounded-full border px-4 py-2 text-sm font-bold transition-colors ${tab === t.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{t.label}</button>
           ))}
         </div>
 
-        {tab === 'feed' && <CommunityFeed me={me} profileName={null} />}
+        {tab === 'feed' && (
+          <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
+            <CommunityFeed me={me} profileName={null} onGoOpportunities={() => setTab('opportunities')} />
+            <aside className="space-y-4">
+              <CommunitySpotlight onOpen={openPostDirect} />
+              <SuggestedQuestions onOpen={openPostDirect} />
+              <LocalOpportunitiesStrip onOpen={() => setTab('opportunities')} />
+              <button onClick={onShareSomething} className="w-full rounded-2xl border border-dashed border-[#187B65]/40 bg-[#f4f7f5] px-4 py-3 text-sm font-bold text-[#187B65] hover:bg-[#eef4f1] transition-colors">
+                Share your experience with the community
+              </button>
+            </aside>
+          </div>
+        )}
         {tab === 'opportunities' && <OpportunityBoard me={me} />}
         {tab === 'directory' && <MemberDirectory />}
         {tab === 'library' && <LibraryTab />}
@@ -147,12 +173,13 @@ export default function Community() {
       {!guest && (
         <button
           onClick={() => setAiOpen(true)}
-          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#187B65] px-5 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-[#125C4E] transition-colors"
-          aria-label="Open AI Business Master community assistant"
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#187B65] px-4 py-3 text-sm font-bold text-white shadow-lg hover:bg-[#125C4E] transition-colors"
+          aria-label="Open AI community assistant"
         >
-          <Sparkles className="w-4 h-4" /> Ask the AI
+          <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Ask the AI</span>
         </button>
       )}
+      <div className="h-16 lg:hidden" aria-hidden="true" />
       <AiAssistant open={aiOpen} onClose={() => setAiOpen(false)} />
       <Footer />
     </div>

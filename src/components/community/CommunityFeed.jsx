@@ -1,21 +1,40 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Search, TriangleAlert, Share2, Check } from 'lucide-react';
+import { Loader2, Search, TriangleAlert, Sparkles } from 'lucide-react';
 import PostComposer from '@/components/community/PostComposer';
 import PostCard from '@/components/community/PostCard';
 import PostThread from '@/components/community/PostThread';
 import InterestBar from '@/components/community/InterestBar';
 import FeedAdCard from '@/components/community/FeedAdCard';
+import { CHANNELS, PROVINCES, INTERESTS } from '@/lib/communityShared';
 
 const AD_INTERVAL = 10;
-import { CHANNELS, PROVINCES, INTERESTS } from '@/lib/communityShared';
+
+// Living-feed categories. "For You" is the personalized default; the three
+// content categories always keep useful AI educational posts visible even
+// when a channel has little member activity; "All channels" exposes the
+// full channel list.
+const CATEGORIES = [
+  { id: 'for_you', label: 'For You' },
+  { id: 'business', label: 'Business' },
+  { id: 'recycling', label: 'Recycling' },
+  { id: 'home', label: 'Home & Living' },
+  { id: 'channels', label: 'All channels' },
+];
+
+const CATEGORY_CHANNELS = {
+  business: ['contractor_exchange', 'ai_academy'],
+  recycling: ['recycling_exchange'],
+  home: ['general'],
+};
 
 const readPrefs = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
 };
 
-export default function CommunityFeed({ me, profileName }) {
+export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
+  const [category, setCategory] = useState('for_you');
   const [channel, setChannel] = useState('all');
   const [search, setSearch] = useState('');
   const [interests, setInterests] = useState(() => readPrefs('communityInterests', []));
@@ -49,18 +68,25 @@ export default function CommunityFeed({ me, profileName }) {
   };
 
   const posts = useQuery({
-    queryKey: ['communityPosts', channel, region],
+    queryKey: ['communityPosts', category, channel, region],
     queryFn: async () => {
       const q = { status: 'published' };
-      if (channel !== 'all') q.channel = channel;
-      if (channel === 'provincial' && region !== 'national') q.province = region;
+      if (category === 'channels') {
+        if (channel !== 'all') q.channel = channel;
+        if (channel === 'provincial' && region !== 'national') q.province = region;
+      } else if (CATEGORY_CHANNELS[category]) {
+        q.channel = { $in: CATEGORY_CHANNELS[category] };
+      }
       return (await base44.entities.CommunityPost.filter(q, { sort: '-created_date', limit: 60 })).items || [];
     },
   });
 
   const ads = useQuery({
-    queryKey: ['communityFeedAds', channel, region],
-    queryFn: async () => (await base44.functions.invoke('communityAds', { action: 'serve', channel: channel === 'all' ? 'general' : channel, province: region })).data,
+    queryKey: ['communityFeedAds', category, channel],
+    queryFn: async () => {
+      const serveChannel = CATEGORY_CHANNELS[category] ? CATEGORY_CHANNELS[category][0] : (channel !== 'all' ? channel : 'general');
+      return (await base44.functions.invoke('communityAds', { action: 'serve', channel: serveChannel, province: region })).data;
+    },
     staleTime: 300000,
   });
 
@@ -99,13 +125,13 @@ export default function CommunityFeed({ me, profileName }) {
       list = list.filter((p) => (p.title || '').toLowerCase().includes(s) || (p.body || '').toLowerCase().includes(s));
     }
     if (savedOnly) list = list.filter((p) => saved.has(p.id));
-    if (channel === 'all') {
+    if (category === 'for_you') {
       if (interestChannels.length) list = list.filter((p) => interestChannels.includes(p.channel));
       if (region !== 'national') list = list.filter((p) => p.province === region || p.province === 'national');
       return [...list].sort((a, b) => Number(b.pinned) - Number(a.pinned));
     }
     return list;
-  }, [posts.data, search, channel, savedOnly, saved, region, interests]);
+  }, [posts.data, search, savedOnly, saved, category, region, interests]);
 
   const trending = useMemo(() => {
     const counts = replyCounts.data || {};
@@ -160,36 +186,45 @@ export default function CommunityFeed({ me, profileName }) {
 
   return (
     <div className="space-y-4" id="community-feed">
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Channels">
-        <button onClick={() => setChannel('all')} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === 'all' ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>All channels</button>
-        {CHANNELS.map((c) => (
-          <button key={c.id} onClick={() => setChannel(c.id)} title={c.desc} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Feed categories">
+        {CATEGORIES.map((c) => (
+          <button key={c.id} onClick={() => setCategory(c.id)} className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${category === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>
         ))}
+        <button onClick={onGoOpportunities} className="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:border-[#187B65] transition-colors">Local Opportunities</button>
       </div>
 
-      <InterestBar
-        interests={interests}
-        onToggleInterest={toggleInterest}
-        region={region}
-        onRegion={setRegion}
-        savedOnly={savedOnly}
-        onToggleSaved={() => setSavedOnly((s) => !s)}
-        savedCount={saved.size}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} className="input pl-9" placeholder="Search conversations…" aria-label="Search conversations" />
+      {category === 'channels' && (
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Channels">
+          <button onClick={() => setChannel('all')} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === 'all' ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>Everything</button>
+          {CHANNELS.map((c) => (
+            <button key={c.id} onClick={() => setChannel(c.id)} title={c.desc} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>
+          ))}
         </div>
-        {channel === 'provincial' && (
-          <select value={provinceValue(region)} onChange={(e) => setRegion(e.target.value)} className="input sm:w-52" aria-label="Filter by region">
-            {PROVINCES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
-          </select>
-        )}
-      </div>
+      )}
 
-      {trending.length > 0 && channel === 'all' && !search && !savedOnly && (
+      {category === 'for_you' && (
+        <InterestBar
+          interests={interests}
+          onToggleInterest={toggleInterest}
+          region={region}
+          onRegion={setRegion}
+          savedOnly={savedOnly}
+          onToggleSaved={() => setSavedOnly((s) => !s)}
+          savedCount={saved.size}
+        />
+      )}
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} className="input pl-9" placeholder="Search discussions and guides…" aria-label="Search discussions" />
+      </div>
+      {category === 'channels' && channel === 'provincial' && (
+        <select value={provinceValue(region)} onChange={(e) => setRegion(e.target.value)} className="input" aria-label="Filter by region">
+          {PROVINCES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+        </select>
+      )}
+
+      {trending.length > 0 && category === 'for_you' && !search && !savedOnly && (
         <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#187B65]">Trending questions</h3>
           <div className="mt-2 space-y-1.5">
@@ -217,7 +252,7 @@ export default function CommunityFeed({ me, profileName }) {
         <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
           {savedOnly
             ? <><p className="text-sm font-bold text-[#102B2A]">Nothing saved yet.</p><p className="mt-1 text-xs text-slate-500">Bookmark posts you want to come back to — they stay on this device.</p></>
-            : <><p className="text-sm font-bold text-[#102B2A]">No discussions match your filters yet.</p><p className="mt-1 text-xs text-slate-500">Try clearing interests or being the first to start one.</p></>}
+            : <><p className="text-sm font-bold text-[#102B2A]">No discussions match your filters yet.</p><p className="mt-1 text-xs text-slate-500">Try the For You feed or be the first to start one.</p></>}
         </div>
       )}
       <div className="space-y-3">

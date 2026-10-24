@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { ArrowLeft, Loader2, Send, ThumbsUp, Flag } from 'lucide-react';
+import { ArrowLeft, Loader2, Send, ThumbsUp, Flag, Bot } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { reportContent } from '@/components/community/PostCard';
 
@@ -59,6 +59,7 @@ export default function PostThread({ post, me, profileName, onBack }) {
         <button onClick={onBack} className="flex items-center gap-1.5 text-xs font-bold text-[#187B65] hover:underline"><ArrowLeft className="w-3.5 h-3.5" /> Back to feed</button>
         <h2 className="mt-2 text-lg font-bold text-[#102B2A] leading-snug">{post.title}</h2>
         <p className="mt-0.5 text-xs text-slate-500">{post.author_name || 'Member'} · {new Date(post.created_date).toLocaleDateString('en-CA')}</p>
+        {post.ai_generated && <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-[#102B2A] text-white px-2.5 py-1 text-[10px] font-bold"><Bot className="w-3 h-3" /> Recycling OS Intelligence · AI-generated{post.source_note ? ` · ${post.source_note}` : ''}</p>}
         {post.image_url && (
           <div className="mt-3 overflow-hidden rounded-xl border border-slate-100">
             <Image src={post.image_url} alt="" className="max-h-96 w-full" fittingType="fill" />

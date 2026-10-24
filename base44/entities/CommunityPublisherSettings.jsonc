@@ -1,0 +1,59 @@
+{
+  "name": "CommunityPublisherSettings",
+  "type": "object",
+  "properties": {
+    "paused": {
+      "type": "boolean",
+      "default": false,
+      "description": "Owner kill-switch: stops all AI publishing activity."
+    },
+    "auto_publish": {
+      "type": "boolean",
+      "default": false,
+      "description": "Owner approval initially. When enabled after moderation testing, publishes newly generated low-risk drafts automatically."
+    },
+    "generate_images": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, publishing a draft without an image generates one with AI."
+    },
+    "daily_max": {
+      "type": "number",
+      "default": 1,
+      "description": "Maximum AI drafts generated per scheduled run."
+    },
+    "queue_max": {
+      "type": "number",
+      "default": 3,
+      "description": "Stop generating when this many drafts wait in review."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

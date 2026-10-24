@@ -63,6 +63,26 @@
       "type": "string",
       "default": "",
       "maxLength": 120
+    },
+    "ai_generated": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for official Recycling OS Intelligence posts. Never set for human contributions."
+    },
+    "ai_kind": {
+      "type": "string",
+      "enum": [
+        "post",
+        "question"
+      ],
+      "default": "post",
+      "description": "question = an official AI discussion prompt inviting real member replies."
+    },
+    "source_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 300,
+      "description": "Where factual grounding came from, stated plainly. Empty for general advice with no factual claims."
     }
   },
   "required": [

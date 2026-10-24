@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { channelLabel, provinceLabel } from '@/lib/communityShared';
 import { Image } from '@/components/ui/image';
-import { MessageSquare, ThumbsUp, Flag, BadgeCheck, MapPin, Megaphone, Bookmark, Share2, Check } from 'lucide-react';
+import { MessageSquare, ThumbsUp, Flag, BadgeCheck, MapPin, Megaphone, Bookmark, Share2, Check, Bot } from 'lucide-react';
 
 export default function PostCard({ post, replyCount, helpfulCount, mineVoted, saved, copied, onBookmark, onShare, onVote, onOpen, onReport, onAiAnswer }) {
   return (
@@ -13,6 +13,7 @@ export default function PostCard({ post, replyCount, helpfulCount, mineVoted, sa
           <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5"><MapPin className="w-3 h-3" />{provinceLabel(post.province)}</span>
         )}
         {post.channel === 'announcements' && <span className="rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 flex items-center gap-1"><Megaphone className="w-3 h-3" />Official</span>}
+        {post.ai_generated && <span className="rounded-full bg-[#102B2A] text-white px-2 py-0.5 flex items-center gap-1"><Bot className="w-3 h-3" />AI-generated</span>}
       </div>
       <button onClick={onOpen} className="mt-2 block w-full text-left">
         {post.image_url && (

@@ -1,0 +1,45 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_publisher_daily",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "publisher_run": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "communityPublisher",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Generate daily draft",
+            "description": "One AI draft per day, owner-approved unless auto-publish is on"
+          }
+        }
+      }
+    ]
+  },
+  "description": "Generates one Recycling OS Intelligence draft per day (kind rotates through the week). Drafts wait for owner approval unless auto-publish is enabled in the publisher dashboard.",
+  "name": "AI Publisher Daily",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
