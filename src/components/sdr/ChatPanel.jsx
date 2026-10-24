@@ -23,7 +23,7 @@ function ChatAttachment({ url }) {
 
 // The full Rex chat — loaded only when a visitor opens the launcher, keeping
 // markdown/attachment/agent code out of the initial page bundle.
-export default function ChatPanel({ onClose }) {
+export default function ChatPanel({ onClose, preset }) {
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -61,6 +61,17 @@ export default function ChatPanel({ onClose }) {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Contextual assist: when a page opens Rex with a preset question, Rex
+  // answers it first (only on a fresh conversation, and only once).
+  const presetSentRef = useRef(null);
+  useEffect(() => {
+    if (!preset || !conversation?.id || starting || sending) return;
+    if (messages.some((m) => m.role === "user")) return;
+    if (presetSentRef.current === preset) return;
+    presetSentRef.current = preset;
+    send(preset);
+  }, [preset, conversation?.id, starting, sending, messages.length]);
 
   const pickFiles = () => fileInputRef.current?.click();
 

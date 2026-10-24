@@ -10,10 +10,16 @@ const ChatPanel = lazy(() => import("./ChatPanel"));
 export default function ReceptionistChat() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const [preset, setPreset] = useState(null);
 
-  // Any page button can open Rex with a "rex:open" window event.
+  // Any page button can open Rex with a "rex:open" window event. The event
+  // may carry a contextual question (CustomEvent detail.question) that Rex
+  // answers first — so assistance matches the section being explored.
   useEffect(() => {
-    const openRex = () => setOpen(true);
+    const openRex = (e) => {
+      setPreset(e.detail?.question || null);
+      setOpen(true);
+    };
     window.addEventListener("rex:open", openRex);
     return () => window.removeEventListener("rex:open", openRex);
   }, []);
@@ -36,7 +42,7 @@ export default function ReceptionistChat() {
             <MessageCircle className="w-5 h-5 text-slate-300 animate-pulse" />
           </div>
         }>
-          <ChatPanel onClose={() => setOpen(false)} />
+          <ChatPanel onClose={() => { setOpen(false); setPreset(null); }} preset={preset} />
         </Suspense>
       )}
     </>
