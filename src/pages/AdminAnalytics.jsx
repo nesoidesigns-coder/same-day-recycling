@@ -62,6 +62,47 @@ export default function AdminAnalytics() {
   const [targets, setTargets] = useState([]);
   const [showTargets, setShowTargets] = useState(false);
   const [savingTargets, setSavingTargets] = useState(false);
+  const [tab, setTab] = useState("customer");
+  const [activity, setActivity] = useState(null);
+
+  // Per-category activity counts for the selected period, computed from real
+  // records only. Owner activity is tracked separately and never inflates
+  // customer or contractor statistics.
+  const loadActivity = async (params) => {
+    try {
+      const range = { created_date: { $gte: `${params.start}T00:00:00Z`, $lt: `${addDays(params.end, 1)}T00:00:00Z` } };
+      const [classRows, ownerPaths, ownerSessions, searchRows, swInq, wlLeads, apps, licenses, subs, testBookings] = await Promise.all([
+        base44.entities.Visit.aggregate({ query: range, groupBy: "traffic_class" }),
+        base44.entities.Visit.aggregate({ query: { ...range, traffic_class: "owner" }, groupBy: "path", sort: "-count", limit: 200 }),
+        base44.entities.Visit.aggregate({ query: { ...range, traffic_class: "owner" }, groupBy: "sid", limit: 1000 }),
+        base44.entities.Visit.count({ ...range, traffic_class: "customer", source: "search" }),
+        base44.entities.SoftwareInquiry.count(range),
+        base44.entities.WhiteLabelLead.count(range),
+        base44.entities.ContractorApplication.count(range),
+        base44.entities.SoftwareLicense.count(range),
+        base44.entities.Subscription.count(range),
+        base44.entities.Booking.count({ ...range, record_type: "internal_test" }),
+      ]);
+      const byClass = {};
+      for (const r of classRows?.rows || []) byClass[r.traffic_class || "customer"] = r.count || 0;
+      setActivity({
+        customer_visits: byClass.customer || 0,
+        contractor_visits: byClass.contractor || 0,
+        owner_visits: byClass.owner || 0,
+        customer_searches: searchRows || 0,
+        owner_pages: (ownerPaths?.rows || []).length,
+        owner_paths: ownerPaths?.rows || [],
+        owner_sessions: (ownerSessions?.rows || []).filter((r) => r.sid).length,
+        test_bookings: testBookings || 0,
+        software_inquiries: swInq || 0,
+        licensing_inquiries: wlLeads || 0,
+        registrations: apps || 0,
+        subscriptions: (licenses || 0) + (subs || 0),
+      });
+    } catch {
+      setActivity(null);
+    }
+  };
 
   const load = async (p = period, c = custom) => {
     setLoading(true);
@@ -71,6 +112,7 @@ export default function AdminAnalytics() {
       if (!params) { setData(null); setLoading(false); return; }
       const res = await base44.functions.invoke("dashboardMetrics", params);
       setData(res.data);
+      loadActivity(params);
     } catch (e) {
       setError(e?.message || "Could not load metrics");
     }
@@ -182,6 +224,19 @@ export default function AdminAnalytics() {
             <button onClick={() => load("custom", custom)} className="rounded-full bg-emerald-500 text-white font-bold px-5 py-2.5 text-sm hover:bg-emerald-600">Apply</button>
           </div>
         )}
+        <div className="flex flex-wrap items-center gap-2 mt-4 mb-6" role="tablist" aria-label="Activity categories">
+          {[["customer", "Customer Activity"], ["contractor", "Contractor Activity"], ["owner", "Owner Activity"]].map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              role="tab"
+              aria-selected={tab === k}
+              className={`rounded-full px-4 py-2 text-sm font-bold border transition-colors ${tab === k ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-200 hover:border-emerald-400"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <p className="text-[11px] text-slate-500 mb-6">Residential / commercial / recurring filters will appear once booking records track service type.</p>
 
         {showTargets && (
@@ -216,6 +271,15 @@ export default function AdminAnalytics() {
           <div className="text-sm text-slate-500 py-10 text-center">Choose a period to load metrics.</div>
         ) : (
           <>
+            {tab === "customer" && (
+              <>
+            {activity && (
+              <div className="grid sm:grid-cols-3 gap-4 mb-2">
+                <StatCard title="Independent visitors" value={activity.customer_visits} sub="Customer sessions in period" tone="emerald" />
+                <StatCard title="Service searches" value={activity.customer_searches} sub="Search-engine arrivals" tone="slate" />
+                <StatCard title="Quote requests" value={b.conversion.eligible ?? "—"} sub="Received in period" tone="slate" />
+              </div>
+            )}
             <h2 className={SECTION_TITLE}>Business performance</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <GaugeCard title="Revenue vs target" status="Verified" updated={`Period ${data.period.start} → ${data.period.end}`} onOpen={() => openDetail("revenue", "Revenue bookings")}
@@ -334,6 +398,54 @@ export default function AdminAnalytics() {
                 reasons={[x.complaints.reason, x.abandonment.reason, x.response_time.reason]}
               />
             </div>
+              </>
+            )}
+
+            {tab === "contractor" && (
+              <>
+                <h2 className={SECTION_TITLE}>Contractor activity</h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <StatCard title="Contractor visits" value={activity ? activity.contractor_visits : "—"} sub="Software & licensing explorers" tone="emerald" />
+                  <StatCard title="Software inquiries" value={activity ? activity.software_inquiries : "—"} sub="Recycling OS interest in period" tone="slate" />
+                  <StatCard title="Licensing inquiries" value={activity ? activity.licensing_inquiries : "—"} sub="White-label leads in period" tone="slate" />
+                  <StatCard title="Registrations" value={activity ? activity.registrations : "—"} sub="Contractor applications in period" tone="slate" />
+                  <StatCard title="Subscriptions & licenses" value={activity ? activity.subscriptions : "—"} sub="New in period" tone="slate" />
+                  {activity && activity.contractor_visits === 0 && activity.software_inquiries === 0 && activity.licensing_inquiries === 0 && activity.registrations === 0 && activity.subscriptions === 0 && (
+                    <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-xs text-slate-600 leading-relaxed">
+                      No contractor activity recorded in this period yet. Contractor sessions are identified automatically from how visitors arrive and what they explore; registrations, inquiries and subscriptions are counted from real records only.
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {tab === "owner" && (
+              <>
+                <h2 className={SECTION_TITLE}>Owner activity</h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <StatCard title="Your visits" value={activity ? activity.owner_visits : "—"} sub="Sessions identified as yours" tone="emerald" />
+                  <StatCard title="Testing sessions" value={activity ? activity.owner_sessions : "—"} sub="Distinct sessions in period" tone="slate" />
+                  <StatCard title="Pages explored" value={activity ? activity.owner_pages : "—"} sub="Distinct pages opened" tone="slate" />
+                  <StatCard title="Test bookings created" value={activity ? activity.test_bookings : "—"} sub="Internal test records" tone="slate" />
+                  {activity && activity.owner_paths.length > 0 && (
+                    <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="text-sm font-bold text-slate-800 mb-3">Pages you opened most</div>
+                      <div className="space-y-1.5">
+                        {activity.owner_paths.slice(0, 8).map((p) => (
+                          <div key={p.path} className="flex items-center justify-between gap-3 text-xs">
+                            <span className="truncate font-semibold text-slate-700">{p.path}</span>
+                            <span className="shrink-0 font-bold text-slate-500">{p.count} views</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-xs text-slate-600 leading-relaxed">
+                    Time spent per session is not tracked yet — it will appear once visit sessions record duration. Owner activity is tracked separately and never inflates customer or contractor statistics.
+                  </div>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
