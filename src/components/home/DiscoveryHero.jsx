@@ -31,7 +31,7 @@ export default function DiscoveryHero() {
           Junk removal, recycling and pickup across Canada
         </h1>
         <p className="relative mt-3 text-[15px] md:text-lg text-white/75 max-w-2xl mx-auto leading-relaxed">
-          Book a verified local pickup in minutes — or browse real public service requests our AI has sourced and verified nationwide.
+          Request a pickup anywhere in Canada. Your local contractor, final price and pickup window are confirmed before an appointment is booked.
         </p>
         <div className="relative mt-6 flex flex-col sm:flex-row items-center justify-center gap-2.5">
           <button onClick={() => scrollToId("book")} className="min-h-[48px] w-full sm:w-auto rounded-full bg-brand-emerald text-white font-bold px-6 py-3 text-[15px] hover:bg-[#125C4E] transition-colors">
@@ -45,7 +45,7 @@ export default function DiscoveryHero() {
           </button>
         </div>
         <p className="relative mt-4 text-xs font-semibold text-white/60">
-          {typeof live.data === "number" ? `${live.data} live public request${live.data === 1 ? "" : "s"} verified · ` : ""}Free to browse · no account needed
+          {typeof live.data === "number" ? `${live.data} open public post${live.data === 1 ? "" : "s"} recorded · ` : ""}Free to browse · no account needed
         </p>
       </div>
     </section>

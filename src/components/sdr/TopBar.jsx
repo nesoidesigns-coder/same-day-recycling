@@ -14,11 +14,11 @@ export default function TopBar() {
         <div className="hidden sm:flex items-center gap-4 text-[11px] font-medium text-emerald-100/70 whitespace-nowrap">
           <span className="inline-flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-[#187B65] shrink-0" />
-            Open 24 hours
+            Online requests 24/7
           </span>
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-[#187B65] shrink-0" />
-            Serving every Canadian city
+            Requests accepted across Canada
           </span>
         </div>
       </div>

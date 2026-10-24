@@ -71,8 +71,8 @@ export default function RequestService() {
             ))}
           </div>
           <p className="mt-8 text-center text-sm text-slate-500 max-w-xl mx-auto">
-            Same-day pickup is guaranteed only in verified service territories. Everywhere else, nothing is
-            scheduled or charged until a local provider accepts your job.
+            A verified service territory is not a confirmed appointment. Same-day pickup requires a local
+            contractor to accept your specific job, with your price and arrival window agreed first.
           </p>
         </div>
       </section>

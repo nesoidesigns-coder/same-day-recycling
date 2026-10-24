@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import IntegrationAuditReport from '@/components/admin/integrity/IntegrationAuditReport';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Loader2, PlayCircle, ShieldCheck, AlertTriangle, XCircle, CheckCircle2, Info, Clock, ExternalLink } from 'lucide-react';
@@ -69,7 +70,7 @@ export default function AdminIntegrity() {
 
   const latest = status.data?.latest;
   const checks = latest?.checks || [];
-  const ordered = [...CHECKS_ORDER.map((id) => checks.find((c) => c.check === id)).filter(Boolean), ...checks.filter((c) => !CHECKS_ORDER[c.check])];
+  const ordered = [...CHECKS_ORDER.map((id) => checks.find((c) => c.check === id)).filter(Boolean), ...checks.filter((c) => !CHECKS_ORDER.includes(c.check))];
 
   return (
     <div className="space-y-6">
@@ -78,8 +79,10 @@ export default function AdminIntegrity() {
         <p className="mt-1 text-sm text-slate-600">Automated verification that coverage, pricing, booking, contractor status, payments, reviews and page rendering all represent the same operational reality. Only verified findings are recorded — nothing is estimated.</p>
       </div>
 
+      <IntegrationAuditReport />
+
       <div className="flex flex-wrap items-center gap-3">
-        <button onClick={runNow} disabled={running} className="inline-flex items-center gap-2 rounded-full bg-[#187B65] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#125C4E] transition-colors disabled:opacity-60">
+        <button onClick={() => runNow(false)} disabled={running} className="inline-flex items-center gap-2 rounded-full bg-[#187B65] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#125C4E] transition-colors disabled:opacity-60">
           <PlayCircle className="w-4 h-4" /> {running ? 'Running all checks…' : 'Run integrity check now'}
         </button>
         <button onClick={() => runNow(true)} disabled={running} className="inline-flex items-center gap-2 rounded-full border border-[#187B65] bg-white px-5 py-2.5 text-sm font-bold text-[#187B65] hover:bg-[#f4f7f5] transition-colors disabled:opacity-60">
