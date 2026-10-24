@@ -1,0 +1,45 @@
+{
+  "description": "Autonomous AI lead hunter: searches the live web daily for real, publicly posted junk-removal and recycling opportunities across Canada and posts each verified lead to the community Opportunity Board with an image and the public contact name from its source. Never posts leads without a verifiable public source.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "name": "AI Lead Hunt Daily",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_lead_hunt_daily",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "lead_hunt": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "leadHunter",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Hunt leads from the web",
+            "description": "Real Canadian leads posted to the Opportunity Board"
+          }
+        }
+      }
+    ]
+  }
+}
