@@ -255,7 +255,7 @@ export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
             : <><p className="text-sm font-bold text-[#102B2A]">No discussions match your filters yet.</p><p className="mt-1 text-xs text-slate-500">Try the For You feed or be the first to start one.</p></>}
         </div>
       )}
-      <div className="space-y-3">
+      <div className="space-y-5">
         {adRows.map((row, i) => row.type === 'ad' ? (
           <FeedAdCard key={`ad-${i}-${row.ad.id}`} ad={row.ad} />
         ) : (
