@@ -15,6 +15,7 @@ export default function OpportunityBoard({ me }) {
 
   const eligibility = useQuery({
     queryKey: ['communityOpportunityEligibility'],
+    enabled: !!me,
     queryFn: async () => (await base44.functions.invoke('communityBoard', { action: 'eligibility' })).data,
     staleTime: 60000, retry: false,
   });
@@ -57,6 +58,7 @@ export default function OpportunityBoard({ me }) {
               Member-to-member professional networking: overflow work, subcontracting, partnerships, equipment and crew availability. Accepting an opportunity never creates a booking or payment obligation — you arrange terms directly.
             </p>
           </div>
+          {me ? (
           <button
             onClick={() => setOpen(true)}
             disabled={!eligible}
@@ -64,6 +66,11 @@ export default function OpportunityBoard({ me }) {
           >
             <Plus className="w-4 h-4" /> Post opportunity
           </button>
+          ) : (
+          <a href="/register?returnTo=/community" className="rounded-full bg-[#187B65] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#125C4E] transition-colors flex items-center gap-2">
+            <Plus className="w-4 h-4" /> Join free to post
+          </a>
+          )}
         </div>
         {eligibility.data && !eligible && (
           <p className="mt-3 rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-semibold text-amber-800">{eligibility.data.reason}</p>
@@ -94,7 +101,7 @@ export default function OpportunityBoard({ me }) {
             </div>
             {o.requirements && <p className="mt-2 text-xs text-slate-500"><span className="font-bold text-slate-600">Requirements:</span> {o.requirements}</p>}
             {o.contact_method && <p className="mt-1 text-xs text-slate-500"><span className="font-bold text-slate-600">Apply:</span> {o.contact_method}</p>}
-            {o.created_by === me.email && (
+            {me && o.created_by === me.email && (
               <div className="mt-3 flex gap-2">
                 <button onClick={() => close(o, 'filled')} className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600 hover:border-[#187B65] hover:text-[#187B65] transition-colors">Mark filled</button>
                 <button onClick={() => close(o, 'expired')} className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600 hover:border-slate-400 transition-colors">Mark expired</button>

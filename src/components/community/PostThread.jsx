@@ -20,11 +20,12 @@ export default function PostThread({ post, me, profileName, onBack }) {
     queryKey: ['communityReaction', post.id],
     queryFn: async () => {
       const rows = (await base44.entities.CommunityReaction.filter({ target_type: 'post', target_id: post.id }, { limit: 300 })).items || [];
-      return { count: rows.length, mine: rows.some((r) => r.owner_email === me.email) };
+      return { count: rows.length, mine: rows.some((r) => r.owner_email === me?.email) };
     },
   });
 
   const toggleHelpful = async () => {
+    if (!me) return;
     const rows = (await base44.entities.CommunityReaction.filter({ target_type: 'post', target_id: post.id, owner_email: me.email }, { limit: 1 })).items || [];
     if (rows.length) await base44.entities.CommunityReaction.delete(rows[0].id);
     else await base44.entities.CommunityReaction.create({ target_type: 'post', target_id: post.id, owner_email: me.email });
@@ -58,13 +59,21 @@ export default function PostThread({ post, me, profileName, onBack }) {
         <h2 className="mt-2 text-lg font-bold text-[#102B2A] leading-snug">{post.title}</h2>
         <p className="mt-0.5 text-xs text-slate-500">{post.author_name || 'Member'} · {new Date(post.created_date).toLocaleDateString('en-CA')}</p>
         <p className="mt-3 text-sm text-slate-700 whitespace-pre-line leading-relaxed">{post.body}</p>
-        <div className="mt-3 flex gap-2">
-          <button onClick={toggleHelpful} className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${voted || reaction.data?.mine ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 text-slate-600 hover:border-[#187B65] hover:text-[#187B65]'}`}>
-            <ThumbsUp className="w-3.5 h-3.5" /> Helpful ({reaction.data?.count ?? 0})
-          </button>
-          <button onClick={doReport} className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500 hover:border-red-300 hover:text-red-500 transition-colors">
-            <Flag className="w-3.5 h-3.5" /> {reported ? 'Reported' : 'Report'}
-          </button>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {me ? (
+            <>
+              <button onClick={toggleHelpful} className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${voted || reaction.data?.mine ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 text-slate-600 hover:border-[#187B65] hover:text-[#187B65]'}`}>
+                <ThumbsUp className="w-3.5 h-3.5" /> Helpful ({reaction.data?.count ?? 0})
+              </button>
+              <button onClick={doReport} className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500 hover:border-red-300 hover:text-red-500 transition-colors">
+                <Flag className="w-3.5 h-3.5" /> {reported ? 'Reported' : 'Report'}
+              </button>
+            </>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500">
+              <ThumbsUp className="w-3.5 h-3.5" /> {reaction.data?.count ?? 0} found this helpful
+            </span>
+          )}
         </div>
       </div>
       <div className="p-4 space-y-3">
@@ -79,10 +88,16 @@ export default function PostThread({ post, me, profileName, onBack }) {
         {!comments.isPending && (comments.data || []).length === 0 && (
           <p className="text-sm text-slate-500">No replies yet — be the first to help.</p>
         )}
-        <form onSubmit={addComment} className="flex gap-2 pt-2">
-          <input value={comment} onChange={(e) => setComment(e.target.value)} maxLength={3000} className="input flex-1" placeholder="Write a helpful reply…" />
-          <button type="submit" disabled={busy || !comment.trim()} className="shrink-0 rounded-xl bg-[#187B65] px-4 text-white disabled:opacity-40"><Send className="w-4 h-4" /></button>
-        </form>
+        {me ? (
+          <form onSubmit={addComment} className="flex gap-2 pt-2">
+            <input value={comment} onChange={(e) => setComment(e.target.value)} maxLength={3000} className="input flex-1" placeholder="Write a helpful reply…" />
+            <button type="submit" disabled={busy || !comment.trim()} className="shrink-0 rounded-xl bg-[#187B65] px-4 text-white disabled:opacity-40"><Send className="w-4 h-4" /></button>
+          </form>
+        ) : (
+          <p className="pt-2 text-xs text-slate-500">
+            <a href="/register?returnTo=/community" className="font-bold text-[#187B65] hover:underline">Join free</a> to reply to this discussion.
+          </p>
+        )}
       </div>
     </div>
   );

@@ -19,18 +19,20 @@ export default function PostCard({ post, replyCount, helpfulCount, mineVoted, on
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
         <span className="font-semibold text-slate-600">{post.author_name || 'Member'} · {new Date(post.created_date).toLocaleDateString('en-CA')}</span>
         <div className="flex items-center gap-1">
-          <button
-            onClick={onVote}
-            aria-pressed={mineVoted}
-            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-bold transition-colors ${mineVoted ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 text-slate-600 hover:border-[#187B65] hover:text-[#187B65]'}`}
-          >
-            <ThumbsUp className="w-3.5 h-3.5" /> {post.channel === 'ideas_feedback' ? `Vote${helpfulCount ? ` (${helpfulCount})` : ''}` : (helpfulCount || 0)}
-          </button>
+          {onVote && (
+            <button
+              onClick={onVote}
+              aria-pressed={mineVoted}
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-bold transition-colors ${mineVoted ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 text-slate-600 hover:border-[#187B65] hover:text-[#187B65]'}`}
+            >
+              <ThumbsUp className="w-3.5 h-3.5" /> {post.channel === 'ideas_feedback' ? `Vote${helpfulCount ? ` (${helpfulCount})` : ''}` : (helpfulCount || 0)}
+            </button>
+          )}
           <button onClick={onOpen} className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 font-bold text-slate-600 hover:border-[#187B65] hover:text-[#187B65] transition-colors">
             <MessageSquare className="w-3.5 h-3.5" /> {replyCount || 0}
           </button>
           {onAiAnswer && <button onClick={onAiAnswer} className="rounded-full border border-slate-200 px-3 py-1.5 font-bold text-slate-600 hover:border-[#187B65] hover:text-[#187B65] transition-colors" title="AI Business Master summary">AI</button>}
-          {onReport && <button onClick={onReport} className="rounded-full p-1.5 text-slate-400 hover:text-red-500 transition-colors" title="Report to moderators"><Flag className="w-3.5 h-3.5" /></button>}
+          {onReport && <button onClick={onReport} className="rounded-full p-1.5 text-slate-400 hover:text-red-500 transition-colors" title="Log in to report to moderators"><Flag className="w-3.5 h-3.5" /></button>}
         </div>
       </div>
     </article>

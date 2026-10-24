@@ -47,6 +47,7 @@ export default function CommunityFeed({ me, profileName }) {
 
   const myVotes = useQuery({
     queryKey: ['communityMyVotes'],
+    enabled: !!me,
     queryFn: async () => (await base44.entities.CommunityReaction.filter({ target_type: 'post' }, { limit: 200 })).items || [],
   });
 
@@ -70,6 +71,7 @@ export default function CommunityFeed({ me, profileName }) {
   const openPost = (posts.data || []).find((p) => p.id === openId);
 
   const vote = async (post) => {
+    if (!me) return;
     const mine = (myVotes.data || []).find((r) => r.target_id === post.id && r.owner_email === me.email);
     if (mine) await base44.entities.CommunityReaction.delete(mine.id);
     else await base44.entities.CommunityReaction.create({ target_type: 'post', target_id: post.id, owner_email: me.email });
@@ -78,6 +80,7 @@ export default function CommunityFeed({ me, profileName }) {
   };
 
   const report = async (post) => {
+    if (!me) return;
     await base44.entities.CommunityReport.create({ target_type: 'post', target_id: post.id, reason: 'other', details: 'Reported from the feed.' });
   };
 
@@ -106,6 +109,20 @@ export default function CommunityFeed({ me, profileName }) {
         )}
       </div>
 
+      {channel === 'all' && !search && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#187B65]">Discussion channels</h3>
+          <div className="mt-2.5 grid sm:grid-cols-2 gap-2.5">
+            {CHANNELS.map((c) => (
+              <button key={c.id} onClick={() => setChannel(c.id)} className="rounded-xl border border-slate-200 bg-[#f4f7f5] p-3 text-left hover:border-[#187B65] transition-colors">
+                <div className="text-xs font-bold text-[#102B2A]">{c.label}</div>
+                <p className="mt-1 text-[11px] text-slate-500 leading-relaxed">{c.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {trending.length > 0 && channel === 'all' && !search && (
         <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#187B65]">Trending questions</h3>
@@ -119,7 +136,14 @@ export default function CommunityFeed({ me, profileName }) {
         </div>
       )}
 
-      <PostComposer me={me} profileName={profileName} />
+      {me
+        ? <PostComposer me={me} profileName={profileName} />
+        : (
+          <div className="rounded-2xl border border-[#187B65]/30 bg-[#f4f7f5] p-4 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs font-semibold text-[#102B2A]">Reading as a guest. Join free to start discussions, reply and vote.</p>
+            <a href="/register?returnTo=/community" className="rounded-full bg-[#187B65] px-4 py-2 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors">Create free profile</a>
+          </div>
+        )}
 
       {posts.isPending && <div className="flex items-center gap-2 py-10 text-sm text-slate-500" role="status"><Loader2 className="w-5 h-5 animate-spin text-[#187B65]" /> Loading discussions…</div>}
       {posts.isError && <p className="flex items-center gap-2 py-8 text-sm text-red-600" role="alert"><TriangleAlert className="w-4 h-4" /> Discussions could not be loaded right now.</p>}
@@ -136,10 +160,10 @@ export default function CommunityFeed({ me, profileName }) {
             post={p}
             replyCount={(replyCounts.data || {})[p.id]}
             helpfulCount={(helpfulCounts.data || {})[p.id]}
-            mineVoted={(myVotes.data || []).some((r) => r.target_id === p.id && r.owner_email === me.email)}
-            onVote={() => vote(p)}
+            mineVoted={(myVotes.data || []).some((r) => r.target_id === p.id && r.owner_email === me?.email)}
+            onVote={me ? () => vote(p) : undefined}
             onOpen={() => setOpenId(p.id)}
-            onReport={() => report(p)}
+            onReport={me ? () => report(p) : undefined}
           />
         ))}
       </div>
