@@ -11,6 +11,7 @@
       "type": "string",
       "enum": [
         "reddit",
+        "recycling_os",
         "public_forum",
         "other"
       ],
@@ -88,6 +89,35 @@
       "default": "unverified",
       "description": "Active request = explicit recent service request. Never label discussion as a customer lead."
     },
+    "job_status": {
+      "type": "string",
+      "enum": [
+        "potential_lead",
+        "verified_request",
+        "available_job",
+        "assigned",
+        "completed"
+      ],
+      "default": "potential_lead",
+      "description": "Live Jobs workflow status. Reddit discussions stay potential leads until the customer confirms a booking through Recycling OS."
+    },
+    "estimated_value": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "Job value shown ONLY when supported by actual information (a stated budget or a confirmed quote). Empty otherwise. Never estimated."
+    },
+    "booking_id": {
+      "type": "string",
+      "default": "",
+      "description": "Recycling OS Booking linked when the customer confirmed a booking through the contractor dispatch system."
+    },
+    "claimed_by_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "Verified partner the job was assigned to, set by the owner."
+    },
     "relevance_score": {
       "type": "number",
       "minimum": 0,
@@ -118,7 +148,8 @@
     "description": {
       "type": "string",
       "default": "",
-      "maxLength": 1000
+      "maxLength": 1000,
+      "description": "AI plain-language summary of the request and recommended next step."
     }
   },
   "required": [

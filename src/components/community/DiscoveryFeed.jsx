@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Loader2, Radar, TriangleAlert, Search, ChevronDown } from 'lucide-react';
 import DiscoveryCard from '@/components/community/DiscoveryCard';
 import DiscoverySearch from '@/components/community/DiscoverySearch';
+import LiveJobsBoard from '@/components/discovery/LiveJobsBoard';
 import { PROVINCES, channelLabel } from '@/lib/communityShared';
 import { SERVICE_CATEGORIES, CLASSIFICATIONS } from '@/lib/discoveryShared';
 import { trackGA } from '@/lib/communityAnalytics';
@@ -12,6 +13,7 @@ import { trackGA } from '@/lib/communityAnalytics';
 // discussions next. Generic AI educational posts never appear here — they live
 // in the Knowledge Library tab. Advanced filters stay in a collapsible panel.
 const FILTERS = [
+  { id: 'jobs', label: 'Live Jobs' },
   { id: 'all', label: 'All' },
   { id: 'requests', label: 'Service Requests' },
   { id: 'discussions', label: 'Discussions' },
@@ -33,7 +35,7 @@ export default function DiscoveryFeed({ me, onGoOpportunities, onGoDiscussions }
 
   const opportunities = useQuery({
     queryKey: ['discoveryOpportunities', province, category, classification, days],
-    enabled: view !== 'discussions',
+    enabled: view === 'all' || view === 'requests',
     queryFn: async () => {
       const q = { status: 'open', source_status: 'available' };
       if (province !== 'all') q.province_code = province;
@@ -46,7 +48,7 @@ export default function DiscoveryFeed({ me, onGoOpportunities, onGoDiscussions }
 
   const discussions = useQuery({
     queryKey: ['discoveryDiscussions', province],
-    enabled: view !== 'requests',
+    enabled: view === 'all' || view === 'discussions',
     queryFn: async () => {
       const q = { status: 'published', ai_generated: { $ne: true } };
       if (province !== 'all') q.province = { $in: [province, 'national'] };
@@ -80,9 +82,10 @@ export default function DiscoveryFeed({ me, onGoOpportunities, onGoDiscussions }
   for (const r of saved.data || []) savedByOpp[r.opportunity_id] = r;
 
   if (searchOpen) return <DiscoverySearch me={me} onExit={() => setSearchOpen(false)} />;
+  if (view === 'jobs') return <LiveJobsBoard me={me} />;
 
-  const loading = (view !== 'discussions' && opportunities.isLoading) || (view !== 'requests' && discussions.isLoading);
-  const error = (view !== 'discussions' && opportunities.isError) || (view !== 'requests' && discussions.isError);
+  const loading = ((view === 'all' || view === 'requests') && opportunities.isLoading) || ((view === 'all' || view === 'discussions') && discussions.isLoading);
+  const error = ((view === 'all' || view === 'requests') && opportunities.isError) || ((view === 'all' || view === 'discussions') && discussions.isError);
   const empty = !loading && !error && visible.opp.length === 0 && visible.disc.length === 0;
 
   return (

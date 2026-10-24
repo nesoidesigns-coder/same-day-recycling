@@ -1,0 +1,107 @@
+{
+  "name": "RedditPostDraft",
+  "type": "object",
+  "properties": {
+    "subreddit": {
+      "type": "string",
+      "maxLength": 21
+    },
+    "post_kind": {
+      "type": "string",
+      "enum": [
+        "contractor_recruitment",
+        "job_announcement",
+        "community_update"
+      ],
+      "default": "job_announcement"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "body": {
+      "type": "string",
+      "maxLength": 6000
+    },
+    "rules_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Summary of the community's rules relevant to this post and whether it appears allowed."
+    },
+    "rules_allowed": {
+      "type": "boolean",
+      "default": true,
+      "description": "False when the community's rules appear to prohibit this kind of post. Blocked drafts can never be published."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "approved",
+        "published",
+        "declined",
+        "blocked"
+      ],
+      "default": "pending_review",
+      "description": "Lifecycle: pending_review \u2192 published (after explicit owner approval) or declined. Blocked drafts are rejected by rules."
+    },
+    "reddit_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500,
+      "description": "Link to the published Reddit post, set only after a successful publish."
+    },
+    "review_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable audit trail: generated, published, declined."
+    }
+  },
+  "required": [
+    "subreddit",
+    "title",
+    "body"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

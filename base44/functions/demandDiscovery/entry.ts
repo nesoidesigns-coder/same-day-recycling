@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { secrets } from 'base44:runtime';
+import { appToken, redditHealth } from '../../shared/reddit.ts';
 
 // National AI demand discovery: retrieves genuinely public posts seeking
 // removal / hauling / recycling services from authorized public sources,
@@ -137,7 +137,8 @@ async function runDiscovery(base44) {
 
   // Official Reddit OAuth when credentials exist; otherwise the public read
   // endpoint is attempted and its failure is reported honestly.
-  const token = await redditToken();
+  const tokenResult = await appToken();
+  const token = tokenResult.token;
   // Source fetch: batches of 6 parallel, bounded, 10s timeout each.
   const batches = [];
   for (let i = 0; i < SUBREDDITS.length; i += 6) batches.push(SUBREDDITS.slice(i, i + 6));
@@ -183,6 +184,8 @@ For EACH post decide:
 - category: one of ${CATEGORIES.join(', ')}.
 - city and province_code: ONLY when clearly stated in the post text; otherwise empty string. province_code must be one of BC, AB, SK, MB, ON, QC, atlantic, northern, or "".
 - score: 0-100 for relevance and service-seeking intent.
+- summary: one short plain-language sentence (max 140 characters) describing what the person needs.
+- next_step: the single most useful next action for a member (max 100 characters). Never recommend contacting the customer for general discussion or unverified posts.
 Never invent details not present in the post.
 Posts (JSON array): ${JSON.stringify(fresh.slice(0, 80).map((p) => ({ id: p.external_id, community: `r/${p.subreddit}`, title: p.title, excerpt: p.excerpt })))}`,
         response_json_schema: {
@@ -200,6 +203,8 @@ Posts (JSON array): ${JSON.stringify(fresh.slice(0, 80).map((p) => ({ id: p.exte
                   city: { type: 'string' },
                   province_code: { type: 'string' },
                   score: { type: 'number' },
+                  summary: { type: 'string' },
+                  next_step: { type: 'string' },
                 },
                 required: ['id', 'relevant'],
               },
@@ -231,6 +236,8 @@ Posts (JSON array): ${JSON.stringify(fresh.slice(0, 80).map((p) => ({ id: p.exte
     city: String(r.city || p.city || '').slice(0, 80),
     classification: VALID_CLASSIFICATIONS.includes(r.classification) ? r.classification : 'general_discussion',
     relevance_score: Math.max(0, Math.min(100, Math.round(Number(r.score) || 0))),
+    job_status: r.classification === 'active_request' ? 'verified_request' : 'potential_lead',
+    description: [String(r.summary || '').slice(0, 140), r.next_step ? `Next: ${String(r.next_step).slice(0, 100)}` : ''].filter(Boolean).join(' · '),
     source_status: 'available',
     last_verified_at: now,
     status: 'open',
@@ -265,29 +272,6 @@ Posts (JSON array): ${JSON.stringify(fresh.slice(0, 80).map((p) => ({ id: p.exte
   });
 }
 
-async function redditToken() {
-  try {
-    const id = secrets.get('REDDIT_CLIENT_ID');
-    const secret = secrets.get('REDDIT_CLIENT_SECRET');
-    if (!id || !secret) return null;
-    const res = await fetch('https://www.reddit.com/api/v1/access_token', {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${btoa(`${id}:${secret}`)}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': UA,
-      },
-      body: 'grant_type=client_credentials',
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.access_token || null;
-  } catch {
-    return null;
-  }
-}
-
 async function fetchSubreddit(s, token) {
   const base = token ? 'https://oauth.reddit.com' : 'https://www.reddit.com';
   const url = `${base}/r/${s.sub}/search.json?q=${encodeURIComponent(SEARCH_QUERY)}&restrict_sr=1&sort=new&t=month&limit=20&raw_json=1`;
@@ -314,9 +298,11 @@ async function fetchSubreddit(s, token) {
 // ---- Owner status snapshot ----
 async function handleStatus(base44) {
   const settings = (await base44.asServiceRole.entities.PublicDiscoverySettings.filter({}, { limit: 1 })).items[0] || null;
+  const health = await redditHealth();
   const runs = (await base44.asServiceRole.entities.DiscoveryRun.filter({}, { sort: '-created_date', limit: 10 })).items || [];
   const total = await base44.asServiceRole.entities.PublicOpportunity.count({ status: 'open' });
   const byClassification = await base44.asServiceRole.entities.PublicOpportunity.aggregate({ query: { status: 'open' }, groupBy: 'classification' });
   const byProvince = await base44.asServiceRole.entities.PublicOpportunity.aggregate({ query: { status: 'open' }, groupBy: 'province_code' });
-  return Response.json({ settings, runs, total, by_classification: byClassification?.rows || [], by_province: byProvince?.rows || [] });
+  const byJobStatus = await base44.asServiceRole.entities.PublicOpportunity.aggregate({ query: { status: 'open' }, groupBy: 'job_status' });
+  return Response.json({ settings, runs, total, health, by_classification: byClassification?.rows || [], by_province: byProvince?.rows || [], by_job_status: byJobStatus?.rows || [] });
 }
