@@ -1,0 +1,317 @@
+{
+  "name": "JobFinancials",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "The completed job (Booking) this financial record belongs to. One record per booking, never duplicated."
+    },
+    "reference_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 12
+    },
+    "job_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "city": {
+      "type": "string",
+      "default": ""
+    },
+    "province_code": {
+      "type": "string",
+      "default": ""
+    },
+    "service_category": {
+      "type": "string",
+      "default": ""
+    },
+    "partner_id": {
+      "type": "string",
+      "default": "",
+      "description": "The contractor assigned to the job."
+    },
+    "partner_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "job_source": {
+      "type": "string",
+      "default": "platform_generated",
+      "description": "platform_generated, contractor_generated, personal_referral, repeat_customer, other_referral."
+    },
+    "original_quote": {
+      "type": "number",
+      "default": 0,
+      "description": "Original customer quote (the estimate captured at booking time)."
+    },
+    "approved_price": {
+      "type": "number",
+      "default": 0,
+      "description": "Final customer-approved price for the original scope."
+    },
+    "additional_revenue": {
+      "type": "number",
+      "default": 0,
+      "description": "Sum of approved change orders (customer additions) on this job, before taxes."
+    },
+    "final_customer_price": {
+      "type": "number",
+      "default": 0,
+      "description": "Approved price plus approved additions. Revenue figures exclude taxes."
+    },
+    "additional_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "number"
+          },
+          "items": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_date": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Each approved customer addition with the job stage it occurred at (initial_quote, after_quote, arrival, loading, before_completion)."
+    },
+    "upsell_stage": {
+      "type": "string",
+      "enum": [
+        "none",
+        "initial_quote",
+        "after_quote",
+        "arrival",
+        "loading",
+        "before_completion"
+      ],
+      "default": "none",
+      "description": "Job stage of the first customer addition."
+    },
+    "load_original": {
+      "type": "string",
+      "default": ""
+    },
+    "load_final": {
+      "type": "string",
+      "default": ""
+    },
+    "load_eighths_original": {
+      "type": "number",
+      "default": 0
+    },
+    "load_eighths_final": {
+      "type": "number",
+      "default": 0
+    },
+    "commission_rate": {
+      "type": "number",
+      "default": 0,
+      "description": "Commission percentage applied. 0 on contractor-owned jobs unless their agreement requires a commission."
+    },
+    "commission_basis": {
+      "type": "string",
+      "enum": [
+        "platform_generated",
+        "contractor_owned",
+        "agreement_terms",
+        "none"
+      ],
+      "default": "platform_generated"
+    },
+    "commission_earned": {
+      "type": "number",
+      "default": 0
+    },
+    "contractor_payout": {
+      "type": "number",
+      "default": 0,
+      "description": "Final price minus commission and refunds."
+    },
+    "refund_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "tax_label": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "Applicable sales tax label (GST/PST/HST by province)."
+    },
+    "taxes_collected": {
+      "type": "number",
+      "default": 0,
+      "description": "Sales tax on the final price, recorded separately and never counted as revenue."
+    },
+    "expenses_disposal": {
+      "type": "number",
+      "default": 0,
+      "description": "Disposal and recycling expenses (landfill tipping, transfer station, recycling fees)."
+    },
+    "expenses_labour": {
+      "type": "number",
+      "default": 0
+    },
+    "expenses_fuel": {
+      "type": "number",
+      "default": 0
+    },
+    "expenses_other": {
+      "type": "number",
+      "default": 0,
+      "description": "Other direct operating expenses."
+    },
+    "expenses_platform": {
+      "type": "number",
+      "default": 0,
+      "description": "Platform-attributable expenses deducted from commission."
+    },
+    "processing_fees": {
+      "type": "number",
+      "default": 0,
+      "description": "Payment processing fees on platform-collected payments (estimate until reconciled)."
+    },
+    "expense_receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "file_uri": {
+            "type": "string"
+          },
+          "added_date": {
+            "type": "string"
+          },
+          "added_by": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Supporting documents (disposal receipts, weighbridge tickets, labour expenses) connected to this job. Stored privately."
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "platform",
+        "external",
+        "none"
+      ],
+      "default": "none"
+    },
+    "payment_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Platform payments are verified when captured; external payments only after owner reconciliation."
+    },
+    "job_status": {
+      "type": "string",
+      "default": "",
+      "description": "Booking status at last sync. Dashboards and profitability totals count completed jobs only."
+    },
+    "expenses_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once real expenses were entered (manually or via receipts). False = contribution profit is not yet verified."
+    },
+    "missing_expense_kinds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Expense categories still unrecorded, so incomplete records are never mistaken for verified profit."
+    },
+    "contractor_profit": {
+      "type": "number",
+      "default": 0,
+      "description": "Operator contribution: payout minus contractor direct expenses."
+    },
+    "platform_profit": {
+      "type": "number",
+      "default": 0,
+      "description": "Platform contribution: commission minus processing fees and platform expenses."
+    },
+    "contribution_margin_pct": {
+      "type": "number",
+      "default": 0,
+      "description": "Contractor contribution as a percentage of the final customer price."
+    },
+    "last_synced_at": {
+      "type": "string",
+      "description": "Timestamp of the last automatic sync from booking, change-order and payment records."
+    },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Auditable history: syncs, quote approvals captured, commission calculations, expense entries, receipt attachments."
+    }
+  },
+  "required": [
+    "booking_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

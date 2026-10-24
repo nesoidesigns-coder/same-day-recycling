@@ -1,0 +1,42 @@
+{
+  "name": "Job Financial Sync",
+  "description": "When a booking is completed (or a completed job's payment/approval details change), syncs its financial ledger record: approved price, additions, commission, payout and profit calculations.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Booking",
+      "events": [
+        "create",
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"completed\" and .trigger.data.record_type != \"internal_test\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "job_financial_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_financials": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "jobFinancials",
+            "args": {
+              "action": "sync",
+              "booking_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sync job financials",
+            "description": "Rebuild the job's financial ledger record"
+          }
+        }
+      }
+    ]
+  }
+}

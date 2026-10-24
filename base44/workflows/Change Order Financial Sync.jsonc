@@ -1,0 +1,42 @@
+{
+  "name": "Change Order Financial Sync",
+  "description": "When a change order is approved (a customer adds items to an existing job), re-syncs that job's financial record so additional revenue, commissions and payouts stay current.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "ChangeOrder",
+      "events": [
+        "create",
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "change_order_financial_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_financials": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "jobFinancials",
+            "args": {
+              "action": "sync",
+              "booking_id": "${ .trigger.data.booking_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sync after approved addition",
+            "description": "Refresh the job's financial ledger"
+          }
+        }
+      }
+    ]
+  }
+}
