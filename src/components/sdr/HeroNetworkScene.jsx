@@ -33,7 +33,7 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
   useEffect(() => { if (!ready) return; if (focus) scene.current?.focusOn(focus.lat, focus.lng); else scene.current?.resetFocus(); }, [focus, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
-    <div className="relative h-64 w-full sm:h-96 lg:h-[32rem] xl:h-[36rem]" data-map-mode={ready ? "3d" : "2d"} onPointerDownCapture={() => setTouched(true)}>
+    <div className="relative h-60 w-full sm:h-72 lg:h-[24rem] xl:h-[26rem]" data-map-mode={ready ? "3d" : "2d"} onPointerDownCapture={() => setTouched(true)}>
       {!ready && <HeroCanadaMap2D nodes={nodes} links={links} focus={focus} selectedKey={selectedKey} onSelect={onSelect} lang={lang} />}
       <div ref={mount} aria-hidden="true" className={ready ? "absolute inset-0" : "invisible absolute inset-0"} />
       {ready && <div aria-hidden="true" className="hero-globe-vignette pointer-events-none absolute inset-0" />}

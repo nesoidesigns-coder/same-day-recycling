@@ -106,14 +106,6 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     undefined,
     () => { /* stylized matte globe stays */ }
   );
-  // Restrained rim glow: a faint fresnel shell reads as cinematic depth.
-  const rimMat = new THREE.ShaderMaterial({
-    transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false,
-    uniforms: { glowColor: { value: new THREE.Color(0x54d9ae) } },
-    vertexShader: "varying vec3 vNormal; varying vec3 vView; void main() { vNormal = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position, 1.0); vView = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }",
-    fragmentShader: "varying vec3 vNormal; varying vec3 vView; uniform vec3 glowColor; void main() { float f = pow(1.0 - abs(dot(vNormal, vView)), 3.5); gl_FragColor = vec4(glowColor, f * 0.3); }",
-  });
-  globeGroup.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.12, 48, 32), rimMat));
   const graticuleMat = new THREE.LineBasicMaterial({ color: 0x3b6a72, transparent: true, opacity: 0.45 });
   const graticulePos = [];
   for (let lat = -60; lat <= 75; lat += 15) {
@@ -145,18 +137,6 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const pickGeo = new THREE.SphereGeometry(mobile ? 0.9 : 0.65, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
   const arcMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.7 });
-  // Restrained node glow: one shared soft additive sprite per city pin.
-  const glowTexture = (() => {
-    const c = document.createElement("canvas"); c.width = c.height = 64;
-    const g = c.getContext("2d");
-    const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-    grad.addColorStop(0, "rgba(84, 217, 174, 0.85)");
-    grad.addColorStop(0.4, "rgba(24, 123, 101, 0.3)");
-    grad.addColorStop(1, "rgba(24, 123, 101, 0)");
-    g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
-    return new THREE.CanvasTexture(c);
-  })();
-  const glowMat = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false });
   let picks = [];
   const nodeMap = new Map();
   let dataCleanup = [];
@@ -172,10 +152,6 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       mesh.position.copy(position);
       dataCleanup.push({ material: mesh.material });
       dataGroup.add(mesh);
-      const glow = new THREE.Sprite(glowMat);
-      glow.position.copy(position);
-      glow.scale.setScalar(0.55);
-      dataGroup.add(glow);
       const pick = new THREE.Mesh(pickGeo, pickMat);
       pick.position.copy(position);
       pick.userData = node;
@@ -218,18 +194,11 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const baseQuat = targetQuaternion(VIEW_LAT, 0);
   world.quaternion.copy(baseQuat);
 
-  // Drag rotation in camera-relative axes, with a pitch clamp so the globe
-  // never flips over. Far-side cities stay unreachable via the ocean occluder.
-  const prevQuat = new THREE.Quaternion();
-  const inverted = new THREE.Quaternion();
-  const facing = new THREE.Vector3();
+  // Drag rotation in camera-relative axes: fully free 360° spin in every
+  // direction. Far-side cities stay unreachable via the ocean occluder.
   const applyDrag = (dxPx, dyPx) => {
-    prevQuat.copy(world.quaternion);
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(dyPx * ROT, dxPx * ROT, 0));
     world.quaternion.premultiply(q);
-    inverted.copy(world.quaternion).invert();
-    facing.copy(camDir).applyQuaternion(inverted);
-    if (facing.y > 0.95 || facing.y < -0.25) world.quaternion.copy(prevQuat);
     dirty = true;
   };
 
@@ -400,7 +369,6 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       el.removeEventListener("pointercancel", endPointer);
       el.removeEventListener("pointerleave", onPointerLeave);
       el.removeEventListener("wheel", onWheel);
-      glowTexture.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); o.material?.dispose?.(); });
       renderer.dispose();
       if (el.parentNode === mount) mount.removeChild(el);
