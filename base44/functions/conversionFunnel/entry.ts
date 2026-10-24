@@ -44,17 +44,19 @@ export default async function(req) {
       .slice(0, 10)
       .map((t) => ({ ref: t.reference_code || t.id, name: t.name, city: t.city, status: t.status }));
 
-    // Traffic classification: owner activity, customers, contractors and bots
-    // are tracked separately — conversions are measured on real traffic only.
+    // Traffic classification via the shared analytics layer: owner activity,
+    // customers, contractors, bots and unclassified historical records are
+    // tracked separately — conversions are measured on human traffic only
+    // (unclassified is never auto-counted as customers).
     const byClass = (rows) => {
       const out = { customer: 0, contractor: 0, owner: 0, bot: 0, unclassified: 0 };
       for (const row of rows || []) {
-        const cls = String(row.traffic_class || 'unclassified');
+        const cls = row.traffic_class == null || row.traffic_class === '' ? 'unclassified' : String(row.traffic_class);
         if (cls in out) out[cls] += row.count || 0;
       }
       return out;
     };
-    const realTraffic = (c) => c.customer + c.contractor + c.unclassified;
+    const realTraffic = (c) => c.customer + c.contractor;
     const classesCur = byClass(visitsCurAgg?.rows);
     const classesPrev = byClass(visitsPrevAgg?.rows);
     const visitsCur = realTraffic(classesCur);

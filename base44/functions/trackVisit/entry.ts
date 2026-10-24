@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
+import { classifySource, GBP_HOSTS } from '../../shared/analytics.ts';
 
 // Traffic classification for Recycling OS:
 //   owner      — the admin's own testing and administration (signed-in admin)
@@ -60,19 +61,10 @@ export default async function(req) {
       }
     }
 
-    const r = referrer.toLowerCase();
-    let source = 'direct';
-    const AI_HOSTS = ['chatgpt.com', 'chat.openai.com', 'perplexity.ai', 'gemini.google.com', 'copilot.microsoft.com', 'claude.ai', 'you.com', 'poe.com', 'chat.mistral.ai', 'labs.perplexity.ai'];
-    if (AI_HOSTS.some((h) => r.includes(h))) {
-      // AI search: visits referred by an AI assistant's cited link.
-      source = 'ai_search';
-    } else if (r.includes('facebook.com') || r.includes('fb.me') || r.includes('instagram.com') || r.includes('l.facebook') || r.includes('l.instagram')) {
-      source = 'facebook';
-    } else if (r.includes('google.') || r.includes('bing.') || r.includes('duckduckgo.') || r.includes('yahoo.')) {
-      source = 'search';
-    } else if (r) {
-      source = 'other';
-    }
+    // Single shared classifier: identical attribution in every dashboard.
+    // An empty referrer stays "direct" (Direct / unknown) — never re-labelled
+    // as search or social without evidence.
+    let source = classifySource(referrer);
 
     // Google Business Profile / Maps traffic: attributed ahead of generic
     // search so the GBP funnel (visit -> inquiry -> quote -> completed job

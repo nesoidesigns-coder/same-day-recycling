@@ -14,7 +14,7 @@ function SourceCard({ icon, label, value, total }) {
         {icon} {label}
       </div>
       <div className="flex items-end gap-2">
-        <span className="text-2xl font-bold text-[#102B2A]">{value.toLocaleString()}</span>
+        <span className="text-2xl font-bold text-[#102B2A] tabular-nums">{Number(value).toLocaleString()}</span>
         <span className="text-xs text-slate-400 mb-1">{pct}%</span>
       </div>
     </div>
@@ -137,7 +137,7 @@ export default function LiveTrackerTab() {
               { label: "Confirmed customers (converted sessions)", value: rec.confirmed_visits || 0, tone: "text-[#102B2A]" },
               { label: "Owner (you)", value: t.owner || 0, tone: "text-slate-500" },
               { label: "Bot", value: t.bot || 0, tone: "text-slate-500" },
-              { label: "Unverified (pre-classification)", value: t.unverified || 0, tone: "text-amber-600" },
+              { label: "Unclassified (historical / uncertain)", value: t.unclassified || 0, tone: "text-amber-600" },
             ];
             return (
               <div>

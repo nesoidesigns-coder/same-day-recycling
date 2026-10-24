@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.53';
+import { byClass, HUMAN_FILTER, SESSION_FILTER } from '../../shared/analytics.ts';
 
 export default async function(req) {
   try {
@@ -21,22 +22,12 @@ export default async function(req) {
       return out;
     };
 
-    const byClass = (rows) => {
-      const out = { customer: 0, contractor: 0, owner: 0, bot: 0, unverified: 0, total: 0 };
-      (rows || []).forEach((row) => {
-        // Records created before classification existed are unverified, not
-        // silently counted as customers.
-        const cls = row.traffic_class == null || row.traffic_class === '' ? 'unverified' : String(row.traffic_class);
-        if (cls in out) out[cls] += row.count || 0;
-        out.total += row.count || 0;
-      });
-      return out;
-    };
+    // Shared classification layer — identical definitions on every dashboard.
+    // Historical records with no class are 'unclassified', never auto-counted
+    // as customers. Real traffic = customer + contractor only.
 
     const dayAgo = new Date(now - 86400000).toISOString();
-    // Real traffic = customer + contractor visits. Owner testing and bot
-    // crawls are tracked but never inflate visitor statistics.
-    const REAL = { traffic_class: { $nin: ['bot', 'owner'] } };
+    const REAL = HUMAN_FILTER;
     const [weekRows, monthRows, bookingsWeek, cityRows, todayRows, pathRows, classesDay, classesWeek, classesMonth] = await Promise.all([
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: weekAgo }, ...REAL }, groupBy: 'source' }),
       base44.asServiceRole.entities.Visit.aggregate({ query: { created_date: { $gte: monthAgo }, ...REAL }, groupBy: 'source' }),
@@ -57,8 +48,8 @@ export default async function(req) {
     const fortnightAgo = new Date(now - 14 * 86400000).toISOString();
     const [classAll, leadSidRows, bookingSidRows] = await Promise.all([
       base44.asServiceRole.entities.Visit.aggregate({ query: {}, groupBy: 'traffic_class' }),
-      base44.asServiceRole.entities.QuoteLead.filter({ sid: { $ne: '' } }, { limit: 500 }),
-      base44.asServiceRole.entities.Booking.filter({ sid: { $ne: '' } }, { limit: 500 }),
+      base44.asServiceRole.entities.QuoteLead.filter(SESSION_FILTER, { limit: 500 }),
+      base44.asServiceRole.entities.Booking.filter(SESSION_FILTER, { limit: 500 }),
     ]);
     const confirmedSids = [...new Set([
       ...(leadSidRows.items || leadSidRows || []).map((r) => r.sid).filter(Boolean),
@@ -69,7 +60,7 @@ export default async function(req) {
       : 0;
     const [dailyGenuine, dailyConfirmed] = await Promise.all([
       base44.asServiceRole.entities.Visit.aggregate({
-        query: { created_date: { $gte: fortnightAgo }, traffic_class: { $nin: ['owner', 'bot'] } },
+        query: { created_date: { $gte: fortnightAgo }, traffic_class: { $in: ['customer', 'contractor'] } },
         dateBucket: { field: 'created_date', unit: 'day' },
       }),
       confirmedSids.length

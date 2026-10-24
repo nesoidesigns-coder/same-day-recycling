@@ -115,6 +115,7 @@ export default function AdminConversion() {
               <ClassCard label="Contractor traffic" value={f.visits.by_class.contractor} note="Partnership & software pages" />
               <ClassCard label="Owner activity" value={f.visits.by_class.owner} note="Your testing & admin" />
               <ClassCard label="Bot traffic" value={f.visits.by_class.bot} note="Crawlers & automated" />
+              <ClassCard label="Unclassified (historical)" value={f.visits.by_class.unclassified} note="Excluded from the funnel" />
             </div>
           )}
 

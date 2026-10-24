@@ -34,6 +34,7 @@ const INTELLIGENCE = [
   { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
   { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
   { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
+  { to: "/admin/bi", label: "Live Business Intelligence", icon: BarChart3, exact: true },
   { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
   { to: "/admin/seo-action", label: "SEO Action Engine", icon: Crosshair },
   { to: "/admin/improvements", label: "Improvement Queue", icon: ListChecks },
