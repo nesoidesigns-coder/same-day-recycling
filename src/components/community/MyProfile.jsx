@@ -23,19 +23,18 @@ export default function MyProfile({ me }) {
   });
 
   useEffect(() => {
-    if (profileQuery.data) {
-      const p = profileQuery.data;
-      setForm({
-        display_name: p.display_name || '',
-        member_type: p.member_type || 'general_member',
-        business_name: p.business_name || '',
-        bio: p.bio || '',
-        city: p.city || '',
-        province_code: p.province_code || 'BC',
-        website: p.website || '',
-      });
-    }
-  }, [profileQuery.data]);
+    if (!profileQuery.isSuccess) return;
+    const p = profileQuery.data;
+    setForm({
+      display_name: p?.display_name || me?.full_name || '',
+      member_type: p?.member_type || 'general_member',
+      business_name: p?.business_name || '',
+      bio: p?.bio || '',
+      city: p?.city || '',
+      province_code: p?.province_code || 'BC',
+      website: p?.website || '',
+    });
+  }, [profileQuery.isSuccess, profileQuery.data, me?.full_name]);
 
   const save = async (e) => {
     e.preventDefault();
@@ -79,7 +78,7 @@ export default function MyProfile({ me }) {
     }
   };
 
-  if (profileQuery.isPending || (profileQuery.data && !form)) {
+  if (!form) {
     return <div className="flex items-center gap-2 py-10 text-sm text-slate-500" role="status"><Loader2 className="w-5 h-5 animate-spin text-[#187B65]" /> Loading your profile…</div>;
   }
 
