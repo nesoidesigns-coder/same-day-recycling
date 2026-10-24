@@ -13,8 +13,9 @@ import HeroMapCityTooltip from "@/components/sdr/HeroMapCityTooltip";
 export default function HeroCanadaBackground({ lang = "en" }) {
   const { nodes, links, coverage, demand } = useHeroNetwork();
   const [region, setRegion] = useState(""), [selected, setSelected] = useState(""), [hover, setHover] = useState(null);
-  const focus = REGIONS.find((r) => r.code === region) || null;
   const node = nodes.find((n) => n.key === selected);
+  // A selected city becomes the map focus, so the globe zooms straight to it.
+  const focus = node ? { lat: node.lat, lng: node.lng } : REGIONS.find((r) => r.code === region) || null;
   useEffect(() => {
     const focusRegion = (event) => { if (REGIONS.some((r) => r.code === event.detail?.province)) setRegion(event.detail.province); };
     window.addEventListener("hero-map:focus", focusRegion);

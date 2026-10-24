@@ -15,6 +15,7 @@ const COPY = {
     contractorRecords: "Verified contractors covering this municipality", publicRecords: "Open public service posts recorded", publicUnavailable: "Public-post counts unavailable.",
     serviceError: "Service breakdown unavailable.", accepting: "accepting dispatch", sameDay: "record same-day capability; no slot is confirmed by these counts.",
     citySource: "Sources: explicit contractor territories and open public posts", notBookings: "Posts are not bookings or search volumes.",
+    demandTitle: "Junk removal demand", topServices: "Open posts by service", noPosts: "No open posts recorded",
   },
   fr: {
     title: "Le réseau vivant du Canada", intro: "Explorez une municipalité. La couverture ne confirme pas une collecte.",
@@ -32,6 +33,7 @@ const COPY = {
     contractorRecords: "Entrepreneurs vérifiés desservant cette municipalité", publicRecords: "Publications publiques de services ouvertes", publicUnavailable: "Nombre de publications indisponible.",
     serviceError: "Répartition des services indisponible.", accepting: "acceptent la répartition", sameDay: "déclarent une capacité le jour même; ces nombres ne confirment aucun créneau.",
     citySource: "Sources : territoires explicites et publications publiques ouvertes", notBookings: "Les publications ne sont ni des réservations ni des volumes de recherche.",
+    demandTitle: "Demande d’enlèvement", topServices: "Publications ouvertes par service", noPosts: "Aucune publication ouverte",
   },
 };
 const FRENCH_REGIONS = { BC: "Colombie-Britannique", AB: "Alberta", SK: "Saskatchewan", MB: "Manitoba", ON: "Ontario", QC: "Québec", NB: "Nouveau-Brunswick", NS: "Nouvelle-Écosse", PE: "Île-du-Prince-Édouard", NL: "Terre-Neuve-et-Labrador", YT: "Yukon", NT: "Territoires du Nord-Ouest", NU: "Nunavut" };
