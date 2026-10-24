@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import GrowthGauge from "@/components/admin/growth/GrowthGauge";
 import NextActions from "@/components/admin/growth/NextActions";
+import DevIntelligence from "@/components/admin/growth/DevIntelligence";
 
 const MODULE_LINKS = [
   { to: "/admin/search-authority", icon: Search, label: "Search Authority" },
@@ -209,6 +210,10 @@ export default function AdminGrowth() {
 
       <div className="mt-5">
         <NextActions actions={actions} loading={loading} />
+      </div>
+
+      <div className="mt-8 border-t border-slate-200 pt-6">
+        <DevIntelligence />
       </div>
 
       <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">

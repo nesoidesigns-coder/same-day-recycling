@@ -1,0 +1,162 @@
+{
+  "name": "PerformanceAudit",
+  "type": "object",
+  "properties": {
+    "test_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the audit actually ran (not when it was recorded)."
+    },
+    "run_label": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80,
+      "description": "Human label for the test run, e.g. 'DebugBear Test 1' or 'PSI mobile live run'."
+    },
+    "test_source": {
+      "type": "string",
+      "enum": [
+        "independent_debugbear",
+        "pagespeed_insights",
+        "admin_imported"
+      ],
+      "default": "admin_imported",
+      "description": "Who ran the test. Independently observed results are never presented as live values."
+    },
+    "tested_url": {
+      "type": "string",
+      "default": "https://samedayrecycling.ca/",
+      "maxLength": 300
+    },
+    "strategy": {
+      "type": "string",
+      "enum": [
+        "mobile",
+        "desktop",
+        "unknown"
+      ],
+      "default": "mobile",
+      "description": "Device the test simulated. Comparisons are only made between same-strategy, same-URL tests."
+    },
+    "observation_type": {
+      "type": "string",
+      "enum": [
+        "independent_observed",
+        "measured_run"
+      ],
+      "default": "independent_observed",
+      "description": "independent_observed = an externally observed audit result entered by hand (historical, not live). measured_run = a test the platform's own authorized tooling completed."
+    },
+    "performance": {
+      "type": "number",
+      "description": "Lighthouse performance score 0-100, if the tool reported it."
+    },
+    "accessibility": {
+      "type": "number",
+      "description": "Lighthouse accessibility score 0-100, if reported."
+    },
+    "seo": {
+      "type": "number",
+      "description": "Lighthouse SEO score 0-100, if reported."
+    },
+    "best_practices": {
+      "type": "number",
+      "description": "Lighthouse best-practices score 0-100, if reported."
+    },
+    "ai_score": {
+      "type": "number",
+      "description": "AI discoverability assessment, if the tool reported one."
+    },
+    "ai_score_max": {
+      "type": "number",
+      "description": "Maximum of the AI assessment scale (e.g. 3 for a /3 score)."
+    },
+    "lcp_seconds": {
+      "type": "number",
+      "description": "Largest Contentful Paint in seconds."
+    },
+    "tbt_ms": {
+      "type": "number",
+      "description": "Total Blocking Time in milliseconds."
+    },
+    "cls": {
+      "type": "number",
+      "description": "Cumulative Layout Shift."
+    },
+    "fcp_seconds": {
+      "type": "number",
+      "description": "First Contentful Paint in seconds."
+    },
+    "speed_index_seconds": {
+      "type": "number",
+      "description": "Speed Index in seconds."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Test context exactly as observed. Never invented."
+    },
+    "deployment_context": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500,
+      "description": "Which build/deployment state the test ran against, when actually known. Never guessed."
+    },
+    "linked_improvement_id": {
+      "type": "string",
+      "default": "",
+      "description": "Improvement record this test verified, when one exists."
+    },
+    "entered_by": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200,
+      "description": "Admin who recorded the audit."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable event log: recorded, compared, analyzed."
+    }
+  },
+  "required": [
+    "test_date"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
