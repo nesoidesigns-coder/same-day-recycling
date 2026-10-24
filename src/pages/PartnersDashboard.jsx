@@ -12,6 +12,8 @@ import LeadOffers from "@/components/partner/LeadOffers";
 import DisputeResponse from "@/components/partner/DisputeResponse";
 import BusinessHQ from "@/components/partner/BusinessHQ";
 import CustodyRecorder from "@/components/partner/CustodyRecorder";
+import EarningsRecords from "@/components/partner/EarningsRecords";
+import EarningsSimulator from "@/components/partner/EarningsSimulator";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -152,6 +154,10 @@ export default function PartnersDashboard() {
         <div className="mb-10"><BusinessHQ /></div>
 
         <Financials />
+
+        <EarningsRecords />
+
+        <EarningsSimulator />
 
         <Performance />
 
