@@ -1,12 +1,10 @@
 import { X, Sparkles } from "lucide-react";
 import HeroMapCityTooltip from "@/components/sdr/HeroMapCityTooltip";
-import { networkCopy } from "@/components/sdr/heroNetworkCopy";
+import { networkCopy, networkRexQuestion } from "@/components/sdr/heroNetworkCopy";
 
 export default function HeroNetworkSelection({ node, onClose, lang = "en" }) {
   const t = networkCopy(lang);
-  const question = lang === "fr"
-    ? `Je m'intéresse à ${node.name}, ${node.city.province}. Réponds en français. Aide-moi à comprendre les services, les estimations et l'approbation des ajouts. Vérifie les données actuelles; cette sélection ne confirme aucune disponibilité ni aucun rendez-vous.`
-    : `I am exploring ${node.name}, ${node.city.province}. Please respond in English and explain services, estimates and additional-item approval. Verify current records; this selection does not confirm availability or an appointment.`;
+  const question = networkRexQuestion(node, lang);
   const useCity = () => {
     window.dispatchEvent(new CustomEvent("pickup:location", { detail: { city: node.name, province: node.city.province } }));
     document.getElementById("book")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });

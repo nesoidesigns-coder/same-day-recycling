@@ -33,9 +33,10 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
   useEffect(() => { if (!ready) return; if (focus) scene.current?.focusOn(focus.lat, focus.lng); else scene.current?.resetFocus(); }, [focus, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
-    <div className="relative h-44 w-full sm:h-72 lg:h-[22rem] xl:h-96" data-map-mode={ready ? "3d" : "2d"} onPointerDownCapture={() => setTouched(true)}>
+    <div className="relative h-56 w-full sm:h-80 lg:h-[26rem] xl:h-[28rem]" data-map-mode={ready ? "3d" : "2d"} onPointerDownCapture={() => setTouched(true)}>
       {!ready && <HeroCanadaMap2D nodes={nodes} links={links} focus={focus} selectedKey={selectedKey} onSelect={onSelect} lang={lang} />}
       <div ref={mount} aria-hidden="true" className={ready ? "absolute inset-0" : "invisible absolute inset-0"} />
+      {ready && <div aria-hidden="true" className="hero-globe-vignette pointer-events-none absolute inset-0" />}
       {ready && (
         <div className="absolute right-2 top-2 z-10 flex flex-col gap-1.5">
           <button onClick={() => scene.current?.zoomBy(0.82)} aria-label={lang === "fr" ? "Zoomer" : "Zoom in"} className="flex h-9 w-9 items-center justify-center rounded-xl border border-market-line bg-market-bg text-market-ink shadow-sm hover:bg-market-surface active:scale-95 transition">

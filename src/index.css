@@ -302,6 +302,11 @@ h1, h2, h3, h4, p, a, span, li, button {
   border: 1px solid rgba(16, 43, 42, 0.08);
 }
 
+/* Cinematic depth vignette over the hero globe canvas */
+.hero-globe-vignette {
+  background: radial-gradient(120% 100% at 50% 42%, transparent 52%, rgba(4, 16, 13, 0.6) 100%);
+}
+
 .glass-dark {
   background: rgba(5, 21, 17, 0.55);
   backdrop-filter: blur(14px);

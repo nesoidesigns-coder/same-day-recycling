@@ -10,7 +10,7 @@ const R = 10;
 const DEG = Math.PI / 180;
 const VIEW_LAT = 58; // latitude framed at screen centre in the default view
 const ROT = 0.0055; // radians of globe rotation per dragged pixel
-const CAM_MIN = 14, CAM_MAX = 36, WORLD_DIST = 31, FOCUS_DIST = 18;
+const CAM_MIN = 14, CAM_MAX = 36, FOCUS_DIST = 18, CANADA_DIST = 20;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
@@ -61,7 +61,13 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const scene = new THREE.Scene();
   const TARGET = new THREE.Vector3(0, 0, 0);
   const camDir = new THREE.Vector3(0, 0, 1);
-  let camDist = WORLD_DIST; // the whole world fits in the panel by default
+  // Canada framed toward the camera by default; distances glide smoothly.
+  let camDist = CANADA_DIST, camTarget = CANADA_DIST;
+  const setCamDist = (d) => {
+    camTarget = Math.min(CAM_MAX, Math.max(CAM_MIN, d));
+    if (reduced) camDist = camTarget;
+    dirty = true;
+  };
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   const updateCamera = () => {
     camera.position.copy(camDir).multiplyScalar(camDist);
@@ -82,6 +88,14 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     new THREE.MeshStandardMaterial({ color: 0x0d2a33, roughness: 0.9, metalness: 0.1 })
   );
   globeGroup.add(ocean);
+  // Restrained rim glow: a faint fresnel shell reads as cinematic depth.
+  const rimMat = new THREE.ShaderMaterial({
+    transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false,
+    uniforms: { glowColor: { value: new THREE.Color(0x54d9ae) } },
+    vertexShader: "varying vec3 vNormal; varying vec3 vView; void main() { vNormal = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position, 1.0); vView = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }",
+    fragmentShader: "varying vec3 vNormal; varying vec3 vView; uniform vec3 glowColor; void main() { float f = pow(1.0 - abs(dot(vNormal, vView)), 3.5); gl_FragColor = vec4(glowColor, f * 0.3); }",
+  });
+  globeGroup.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.12, 48, 32), rimMat));
   const graticuleMat = new THREE.LineBasicMaterial({ color: 0x3b6a72, transparent: true, opacity: 0.45 });
   const graticulePos = [];
   for (let lat = -60; lat <= 75; lat += 15) {
@@ -115,6 +129,18 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const pickGeo = new THREE.SphereGeometry(mobile ? 0.9 : 0.65, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
   const arcMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.7 });
+  // Restrained node glow: one shared soft additive sprite per city pin.
+  const glowTexture = (() => {
+    const c = document.createElement("canvas"); c.width = c.height = 64;
+    const g = c.getContext("2d");
+    const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, "rgba(84, 217, 174, 0.85)");
+    grad.addColorStop(0.4, "rgba(24, 123, 101, 0.3)");
+    grad.addColorStop(1, "rgba(24, 123, 101, 0)");
+    g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  })();
+  const glowMat = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false });
   let picks = [];
   const nodeMap = new Map();
   let dataCleanup = [];
@@ -130,6 +156,10 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       mesh.position.copy(position);
       dataCleanup.push({ material: mesh.material });
       dataGroup.add(mesh);
+      const glow = new THREE.Sprite(glowMat);
+      glow.position.copy(position);
+      glow.scale.setScalar(0.55);
+      dataGroup.add(glow);
       const pick = new THREE.Mesh(pickGeo, pickMat);
       pick.position.copy(position);
       pick.userData = node;
@@ -227,7 +257,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       const [a, b] = [...pointers.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       if (pinchDist > 0 && dist > 0) {
-        camDist = Math.min(CAM_MAX, Math.max(CAM_MIN, camDist * (pinchDist / dist)));
+        setCamDist(camTarget * (pinchDist / dist));
         updateCamera(); dirty = true;
       }
       pinchDist = dist;
@@ -262,7 +292,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const onPointerLeave = () => setHovered(null);
   const onWheel = (e) => {
     e.preventDefault();
-    camDist = Math.min(CAM_MAX, Math.max(CAM_MIN, camDist * (1 + e.deltaY * 0.0012)));
+    setCamDist(camTarget * (1 + e.deltaY * 0.0012));
     updateCamera(); dirty = true;
   };
 
@@ -312,6 +342,12 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     if (reduced && !dirty && !focus.active && !dragging) return;
     lastFrame = performance.now();
     dirty = false;
+    // Smooth cinematic camera glide toward the target distance
+    if (Math.abs(camDist - camTarget) > 0.02) {
+      camDist += (camTarget - camDist) * Math.min(1, dt * 4);
+      updateCamera();
+      dirty = true;
+    }
     if (focus.active && focus.t < 1) {
       focus.t = Math.min(1, focus.t + dt);
       const k = focus.t < 0.5 ? 2 * focus.t * focus.t : 1 - Math.pow(-2 * focus.t + 2, 2) / 2;
@@ -348,6 +384,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       el.removeEventListener("pointercancel", endPointer);
       el.removeEventListener("pointerleave", onPointerLeave);
       el.removeEventListener("wheel", onWheel);
+      glowTexture.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); o.material?.dispose?.(); });
       renderer.dispose();
       if (el.parentNode === mount) mount.removeChild(el);
@@ -365,19 +402,19 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     },
     focusOn: (lat, lng, instant) => {
       dirty = true;
-      camDist = FOCUS_DIST; updateCamera(); // zoom in to the selected region
+      setCamDist(FOCUS_DIST); // glide in to the selected region
       applyFocus(lat, lng, instant);
     },
     resetFocus: () => {
       dirty = true;
-      camDist = WORLD_DIST; updateCamera(); // back to the whole-world view
+      setCamDist(CANADA_DIST); // back to the Canada-forward view
       focus.active = false;
       applyFocus(VIEW_LAT, 0, reduced);
     },
     updateData: (nextNodes, nextLinks) => setData(nextNodes, nextLinks),
     zoomBy: (factor) => {
       dirty = true;
-      camDist = Math.min(CAM_MAX, Math.max(CAM_MIN, camDist * factor));
+      setCamDist(camTarget * factor);
       updateCamera();
     },
   };
