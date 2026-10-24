@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { X, Sparkles, Radio, ShieldCheck, Globe2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
+import HeroCanadaMap2D from "@/components/sdr/HeroCanadaMap2D";
 import { CITIES } from "@/lib/cities";
 
 // Living Canadian network hero background: a lazy-loaded 3D scene fed by
@@ -13,6 +14,16 @@ import { CITIES } from "@/lib/cities";
 // WebGL is unavailable.
 
 const PROVINCE_NAMES = { AB:"Alberta", BC:"British Columbia", MB:"Manitoba", NB:"New Brunswick", NL:"Newfoundland and Labrador", NS:"Nova Scotia", NT:"Northwest Territories", NU:"Nunavut", ON:"Ontario", PE:"Prince Edward Island", QC:"Quebec", SK:"Saskatchewan", YT:"Yukon" };
+
+// Feature check so browsers without WebGL get the 2D map instead of nothing.
+const webglAvailable = () => {
+  try {
+    const c = document.createElement("canvas");
+    return Boolean(c.getContext("webgl") || c.getContext("experimental-webgl"));
+  } catch {
+    return false;
+  }
+};
 
 const LEGEND = [
   { key: "verified", color: "#2fd4a0", label: "Verified coverage" },
@@ -36,6 +47,7 @@ export default function HeroCanadaBackground() {
   const [ready, setReady] = useState(false);
   const [selected, setSelected] = useState(null);
   const [exploring, setExploring] = useState(null); // {province, cities}
+  const [webgl, setWebgl] = useState(true);
 
   const coverage = useCoverageStatus();
   const demandQ = useQuery({
@@ -108,9 +120,10 @@ export default function HeroCanadaBackground() {
   useEffect(() => {
     let disposed = false;
     let instance = null;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const start = async () => {
-      if (disposed || instance || !mountRef.current || !nodes.length) return;
+      if (disposed || instance || !mountRef.current) return;
+      // WebGL fallback: a browser without WebGL gets the static 2D Canada map
+      if (!webglAvailable()) { setReady(true); setWebgl(false); return; }
       const mod = await import("./HeroCanadaMap3D");
       if (disposed) return;
       const mountFn = mod.mountHeroCanadaScene || mod.default;
@@ -162,16 +175,16 @@ export default function HeroCanadaBackground() {
 
   return (
     <div className="absolute inset-0" aria-hidden={false}>
-      {/* 3D canvas layer */}
-      <div ref={mountRef} className="absolute inset-0 opacity-80" />
+      {/* Canada map: WebGL 3D scene, or the 2D map when WebGL is unavailable */}
+      {webgl ? <div ref={mountRef} className="absolute inset-0" /> : <HeroCanadaMap2D nodes={nodes} onSelect={setSelected} />}
 
-      {/* Readability gradients — keep the booking form the visual priority */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#102B2A]/60 via-transparent to-[#102B2A]/70" />
+      {/* Readability gradients — light enough to keep Canada clearly visible */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#102B2A]/35 via-[#102B2A]/5 to-[#102B2A]/45" />
 
       {/* Legend */}
-      <div className="absolute left-3 top-3 hidden max-w-[240px] flex-col gap-1 rounded-2xl glass-dark px-3 py-2.5 md:flex">
+      <div className="absolute left-3 top-3 hidden max-w-[240px] flex-col gap-1 rounded-2xl border border-[#187B65]/40 bg-[#0a2e25]/90 backdrop-blur-sm px-3 py-2.5 md:flex">
         {LEGEND.map((l) => (
-          <span key={l.key} className="flex items-center gap-2 text-[10px] font-semibold text-emerald-50/85">
+          <span key={l.key} className="flex items-center gap-2 text-[10px] font-semibold text-emerald-50">
             <span className="h-2 w-2 rounded-full" style={{ background: l.color, boxShadow: `0 0 6px ${l.color}` }} />
             {l.label}
           </span>
@@ -180,41 +193,41 @@ export default function HeroCanadaBackground() {
 
       {/* Floating intelligence readings — compact, sourced, desktop only */}
       <div className="pointer-events-none absolute right-3 top-3 hidden flex-col gap-2 md:flex">
-        <div className="pointer-events-auto w-52 rounded-2xl glass-dark px-3.5 py-2.5">
+        <div className="pointer-events-auto w-52 rounded-2xl border border-[#187B65]/40 bg-[#0a2e25]/90 backdrop-blur-sm px-3.5 py-2.5">
           <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#54D9AE]"><ShieldCheck className="h-3 w-3" />Verified network</p>
-          <p className="mt-0.5 text-lg font-extrabold leading-none text-white">{readingCoverage ?? "—"} <span className="text-[10px] font-semibold text-emerald-50/60">cities live</span></p>
-          {readingContractors ? <p className="mt-0.5 text-[10px] text-emerald-50/60">{readingContractors} verified contractor{readingContractors === 1 ? "" : "s"} · live coverage snapshot</p> : null}
+          <p className="mt-0.5 text-lg font-extrabold leading-none text-white">{readingCoverage ?? "—"} <span className="text-[10px] font-semibold text-emerald-50/85">cities live</span></p>
+          {readingContractors ? <p className="mt-0.5 text-[10px] text-emerald-50/85">{readingContractors} verified contractor{readingContractors === 1 ? "" : "s"} · live coverage snapshot</p> : null}
         </div>
-        <div className="pointer-events-auto w-52 rounded-2xl glass-dark px-3.5 py-2.5">
+        <div className="pointer-events-auto w-52 rounded-2xl border border-[#187B65]/40 bg-[#0a2e25]/90 backdrop-blur-sm px-3.5 py-2.5">
           <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#22d3ee]"><Radio className="h-3 w-3" />Live public requests</p>
-          <p className="mt-0.5 text-lg font-extrabold leading-none text-white">{readingDemand ?? "—"} <span className="text-[10px] font-semibold text-emerald-50/60">open</span></p>
-          <p className="mt-0.5 text-[10px] text-emerald-50/60">Verified discovery feed · anonymized</p>
+          <p className="mt-0.5 text-lg font-extrabold leading-none text-white">{readingDemand ?? "—"} <span className="text-[10px] font-semibold text-emerald-50/85">open</span></p>
+          <p className="mt-0.5 text-[10px] text-emerald-50/85">Verified discovery feed · anonymized</p>
         </div>
       </div>
 
       {/* Region focus chip (postal-code interaction) */}
       {exploring && (
-        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-2 rounded-full glass-dark px-3.5 py-2 text-[11px] font-bold text-white">
+        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-2 rounded-full border border-[#187B65]/40 bg-[#0a2e25]/90 backdrop-blur-sm px-3.5 py-2 text-[11px] font-bold text-white">
           <Globe2 className="h-3.5 w-3.5 text-[#54D9AE]" />
           Exploring {PROVINCE_NAMES[exploring.province] || exploring.province} · {exploring.cities} network {exploring.cities === 1 ? "city" : "cities"}
-          <button onClick={() => setExploring(null)} aria-label="Dismiss" className="text-emerald-50/60 hover:text-white"><X className="h-3.5 w-3.5" /></button>
+          <button onClick={() => setExploring(null)} aria-label="Dismiss" className="text-emerald-50/85 hover:text-white"><X className="h-3.5 w-3.5" /></button>
         </div>
       )}
 
       {/* Selected-node intelligence panel */}
       {sel && (
-        <div className="absolute inset-x-3 bottom-3 z-20 rounded-2xl glass-dark p-4 md:inset-x-auto md:right-3 md:top-16 md:bottom-auto md:w-72" role="dialog" aria-label={`${sel.name} network details`}>
+        <div className="absolute inset-x-3 bottom-3 z-20 rounded-2xl border border-[#187B65]/40 bg-[#0a2e25]/90 backdrop-blur-sm p-4 md:inset-x-auto md:right-3 md:top-16 md:bottom-auto md:w-72" role="dialog" aria-label={`${sel.name} network details`}>
           <div className="flex items-start justify-between gap-2">
             <div>
               <p className="text-sm font-extrabold text-white">{sel.name}</p>
               <p className="text-[11px] font-semibold" style={{ color: LEGEND.find((l) => l.key === sel.layer)?.color }}>
                 {STATUS_META[sel.layer]?.label}
               </p>
-              {sel.contractors ? <p className="mt-0.5 text-[11px] text-emerald-50/70">{sel.contractors} verified contractor{sel.contractors === 1 ? "" : "s"}</p> : null}
+              {sel.contractors ? <p className="mt-0.5 text-[11px] text-emerald-50/85">{sel.contractors} verified contractor{sel.contractors === 1 ? "" : "s"}</p> : null}
             </div>
-            <button onClick={() => { setSelected(null); sceneRef.current?.highlight(null); }} aria-label="Close" className="text-emerald-50/60 hover:text-white"><X className="h-4 w-4" /></button>
+            <button onClick={() => { setSelected(null); sceneRef.current?.highlight(null); }} aria-label="Close" className="text-emerald-50/85 hover:text-white"><X className="h-4 w-4" /></button>
           </div>
-          <p className="mt-2 text-[11px] leading-relaxed text-emerald-50/70">{STATUS_META[sel.layer]?.note}</p>
+          <p className="mt-2 text-[11px] leading-relaxed text-emerald-50/85">{STATUS_META[sel.layer]?.note}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link to={selPath} onClick={() => base44.analytics.track({ eventName: "hero_map_book_click", properties: { city: sel.name } })}
               className="rounded-full bg-[#187B65] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#125C4E]">
@@ -234,7 +247,7 @@ export default function HeroCanadaBackground() {
       {ready && (
         <div className="absolute left-3 bottom-3 flex flex-wrap gap-1.5 md:hidden">
           {LEGEND.slice(0, 4).map((l) => (
-            <span key={l.key} className="inline-flex items-center gap-1 rounded-full glass-dark px-2 py-1 text-[9px] font-semibold text-emerald-50/85">
+            <span key={l.key} className="inline-flex items-center gap-1 rounded-full border border-[#187B65]/40 bg-[#0a2e25]/90 backdrop-blur-sm px-2 py-1 text-[9px] font-semibold text-emerald-50">
               <span className="h-1.5 w-1.5 rounded-full" style={{ background: l.color }} />{l.label}
             </span>
           ))}

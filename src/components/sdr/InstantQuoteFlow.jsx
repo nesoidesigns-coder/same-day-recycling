@@ -215,7 +215,7 @@ export default function InstantQuoteFlow() {
     <section id="book" className="relative overflow-hidden bg-[#102B2A] text-white">
       {/* Living Canadian network — 3D background, fully independent of the booking flow */}
       <HeroCanadaBackground />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#102B2A]/85 via-[#102B2A]/45 to-[#102B2A]/85" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#102B2A]/65 via-[#102B2A]/15 to-[#102B2A]/65" />
       <div className="relative z-10 max-w-3xl mx-auto px-4 py-7 md:py-16">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="text-xs font-bold tracking-[0.2em] text-[#54D9AE] uppercase">{t.tag}</div>
