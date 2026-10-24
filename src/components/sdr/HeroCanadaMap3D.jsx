@@ -28,7 +28,7 @@ const glowTexture = (() => {
 // Hero 3D scene: dimensional Canada landmass, layer-coloured nodes, regional
 // connection arcs, camera focus animation. Pure rendering + picking — all
 // data and UI chrome live in the wrapper component.
-export default function mountHeroCanadaScene(mount, { nodes = [], links = [], focusRef, onSelect, mobile = false }) {
+export default function mountHeroCanadaScene(mount, { nodes = [], links = [], focusRef, onSelect, onHover, mobile = false }) {
   if (!mount || !glowTexture) return null;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -153,6 +153,26 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
   renderer.domElement.addEventListener("pointerup", onPointer);
   renderer.domElement.style.touchAction = "pan-y";
 
+  // Hover feedback: the node under the pointer grows and reports itself so the
+  // wrapper can show that region's demand + availability tooltip.
+  let hovered = null;
+  const setHovered = (node) => {
+    if (hovered === node) return;
+    if (hovered) nodeMap.get(hovered.key)?.mesh.scale.setScalar(1);
+    hovered = node;
+    if (hovered) {
+      nodeMap.get(hovered.key)?.mesh.scale.setScalar(1.35);
+      renderer.domElement.style.cursor = "pointer";
+    } else {
+      renderer.domElement.style.cursor = "";
+    }
+    onHover?.(hovered);
+  };
+  const onPointerMove = (e) => setHovered(pickAt(e.clientX, e.clientY));
+  const onPointerLeave = () => setHovered(null);
+  renderer.domElement.addEventListener("pointermove", onPointerMove);
+  renderer.domElement.addEventListener("pointerleave", onPointerLeave);
+
   const resize = () => {
     const w = mount.clientWidth || 1, h = mount.clientHeight || 420;
     renderer.setSize(w, h);
@@ -219,6 +239,8 @@ export default function mountHeroCanadaScene(mount, { nodes = [], links = [], fo
       cancelAnimationFrame(raf);
       ro.disconnect();
       renderer.domElement.removeEventListener("pointerup", onPointer);
+      renderer.domElement.removeEventListener("pointermove", onPointerMove);
+      renderer.domElement.removeEventListener("pointerleave", onPointerLeave);
       scene.traverse((o) => { o.geometry?.dispose?.(); o.material?.dispose?.(); });
       renderer.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);

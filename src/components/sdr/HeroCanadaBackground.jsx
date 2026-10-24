@@ -5,6 +5,7 @@ import { X, Sparkles, Radio, ShieldCheck, Globe2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import HeroCanadaMap2D from "@/components/sdr/HeroCanadaMap2D";
+import HeroMapCityTooltip, { CityDemandStats } from "@/components/sdr/HeroMapCityTooltip";
 import { CITIES } from "@/lib/cities";
 
 // Living Canadian network hero background: a lazy-loaded 3D scene fed by
@@ -48,6 +49,8 @@ export default function HeroCanadaBackground() {
   const [selected, setSelected] = useState(null);
   const [exploring, setExploring] = useState(null); // {province, cities}
   const [webgl, setWebgl] = useState(true);
+  const [hover, setHover] = useState(null); // node under the pointer (3D hover)
+  const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
 
   const coverage = useCoverageStatus();
   const demandQ = useQuery({
@@ -71,9 +74,17 @@ export default function HeroCanadaBackground() {
   const { nodes, links, cityIndex } = useMemo(() => {
     const byName = new Map(CITIES.filter((c) => c.lat).map((c) => [c.name.toLowerCase(), c]));
     const demandCities = new Map();
+    const demandStats = new Map(); // per-city demand: open count, active count, service mix
     (demandQ.data || []).forEach((o) => {
       const c = byName.get(String(o.city || "").toLowerCase());
-      if (c) demandCities.set(c.name, (demandCities.get(c.name) || 0) + 1);
+      if (!c) return;
+      demandCities.set(c.name, (demandCities.get(c.name) || 0) + 1);
+      const s = demandStats.get(c.name) || { open: 0, active: 0, services: {} };
+      s.open += 1;
+      if (o.classification === "active_request") s.active += 1;
+      const cat = o.service_category || "other";
+      s.services[cat] = (s.services[cat] || 0) + 1;
+      demandStats.set(c.name, s);
     });
     const aiText = aiQ.data && aiQ.data.is_sample !== true
       ? `${aiQ.data.summary || ""} ${typeof aiQ.data.analysis === "object" ? JSON.stringify(aiQ.data.analysis) : aiQ.data.analysis || ""}`.toLowerCase()
@@ -93,7 +104,7 @@ export default function HeroCanadaBackground() {
       if (!c.lat) return;
       const layer = layerFor(c.name);
       if (!layer) return;
-      const node = { key: c.name, name: c.name, lat: c.lat, lng: c.lng, layer, city: c, contractors: coverage.contractorCounts?.[c.name] };
+      const node = { key: c.name, name: c.name, lat: c.lat, lng: c.lng, layer, city: c, contractors: coverage.contractorCounts?.[c.name], stats: demandStats.get(c.name) || { open: 0, active: 0, services: {} } };
       ns.push(node);
       idx.set(c.name, node);
     });
@@ -130,6 +141,7 @@ export default function HeroCanadaBackground() {
       if (typeof mountFn !== "function") return; // scene module failed to load — page stays fully usable
       instance = mountFn(mountRef.current, {
         nodes, links, focusRef, mobile: window.innerWidth < 640,
+        onHover: (node) => setHover(node),
         onSelect: (node) => {
           setSelected(node);
           instance?.highlight(node.key);
@@ -176,7 +188,27 @@ export default function HeroCanadaBackground() {
   return (
     <div className="absolute inset-0" aria-hidden={false}>
       {/* Canada map: WebGL 3D scene, or the 2D map when WebGL is unavailable */}
-      {webgl ? <div ref={mountRef} className="absolute inset-0" /> : <HeroCanadaMap2D nodes={nodes} onSelect={setSelected} />}
+      {webgl ? (
+        <div
+          ref={mountRef}
+          className="absolute inset-0"
+          onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setHoverPos({ x: e.clientX - r.left, y: e.clientY - r.top }); }}
+          onPointerLeave={() => setHover(null)}
+        />
+      ) : <HeroCanadaMap2D nodes={nodes} onSelect={setSelected} />}
+
+      {/* Hover tooltip — per-city demand stats + service availability (desktop) */}
+      {webgl && hover && !sel && (() => {
+        const cw = mountRef.current?.clientWidth || 600;
+        const pos = hoverPos.x > cw - 270
+          ? { right: Math.max(8, cw - hoverPos.x - 8), top: Math.max(4, hoverPos.y - 10) }
+          : { left: Math.min(hoverPos.x + 12, Math.max(8, cw - 260)), top: Math.max(4, hoverPos.y - 10) };
+        return (
+          <div className="pointer-events-none absolute z-30 hidden md:block" style={pos}>
+            <HeroMapCityTooltip node={hover} availability={coverage.statusFor(hover.name)} />
+          </div>
+        );
+      })()}
 
       {/* Readability gradients — light enough to keep Canada clearly visible */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#102B2A]/35 via-[#102B2A]/5 to-[#102B2A]/45" />
@@ -228,6 +260,7 @@ export default function HeroCanadaBackground() {
             <button onClick={() => { setSelected(null); sceneRef.current?.highlight(null); }} aria-label="Close" className="text-emerald-50/85 hover:text-white"><X className="h-4 w-4" /></button>
           </div>
           <p className="mt-2 text-[11px] leading-relaxed text-emerald-50/85">{STATUS_META[sel.layer]?.note}</p>
+          <CityDemandStats node={sel} availability={coverage.statusFor(sel.name)} />
           <div className="mt-3 flex flex-wrap gap-2">
             <Link to={selPath} onClick={() => base44.analytics.track({ eventName: "hero_map_book_click", properties: { city: sel.name } })}
               className="rounded-full bg-[#187B65] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#125C4E]">
