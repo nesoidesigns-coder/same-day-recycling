@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { LAYER_COLORS } from "@/lib/canadaOutline";
 import { WORLD_OUTLINES } from "@/lib/worldOutline";
 
 // Google-Earth-style globe of Canada. Pure rendering, picking and gestures;
@@ -9,7 +10,7 @@ const R = 10;
 const DEG = Math.PI / 180;
 const VIEW_LAT = 58, VIEW_LNG = -96;
 const ROT = 0.0055;
-const CAM_MIN = 14, FOCUS_DIST = 18;
+const CAM_MIN = 11.5, FOCUS_DIST = 13;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
@@ -121,20 +122,29 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   globeGroup.add(dataGroup);
   const pickGeo = new THREE.SphereGeometry(mobile ? 0.9 : 0.65, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
-  let picks = [];
+  const nodeGeo = new THREE.SphereGeometry(0.085, 10, 10);
+  let picks = [], dataCleanup = [];
   const nodeMap = new Map();
   const setData = (nextNodes = []) => {
     dataGroup.clear();
+    dataCleanup.forEach(({ material }) => material?.dispose?.());
+    dataCleanup = [];
     picks = [];
     nodeMap.clear();
     nextNodes.forEach((node) => {
       const position = spherePoint(node.lat, node.lng, R * 1.015);
+      // Minimalist solid city dot — flat colour, no glow — so municipalities
+      // stay readable at every zoom level.
+      const mesh = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({ color: LAYER_COLORS[node.layer] || 0x2fd4a0 }));
+      mesh.position.copy(position);
+      dataGroup.add(mesh);
+      dataCleanup.push({ material: mesh.material });
       const pick = new THREE.Mesh(pickGeo, pickMat);
       pick.position.copy(position);
       pick.userData = node;
       dataGroup.add(pick);
       picks.push(pick);
-      nodeMap.set(node.key, { position, node });
+      nodeMap.set(node.key, { mesh, position, node });
     });
     dirty = true;
   };
@@ -177,8 +187,10 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const setHovered = (node) => {
     if (hovered === node) return;
     dirty = true;
+    nodeMap.get(hovered?.key)?.mesh.scale.setScalar(1);
     hovered = node;
     if (hovered) {
+      nodeMap.get(hovered.key)?.mesh.scale.setScalar(1.35);
       if (!dragging) renderer.domElement.style.cursor = "pointer";
     } else if (!dragging) {
       renderer.domElement.style.cursor = "grab";
