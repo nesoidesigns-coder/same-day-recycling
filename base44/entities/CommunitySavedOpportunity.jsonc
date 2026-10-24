@@ -1,0 +1,58 @@
+{
+  "name": "CommunitySavedOpportunity",
+  "type": "object",
+  "properties": {
+    "opportunity_id": {
+      "type": "string",
+      "description": "The saved PublicOpportunity record."
+    },
+    "owner_email": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The member who saved this opportunity. Set at creation."
+    },
+    "tracking_status": {
+      "type": "string",
+      "enum": [
+        "saved",
+        "reviewed",
+        "irrelevant",
+        "follow_up"
+      ],
+      "default": "saved",
+      "description": "The member's own workflow status. Outreach remains the member's responsibility under source-platform rules and Canadian anti-spam law."
+    },
+    "business_notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Private business notes, visible only to the member who saved the opportunity."
+    }
+  },
+  "required": [
+    "opportunity_id"
+  ],
+  "rls": {
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

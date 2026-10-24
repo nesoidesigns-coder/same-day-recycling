@@ -1,0 +1,53 @@
+{
+  "name": "PublicDiscoverySettings",
+  "type": "object",
+  "properties": {
+    "paused": {
+      "type": "boolean",
+      "default": false,
+      "description": "Owner kill-switch: stops all public discovery runs."
+    },
+    "reddit_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Public Reddit city-subreddit search via the official read endpoint. Low volume, brief excerpts with links only."
+    },
+    "max_posts_per_run": {
+      "type": "number",
+      "default": 120,
+      "description": "Cap on posts fetched per run. Keeps source load polite and bounded."
+    },
+    "last_run_at": {
+      "type": "string",
+      "description": "Timestamp of the last completed discovery run."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

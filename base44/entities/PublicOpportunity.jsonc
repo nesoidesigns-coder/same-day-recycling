@@ -1,0 +1,148 @@
+{
+  "name": "PublicOpportunity",
+  "type": "object",
+  "properties": {
+    "external_id": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "Stable id of the original public post at its source. Used for deduplication. Never invented."
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "reddit",
+        "public_forum",
+        "other"
+      ],
+      "default": "reddit"
+    },
+    "source_label": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "Human-readable source attribution, e.g. 'r/vancouver \u00b7 Reddit public post'."
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500,
+      "description": "Direct link to the original public post."
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Original post title. Shown verbatim with attribution."
+    },
+    "excerpt": {
+      "type": "string",
+      "default": "",
+      "maxLength": 600,
+      "description": "Brief permitted excerpt of the original post. Never a full republication."
+    },
+    "posted_at": {
+      "type": "string",
+      "description": "Original publication date from the source, never substituted."
+    },
+    "service_category": {
+      "type": "string",
+      "enum": [
+        "junk_removal",
+        "furniture_removal",
+        "appliance_removal",
+        "electronics",
+        "recycling",
+        "waste_disposal",
+        "estate_cleanout",
+        "construction_debris",
+        "demolition_cleanup",
+        "mattress_disposal",
+        "yard_waste_removal",
+        "commercial_waste",
+        "hot_tub_removal",
+        "scrap_metal",
+        "bin_rentals",
+        "same_day_pickup",
+        "other"
+      ],
+      "default": "other"
+    },
+    "province_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 10
+    },
+    "city": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80,
+      "description": "Only when publicly evident from the post or its source community."
+    },
+    "classification": {
+      "type": "string",
+      "enum": [
+        "active_request",
+        "potential_opportunity",
+        "general_discussion",
+        "unverified"
+      ],
+      "default": "unverified",
+      "description": "Active request = explicit recent service request. Never label discussion as a customer lead."
+    },
+    "relevance_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0
+    },
+    "source_status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "unavailable"
+      ],
+      "default": "available",
+      "description": "Whether the original post is still publicly reachable."
+    },
+    "last_verified_at": {
+      "type": "string",
+      "description": "Timestamp of the last verification of the original post."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "archived"
+      ],
+      "default": "open"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "external_id",
+    "source",
+    "source_url",
+    "title"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

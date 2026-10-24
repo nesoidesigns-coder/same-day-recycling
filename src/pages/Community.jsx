@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useSEO } from '@/lib/seo';
-import TopBar from '@/components/sdr/TopBar';
 import Navbar from '@/components/sdr/Navbar';
 import Footer from '@/components/sdr/Footer';
 import { Megaphone, UserPlus, LogIn, Sparkles, Recycle } from 'lucide-react';
@@ -12,12 +11,14 @@ import SuggestedQuestions from '@/components/community/SuggestedQuestions';
 import LocalOpportunitiesStrip from '@/components/community/LocalOpportunitiesStrip';
 import OpportunityBoard from '@/components/community/OpportunityBoard';
 import MemberDirectory from '@/components/community/MemberDirectory';
+import DiscoveryFeed from '@/components/community/DiscoveryFeed';
 import LibraryTab from '@/components/community/LibraryTab';
 import MyProfile from '@/components/community/MyProfile';
 import AiAssistant from '@/components/community/AiAssistant';
 
 const TABS = [
-  { id: 'feed', label: 'Feed' },
+  { id: 'discover', label: 'Discover' },
+  { id: 'feed', label: 'Discussions' },
   { id: 'opportunities', label: 'Opportunity Board' },
   { id: 'directory', label: 'Members' },
   { id: 'library', label: 'Knowledge Library' },
@@ -36,13 +37,13 @@ const GUIDELINES = [
 export default function Community() {
   useSEO({
     title: 'Recycling OS Community | Same Day Recycling',
-    description: "Canada's free professional community for junk removal operators, recycling businesses and contractors: practical AI-published knowledge, real discussions, an opportunity board and member networking.",
+    description: "Canada's free service opportunity network: AI discovery of real, verified public service requests across Canada, plus member discussions, an opportunity board and knowledge for contractors, businesses and residents.",
     path: '/community',
   });
 
   const [me, setMe] = useState(null);
   const [checked, setChecked] = useState(false);
-  const [tab, setTab] = useState('feed');
+  const [tab, setTab] = useState('discover');
   const [aiOpen, setAiOpen] = useState(false);
 
   useEffect(() => {
@@ -85,7 +86,6 @@ export default function Community() {
 
   return (
     <div className="bg-white min-h-screen">
-      <TopBar />
       <Navbar />
 
       {/* Compact branded header: content starts one screen-fraction down */}
@@ -98,7 +98,7 @@ export default function Community() {
               </span>
               <div className="min-w-0">
                 <h1 className="text-lg font-bold text-[#102B2A] leading-tight">Recycling OS Community</h1>
-                <p className="text-[11px] text-slate-500 leading-snug">Practical knowledge & real conversations for Canada's recycling and removal pros</p>
+                <p className="text-[11px] text-slate-500 leading-snug">Canada's free national network for discovering real service requests — and real conversations</p>
               </div>
             </div>
             {guest ? (
@@ -136,6 +136,7 @@ export default function Community() {
           ))}
         </div>
 
+        {tab === 'discover' && <DiscoveryFeed me={me} onGoOpportunities={() => setTab('opportunities')} onGoDiscussions={() => setTab('feed')} />}
         {tab === 'feed' && (
           <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
             <CommunityFeed me={me} profileName={null} onGoOpportunities={() => setTab('opportunities')} />
@@ -170,16 +171,6 @@ export default function Community() {
         </details>
       </div>
 
-      {!guest && (
-        <button
-          onClick={() => setAiOpen(true)}
-          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#187B65] px-4 py-3 text-sm font-bold text-white shadow-lg hover:bg-[#125C4E] transition-colors"
-          aria-label="Open AI community assistant"
-        >
-          <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Ask the AI</span>
-        </button>
-      )}
-      <div className="h-16 lg:hidden" aria-hidden="true" />
       <AiAssistant open={aiOpen} onClose={() => setAiOpen(false)} />
       <Footer />
     </div>

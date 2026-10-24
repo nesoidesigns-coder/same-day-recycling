@@ -6,7 +6,7 @@ import {
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
   Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles, BrainCircuit,
-  Target, FileSearch, ListChecks, UsersRound,
+  Target, FileSearch, ListChecks, UsersRound, Radar,
 } from "lucide-react";
 
 const OPS = [
@@ -35,6 +35,7 @@ const INTELLIGENCE = [
   { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
   { to: "/admin/improvements", label: "Improvement Queue", icon: ListChecks },
   { to: "/admin/community", label: "Community", icon: UsersRound },
+  { to: "/admin/discovery", label: "Opportunity Discovery", icon: Radar },
   { to: "/admin/ads", label: "Community Ads", icon: Megaphone },
   { to: "/admin/demand", label: "Market Intelligence", icon: Globe2 },
   { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },

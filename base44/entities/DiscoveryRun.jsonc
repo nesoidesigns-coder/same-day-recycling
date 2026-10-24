@@ -1,0 +1,93 @@
+{
+  "name": "DiscoveryRun",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "default": "reddit"
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "partial",
+        "failed",
+        "unavailable",
+        "skipped"
+      ],
+      "default": "success",
+      "description": "unavailable = the source could not be reached; never invents results."
+    },
+    "started_at": {
+      "type": "string",
+      "default": ""
+    },
+    "finished_at": {
+      "type": "string",
+      "default": ""
+    },
+    "queries_run": {
+      "type": "number",
+      "default": 0
+    },
+    "posts_fetched": {
+      "type": "number",
+      "default": 0,
+      "description": "Public posts actually retrieved from the source."
+    },
+    "duplicates_skipped": {
+      "type": "number",
+      "default": 0
+    },
+    "irrelevant_filtered": {
+      "type": "number",
+      "default": 0
+    },
+    "opportunities_saved": {
+      "type": "number",
+      "default": 0
+    },
+    "error": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

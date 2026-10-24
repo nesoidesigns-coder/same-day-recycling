@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 7 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Daily public-source discovery run: retrieves public service-request posts from authorized sources, classifies them, deduplicates, and stores verified opportunities for the community feed.",
+  "name": "National Opportunity Discovery",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "national_opportunity_discovery",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_discovery": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "demandDiscovery",
+            "args": {
+              "action": "run"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run national discovery",
+            "description": "Fetch, classify and store verified public service requests"
+          }
+        }
+      }
+    ]
+  }
+}
