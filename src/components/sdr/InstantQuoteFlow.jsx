@@ -8,6 +8,7 @@ import {
   normalizePostal, isValidPostal, provinceFromFsa, territoryNeeded, provinceName,
 } from "@/lib/geo";
 import { TAX_RATES } from "@/lib/canadaTax";
+import HeroCanadaBackground from "@/components/sdr/HeroCanadaBackground";
 
 // Canada-first guided booking experience: postal code → materials → labeled
 // estimate → pickup request. Bilingual (EN/FR), CAD, province-level tax shown
@@ -153,6 +154,14 @@ export default function InstantQuoteFlow() {
     setFsa(norm);
     if (territoryNeeded(norm)) setTerritory("");
     setStep(1);
+    // Geographic focus on the hero map — booking itself never waits on it.
+    try {
+      const province = provinceFromFsa(norm) || territory || null;
+      if (province) {
+        window.dispatchEvent(new CustomEvent("hero-map:focus", { detail: { postal: postalRaw, province } }));
+        base44.analytics.track({ eventName: "hero_map_postal_focus", properties: { province } });
+      }
+    } catch { /* the map must never block the booking flow */ }
   };
 
   const getEstimate = async () => {
@@ -203,8 +212,11 @@ export default function InstantQuoteFlow() {
   const tax = TAX_RATES[province] || null;
 
   return (
-    <section id="book" className="bg-[#102B2A] text-white">
-      <div className="max-w-3xl mx-auto px-4 py-7 md:py-16">
+    <section id="book" className="relative overflow-hidden bg-[#102B2A] text-white">
+      {/* Living Canadian network — 3D background, fully independent of the booking flow */}
+      <HeroCanadaBackground />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#102B2A]/85 via-[#102B2A]/45 to-[#102B2A]/85" />
+      <div className="relative z-10 max-w-3xl mx-auto px-4 py-7 md:py-16">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="text-xs font-bold tracking-[0.2em] text-[#54D9AE] uppercase">{t.tag}</div>
           <div className="flex rounded-full border border-white/20 p-0.5" role="group" aria-label="Language">
