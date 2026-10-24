@@ -186,7 +186,7 @@ export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
 
   return (
     <div className="space-y-4" id="community-feed">
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Feed categories">
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Feed categories">
         {CATEGORIES.map((c) => (
           <button key={c.id} onClick={() => setCategory(c.id)} className={`shrink-0 rounded-full border px-3 py-1.5 text-[11px] sm:px-4 sm:py-2 sm:text-xs font-bold transition-colors ${category === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>
         ))}
@@ -194,7 +194,7 @@ export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
       </div>
 
       {category === 'channels' && (
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Channels">
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Channels">
           <button onClick={() => setChannel('all')} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === 'all' ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>Everything</button>
           {CHANNELS.map((c) => (
             <button key={c.id} onClick={() => setChannel(c.id)} title={c.desc} className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${channel === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>

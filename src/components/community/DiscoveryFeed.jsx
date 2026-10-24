@@ -100,7 +100,7 @@ export default function DiscoveryFeed({ me, onGoOpportunities, onGoDiscussions }
       </div>
 
       {/* Three primary filters + AI search entry */}
-      <div className="flex gap-2 items-center overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Feed type">
+      <div className="flex flex-wrap gap-2 items-center" role="tablist" aria-label="Feed type">
         {FILTERS.map((f) => (
           <button
             key={f.id}

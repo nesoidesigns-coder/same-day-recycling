@@ -136,7 +136,7 @@ export default function Community() {
       )}
 
       <div className="max-w-5xl mx-auto px-4 py-3 sm:py-5">
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 mb-3 sm:mb-5" role="tablist" aria-label="Community sections">
+        <div className="flex flex-wrap gap-2 mb-3 sm:mb-5" role="tablist" aria-label="Community sections">
           {TABS.map((t) => (
             <button key={t.id} onClick={() => setTab(t.id)} role="tab" aria-selected={tab === t.id} className={`shrink-0 rounded-full border px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm font-bold transition-colors ${tab === t.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{t.label}</button>
           ))}
