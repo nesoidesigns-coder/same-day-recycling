@@ -188,9 +188,9 @@ export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
     <div className="space-y-4" id="community-feed">
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="tablist" aria-label="Feed categories">
         {CATEGORIES.map((c) => (
-          <button key={c.id} onClick={() => setCategory(c.id)} className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${category === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>
+          <button key={c.id} onClick={() => setCategory(c.id)} className={`shrink-0 rounded-full border px-3 py-1.5 text-[11px] sm:px-4 sm:py-2 sm:text-xs font-bold transition-colors ${category === c.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{c.label}</button>
         ))}
-        <button onClick={onGoOpportunities} className="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:border-[#187B65] transition-colors">Local Opportunities</button>
+        <button onClick={onGoOpportunities} className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] sm:px-4 sm:py-2 sm:text-xs font-bold text-slate-600 hover:border-[#187B65] transition-colors">Local Opportunities</button>
       </div>
 
       {category === 'channels' && (

@@ -97,7 +97,7 @@ export default function Community() {
       {/* Compact branded header: content starts one screen-fraction down */}
       <header className="border-b border-slate-100 bg-white/90">
         <div className="max-w-5xl mx-auto px-4 pt-3 pb-2.5">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 sm:gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <span className="w-9 h-9 shrink-0 rounded-xl bg-[#187B65] text-white flex items-center justify-center">
                 <Recycle className="w-5 h-5" />
@@ -108,12 +108,12 @@ export default function Community() {
               </div>
             </div>
             {guest ? (
-              <div className="flex shrink-0 flex-col gap-1.5">
-                <a href="/register?returnTo=/community" className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-2 text-[11px] font-bold text-white hover:bg-[#125C4E] transition-colors"><UserPlus className="w-3 h-3" /> Join free</a>
-                <a href="/login?returnTo=/community" className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 px-3.5 py-2 text-[11px] font-bold text-slate-600 hover:border-[#187B65] transition-colors"><LogIn className="w-3 h-3" /> Log in</a>
+              <div className="flex shrink-0 gap-1.5">
+                <a href="/register?returnTo=/community" className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-2 text-[11px] font-bold text-white hover:bg-[#125C4E] transition-colors"><UserPlus className="w-3 h-3" /> Join free</a>
+                <a href="/login?returnTo=/community" className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 px-3.5 py-2 text-[11px] font-bold text-slate-600 hover:border-[#187B65] transition-colors"><LogIn className="w-3 h-3" /> Log in</a>
               </div>
             ) : (
-              <button onClick={onAskAI} className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-2 text-[11px] font-bold text-white hover:bg-[#125C4E] transition-colors">
+              <button onClick={onAskAI} className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-full bg-[#187B65] px-3.5 py-2 text-[11px] font-bold text-white hover:bg-[#125C4E] transition-colors">
                 <Sparkles className="w-3 h-3" /> Ask the AI
               </button>
             )}
@@ -138,7 +138,7 @@ export default function Community() {
       <div className="max-w-5xl mx-auto px-4 py-3 sm:py-5">
         <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 mb-3 sm:mb-5" role="tablist" aria-label="Community sections">
           {TABS.map((t) => (
-            <button key={t.id} onClick={() => setTab(t.id)} role="tab" aria-selected={tab === t.id} className={`shrink-0 rounded-full border px-4 py-2 text-sm font-bold transition-colors ${tab === t.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{t.label}</button>
+            <button key={t.id} onClick={() => setTab(t.id)} role="tab" aria-selected={tab === t.id} className={`shrink-0 rounded-full border px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm font-bold transition-colors ${tab === t.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{t.label}</button>
           ))}
         </div>
 
