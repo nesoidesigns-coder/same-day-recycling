@@ -1,32 +1,18 @@
-// Simplified, geographically recognizable Canada outline ([lat, lng] pairs),
-// shared by the hero's 3D scene and its 2D SVG fallback.
-export const MAINLAND = [
-  [69.6,-140],[69.9,-133],[70.2,-126],[69.6,-118],[68.3,-113.5],[68.4,-109],[68.2,-105.5],
-  [67.9,-101],[68.5,-97],[69.4,-94.6],
-  [65,-87],[63.3,-90.3],[61.1,-94],[58.7,-94.2],[57,-92.5],[56.3,-92.4],
-  [56,-87.7],[55.3,-85.5],[52.9,-82.4],[51.3,-80.4],
-  [51.4,-79],[53,-78.8],[55,-77.5],[57,-77.3],[59.5,-77.5],[62.5,-78],
-  [61.5,-74],[60.5,-69.7],[59.5,-69.5],[58.5,-68.3],[58,-68.5],[59,-67.5],[60.5,-67.3],[61.3,-66.5],[60.5,-64.4],
-  [59.5,-63.8],[57.5,-63.5],[55.5,-60.5],[54.5,-58.5],[52.5,-55.8],[51.4,-57.1],
-  [50.2,-60.5],[50.2,-63],[50.2,-66.5],[49.2,-68.2],[48.1,-69.7],[48.4,-70.6],[46.8,-71.2],
-  [46.7,-71.1],[47,-70.5],[47.8,-69.5],[48.5,-68.3],[48.8,-67.5],[48.9,-66],[48.9,-64.4],
-  [48.5,-64.2],[48.2,-65],[47.7,-66.3],[47.4,-64.9],[46.9,-64.6],[46.3,-64.1],[46,-63.2],
-  [45.2,-63.3],[44.9,-63.4],[44.5,-64.1],[44,-64.8],[43.7,-65.5],[43.9,-66.1],[44.2,-64.2],[45,-63.6],[45.8,-63.3],
-  [45.9,-64.1],[45.4,-65.5],[45.1,-66.3],[44.8,-67],[45.2,-67.4],[46.1,-68.2],[47.4,-69.2],[45,-70.5],
-  [45,-71.2],[45.5,-73.6],[45,-74.5],[44.2,-77.5],[43.7,-79.4],[42.3,-82.9],[43,-82.4],[44.5,-81.5],[45.8,-82.5],[46.5,-84.4],[48.4,-89.2],[48,-89.5],
-  [48.4,-90.5],[49.4,-95.1],[49,-100],[49,-105],[49,-110],[49,-115],[49,-120],[49,-123],
-  [48.6,-124.3],[48.4,-125.3],[49,-126.4],[50.5,-127.8],[52.5,-129],[54.5,-130.7],
-];
-export const VANCOUVER_ISLAND = [
-  [50.8,-128.4],[50.7,-127.5],[50.6,-126.3],[49.8,-125],[48.7,-124.7],[48.4,-123.3],[49.3,-123.3],[50.1,-124.5],[50.7,-126.8],[50.9,-127.8],
-];
-export const NEWFOUNDLAND = [
-  [51.6,-55.9],[50.6,-56.9],[49.5,-55.6],[47.9,-53],[46.8,-53.1],[46.6,-53.5],[47.5,-55.5],[48.4,-58.5],[49.5,-57.8],[50.6,-56.3],
-];
-export const CANADA_OUTLINES = [MAINLAND, VANCOUVER_ISLAND, NEWFOUNDLAND];
+import geography from "@/components/sdr/canadaGeography.json";
+
+// Natural Earth 1:110m country boundaries, public domain. Includes 30
+// Canadian land polygons, including the Arctic islands. Both renderers use
+// this exact geometry; markers never imply province-wide service coverage.
+export const CANADA_OUTLINES = geography.geometry.coordinates.map((polygon) =>
+  polygon[0].map(([lng, lat]) => [lat, lng])
+);
+export const MAINLAND = CANADA_OUTLINES[0];
+export const VANCOUVER_ISLAND = CANADA_OUTLINES[17];
+export const NEWFOUNDLAND = CANADA_OUTLINES[10];
+export const GEOGRAPHY_SOURCE = "https://www.naturalearthdata.com/about/terms-of-use/";
 
 // Equirectangular projection shared by both renderers.
-export const PROJ = { lng0: -96, lat0: 56, s: 0.5 };
+export const PROJ = { lng0: -96, lat0: 62, s: 0.5 };
 export const pt = (lat, lng) => ({ x: (lng - PROJ.lng0) * PROJ.s, y: (lat - PROJ.lat0) * PROJ.s });
 
 export const LAYER_COLORS = {
@@ -35,7 +21,14 @@ export const LAYER_COLORS = {
   ai: 0xa78bfa,        // violet — AI intelligence findings
   matching: 0xfbbf24,  // amber — contractor matching underway
   selected: 0xffffff,  // white — selected location
+  recruiting: 0x94a3b8,
+  unknown: 0x94a3b8,
 };
 export const LAYER_HEX = {
-  verified: "#2fd4a0", demand: "#22d3ee", ai: "#a78bfa", matching: "#fbbf24", selected: "#ffffff",
+  verified: "#2fd4a0", demand: "#22d3ee", ai: "#a78bfa", matching: "#fbbf24", selected: "#ffffff", recruiting: "#94a3b8", unknown: "#94a3b8",
+};
+const projected = CANADA_OUTLINES.flat().map(([lat, lng]) => pt(lat, lng));
+export const MAP_BOUNDS = {
+  minX: Math.min(...projected.map((p) => p.x)), maxX: Math.max(...projected.map((p) => p.x)),
+  minY: Math.min(...projected.map((p) => p.y)), maxY: Math.max(...projected.map((p) => p.y)),
 };
