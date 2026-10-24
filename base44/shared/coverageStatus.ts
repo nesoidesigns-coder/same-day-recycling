@@ -11,6 +11,10 @@ export const ACTIVE_CITIES = [
   'Maple Ridge', 'Pitt Meadows', 'Calgary', 'Edmonton', 'Saskatoon', 'Regina', 'Winnipeg',
   'Toronto', 'Ottawa', 'Hamilton', 'Mississauga', 'Montreal', 'Quebec City', 'Moncton',
   'Saint John', 'Halifax', 'Charlottetown', "St. John's", 'Whitehorse', 'Yellowknife', 'Iqaluit',
+  'Abbotsford', 'Langley', 'Chilliwack', 'Nanaimo', 'Prince George',
+  'Red Deer', 'Lethbridge', 'Brandon', 'London', 'Kitchener', 'Windsor',
+  'Brampton', 'Markham', 'Niagara Falls', 'Kingston', 'Thunder Bay',
+  'Laval', 'Gatineau', 'Sherbrooke', 'Fredericton',
 ];
 
 // Normalizes raw user input ("Vancouver, BC", "vancouver", "North Vancouver")

@@ -95,7 +95,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   // Coastline: verified Natural Earth geometry as a plain matte line
   const coastMat = new THREE.LineBasicMaterial({ color: 0x76a89b, transparent: true, opacity: 0.9 });
   // Whole-world land silhouette (Natural Earth 110m), with Canada brighter
-  const worldMat = new THREE.LineBasicMaterial({ color: 0x5b8d84, transparent: true, opacity: 0.5 });
+  const worldMat = new THREE.LineBasicMaterial({ color: 0x5b8d84, transparent: true, opacity: 0.65 });
   WORLD_OUTLINES.forEach((poly) => {
     const points = poly.map(([lat, lng]) => spherePoint(lat, lng, R * 1.002));
     globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), worldMat));
@@ -105,33 +105,47 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([...points, points[0]]), coastMat));
   });
 
-  // Nodes and invisible pick targets (in the rotating group)
+  // Data layer (nodes, pick targets, arcs): rebuilt in place when fresh data
+  // arrives, so live refreshes never tear the whole scene down.
   const world = new THREE.Group();
   globeGroup.add(world);
+  const dataGroup = new THREE.Group();
+  world.add(dataGroup);
   const nodeGeo = new THREE.SphereGeometry(0.085, 10, 10);
   const pickGeo = new THREE.SphereGeometry(mobile ? 0.9 : 0.65, 8, 8);
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
-  const picks = [];
-  const nodeMap = new Map();
-  nodes.forEach((node) => {
-    const position = spherePoint(node.lat, node.lng, R * 1.015);
-    const mesh = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({ color: LAYER_COLORS[node.layer] || 0x2fd4a0 }));
-    mesh.position.copy(position);
-    world.add(mesh);
-    const pick = new THREE.Mesh(pickGeo, pickMat);
-    pick.position.copy(position);
-    pick.userData = node;
-    world.add(pick);
-    picks.push(pick);
-    nodeMap.set(node.key, { mesh, position, node });
-  });
-
-  // Territory arcs: only explicitly confirmed shared contractor territories
   const arcMat = new THREE.LineBasicMaterial({ color: 0x54d9ae, transparent: true, opacity: 0.7 });
-  links.forEach((link) => {
-    const { points } = arcPoints(link.a, link.b);
-    world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), arcMat));
-  });
+  let picks = [];
+  const nodeMap = new Map();
+  let dataCleanup = [];
+  const setData = (nextNodes = [], nextLinks = []) => {
+    dataGroup.clear();
+    dataCleanup.forEach(({ geometry, material }) => { geometry?.dispose?.(); material?.dispose?.(); });
+    dataCleanup = [];
+    picks = [];
+    nodeMap.clear();
+    nextNodes.forEach((node) => {
+      const position = spherePoint(node.lat, node.lng, R * 1.015);
+      const mesh = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({ color: LAYER_COLORS[node.layer] || 0x2fd4a0 }));
+      mesh.position.copy(position);
+      dataCleanup.push({ material: mesh.material });
+      dataGroup.add(mesh);
+      const pick = new THREE.Mesh(pickGeo, pickMat);
+      pick.position.copy(position);
+      pick.userData = node;
+      dataGroup.add(pick);
+      picks.push(pick);
+      nodeMap.set(node.key, { mesh, position, node });
+    });
+    nextLinks.forEach((link) => {
+      const { points } = arcPoints(link.a, link.b);
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), arcMat);
+      dataCleanup.push({ geometry: line.geometry });
+      dataGroup.add(line);
+    });
+    dirty = true;
+  };
+  setData(nodes, links);
 
   // Selection ring, oriented along the node's surface normal
   const ring = new THREE.Mesh(
@@ -360,6 +374,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       focus.active = false;
       applyFocus(VIEW_LAT, 0, reduced);
     },
+    updateData: (nextNodes, nextLinks) => setData(nextNodes, nextLinks),
     zoomBy: (factor) => {
       dirty = true;
       camDist = Math.min(CAM_MAX, Math.max(CAM_MIN, camDist * factor));

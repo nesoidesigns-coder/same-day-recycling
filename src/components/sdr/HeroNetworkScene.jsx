@@ -5,10 +5,14 @@ import { networkCopy } from "@/components/sdr/heroNetworkCopy";
 
 export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover, lang = "en" }) {
   const t = networkCopy(lang);
-  const mount = useRef(null), scene = useRef(null), callbacks = useRef({ onSelect, onHover });
+  const mount = useRef(null), scene = useRef(null), data = useRef({ nodes, links });
+  const callbacks = useRef({ onSelect, onHover });
+  callbacks.current = { onSelect, onHover };
+  data.current = { nodes, links };
   const [ready, setReady] = useState(false);
   const [touched, setTouched] = useState(false);
-  callbacks.current = { onSelect, onHover };
+  // The 3D scene mounts once; later data refreshes update it in place, so
+  // the view never flaps back to the 2D fallback.
   useEffect(() => {
     let cancelled = false, instance;
     setReady(false);
@@ -16,7 +20,7 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
       try {
         const { default: createScene } = await import("@/components/sdr/HeroCanadaGlobe");
         if (cancelled || !mount.current) return;
-        instance = createScene(mount.current, { nodes, links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onFailure: () => setReady(false) });
+        instance = createScene(mount.current, { nodes: data.current.nodes, links: data.current.links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onFailure: () => setReady(false) });
         if (!instance) return;
         scene.current = instance;
         setReady(true);
@@ -24,7 +28,8 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
     };
     const timer = setTimeout(start, 1500);
     return () => { cancelled = true; clearTimeout(timer); instance?.dispose(); scene.current = null; };
-  }, [nodes, links]);
+  }, []);
+  useEffect(() => { if (ready) scene.current?.updateData(nodes, links); }, [nodes, links, ready]);
   useEffect(() => { if (!ready) return; if (focus) scene.current?.focusOn(focus.lat, focus.lng); else scene.current?.resetFocus(); }, [focus, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
