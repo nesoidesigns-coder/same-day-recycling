@@ -114,6 +114,7 @@ const AdminSms = lazyPage(() => import('./pages/AdminSms'));
 const ChangeOrderRespond = lazyPage(() => import('./pages/ChangeOrderRespond'));
 const Community = lazyPage(() => import('./pages/Community'));
 const AdminCommunity = lazyPage(() => import('./pages/AdminCommunity'));
+const AdminAds = lazyPage(() => import('./pages/AdminAds'));
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
@@ -235,6 +236,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/growth" element={<AdminGrowth />} />
           <Route path="/admin/improvements" element={<AdminImprovements />} />
           <Route path="/admin/community" element={<AdminCommunity />} />
+          <Route path="/admin/ads" element={<AdminAds />} />
           <Route path="/admin/demand" element={<AdminDemand />} />
           <Route path="/admin/seo" element={<AdminSeoCommand />} />
           <Route path="/admin/routes" element={<AdminRoutes />} />

@@ -35,6 +35,7 @@ const INTELLIGENCE = [
   { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
   { to: "/admin/improvements", label: "Improvement Queue", icon: ListChecks },
   { to: "/admin/community", label: "Community", icon: UsersRound },
+  { to: "/admin/ads", label: "Community Ads", icon: Megaphone },
   { to: "/admin/demand", label: "Market Intelligence", icon: Globe2 },
   { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
   { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },

@@ -6,6 +6,9 @@ import PostComposer from '@/components/community/PostComposer';
 import PostCard from '@/components/community/PostCard';
 import PostThread from '@/components/community/PostThread';
 import InterestBar from '@/components/community/InterestBar';
+import FeedAdCard from '@/components/community/FeedAdCard';
+
+const AD_INTERVAL = 10;
 import { CHANNELS, PROVINCES, INTERESTS } from '@/lib/communityShared';
 
 const readPrefs = (key, fallback) => {
@@ -55,6 +58,12 @@ export default function CommunityFeed({ me, profileName }) {
     },
   });
 
+  const ads = useQuery({
+    queryKey: ['communityFeedAds', channel, region],
+    queryFn: async () => (await base44.functions.invoke('communityAds', { action: 'serve', channel: channel === 'all' ? 'general' : channel, province: region })).data,
+    staleTime: 300000,
+  });
+
   const replyCounts = useQuery({
     queryKey: ['communityCommentCounts'],
     queryFn: async () => {
@@ -102,6 +111,23 @@ export default function CommunityFeed({ me, profileName }) {
     const counts = replyCounts.data || {};
     return [...(posts.data || [])].sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0)).slice(0, 3).filter((p) => (counts[p.id] || 0) > 0);
   }, [posts.data, replyCounts.data]);
+
+  // Hybrid ad allocation: content first, at most one promotional card per
+  // AD_INTERVAL organic posts. Ads are skipped in filtered (saved/search)
+  // views so they never crowd out what the member asked to see.
+  const servedAds = ads.data?.ads || [];
+  const adRows = useMemo(() => {
+    if (savedOnly || search.trim() || servedAds.length === 0) return visible.map((p) => ({ type: 'post', post: p }));
+    const rows = [];
+    let adIdx = 0;
+    visible.forEach((p, i) => {
+      rows.push({ type: 'post', post: p });
+      if ((i + 1) % AD_INTERVAL === 0 && i !== visible.length - 1 && adIdx < servedAds.length) {
+        rows.push({ type: 'ad', ad: servedAds[adIdx++] });
+      }
+    });
+    return rows;
+  }, [visible, servedAds, savedOnly, search]);
 
   const openPost = (posts.data || []).find((p) => p.id === openId);
 
@@ -195,20 +221,22 @@ export default function CommunityFeed({ me, profileName }) {
         </div>
       )}
       <div className="space-y-3">
-        {visible.map((p) => (
+        {adRows.map((row, i) => row.type === 'ad' ? (
+          <FeedAdCard key={`ad-${i}-${row.ad.id}`} ad={row.ad} />
+        ) : (
           <PostCard
-            key={p.id}
-            post={p}
-            replyCount={(replyCounts.data || {})[p.id]}
-            helpfulCount={(helpfulCounts.data || {})[p.id]}
-            mineVoted={(myVotes.data || []).some((r) => r.target_id === p.id && r.owner_email === me?.email)}
-            saved={saved.has(p.id)}
-            copied={copiedId === p.id}
-            onBookmark={() => toggleSaved(p.id)}
-            onShare={() => share(p)}
-            onVote={me ? () => vote(p) : undefined}
-            onOpen={() => openThread(p.id)}
-            onReport={me ? () => report(p) : undefined}
+            key={row.post.id}
+            post={row.post}
+            replyCount={(replyCounts.data || {})[row.post.id]}
+            helpfulCount={(helpfulCounts.data || {})[row.post.id]}
+            mineVoted={(myVotes.data || []).some((r) => r.target_id === row.post.id && r.owner_email === me?.email)}
+            saved={saved.has(row.post.id)}
+            copied={copiedId === row.post.id}
+            onBookmark={() => toggleSaved(row.post.id)}
+            onShare={() => share(row.post)}
+            onVote={me ? () => vote(row.post) : undefined}
+            onOpen={() => openThread(row.post.id)}
+            onReport={me ? () => report(row.post) : undefined}
           />
         ))}
       </div>

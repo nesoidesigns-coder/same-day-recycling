@@ -1,0 +1,114 @@
+{
+  "name": "CommunityAd",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "Internal campaign name, never shown to the community."
+    },
+    "ad_kind": {
+      "type": "string",
+      "enum": [
+        "house",
+        "sponsored"
+      ],
+      "default": "house",
+      "description": "house = Same Day Recycling / Recycling OS promotion. sponsored = paid placement by a verified business."
+    },
+    "advertiser_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "Paying advertiser's public name. Required for sponsored placements. Never invented."
+    },
+    "headline": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "body": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Learn more",
+      "maxLength": 40
+    },
+    "link_url": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "Landing path or URL. Internal app paths preferred for house ads."
+    },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Channel ids this ad is relevant to. Empty = broadly relevant."
+    },
+    "provinces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Province codes targeted. Empty = all regions."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "expired"
+      ],
+      "default": "draft"
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0,
+      "description": "Counted feed renders. Never estimated or padded."
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0,
+      "description": "Counted CTA clicks. Never estimated or padded."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "name",
+    "headline",
+    "link_url"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

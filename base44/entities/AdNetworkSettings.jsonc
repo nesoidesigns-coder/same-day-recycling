@@ -1,0 +1,63 @@
+{
+  "name": "AdNetworkSettings",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "string",
+      "default": "adsense"
+    },
+    "publisher_id": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "Google AdSense publisher ID (ca-pub-...). Public by nature once active."
+    },
+    "adsense_slot_id": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "AdSense ad-unit slot ID for the in-feed responsive unit."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_configured",
+        "pending_owner_approval",
+        "active",
+        "paused"
+      ],
+      "default": "not_configured",
+      "description": "External network never serves until the owner explicitly activates it."
+    },
+    "review_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Notes on Google's publisher setup and site-approval status."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
