@@ -23,6 +23,12 @@
       "default": "",
       "maxLength": 3000
     },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500,
+      "description": "Optional public photo attached to the listing (customer-provided for captured inquiries, poster-provided otherwise)."
+    },
     "city": {
       "type": "string",
       "default": "",

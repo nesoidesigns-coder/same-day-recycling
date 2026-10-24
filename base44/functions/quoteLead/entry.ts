@@ -20,6 +20,10 @@ export default async function(req) {
     const city = str(body?.city, 80);
     const sid = str(body?.sid, 40);
 
+    const imageUrl = typeof body?.image_url === 'string' && body.image_url.startsWith('https://media.base44.com/')
+      ? body.image_url.slice(0, 500)
+      : '';
+
     if (!contact) {
       return Response.json({ error: 'Enter a phone number or email address.' }, { status: 400 });
     }
@@ -35,6 +39,7 @@ export default async function(req) {
       phone: isPhone ? contact : '',
       email: isEmail ? contact : '',
       items_text: itemsText,
+      image_url: imageUrl,
       city,
       estimate,
       status: 'new',
@@ -46,6 +51,7 @@ export default async function(req) {
       title: `Same-day quote request${city ? ' - ' + city : ''}`,
       description: `${itemsText || 'Items not specified'}. Instant estimate shown: ${estimate || 'n/a'}.`,
       city,
+      image_url: imageUrl,
     });
 
     await base44.asServiceRole.integrations.Core.SendEmail({

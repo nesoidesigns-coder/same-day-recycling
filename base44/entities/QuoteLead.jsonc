@@ -18,6 +18,12 @@
       "type": "string",
       "default": ""
     },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500,
+      "description": "Public URL of the customer's photo, when the quote flow captured one."
+    },
     "city": {
       "type": "string",
       "default": ""

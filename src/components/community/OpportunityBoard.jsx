@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Briefcase, BadgeCheck, MapPin, CalendarDays, Plus, X } from 'lucide-react';
+import { Image } from '@/components/ui/image';
 import { OPPORTUNITY_TYPES, PROVINCES, opportunityTypeLabel } from '@/lib/communityShared';
 
 const CATS = ['junk_removal', 'furniture_removal', 'appliance_removal', 'electronics', 'scrap_metal', 'bin_rentals', 'cleanouts', 'other'];
@@ -92,6 +93,11 @@ export default function OpportunityBoard({ me }) {
               {o.service_category && <span className="rounded-full bg-slate-100 text-slate-600 px-2 py-0.5">{o.service_category.replace(/_/g, ' ')}</span>}
               {o.poster_verified && <span className="inline-flex items-center gap-1 rounded-full bg-[#187B65]/10 text-[#187B65] px-2 py-0.5"><BadgeCheck className="w-3 h-3" /> Verified poster</span>}
             </div>
+            {o.image_url && (
+              <div className="mt-2 rounded-xl overflow-hidden">
+                <Image src={o.image_url} alt="" className="w-full h-44" fittingType="fill" />
+              </div>
+            )}
             <h4 className="mt-2 text-base font-bold text-[#102B2A]">{o.title}</h4>
             {o.description && <p className="mt-1.5 text-sm text-slate-600 whitespace-pre-line leading-relaxed">{o.description}</p>}
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">

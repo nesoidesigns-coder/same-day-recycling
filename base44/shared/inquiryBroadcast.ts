@@ -10,14 +10,19 @@ const sanitize = (text) => String(text || '')
   .replace(/(\+?\d[\d\s().-]{8,}\d)/g, '[phone shared via dispatch]')
   .trim();
 
-export async function broadcastInquiry(base44, { source, title, description, city }) {
+export async function broadcastInquiry(base44, { source, title, description, city, image_url }) {
   try {
     const sr = base44.asServiceRole;
     const clean = sanitize(description).slice(0, 2500) || 'Service request details provided by the customer.';
+    // Only this app's own public uploads may be attached to the board listing.
+    const safeImage = typeof image_url === 'string' && image_url.startsWith('https://media.base44.com/')
+      ? image_url.slice(0, 500)
+      : '';
     await sr.entities.CommunityOpportunity.create({
       type: 'overflow_job',
       title: String(title || 'Customer service request').slice(0, 200),
       description: `Customer inquiry captured from the website (${source}):\n\n${clean}`,
+      image_url: safeImage,
       city: String(city || '').slice(0, 80),
       service_category: '',
       poster_name: 'Same Day Recycling (web inquiry)',
@@ -29,7 +34,7 @@ export async function broadcastInquiry(base44, { source, title, description, cit
       to: OWNER_EMAIL,
       from_name: 'Same Day Recycling Website',
       subject: `New web service inquiry posted${city ? ' - ' + city : ''}`,
-      text: `Source: ${source}\nTitle: ${title}\nCity: ${city || 'n/a'}\n\n${clean}\n\nPosted to the community Opportunity Board.`,
+      text: `Source: ${source}\nTitle: ${title}\nCity: ${city || 'n/a'}\nPhoto: ${safeImage || 'none'}\n\n${clean}\n\nPosted to the community Opportunity Board.`,
     });
     return true;
   } catch (error) {

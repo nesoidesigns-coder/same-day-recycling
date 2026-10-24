@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
 import { getSessionId } from "@/lib/visitSession";
 
-export default function QuoteLeadCapture({ itemsText, estimate, city }) {
+export default function QuoteLeadCapture({ itemsText, estimate, city, photo }) {
   const [contact, setContact] = useState("");
   const [state, setState] = useState("idle");
 
@@ -11,11 +11,19 @@ export default function QuoteLeadCapture({ itemsText, estimate, city }) {
     if (!contact.trim() || state === "loading") return;
     setState("loading");
     try {
+      // The customer's photo rides along with the lead and the auto-posted
+      // opportunity listing — stored publicly so community contractors can see it.
+      let image_url = "";
+      if (photo) {
+        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file: photo });
+        image_url = file_url;
+      }
       await base44.functions.invoke("quoteLead", {
         contact: contact.trim(),
         items_text: itemsText,
         estimate,
         city,
+        image_url,
         sid: getSessionId(),
       });
       base44.analytics.track("quote_lead_captured", { city: city || "" });

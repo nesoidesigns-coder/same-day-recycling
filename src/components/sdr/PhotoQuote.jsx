@@ -115,7 +115,7 @@ export default function PhotoQuote({ onBook, city: fixedCity }) {
                 >
                   Book this pickup <ArrowRight className="w-5 h-5" />
                 </button>
-                <QuoteLeadCapture itemsText={itemsText} estimate={`${quote.range} (${quote.label})`} city={city} />
+                <QuoteLeadCapture itemsText={itemsText} estimate={`${quote.range} (${quote.label})`} city={city} photo={photo} />
               </div>
             )}
           </div>
