@@ -17,6 +17,7 @@ export default function AdminConversion() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [detail, setDetail] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -38,17 +39,17 @@ export default function AdminConversion() {
   const m = data?.money;
   const stages = f && [
     { label: "Site visits", value: f.visits.current, prev: f.visits.previous, sub: "Page-loads, customer & contractor traffic — rates below use visitor sessions" },
-    { label: "Quote leads", value: f.quote_leads.current, prev: f.quote_leads.previous, sub: `${f.quote_leads.booked} booked directly from a quote` },
-    { label: "Booking requests", value: f.booking_requests.current, prev: f.booking_requests.previous, sub: "Submitted pickup requests" },
-    { label: "Confirmed", value: f.confirmed.current, sub: "Accepted and scheduled jobs" },
-    { label: "Completed", value: f.completed.current, sub: "Jobs finished on site" },
-    { label: "Paid", value: f.paid.platform + f.paid.external, sub: `${f.paid.platform} platform · ${f.paid.external} external settled` },
+    { label: "Quote leads", value: f.quote_leads.current, prev: f.quote_leads.previous, sub: `${f.quote_leads.booked} booked directly from a quote`, records: data.samples?.quote_leads },
+    { label: "Booking requests", value: f.booking_requests.current, prev: f.booking_requests.previous, sub: `Submitted pickup requests${f.booking_requests.cancelled_excluded ? ` · ${f.booking_requests.cancelled_excluded} cancelled excluded` : ""}`, records: data.samples?.booking_requests },
+    { label: "Confirmed", value: f.confirmed.current, prev: f.confirmed.previous, sub: "Accepted and scheduled jobs", records: data.samples?.confirmed },
+    { label: "Completed", value: f.completed.current, prev: f.completed.previous, sub: "Jobs finished on site", records: data.samples?.completed },
+    { label: "Paid", value: f.paid.platform + f.paid.external, prev: f.paid.previous, sub: `${f.paid.platform} platform · ${f.paid.external} external settled`, records: data.samples?.paid },
   ];
   const rates = r && [
-    fmtPct(r.visit_to_lead_pct),
-    fmtPct(r.lead_to_booking_pct),
-    fmtPct(r.booking_to_confirmed_pct),
-    fmtPct(r.confirmed_to_completed_pct),
+    { cur: fmtPct(r.visit_to_lead_pct), prev: data.rates_prev?.visit_to_lead_pct, conf: data.confidence?.visit_to_lead },
+    { cur: fmtPct(r.lead_to_booking_pct), prev: data.rates_prev?.lead_to_booking_pct, conf: data.confidence?.lead_to_booking },
+    { cur: fmtPct(r.booking_to_confirmed_pct), prev: data.rates_prev?.booking_to_confirmed_pct, conf: data.confidence?.booking_to_confirmed },
+    { cur: fmtPct(r.confirmed_to_completed_pct), prev: data.rates_prev?.confirmed_to_completed_pct, conf: data.confidence?.confirmed_to_completed },
     null,
   ];
   const maxVal = stages ? Math.max(...stages.map((s) => s.value), 1) : 1;
@@ -98,10 +99,23 @@ export default function AdminConversion() {
                 <div className="mt-2 h-2.5 rounded-full bg-slate-100 overflow-hidden">
                   <div className="rounded-full bg-[#187B65] h-full transition-all duration-500" style={{ width: `${Math.max((s.value / maxVal) * 100, s.value > 0 ? 2 : 0)}%` }} />
                 </div>
+                {s.records && s.records.length > 0 && (
+                  <button onClick={() => setDetail({ label: s.label, rows: s.records })} className="mt-1.5 text-[11px] font-bold text-[#187B65] hover:underline">
+                    View underlying records
+                  </button>
+                )}
                 <div className="mt-1.5 flex flex-wrap justify-between gap-x-4 gap-y-1 text-[11px] font-semibold text-slate-500">
                   <span>{s.sub}</span>
-                  <span className="inline-flex gap-3">
-                    {rates[i] && <span className="font-bold text-[#187B65]">{rates[i]} from previous stage</span>}
+                  <span className="inline-flex flex-wrap items-center gap-3">
+                    {rates[i] && (
+                      <>
+                        <span className="font-bold text-[#187B65]">{rates[i].cur} from previous stage</span>
+                        {(rates[i].prev === 0 || rates[i].prev) && <span>prev period: {rates[i].prev}</span>}
+                        {rates[i].conf && rates[i].conf !== "high" && (
+                          <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${rates[i].conf === "medium" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-500"}`}>{rates[i].conf} confidence</span>
+                        )}
+                      </>
+                    )}
                     {s.prev !== undefined && <span>prev period: {s.prev.toLocaleString("en-CA")}</span>}
                   </span>
                 </div>
@@ -178,6 +192,12 @@ export default function AdminConversion() {
             owner reconciliation until verified. Live event-level activity (quote calculations, booking submissions) streams
             into Analytics alongside this page.
           </div>
+          {data.freshness && (
+            <p className="mt-3 text-xs text-slate-500">
+              Data freshness: report generated {new Date(data.generated_at).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })}
+              {data.freshness.session_tracking_started ? ` · anonymous session tracking live since ${new Date(data.freshness.session_tracking_started).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })} — earlier page-loads are historical records without session keys.` : ""}
+            </p>
+          )}
           <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
             <Users className="w-3.5 h-3.5" /> Partner-level conversion stats for contractors live in the Partner portal —
             <Link to="/admin/partners" className="font-bold text-[#187B65] hover:underline">open Partners</Link>
@@ -187,6 +207,33 @@ export default function AdminConversion() {
           )}
         </>
       ) : null}
+
+      {detail && <StageModal detail={detail} onClose={() => setDetail(null)} />}
+    </div>
+  );
+}
+
+function StageModal({ detail, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-[#102B2A]/40 sm:p-4" onClick={onClose} role="dialog" aria-label={`${detail.label} records`}>
+      <div className="w-full sm:max-w-lg max-h-[80vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-white p-5" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm font-bold text-[#102B2A]">{detail.label} — underlying records</h3>
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-[#102B2A]" aria-label="Close">✕</button>
+        </div>
+        <p className="mt-1 text-[11px] text-slate-500">Newest real records behind this stage in the selected period. Test bookings and cancelled requests are never counted in stage totals.</p>
+        <div className="mt-3 space-y-2">
+          {detail.rows.map((row) => (
+            <div key={row.ref} className="rounded-xl border border-slate-100 px-3 py-2 text-xs">
+              <div className="flex justify-between gap-2">
+                <span className="font-bold text-[#102B2A]">{row.label || "(no name captured)"}</span>
+                <span className="text-slate-500">{(row.at || "").slice(0, 10)}</span>
+              </div>
+              <div className="mt-0.5 text-[11px] text-slate-500">Ref …{String(row.ref).slice(-8)}{row.city ? ` · ${row.city}` : ""} · status: {row.status || "—"}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

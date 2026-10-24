@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Loader2, RefreshCw, Users, Target, TrendingUp, Wrench, Activity, Globe, Bot, ShieldCheck, UserCheck, MousePointerClick, CalendarCheck, CircleDollarSign, Truck, AlertTriangle, CheckCircle2, Info, Wallet, MapPin, Repeat2 } from "lucide-react";
+import { Loader2, RefreshCw, Users, Target, TrendingUp, Wrench, Activity, Globe, Bot, ShieldCheck, UserCheck, MousePointerClick, CalendarCheck, CircleDollarSign, Truck, AlertTriangle, CheckCircle2, Info, Wallet, MapPin, Repeat2, Sparkles } from "lucide-react";
+import InsightsPanel from "@/components/bi/InsightsPanel";
 import { base44 } from "@/api/base44Client";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
@@ -18,6 +19,7 @@ const TABS = [
   { key: "traffic", label: "Traffic", icon: Globe },
   { key: "performance", label: "Performance", icon: TrendingUp },
   { key: "development", label: "Development", icon: Wrench },
+  { key: "insights", label: "AI Insights", icon: Sparkles },
 ];
 
 const SOURCE_LABELS = {
@@ -288,6 +290,10 @@ export default function AdminBI() {
                 </div>
               </div>
             </div>
+          )}
+
+          {tab === "insights" && data && (
+            <InsightsPanel data={data} />
           )}
 
           {/* Definitions footer — always visible for consistency */}

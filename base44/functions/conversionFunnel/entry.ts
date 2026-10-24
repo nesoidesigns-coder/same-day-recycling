@@ -98,6 +98,12 @@ export default async function(req) {
     const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
     const confirmed = activeBookings.filter((b) => CONFIRMED.includes(b.status));
     const completed = activeBookings.filter((b) => b.status === 'completed');
+    // Previous-period stage counts (the equally-long window immediately before),
+    // computed on the same definitions as the current window.
+    const activeBookingsPrev = bookingsPrev.filter((b) => b.status !== 'cancelled');
+    const confirmedPrev = activeBookingsPrev.filter((b) => CONFIRMED.includes(b.status)).length;
+    const completedPrev = activeBookingsPrev.filter((b) => b.status === 'completed').length;
+    const paidPrevCount = bookingsPrev.filter((b) => ['paid', 'paid_externally'].includes(b.payment_status)).length;
     const paidPlatform = bookings.filter((b) => b.payment_status === 'paid');
     const paidExternal = bookings.filter((b) => b.payment_status === 'paid_externally');
     const externalUnverified = paidExternal.filter((b) => !b.external_payment_verified);
@@ -135,6 +141,12 @@ export default async function(req) {
       linked_lead_pct: pct(linked(leadsCur), leadsCur.length),
     };
 
+    // Statistical confidence for each rate: arithmetically correct percentages
+    // on tiny denominators are labelled so they are never over-read.
+    const confidence = (n) => (n >= 100 ? 'high' : n >= 30 ? 'medium' : n >= 10 ? 'low' : 'very_low');
+    const latestAt = (rows) => (rows.length ? Math.max(...rows.map((r) => new Date(r.created_date).getTime())) : null);
+    const sampleRows = (rows, n = 8) => rows.slice(0, n).map((r) => ({ ref: r.reference_code || r.id, label: r.name || r.email || r.phone || '', city: r.city || '', status: r.status || '', at: r.created_date }));
+
     return Response.json({
       days,
       generated_at: new Date().toISOString(),
@@ -145,16 +157,28 @@ export default async function(req) {
           previous: leadsPrev.length,
           booked: countWhere(leadsCur, (l) => l.status === 'booked'),
         },
-        booking_requests: { current: activeBookings.length, previous: bookingsPrev.length, cancelled_excluded: cancelled.length },
-        confirmed: { current: confirmed.length },
-        completed: { current: completed.length },
-        paid: { platform: paidPlatform.length, external: paidExternal.length, external_unverified: externalUnverified.length },
+        booking_requests: { current: activeBookings.length, previous: activeBookingsPrev.length, cancelled_excluded: cancelled.length },
+        confirmed: { current: confirmed.length, previous: confirmedPrev },
+        completed: { current: completed.length, previous: completedPrev },
+        paid: { platform: paidPlatform.length, external: paidExternal.length, external_unverified: externalUnverified.length, previous: paidPrevCount },
       },
       rates: {
         visit_to_lead_pct: pct(leadsCur.length, sessionsCur),
         lead_to_booking_pct: pct(activeBookings.length, leadsCur.length),
         booking_to_confirmed_pct: pct(confirmed.length, activeBookings.length),
         confirmed_to_completed_pct: pct(completed.length, confirmed.length),
+      },
+      rates_prev: {
+        visit_to_lead_pct: pct(leadsPrev.length, sessionsPrev),
+        lead_to_booking_pct: pct(activeBookingsPrev.length, leadsPrev.length),
+        booking_to_confirmed_pct: pct(confirmedPrev, activeBookingsPrev.length),
+        confirmed_to_completed_pct: pct(completedPrev, confirmedPrev),
+      },
+      confidence: {
+        visit_to_lead: confidence(sessionsCur),
+        lead_to_booking: confidence(leadsCur.length),
+        booking_to_confirmed: confidence(activeBookings.length),
+        confirmed_to_completed: confidence(confirmed.length),
       },
       money: {
         completed_job_value: sum(completed, jobValue),
@@ -165,6 +189,24 @@ export default async function(req) {
       },
       cities,
       journeys,
+      visits_by_source: Object.entries((() => {
+        const c = {};
+        for (const v of humanVisitRows) { const s = v.source || 'direct'; c[s] = (c[s] || 0) + 1; }
+        return c;
+      })()).sort((a, b) => b[1] - a[1]),
+      samples: {
+        quote_leads: sampleRows(leadsCur),
+        booking_requests: sampleRows(activeBookings),
+        confirmed: sampleRows(confirmed),
+        completed: sampleRows(completed),
+        paid: sampleRows([...paidPlatform, ...paidExternal]),
+      },
+      freshness: {
+        visits_latest: latestAt(humanVisitRows),
+        quote_leads_latest: latestAt([...leadsCur, ...leadsPrev]),
+        bookings_latest: latestAt([...bookings, ...bookingsPrev]),
+        session_tracking_started: humanVisitRows.length ? Math.min(...humanVisitRows.map((v) => new Date(v.created_date).getTime())) : null,
+      },
       tests: { current: testsCur.length, previous: testsPrev.length, records: testRecords },
       truncated: Boolean(leadsPage?.has_more || bookingsPage?.has_more),
     });
