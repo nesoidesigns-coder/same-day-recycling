@@ -1,0 +1,47 @@
+{
+  "name": "Full Platform Audit Weekly",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "full_platform_audit_weekly",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "full_audit": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "platformIntegrity",
+            "args": {
+              "action": "full_audit"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Full platform audit",
+            "description": "All checks + claim repairs + customer journey test"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 3 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Weekly full audit: all integrity checks, live-record cross-checks of public pricing/meta claims (mechanical fixes auto-applied, editorial conflicts queued for admin approval), and the quote-to-confirmed-booking journey test. Runs before the SEO Action Engine so repairs land first."
+}

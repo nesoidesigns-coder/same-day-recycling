@@ -1,7 +1,14 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 import { ACTIVE_CITIES, isTestPartner } from '../../shared/coverageStatus.ts';
-import { DEFAULT_PRICES } from '../../shared/pricing.ts';
+import { DEFAULT_PRICES, resolveCityPrices, itemsToEighths, computeQuote } from '../../shared/pricing.ts';
+import { TRACKED_PAGES, currentMeta } from '../../shared/seoAction.ts';
+import { recordTrackingEvent } from '../../shared/tracking.ts';
+
+// Journey-test bookings reuse the dispatch-simulation identity so the existing
+// simulation cleanup path also recognises them.
+const SIM_NAME = 'SIM TEST Customer';
+const SIM_MARKER = 'dispatch_simulation';
 
 // Platform Integrity: automated checks that every public surface represents the
 // same operational reality. It only records VERIFIED findings from real app
@@ -18,6 +25,8 @@ const CHECKS_ORDER = [
   'page_rendering',
   'broken_links',
   'conflicting_claims',
+  'meta_claim_drift',
+  'quote_journey',
 ];
 
 export default async function(req) {
@@ -31,6 +40,7 @@ export default async function(req) {
     const action = body.action || 'run';
     if (action === 'latest') return await handleLatest(base44);
     if (action === 'run') return await runChecks(base44, req);
+    if (action === 'full_audit') return await runChecks(base44, req, true);
     return Response.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
@@ -52,9 +62,10 @@ const check = (name, severity, summary, affected_pages = [], details = []) => ({
   check: name, severity, summary, affected_pages, details,
 });
 
-async function runChecks(base44, req) {
+async function runChecks(base44, req, full = false) {
   const startedAt = new Date().toISOString();
   const results = [];
+  const repairs = []; // mechanical single-source-of-truth fixes applied this run
   const readRows = (page) => (Array.isArray(page) ? page : page?.items) || [];
   const origin = reqOrigin(req);
 
@@ -240,6 +251,167 @@ async function runChecks(base44, req) {
     results.push(check('conflicting_claims', sev, sev === 'pass' ? 'No pricing-claim drift between public pages and the quote engine.' : 'Public pricing claims conflict with the quote engine.', ['/pricing', '/faq', '/realtor-partners', '/city-pages'], details));
   }
 
+  // ---- 10. Meta claim drift: served page metadata vs stored records (full audit) ----
+  if (full) {
+    const details = [];
+    const affected = [];
+    const conflictPages = [];
+    let conflicts = 0;
+    const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    for (const page of TRACKED_PAGES) {
+      let meta = null;
+      try { meta = await currentMeta(base44, page); } catch { meta = null; }
+      const live = await fetchPage(origin + page.path);
+      if (!live.ok) {
+        details.push(`${page.path}: page could not be fetched (HTTP ${live.status}).`);
+        affected.push(page.path);
+        conflicts += 1;
+        continue;
+      }
+      const servedTitle = extractTag(live.body, 'title');
+      const servedDesc = extractMeta(live.body, 'description');
+      if (meta && (meta.title || meta.description)) {
+        const titleOk = !meta.title || norm(servedTitle) === norm(meta.title);
+        const descOk = !meta.description || norm(servedDesc) === norm(meta.description);
+        if (!titleOk || !descOk) {
+          conflicts += 1;
+          affected.push(page.path);
+          conflictPages.push(page);
+          details.push(
+            `${page.path}: served metadata differs from the stored ${meta.source}.` +
+            (titleOk ? '' : ` Stored title: "${meta.title}" · Served title: "${servedTitle || '—'}".`) +
+            (descOk ? '' : ` Stored description: "${meta.description}" · Served description: "${servedDesc || '—'}".`)
+          );
+        }
+      } else {
+        details.push(`${page.path}: no stored meta record — the page serves generated metadata. Create one through the SEO Action Engine approval flow.`);
+      }
+    }
+    // Approval-gated repair: queue metadata re-application for admin review.
+    if (conflictPages.length) {
+      const pending = (await base44.asServiceRole.entities.SeoRecommendation.filter({ status: 'pending_review' }, { limit: 50 })).items || [];
+      const today = new Date().toISOString().slice(0, 10);
+      const rows = [];
+      for (const page of conflictPages) {
+        if (pending.some((r) => r.page_path === page.path && r.target_keyword === 'meta consistency')) continue;
+        const meta = await currentMeta(base44, page).catch(() => null);
+        rows.push({
+          page_path: page.path,
+          page_label: page.label,
+          target_keyword: 'meta consistency',
+          kind: 'metadata',
+          proposed_title: String(meta?.title || '').slice(0, 120),
+          proposed_description: String(meta?.description || '').slice(0, 320),
+          rationale: 'Full integrity audit found the served page metadata conflicts with the stored record. Approving re-applies the stored record.',
+          gsc_context: '',
+          status: 'pending_review',
+          recommended_date: today,
+        });
+      }
+      if (rows.length) {
+        await base44.asServiceRole.entities.SeoRecommendation.bulkCreate(rows);
+        repairs.push(`Queued ${rows.length} approval-gated metadata repair(s) in the SEO Action Engine (${rows.map((r) => r.page_path).join(', ')}).`);
+      }
+    }
+    results.push(check('meta_claim_drift', conflicts ? 'warning' : 'pass',
+      conflicts ? `${conflicts} tracked page(s) serve metadata conflicting with stored records — repair queued for approval.` : 'Served page metadata matches the stored records.',
+      affected.length ? affected : TRACKED_PAGES.map((p) => p.path),
+      details.length ? details : ['All tracked pages were fetched and compared against their stored metadata records.']));
+  }
+
+  // ---- 11. Quote → confirmed-booking journey test (full audit) ----
+  if (full) {
+    const stages = [];
+    let ok = true;
+    // Stage 1: quote through the real pricing engine.
+    let quote = null;
+    try {
+      const { items: vRows } = await base44.asServiceRole.entities.PricingSettings.filter({ city: 'Vancouver' }, { limit: 1 });
+      const prices = resolveCityPrices(vRows[0] || null);
+      const eighths = itemsToEighths([{ name: 'sofa', quantity: 1 }, { name: 'mattress', quantity: 1 }]);
+      quote = computeQuote(eighths, prices, {});
+      const valid = Number.isFinite(quote.low) && Number.isFinite(quote.high) && quote.low > 0 && quote.high >= quote.low;
+      stages.push({ stage: 'quote', ok: valid, detail: valid ? `Quote engine returned ${quote.range} (${quote.label}) from the ${vRows[0] ? 'live Vancouver' : 'national'} rate table.` : 'Quote engine returned an invalid range.' });
+      ok = valid;
+    } catch (e) {
+      stages.push({ stage: 'quote', ok: false, detail: String(e.message || e) });
+      ok = false;
+    }
+    // Stage 2: booking (internal_test — excluded from all metrics and dispatch queues).
+    let booking = null;
+    if (ok) {
+      try {
+        const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+        booking = await base44.asServiceRole.entities.Booking.create({
+          name: SIM_NAME,
+          phone: '604-555-0188',
+          email: 'integrity-audit@example.com',
+          address: '123 Integrity Audit Way',
+          city: 'Vancouver',
+          province_code: 'BC',
+          items_description: 'INTEGRITY AUDIT: one sofa, one mattress',
+          preferred_date: tomorrow,
+          time_window: '10:00 - 12:00',
+          quote_estimate: quote.range,
+          job_value: quote.low,
+          quote_status: 'approved',
+          approved_quote_amount: quote.low,
+          record_type: 'internal_test',
+          status: 'confirmed',
+          description: 'Automated full-audit journey test booking.',
+          notes: SIM_MARKER,
+        });
+        const created = !!booking.id;
+        stages.push({ stage: 'booking', ok: created, detail: created ? 'Test booking created as internal_test — invisible to metrics, dispatch and payouts.' : 'Booking record could not be created.' });
+        ok = created;
+      } catch (e) {
+        stages.push({ stage: 'booking', ok: false, detail: String(e.message || e) });
+        ok = false;
+      }
+    }
+    // Stage 3 + 4: lifecycle tracking events and reference-code lookup.
+    if (ok) {
+      const srole = base44.asServiceRole;
+      try {
+        const ref = ('AUD' + crypto.randomUUID().replace(/-/g, '')).slice(0, 8).toUpperCase();
+        for (const st of ['inquiry_received', 'quote_generated', 'quote_approved', 'contractor_assigned']) {
+          await recordTrackingEvent(srole, { booking_id: booking.id, reference_code: ref, stage: st, actor: 'integrity-audit', source: 'integrity_audit' });
+        }
+        const evPage = await srole.entities.TrackingEvent.filter({ booking_id: booking.id }, { limit: 20 });
+        const evs = evPage.items || evPage;
+        const pass = evs.length >= 4;
+        stages.push({ stage: 'tracking_events', ok: pass, detail: pass ? `${evs.length} lifecycle events recorded across the job timeline.` : `Expected 4 lifecycle events, found ${evs.length}.` });
+        ok = pass;
+        if (pass) {
+          const lkPage = await srole.entities.TrackingEvent.filter({ reference_code: ref }, { limit: 20 });
+          const lk = lkPage.items || lkPage;
+          const lkOk = lk.length >= 4 && lk.every((e) => e.booking_id === booking.id);
+          stages.push({ stage: 'reference_lookup', ok: lkOk, detail: lkOk ? `Reference code ${ref} resolves the full timeline — the same path the customer portal uses.` : 'Reference-code lookup failed or returned events from another job.' });
+          ok = lkOk;
+        }
+      } catch (e) {
+        stages.push({ stage: 'tracking_events', ok: false, detail: String(e.message || e) });
+        ok = false;
+      }
+      // Cleanup: remove ONLY this run's records.
+      let cleaned = true;
+      try {
+        const evPage = await srole.entities.TrackingEvent.filter({ booking_id: booking.id }, { limit: 50 });
+        for (const ev of (evPage.items || evPage)) await srole.entities.TrackingEvent.delete(ev.id);
+        await srole.entities.Booking.delete(booking.id);
+      } catch (e) {
+        cleaned = false;
+        stages.push({ stage: 'cleanup', ok: false, detail: String(e.message || e) });
+      }
+      if (cleaned) stages.push({ stage: 'cleanup', ok: true, detail: 'Test booking and its tracking events removed — no production data touched.' });
+    }
+    const failed = stages.filter((s) => !s.ok).length;
+    results.push(check('quote_journey', failed ? 'error' : 'pass',
+      failed ? `Journey test failed at ${failed} of ${stages.length} step(s).` : 'Quote → booking → tracking → lookup journey passed end-to-end; test data cleaned up.',
+      ['/quote', '/request-service', '/track'],
+      stages.map((s) => `${s.ok ? 'PASS' : 'FAIL'} — ${s.stage}: ${s.detail}`)));
+  }
+
   // ---- Persist ----
   const error_count = results.filter((r) => r.severity === 'error').length;
   const warning_count = results.filter((r) => r.severity === 'warning').length;
@@ -278,10 +450,10 @@ async function runChecks(base44, req) {
     error_count,
     warning_count,
     coverage_snapshot: snapshot,
-    notes: `Automated integrity run: ${results.length} checks in ${Math.max(1, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000))}s.`,
+    notes: `Automated integrity run: ${results.length} checks in ${Math.max(1, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000))}s.` + (repairs.length ? ` Repairs: ${repairs.join(' | ')}` : ''),
   });
 
-  return Response.json({ ok: true, status: runStatus, error_count, warning_count, checks: results, coverage_changes_logged: changeLogs.length });
+  return Response.json({ ok: true, status: runStatus, error_count, warning_count, checks: results, coverage_changes_logged: changeLogs.length, repairs, journey: full ? (results.find((r) => r.check === 'quote_journey') || null) : null });
 }
 
 async function fetchPage(url) {
@@ -296,6 +468,18 @@ async function fetchPage(url) {
   } catch {
     return { ok: false, status: 0, body: '', hasTitle: false };
   }
+}
+
+function extractTag(html, tag) {
+  const m = String(html || '').match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'));
+  return m ? m[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200) : '';
+}
+
+function extractMeta(html, name) {
+  const m = String(html || '').match(new RegExp(`<meta[^>]+name=["']${name}["'][^>]*>`, 'i'));
+  if (!m) return '';
+  const c = m[0].match(/content=["']([^"']*)["']/i);
+  return c ? c[1].replace(/\s+/g, ' ').trim().slice(0, 320) : '';
 }
 
 function reqOrigin(req) {

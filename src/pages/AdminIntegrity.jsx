@@ -17,6 +17,8 @@ const CHECKS_ORDER = [
   'page_rendering',
   'broken_links',
   'conflicting_claims',
+  'meta_claim_drift',
+  'quote_journey',
 ];
 
 const SEV = {
@@ -36,6 +38,8 @@ const CHECK_LABELS = {
   page_rendering: 'Page rendering',
   broken_links: 'Broken links',
   conflicting_claims: 'Conflicting claims',
+  meta_claim_drift: 'Meta claim drift',
+  quote_journey: 'Quote → booking journey',
 };
 
 export default function AdminIntegrity() {
@@ -48,13 +52,14 @@ export default function AdminIntegrity() {
     queryFn: async () => (await base44.functions.invoke('platformIntegrity', { action: 'latest' })).data,
   });
 
-  const runNow = async () => {
+  const runNow = async (full = false) => {
     setRunning(true);
     setRunMsg('');
     try {
-      const res = await base44.functions.invoke('platformIntegrity', { action: 'run' });
+      const res = await base44.functions.invoke('platformIntegrity', full ? { action: 'full_audit' } : { action: 'run' });
       const d = res.data || {};
-      setRunMsg(`Check finished: ${d.status} — ${d.error_count} error(s), ${d.warning_count} warning(s), ${d.coverage_changes_logged} coverage change(s) logged.`);
+      const repairs = (d.repairs || []).length ? `, ${d.repairs.length} repair(s) applied/queued` : '';
+      setRunMsg(`Check finished: ${d.status} — ${d.error_count} error(s), ${d.warning_count} warning(s), ${d.coverage_changes_logged} coverage change(s) logged${repairs}.`);
       queryClient.invalidateQueries({ queryKey: ['platformIntegrity'] });
     } catch (e) {
       setRunMsg(e?.response?.data?.error || 'Check failed — see runtime logs.');
@@ -76,6 +81,9 @@ export default function AdminIntegrity() {
       <div className="flex flex-wrap items-center gap-3">
         <button onClick={runNow} disabled={running} className="inline-flex items-center gap-2 rounded-full bg-[#187B65] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#125C4E] transition-colors disabled:opacity-60">
           <PlayCircle className="w-4 h-4" /> {running ? 'Running all checks…' : 'Run integrity check now'}
+        </button>
+        <button onClick={() => runNow(true)} disabled={running} className="inline-flex items-center gap-2 rounded-full border border-[#187B65] bg-white px-5 py-2.5 text-sm font-bold text-[#187B65] hover:bg-[#f4f7f5] transition-colors disabled:opacity-60">
+          {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />} Run full audit (claims + journey test)
         </button>
         <span className="text-xs text-slate-500 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />
           Last successful check: {status.data?.last_successful_check_at ? new Date(status.data.last_successful_check_at).toLocaleString('en-CA') : 'never'}
