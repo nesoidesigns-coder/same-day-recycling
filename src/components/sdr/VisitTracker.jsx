@@ -9,9 +9,17 @@ export default function VisitTracker() {
     // first paint or booking calls.
     const timer = setTimeout(() => {
       const params = new URLSearchParams(window.location.search);
-      const src = params.get("utm_source") || params.get("src") || "";
       base44.functions
-        .invoke("trackVisit", { path: window.location.pathname, referrer: document.referrer, sid: getSessionId(), country: visitorCountry(), src })
+        .invoke("trackVisit", {
+          path: window.location.pathname,
+          referrer: document.referrer,
+          sid: getSessionId(),
+          country: visitorCountry(),
+          src: params.get("src") || "",
+          utm_source: params.get("utm_source") || "",
+          utm_medium: params.get("utm_medium") || "",
+          utm_campaign: params.get("utm_campaign") || "",
+        })
         .catch(() => {});
     }, 3000);
     return () => clearTimeout(timer);

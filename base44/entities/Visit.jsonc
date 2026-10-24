@@ -13,7 +13,31 @@
         "other"
       ],
       "default": "direct",
-      "description": "google_business = the visit arrived from the Google Business Profile or a Maps listing (referrer), or via a link tagged ?src=gbp."
+      "description": "Legacy coarse attribution, kept for historical compatibility. Detailed attribution lives in `channel`."
+    },
+    "channel": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40,
+      "description": "Detailed acquisition channel assigned from recorded evidence (UTM tags or referrer): google_organic, bing_organic, other_search, facebook, instagram, other_social, ai_referral, direct, referral, paid, google_business. Empty on historical records; dashboards re-derive it from the stored referrer without rewriting records."
+    },
+    "utm_source": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80,
+      "description": "utm_source captured from the landing URL, when the link was campaign-tagged."
+    },
+    "utm_medium": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80,
+      "description": "utm_medium captured from the landing URL, when the link was campaign-tagged."
+    },
+    "utm_campaign": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120,
+      "description": "utm_campaign captured from the landing URL, when the link was campaign-tagged."
     },
     "path": {
       "type": "string",
@@ -38,7 +62,7 @@
       "type": "string",
       "default": "",
       "maxLength": 40,
-      "description": "Anonymous browser-session key linking this visit to a later quote request or booking in the same session. No cookies, no personal data."
+      "description": "Anonymous browser-session key linking this visit to a later quote request or booking in the same session. No cookies, no personal data. Records without one are legacy pageviews from before session tracking existed and are labeled as such, never rewritten."
     },
     "country": {
       "type": "string",

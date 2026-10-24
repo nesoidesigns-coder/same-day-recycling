@@ -110,3 +110,66 @@ export const METRIC_DEFINITIONS = {
   owner_activity: 'Authenticated admin visits — fully tracked, excluded from every customer metric.',
   unclassified: 'Historical or uncertain visits with no classification. Never auto-labelled as customers.',
 };
+
+// ---- Acquisition-channel attribution (evidence-based, 11 categories) ----
+// A channel is assigned ONLY from recorded evidence: UTM campaign tags or the
+// HTTP referrer. An empty referrer with no campaign tags stays Direct — never
+// re-labelled without evidence. The `source` field is preserved for
+// compatibility; `channel` carries the detailed category. Historical records
+// without a channel are re-derived at read time from their own stored
+// evidence (referrer / GBP marker) — derivation from recorded data, never a
+// rewrite of the record.
+export const CHANNEL_LABELS: Record<string, string> = {
+  google_organic: 'Google organic search',
+  bing_organic: 'Bing organic search',
+  other_search: 'Other search engines',
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  other_social: 'Other social platforms',
+  ai_referral: 'AI referrals',
+  direct: 'Direct',
+  referral: 'Referral websites',
+  paid: 'Paid campaigns',
+  unknown: 'Unknown / unattributed',
+  google_business: 'Google Business Profile',
+};
+
+const UTM_SOURCE_MAP: Array<[string[], string]> = [
+  [['google'], 'google_organic'],
+  [['bing'], 'bing_organic'],
+  [['facebook', 'fb', 'meta'], 'facebook'],
+  [['instagram'], 'instagram'],
+  [['chatgpt', 'openai', 'perplexity', 'gemini', 'copilot', 'claude', 'you.com'], 'ai_referral'],
+  [['twitter', 'linkedin', 'reddit', 'tiktok', 'youtube', 'pinterest', 'whatsapp'], 'other_social'],
+];
+const PAID_MEDIUMS = ['cpc', 'ppc', 'paid', 'ads', 'advertising', 'display', 'paidsearch'];
+const OTHER_SEARCH_HOSTS = ['duckduckgo.', 'yahoo.', 'ecosia.', 'startpage.com', 'search.brave.com', 'yandex.', 'baidu.'];
+const OTHER_SOCIAL_HOSTS = ['twitter.com', 'x.com/', 't.co/', 'linkedin.com', 'lnkd.in', 'reddit.com', 'redd.it', 'tiktok.com', 'youtube.com', 'youtu.be', 'pinterest.', 'whatsapp.com'];
+
+export function classifyChannel(ev: { referrer?: string | null; utm_source?: string | null; utm_medium?: string | null; utm_campaign?: string | null; gbp?: boolean }): string {
+  if (ev.gbp) return 'google_business';
+  const medium = String(ev.utm_medium || '').toLowerCase();
+  const us = String(ev.utm_source || '').toLowerCase();
+  if (String(ev.utm_campaign || '').trim() || medium || us) {
+    if (PAID_MEDIUMS.some((m) => medium.includes(m))) return 'paid';
+    for (const [keys, label] of UTM_SOURCE_MAP) if (keys.some((k) => us.includes(k))) return label;
+    return 'referral';
+  }
+  const r = String(ev.referrer || '').toLowerCase();
+  if (!r) return 'direct';
+  if (AI_HOSTS.some((h) => r.includes(h))) return 'ai_referral';
+  if (r.includes('facebook.com') || r.includes('fb.me') || r.includes('l.facebook')) return 'facebook';
+  if (r.includes('instagram.com') || r.includes('l.instagram')) return 'instagram';
+  if (r.includes('google.')) return 'google_organic';
+  if (r.includes('bing.')) return 'bing_organic';
+  if (OTHER_SEARCH_HOSTS.some((h) => r.includes(h))) return 'other_search';
+  if (OTHER_SOCIAL_HOSTS.some((h) => r.includes(h))) return 'other_social';
+  return 'referral';
+}
+
+// Display channel for any record: an explicit channel first, otherwise
+// re-derived from the record's own stored evidence.
+export function channelOf(row: { channel?: string | null; referrer?: string | null; source?: string | null }): string {
+  if (row.channel) return row.channel;
+  return classifyChannel({ referrer: row.referrer, gbp: row.source === 'google_business' });
+}
