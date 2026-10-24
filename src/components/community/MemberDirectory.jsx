@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Search, BadgeCheck, MapPin, ShieldAlert } from 'lucide-react';
@@ -50,7 +51,7 @@ export default function MemberDirectory() {
       )}
       <div className="grid sm:grid-cols-2 gap-3">
         {visible.map((m) => (
-          <div key={m.id} className="rounded-2xl border border-slate-200 bg-white p-4">
+          <Link key={m.id} to={`/community/member/${m.id}`} className="block rounded-2xl border border-slate-200 bg-white p-4 hover:border-[#187B65]/50 hover:shadow-sm transition-all">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <div className="text-sm font-bold text-[#102B2A]">{m.display_name}</div>
@@ -66,7 +67,7 @@ export default function MemberDirectory() {
             {(m.city || m.province_code) && <p className="mt-1 text-xs text-slate-500 flex items-center gap-1"><MapPin className="w-3 h-3" />{[m.city, m.province_code].filter(Boolean).join(', ')}</p>}
             {m.bio && <p className="mt-2 text-xs text-slate-600 line-clamp-3">{m.bio}</p>}
             {m.contribution_score > 0 && <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[#187B65]">{m.contribution_score} community contributions</p>}
-          </div>
+          </Link>
         ))}
       </div>
       <p className="flex items-start gap-1.5 text-[11px] text-slate-500"><ShieldAlert className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Report any member behaving inappropriately from their posts. Moderators review all reports.</p>

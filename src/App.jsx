@@ -113,6 +113,7 @@ const AdminReputation = lazyPage(() => import('./pages/AdminReputation'));
 const AdminSms = lazyPage(() => import('./pages/AdminSms'));
 const ChangeOrderRespond = lazyPage(() => import('./pages/ChangeOrderRespond'));
 const Community = lazyPage(() => import('./pages/Community'));
+const CommunityMemberProfile = lazyPage(() => import('./pages/CommunityMemberProfile'));
 const AdminCommunity = lazyPage(() => import('./pages/AdminCommunity'));
 const AdminAds = lazyPage(() => import('./pages/AdminAds'));
 const AdminCommunityPublisher = lazyPage(() => import('./pages/AdminCommunityPublisher'));
@@ -194,6 +195,7 @@ const AuthenticatedApp = () => {
       <Route path="/request-status" element={<RequestStatus />} />
       <Route path="/change-order" element={<ChangeOrderRespond />} />
       <Route path="/community" element={<Community />} />
+      <Route path="/community/member/:profileId" element={<CommunityMemberProfile />} />
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/demand" element={<DemandPage />} />
       <Route path="/gallery" element={<Gallery />} />
