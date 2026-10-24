@@ -21,6 +21,7 @@
 import { computeFee, pickActiveAgreement } from './feeEngine.ts';
 import { sendSms } from './twilio.ts';
 import { isTestPartner } from './coverageStatus.ts';
+import { partnerCoversCity } from './territory.ts';
 
 // entity filter()/list() return a page ({items}) when given options, or a bare array.
 export const toItems = (page) => (Array.isArray(page) ? page : (page && page.items) || []);
@@ -70,9 +71,11 @@ async function bumpDispatchTask(srole, request, patch) {
 // Candidate scoring
 // ---------------------------------------------------------------------------
 
-// Eligibility: active + verified partner, service area covers the request
-// city (their city, or an agreement territory city), equipment fits the job
-// type, and the partner is not paused from auto-dispatch (dispatch_mode).
+// Eligibility: active + verified partner, EXPLICIT service area covers the
+// request city (home city, a confirmed additional municipality, or an
+// agreement territory city), equipment fits the job type, and the partner is
+// not paused from auto-dispatch (dispatch_mode). Coverage is never inferred
+// from proximity.
 export async function findCandidates(srole, request) {
   const cityNorm = normCity(request.city);
   const serviceType = request.service_type || 'other';
@@ -111,11 +114,11 @@ export async function findCandidates(srole, request) {
     if (isTestPartner(p)) continue; // sandbox/test partners never receive real offers
     const partnerServices = (p.service_types || []).map((s) => String(s));
     if (partnerServices.length > 0 && !partnerServices.includes(serviceType)) continue; // job type
-    const partnerCity = normCity(p.city);
     const agreement = pickActiveAgreement(agreements, p.id);
     const territoryCities = ((agreement?.territory_subscription?.territory_cities) || []).map(normCity);
     const inTerritory = territoryCities.includes(cityNorm);
-    if (partnerCity !== cityNorm && !inTerritory) continue; // service area
+    const coversCity = partnerCoversCity(p, request.city) || inTerritory;
+    if (!coversCity) continue; // service area — explicit confirmed territories only
 
     const equipment = (p.equipment || []).map((e) => String(e).toLowerCase());
     const equipmentOk = wanted.length === 0 || equipment.length === 0

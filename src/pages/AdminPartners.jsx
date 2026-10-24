@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { CITIES } from "@/lib/cities";
-import { Loader2, Users, Plus, CheckCircle2, AlertTriangle, Truck, Power } from "lucide-react";
+import { Loader2, Users, Plus, CheckCircle2, AlertTriangle, Truck, Power, Copy } from "lucide-react";
+import PartnerTerritoryEditor from "@/components/admin/PartnerTerritoryEditor";
 
 export default function AdminPartners() {
   const [partners, setPartners] = useState(null);
   const [jobCounts, setJobCounts] = useState({});
   const [form, setForm] = useState({ name: "", email: "", city: "", equipment: [] });
   const [saving, setSaving] = useState(false);
+  const [duplicate, setDuplicate] = useState("");
 
   const EQUIPMENT_OPTIONS = ["Pickup truck", "Pickup + trailer", "1-ton + dump trailer", "Full dump truck", "Bin / container rental", "Pallet jack / lifting gear"];
 
@@ -23,15 +25,29 @@ export default function AdminPartners() {
   const add = async () => {
     if (!form.name.trim() || !form.email.trim() || !form.city) return;
     setSaving(true);
+    setDuplicate("");
     try {
-      await base44.users.inviteUser(form.email.trim(), "user");
-    } catch {
-      // already invited or already a user — partner record still gets created
+      // One operator = one record: an existing partner on the same email is
+      // extended (new territory city), never duplicated.
+      const existing = await base44.entities.Partner.filter({ email: form.email.trim() }, { limit: 1 });
+      if ((existing.items || []).length > 0) {
+        const dup = existing.items[0];
+        const cities = [...new Set([...(dup.service_cities || []), form.city])].filter((c) => c !== dup.city);
+        await base44.entities.Partner.update(dup.id, {
+          service_cities: cities,
+          territory_type: cities.length === 0 ? "single_city" : cities.length <= 4 ? "multi_city" : "metro_region",
+          territory_verified_date: new Date().toISOString().slice(0, 10),
+        });
+        setDuplicate(`Existing partner "${dup.name}" already covers this operator — added ${form.city} to their territory instead of creating a duplicate.`);
+      } else {
+        await base44.users.inviteUser(form.email.trim(), "user");
+        await base44.entities.Partner.create({ name: form.name.trim(), email: form.email.trim(), city: form.city, equipment: form.equipment, active: true });
+      }
+      setForm({ name: "", email: "", city: "", equipment: [] });
+    } finally {
+      setSaving(false);
+      load();
     }
-    await base44.entities.Partner.create({ name: form.name.trim(), email: form.email.trim(), city: form.city, equipment: form.equipment, active: true });
-    setForm({ name: "", email: "", city: "", equipment: [] });
-    setSaving(false);
-    load();
   };
 
   const toggleActive = async (p) => {
@@ -71,7 +87,13 @@ export default function AdminPartners() {
                       {p.active !== false ? "Available" : "Inactive"}
                     </span>
                   </div>
-                  <div className="text-xs font-semibold text-[#102B2A] mt-2">{p.city || "No city set"}</div>
+                  <div className="text-xs font-semibold text-[#102B2A] mt-2">
+                    {p.city || "No city set"}
+                    {(p.service_cities || []).length > 0 && <span className="text-slate-500"> + {p.service_cities.length} more · {p.territory_type === "metro_region" ? "metro region" : p.territory_type === "multi_city" ? "multi-city" : "territory"}</span>}
+                    {p.same_day_capable && <span className="ml-1.5 rounded-full bg-[#187B65]/10 text-[#187B65] px-2 py-0.5 text-[9px] font-bold uppercase">same-day</span>}
+                    {p.availability === "limited" && <span className="ml-1.5 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[9px] font-bold uppercase">limited</span>}
+                    {p.availability === "unavailable" && <span className="ml-1.5 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[9px] font-bold uppercase">unavailable</span>}
+                  </div>
                   {p.equipment?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-2">
                       {p.equipment.map((eq) => (
@@ -106,6 +128,7 @@ export default function AdminPartners() {
                       <option value="manual_only">Manual only — admin assigns</option>
                     </select>
                   </label>
+                  <PartnerTerritoryEditor partner={p} onSaved={load} />
                 </div>
               );
             })
@@ -142,7 +165,10 @@ export default function AdminPartners() {
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
               {saving ? "Adding…" : "Add partner & send invite"}
             </button>
-            <p className="text-[11px] text-slate-500 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#187B65]" /> Contractors can also self-register at /partner-register — their account links automatically.</p>
+            {duplicate && (
+              <p className="text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-start gap-1.5"><Copy className="w-3.5 h-3.5 mt-0.5 shrink-0" /> {duplicate}</p>
+            )}
+            <p className="text-[11px] text-slate-500 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#187B65]" /> Contractors can also self-register at /partner-register — their account links automatically. Adding an email that already exists extends that partner's territory instead of duplicating them.</p>
           </div>
         </div>
       </div>

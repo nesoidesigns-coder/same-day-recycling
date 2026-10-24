@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
+import { partnerCities } from '../../shared/territory.ts';
 
 // Canadian Market Opportunity Engine: separates measured demand from confirmed
 // capacity. Demand = real bookings/service requests (internal tests excluded);
@@ -39,11 +40,21 @@ export default async function(req) {
     ]);
     const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
 
+    // Verified capacity per city comes from each contractor's EXPLICIT
+    // territory (home city + confirmed additional municipalities) — not from
+    // separate contractor records per municipality, and never from proximity.
+    // A city covered by an existing contractor is therefore never classified
+    // as a recruitment opportunity.
     const verifiedByCity = {};
+    const trucksByCity = {};
+    const sameDayByCity = {};
     for (const p of items(partners)) {
-      const c = String(p.city || '').trim();
-      if (!c) continue;
-      verifiedByCity[c] = (verifiedByCity[c] || 0) + ((p.verified === undefined || p.verified) ? 1 : 0);
+      if (!(p.verified === undefined || p.verified)) continue;
+      for (const c of partnerCities(p)) {
+        verifiedByCity[c] = (verifiedByCity[c] || 0) + 1;
+        trucksByCity[c] = (trucksByCity[c] || 0) + Math.max(1, Number(p.truck_capacity) || 1);
+        if (p.same_day_capable) sameDayByCity[c] = (sameDayByCity[c] || 0) + 1;
+      }
     }
 
     const demandByCity = {};
@@ -89,6 +100,8 @@ export default async function(req) {
         city, province_code: province,
         demand_requests: d.requests, demand_completed: d.completed,
         verified_partners: verified,
+        truck_capacity: trucksByCity[city] || 0,
+        same_day_capable: sameDayByCity[city] || 0,
         search_interest_impressions: interest,
         classification, opportunity_score: score,
       });
@@ -107,7 +120,7 @@ export default async function(req) {
       demand_records_scanned: items(bookingsPage).length + items(requestsPage).length,
       cities: cities.slice(0, 25),
       definitions: {
-        confirmed_capacity: 'Verified active contractor accepts jobs here today.',
+        confirmed_capacity: 'Verified active contractor with an explicitly confirmed service area covering this city (home city or a confirmed additional municipality).',
         matching_territory: 'Real requests accepted here, pending contractor matching — no verified contractor yet.',
         recruitment_opportunity: 'Real search interest here, but no demand records and no contractor yet.',
       },

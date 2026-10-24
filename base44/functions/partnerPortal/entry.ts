@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { sendSms } from '../../shared/twilio.ts';
 import { recordTrackingEvent } from '../../shared/tracking.ts';
+import { partnerCities, normCity } from '../../shared/territory.ts';
 
 const PARTNER_SHARE = 0.75;
 
@@ -282,23 +283,56 @@ export default async function(req) {
       });
     }
 
-    // Territory overview: bookings, quotes and estimated revenue for this partner's city.
+    // Territory overview: bookings, quotes and estimated revenue across this
+    // partner's whole confirmed service area (home city + confirmed
+    // municipalities) — one record, many cities, never duplicated.
     if (action === 'territory') {
-      const city = String(partner.city || '').trim();
+      const cities = partnerCities(partner);
       const [{ items: rawCityBookings }, quotes] = await Promise.all([
-        base44.asServiceRole.entities.Booking.filter({ city }, { sort: '-created_date', limit: 500 }),
-        base44.asServiceRole.entities.QuoteLead.count({ city }),
+        base44.asServiceRole.entities.Booking.filter({ city: { $in: cities } }, { sort: '-created_date', limit: 500 }),
+        base44.asServiceRole.entities.QuoteLead.count({ city: { $in: cities } }),
       ]);
       // Internal payment-test bookings never enter territory stats.
       const cityBookings = rawCityBookings.filter((b) => (b.record_type || 'service') !== 'internal_test');
       const estimatedRevenue = cityBookings.reduce((s, b) => s + (Number(b.job_value) || 0), 0);
       return Response.json({
-        city,
+        city: String(partner.city || '').trim(),
+        cities,
+        service_cities: partner.service_cities || [],
+        territory_type: partner.territory_type || 'single_city',
+        truck_capacity: Math.max(1, Number(partner.truck_capacity) || 1),
+        same_day_capable: !!partner.same_day_capable,
+        availability: partner.availability || 'available',
         bookings: cityBookings.length,
         completed_bookings: cityBookings.filter((b) => b.assignment_status === 'completed').length,
         quotes,
         estimated_revenue: Math.round(estimatedRevenue * 100) / 100,
       });
+    }
+
+    // Service-area declaration: the contractor lists the additional
+    // municipalities they ACTUALLY serve and confirms capacity facts. Coverage
+    // is stored verbatim — never inferred from proximity to their home city.
+    if (action === 'territory_save') {
+      const submitted = (Array.isArray(body?.service_cities) ? body.service_cities : [])
+        .map((c) => String(c).trim().replace(/\s+/g, ' '))
+        .filter((c) => c && c.length <= 80);
+      const homeKey = normCity(partner.city);
+      const unique = [...new Set(submitted)]
+        .filter((c) => normCity(c) !== homeKey)
+        .slice(0, 60);
+      const patch = {
+        service_cities: unique,
+        territory_type: ['single_city', 'multi_city', 'metro_region'].includes(body?.territory_type)
+          ? body.territory_type
+          : (unique.length === 0 ? 'single_city' : unique.length <= 4 ? 'multi_city' : 'metro_region'),
+        territory_verified_date: new Date().toISOString().slice(0, 10),
+      };
+      if (body?.truck_capacity !== undefined) patch.truck_capacity = Math.max(1, Math.min(50, Number(body.truck_capacity) || 1));
+      if (body?.same_day_capable !== undefined) patch.same_day_capable = !!body.same_day_capable;
+      if (['available', 'limited', 'unavailable'].includes(body?.availability)) patch.availability = body.availability;
+      await base44.asServiceRole.entities.Partner.update(partner.id, patch);
+      return Response.json({ ok: true, cities: partnerCities({ ...partner, ...patch }) });
     }
 
     // Disputes on this contractor's jobs: they may read them and submit one

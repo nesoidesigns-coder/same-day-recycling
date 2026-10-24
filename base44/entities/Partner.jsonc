@@ -13,12 +13,56 @@
       "default": ""
     },
     "city": {
-      "type": "string"
+      "type": "string",
+      "description": "Home base city (primary territory)."
     },
     "province_code": {
       "type": "string",
       "default": "",
       "description": "Province or territory code (BC, ON, QC, NT...) for national operations and tax handling."
+    },
+    "territory_type": {
+      "type": "string",
+      "enum": [
+        "single_city",
+        "multi_city",
+        "metro_region"
+      ],
+      "default": "single_city",
+      "description": "Shape of the confirmed service area: one municipality, several municipalities, or a full metropolitan region."
+    },
+    "service_cities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Additional municipalities the contractor explicitly confirmed they serve, beyond their home city. Set by the contractor or the admin \u2014 never inferred from geographic proximity. One operator covering many cities stays a single record."
+    },
+    "territory_verified_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the service area was last confirmed by the contractor or admin."
+    },
+    "truck_capacity": {
+      "type": "number",
+      "default": 1,
+      "description": "Trucks (or equivalent full crews) this contractor can run per day. Measured separately from coverage."
+    },
+    "same_day_capable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Contractor explicitly confirmed same-day fulfillment capability. A city can be covered without same-day being guaranteed."
+    },
+    "availability": {
+      "type": "string",
+      "enum": [
+        "available",
+        "limited",
+        "unavailable"
+      ],
+      "default": "available",
+      "description": "Current dispatch availability, separate from coverage and capacity."
     },
     "equipment": {
       "type": "array",
@@ -60,7 +104,7 @@
       "type": "string",
       "default": "",
       "maxLength": 30,
-      "description": "CRA business number (or registration number) of the contractor's business."
+      "description": "CRA business number (or registration number) of the contractor's business. Used to keep one operator on one record across municipalities."
     },
     "tax_registered": {
       "type": "string",
