@@ -225,7 +225,7 @@ export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
       )}
 
       {trending.length > 0 && category === 'for_you' && !search && !savedOnly && (
-        <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4">
+        <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-3 sm:p-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#187B65]">Trending questions</h3>
           <div className="mt-2 space-y-1.5">
             {trending.map((t) => (
@@ -240,22 +240,22 @@ export default function CommunityFeed({ me, profileName, onGoOpportunities }) {
       {me
         ? <div id="composer-anchor"><PostComposer me={me} profileName={profileName} /></div>
         : (
-          <div className="rounded-2xl border border-[#187B65]/30 bg-[#f4f7f5] p-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="rounded-2xl border border-[#187B65]/30 bg-[#f4f7f5] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs font-semibold text-[#102B2A]">Reading as a guest. Join free to start discussions, reply and vote.</p>
             <a href="/register?returnTo=/community" className="rounded-full bg-[#187B65] px-4 py-2 text-xs font-bold text-white hover:bg-[#125C4E] transition-colors">Create free profile</a>
           </div>
         )}
 
-      {posts.isPending && <div className="flex items-center gap-2 py-10 text-sm text-slate-500" role="status"><Loader2 className="w-5 h-5 animate-spin text-[#187B65]" /> Loading discussions…</div>}
+      {posts.isPending && <div className="flex items-center gap-2 py-6 text-sm text-slate-500" role="status"><Loader2 className="w-5 h-5 animate-spin text-[#187B65]" /> Loading discussions…</div>}
       {posts.isError && <p className="flex items-center gap-2 py-8 text-sm text-red-600" role="alert"><TriangleAlert className="w-4 h-4" /> Discussions could not be loaded right now.</p>}
       {posts.data && visible.length === 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 text-center">
           {savedOnly
             ? <><p className="text-sm font-bold text-[#102B2A]">Nothing saved yet.</p><p className="mt-1 text-xs text-slate-500">Bookmark posts you want to come back to — they stay on this device.</p></>
             : <><p className="text-sm font-bold text-[#102B2A]">No discussions match your filters yet.</p><p className="mt-1 text-xs text-slate-500">Try the For You feed or be the first to start one.</p></>}
         </div>
       )}
-      <div className="space-y-5">
+      <div className="space-y-3 sm:space-y-5">
         {adRows.map((row, i) => row.type === 'ad' ? (
           <FeedAdCard key={`ad-${i}-${row.ad.id}`} ad={row.ad} />
         ) : (

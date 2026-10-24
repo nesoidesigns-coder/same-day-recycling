@@ -90,7 +90,7 @@ export default function Community() {
 
       {/* Compact branded header: content starts one screen-fraction down */}
       <header className="border-b border-slate-100 bg-white/90">
-        <div className="max-w-5xl mx-auto px-4 pt-4 pb-3">
+        <div className="max-w-5xl mx-auto px-4 pt-3 pb-2.5">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <span className="w-9 h-9 shrink-0 rounded-xl bg-[#187B65] text-white flex items-center justify-center">
@@ -123,14 +123,14 @@ export default function Community() {
 
       {guest && (
         <div className="bg-[#f4f7f5] border-b border-slate-200">
-          <p className="max-w-5xl mx-auto px-4 py-2 text-[11px] font-semibold text-[#102B2A]">
+          <p className="max-w-5xl mx-auto px-4 py-1.5 text-[11px] font-semibold text-[#102B2A]">
             You're browsing as a guest — every discussion, opportunity and resource is open to read. Posting, replies and votes need a free profile.
           </p>
         </div>
       )}
 
-      <div className="max-w-5xl mx-auto px-4 py-5">
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 mb-5" role="tablist" aria-label="Community sections">
+      <div className="max-w-5xl mx-auto px-4 py-3 sm:py-5">
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 mb-3 sm:mb-5" role="tablist" aria-label="Community sections">
           {TABS.map((t) => (
             <button key={t.id} onClick={() => setTab(t.id)} role="tab" aria-selected={tab === t.id} className={`shrink-0 rounded-full border px-4 py-2 text-sm font-bold transition-colors ${tab === t.id ? 'border-[#187B65] bg-[#187B65] text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-[#187B65]'}`}>{t.label}</button>
           ))}

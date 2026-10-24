@@ -12,11 +12,11 @@ export default function PostCard({ post, replyCount, helpfulCount, mineVoted, sa
       {/* Image-led: photos run edge-to-edge and lead the card */}
       <button onClick={onOpen} className="block w-full text-left">
         {post.image_url && (
-          <div className="aspect-[16/9] w-full overflow-hidden">
-            <Image src={post.image_url} alt="" className="w-full h-full" fittingType="fill" />
+          <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100">
+            <Image src={post.image_url} alt="" className="w-full h-full" fittingType="fill" targetWidth={640} loading="lazy" decoding="async" />
           </div>
         )}
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider">
             <span className="rounded-full bg-[#187B65]/10 text-[#187B65] px-2 py-0.5">{channelLabel(post.channel)}</span>
             {post.province && post.province !== 'national' && (
@@ -31,7 +31,7 @@ export default function PostCard({ post, replyCount, helpfulCount, mineVoted, sa
       </button>
 
       {/* Author + conversation actions */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 pb-3.5 text-xs text-slate-500">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 pb-3 sm:px-4 sm:pb-3.5 text-xs text-slate-500">
         <div className="flex items-center gap-2 min-w-0">
           <span className="w-7 h-7 shrink-0 rounded-full bg-[#187B65]/10 text-[#187B65] font-bold flex items-center justify-center text-xs">{initial}</span>
           <span className="truncate font-semibold text-slate-600">{post.author_name || 'Member'}</span>
