@@ -84,6 +84,7 @@ const SameDayPickup = lazyPage(() => import('./pages/SameDayPickup'));
 const AdminSearchIntelligence = lazyPage(() => import('./pages/AdminSearchIntelligence'));
 const AdminSearchAuthority = lazyPage(() => import('./pages/AdminSearchAuthority'));
 const AdminIntelligence = lazyPage(() => import('./pages/AdminIntelligence'));
+const AdminBusinessMaster = lazyPage(() => import('./pages/AdminBusinessMaster'));
 const AdminGrowth = lazyPage(() => import('./pages/AdminGrowth'));
 const AdminImprovements = lazyPage(() => import('./pages/AdminImprovements'));
 const AdminSeoCommand = lazyPage(() => import('./pages/AdminSeoCommand'));
@@ -227,6 +228,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/search-intelligence" element={<AdminSearchIntelligence />} />
           <Route path="/admin/search-authority" element={<AdminSearchAuthority />} />
           <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+          <Route path="/admin/business-master" element={<AdminBusinessMaster />} />
           <Route path="/admin/growth" element={<AdminGrowth />} />
           <Route path="/admin/improvements" element={<AdminImprovements />} />
           <Route path="/admin/demand" element={<AdminDemand />} />

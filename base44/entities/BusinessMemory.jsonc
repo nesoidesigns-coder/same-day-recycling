@@ -1,0 +1,111 @@
+{
+  "name": "BusinessMemory",
+  "type": "object",
+  "properties": {
+    "entry_type": {
+      "type": "string",
+      "enum": [
+        "milestone",
+        "financial_milestone",
+        "decision",
+        "model_change",
+        "agreement",
+        "lesson",
+        "objective",
+        "recommendation"
+      ],
+      "default": "milestone"
+    },
+    "title": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000
+    },
+    "entry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the milestone, decision or lesson occurred (not when it was recorded)."
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "rex",
+        "system"
+      ],
+      "default": "owner"
+    },
+    "related_ref": {
+      "type": "string",
+      "default": "",
+      "description": "Id or code of a related record (agreement, booking, briefing...)."
+    },
+    "impact_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Measured or expected business impact, kept factual."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable event log: created, corrected, superseded, archived."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

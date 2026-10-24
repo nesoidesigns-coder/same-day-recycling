@@ -5,7 +5,7 @@ import {
   Recycle, Menu, X, LayoutDashboard, Truck, UserPlus, ClipboardList, Users,
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
-  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles,
+  Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles, BrainCircuit,
   Target, FileSearch, ListChecks,
 } from "lucide-react";
 
@@ -28,6 +28,7 @@ const OPS = [
   { to: "/admin/contractor-acquisition", label: "Contractor Acquisition", icon: Target },
 ];
 const INTELLIGENCE = [
+  { to: "/admin/business-master", label: "AI Business Master", icon: BrainCircuit, exact: true },
   { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
   { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
   { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
