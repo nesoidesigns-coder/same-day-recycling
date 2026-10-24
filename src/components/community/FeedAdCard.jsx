@@ -6,6 +6,12 @@ import AdSenseSlot from '@/components/community/AdSenseSlot';
 
 // In-feed promotional card. Always clearly labelled; opens links in a new
 // tab; counts only real renders and clicks.
+const gaEvent = (name, ad) => {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, { ad_id: ad.id, ad_kind: ad.kind, advertiser: ad.advertiser_name || '' });
+  }
+};
+
 export default function FeedAdCard({ ad }) {
   const tracked = useRef(false);
 
@@ -13,12 +19,14 @@ export default function FeedAdCard({ ad }) {
     if (ad.kind === 'adsense' || tracked.current) return;
     tracked.current = true;
     base44.functions.invoke('communityAds', { action: 'track', id: ad.id, event: 'impression' }).catch(() => {});
+    gaEvent('community_ad_impression', ad);
   }, [ad]);
 
   if (ad.kind === 'adsense') return <AdSenseSlot publisherId={ad.publisher_id} slotId={ad.slot_id} />;
 
   const onClick = () => {
     base44.functions.invoke('communityAds', { action: 'track', id: ad.id, event: 'click' }).catch(() => {});
+    gaEvent('community_ad_click', ad);
     window.open(ad.link_url, '_blank', 'noopener');
   };
 

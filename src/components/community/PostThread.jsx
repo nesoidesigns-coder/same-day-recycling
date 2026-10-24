@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { ArrowLeft, Loader2, Send, ThumbsUp, Flag, Bot } from 'lucide-react';
@@ -11,6 +11,12 @@ export default function PostThread({ post, me, profileName, onBack }) {
   const [busy, setBusy] = useState(false);
   const [voted, setVoted] = useState(false);
   const [reported, setReported] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'community_post_open', { post_id: post.id, channel: post.channel, ai_generated: !!post.ai_generated });
+    }
+  }, [post.id]);
 
   const comments = useQuery({
     queryKey: ['communityComments', post.id],
