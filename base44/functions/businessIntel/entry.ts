@@ -266,6 +266,7 @@ export default async function(req) {
           sessions: 'Distinct anonymous session keys on human traffic (≈ unique visitors).',
           qualified_leads: 'Captured quote requests.',
           confirmed_bookings: 'Accepted and scheduled service bookings; counted once; cancelled and test records excluded.',
+          conversion_rate: 'Confirmed bookings ÷ distinct human visitor sessions in the window — never raw page-loads, which inflate the denominator.',
           completed_payments: 'Platform payments + owner-verified external settlements.',
           unclassified: 'Historical or uncertain records — never auto-labelled as customers.',
         },
@@ -280,7 +281,9 @@ export default async function(req) {
         completed_payments: paidPlatform.length + (paidExternal.length - paidExternalUnverified.length),
         revenue_collected: sum(paidPlatform, jobValue) + sum(paidExternal.filter((b) => b.external_payment_verified), jobValue),
         conversion: {
-          visit_to_booking_pct: pct(confirmed.length, human30),
+          // Session-based denominator (≈ unique visitors), not raw page-loads —
+          // the same definition the conversion funnel endpoint uses.
+          visit_to_booking_pct: pct(confirmed.length, sessions),
           intent_session_to_booking_pct: pct(confirmed.length, intentSids.size),
           lead_to_booking_pct: pct(confirmed.length, leads.length),
         },

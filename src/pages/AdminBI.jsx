@@ -88,12 +88,12 @@ export default function AdminBI() {
           {tab === "acquisition" && a && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                <Metric icon={Users} label="Real human traffic (30d)" value={num(a.human_visits)} sub={`${num(a.human_visits_24h)} in last 24h`} />
+                <Metric icon={Users} label="Visitor sessions (30d)" value={num(t.sessions)} sub={`${num(a.human_visits)} page-loads — historical page-loads without a session key are excluded from visitor counts`} />
                 <Metric icon={Target} label="Customer-intent visits" value={num(a.intent_visits)} sub={`${num(a.intent_sessions)} intent session(s)`} tone="text-[#187B65]" />
                 <Metric icon={UserCheck} label="Qualified leads" value={num(a.qualified_leads)} sub="Captured quote requests" />
                 <Metric icon={CalendarCheck} label="Confirmed bookings" value={num(a.confirmed_bookings)} sub="Counted once · tests & cancels excluded" />
                 <Metric icon={CircleDollarSign} label="Completed payments" value={num(a.completed_payments)} sub={`${money(a.revenue_collected)} collected`} />
-                <Metric icon={TrendingUp} label="Conversion rate" value={pctLabel(a.conversion.visit_to_booking_pct)} sub={`${pctLabel(a.conversion.intent_session_to_booking_pct)} of intent sessions book`} />
+                <Metric icon={TrendingUp} label="Conversion rate" value={pctLabel(a.conversion.visit_to_booking_pct)} sub={`Per visitor session · ${pctLabel(a.conversion.intent_session_to_booking_pct)} of intent sessions book`} />
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
                 <h2 className="text-sm font-bold text-[#102B2A]">Browsing vs buying intent</h2>

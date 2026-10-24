@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
+import { HUMAN_FILTER, SESSION_FILTER } from '../../shared/analytics.ts';
 
 // Conversion funnel report: real records only, no estimates or fabricated data.
 // Stages: site visits -> quote leads -> booking requests -> confirmed -> completed -> paid.
@@ -25,10 +26,33 @@ export default async function(req) {
       base44.entities.QuoteLead.filter({ created_date: { $gte: prevStartIso } }, { limit: 500 }),
       base44.entities.Booking.filter({ record_type: 'service', created_date: { $gte: prevStartIso } }, { limit: 500 }),
       base44.entities.Booking.filter({ record_type: 'internal_test', created_date: { $gte: prevStartIso } }, { limit: 500 }),
-      base44.entities.Visit.filter({ created_date: { $gte: prevStartIso }, sid: { $ne: '' } }, { limit: 500, sort: '-created_date' }),
     ]);
 
     const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
+
+    // Human visits across the full window, paginated — one pass drives both the
+    // visitor-session count (the honest conversion denominator, ≈ unique
+    // visitors) and the origin-visit map for journey attribution. A single
+    // 500-record page would silently drop most of the window (2,400+ human
+    // visits vs a 500-record page), undercounting sessions and breaking the
+    // source/country attribution for older conversions.
+    const humanVisitRows = [];
+    let vCursor;
+    for (let i = 0; i < 15; i++) {
+      const page = await base44.entities.Visit.filter(
+        { created_date: { $gte: prevStartIso }, ...HUMAN_FILTER, ...SESSION_FILTER },
+        vCursor ? { sort: '-created_date', limit: 500, cursor: vCursor } : { sort: '-created_date', limit: 500 });
+      humanVisitRows.push(...items(page));
+      vCursor = page?.next_cursor;
+      if (!page?.has_more || !vCursor) break;
+    }
+    const visitBySid = new Map();
+    for (const v of humanVisitRows) {
+      if (v.sid) visitBySid.set(v.sid, v);
+    }
+    const sessionsCur = new Set(humanVisitRows.filter((v) => new Date(v.created_date).getTime() >= startMs).map((v) => v.sid)).size;
+    const sessionsPrev = new Set(humanVisitRows.filter((v) => new Date(v.created_date).getTime() < startMs).map((v) => v.sid)).size;
+
     const split = (rows) => {
       const cur = rows.filter((r) => new Date(r.created_date).getTime() >= startMs);
       const prev = rows.filter((r) => new Date(r.created_date).getTime() < startMs);
@@ -67,8 +91,13 @@ export default async function(req) {
     const pct = (n, d) => (d > 0 ? Math.round((n / d) * 100) : null);
     const CONFIRMED = ['confirmed', 'contacted', 'scheduled', 'completed'];
 
-    const confirmed = bookings.filter((b) => CONFIRMED.includes(b.status));
-    const completed = bookings.filter((b) => b.status === 'completed');
+    // Cancelled requests are tracked but never counted in conversions — the
+    // funnel stage and every rate below use active (non-cancelled) requests,
+    // matching the confirmed-bookings definition on the BI dashboard.
+    const cancelled = bookings.filter((b) => b.status === 'cancelled');
+    const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
+    const confirmed = activeBookings.filter((b) => CONFIRMED.includes(b.status));
+    const completed = activeBookings.filter((b) => b.status === 'completed');
     const paidPlatform = bookings.filter((b) => b.payment_status === 'paid');
     const paidExternal = bookings.filter((b) => b.payment_status === 'paid_externally');
     const externalUnverified = paidExternal.filter((b) => !b.external_payment_verified);
@@ -83,14 +112,8 @@ export default async function(req) {
     }
     const cities = Object.values(byCity).sort((a, b) => b.requests - a.requests).slice(0, 8);
 
-    // Journey linkage: quote leads and bookings joined back to their origin
-    // visit (traffic source, visitor country, service page viewed) via the
-    // anonymous browser-session key recorded at visit time. The visit map is
-    // built newest-first, so overwriting leaves the session's entry visit.
-    const visitBySid = new Map();
-    for (const v of items(visitsJourneyPage)) {
-      if (v.sid) visitBySid.set(v.sid, v);
-    }
+    // Journey linkage: visitBySid is built by the paginated human-visit load
+    // above (newest-first, so overwriting leaves the session's entry visit).
     const byOriginKey = (rows, pick) => {
       const out = {};
       for (const row of rows) {
@@ -103,12 +126,12 @@ export default async function(req) {
     const countryLabel = (v) => (v.country === 'CA' ? 'Canada' : v.country === 'other' ? 'Outside Canada' : 'unlinked');
     const linked = (rows) => rows.filter((r) => r.sid && visitBySid.has(r.sid)).length;
     const journeys = {
-      bookings_by_source: byOriginKey(bookings, (v) => v.source),
-      bookings_by_country: byOriginKey(bookings, countryLabel),
+      bookings_by_source: byOriginKey(activeBookings, (v) => v.source),
+      bookings_by_country: byOriginKey(activeBookings, countryLabel),
       quote_leads_by_source: byOriginKey(leadsCur, (v) => v.source),
-      linked_bookings: linked(bookings),
+      linked_bookings: linked(activeBookings),
       linked_quote_leads: linked(leadsCur),
-      linked_booking_pct: pct(linked(bookings), bookings.length),
+      linked_booking_pct: pct(linked(activeBookings), activeBookings.length),
       linked_lead_pct: pct(linked(leadsCur), leadsCur.length),
     };
 
@@ -116,21 +139,21 @@ export default async function(req) {
       days,
       generated_at: new Date().toISOString(),
       funnel: {
-        visits: { current: visitsCur, previous: visitsPrev, by_class: classesCur },
+        visits: { current: visitsCur, previous: visitsPrev, visitor_sessions: sessionsCur, visitor_sessions_prev: sessionsPrev, by_class: classesCur },
         quote_leads: {
           current: leadsCur.length,
           previous: leadsPrev.length,
           booked: countWhere(leadsCur, (l) => l.status === 'booked'),
         },
-        booking_requests: { current: bookings.length, previous: bookingsPrev.length },
+        booking_requests: { current: activeBookings.length, previous: bookingsPrev.length, cancelled_excluded: cancelled.length },
         confirmed: { current: confirmed.length },
         completed: { current: completed.length },
         paid: { platform: paidPlatform.length, external: paidExternal.length, external_unverified: externalUnverified.length },
       },
       rates: {
-        visit_to_lead_pct: pct(leadsCur.length, visitsCur),
-        lead_to_booking_pct: pct(bookings.length, leadsCur.length),
-        booking_to_confirmed_pct: pct(confirmed.length, bookings.length),
+        visit_to_lead_pct: pct(leadsCur.length, sessionsCur),
+        lead_to_booking_pct: pct(activeBookings.length, leadsCur.length),
+        booking_to_confirmed_pct: pct(confirmed.length, activeBookings.length),
         confirmed_to_completed_pct: pct(completed.length, confirmed.length),
       },
       money: {

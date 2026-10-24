@@ -37,7 +37,7 @@ export default function AdminConversion() {
   const r = data?.rates;
   const m = data?.money;
   const stages = f && [
-    { label: "Site visits", value: f.visits.current, prev: f.visits.previous, sub: "Customer & contractor traffic — bots and owner activity excluded" },
+    { label: "Site visits", value: f.visits.current, prev: f.visits.previous, sub: "Page-loads, customer & contractor traffic — rates below use visitor sessions" },
     { label: "Quote leads", value: f.quote_leads.current, prev: f.quote_leads.previous, sub: `${f.quote_leads.booked} booked directly from a quote` },
     { label: "Booking requests", value: f.booking_requests.current, prev: f.booking_requests.previous, sub: "Submitted pickup requests" },
     { label: "Confirmed", value: f.confirmed.current, sub: "Accepted and scheduled jobs" },
