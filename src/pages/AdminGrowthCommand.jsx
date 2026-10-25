@@ -86,11 +86,11 @@ export default function AdminGrowthCommand() {
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2"><ShieldCheck className="w-6 h-6 text-emerald-400" /> Owner Command Centre</h1>
-          <p className="text-sm text-emerald-100/60 mt-1">What the AI discovered, changed, and needs your approval — one auditable queue for the whole growth system.</p>
+          <h1 className="text-2xl font-bold text-[#102B2A] flex items-center gap-2"><ShieldCheck className="w-6 h-6 text-[#187B65]" /> Owner Command Centre</h1>
+          <p className="text-sm text-slate-600 mt-1">What the AI discovered, changed, and needs your approval — one auditable queue for the whole growth system.</p>
         </div>
         <div className="flex gap-2">
           <button onClick={run} disabled={scanning} className="flex items-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 text-sm font-bold disabled:opacity-50">
@@ -102,7 +102,7 @@ export default function AdminGrowthCommand() {
         </div>
       </div>
 
-      {message && <div className="rounded-lg bg-emerald-900/40 border border-emerald-700/50 px-4 py-2.5 text-sm text-emerald-100">{message}</div>}
+      {message && <div className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2.5 text-sm text-emerald-800">{message}</div>}
 
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -117,10 +117,10 @@ export default function AdminGrowthCommand() {
         </div>
       )}
 
-      <div className="flex gap-1 border-b border-emerald-900/60">
+      <div className="flex gap-1 overflow-x-auto border-b border-slate-200">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`px-4 py-2.5 text-sm font-bold ${tab === t.key ? "text-emerald-300 border-b-2 border-emerald-400" : "text-emerald-100/50 hover:text-emerald-100"}`}>
+            className={`shrink-0 px-4 py-2.5 text-sm font-bold ${tab === t.key ? "text-[#187B65] border-b-2 border-[#187B65]" : "text-slate-500 hover:text-[#102B2A]"}`}>
             {t.label}
           </button>
         ))}
@@ -159,10 +159,10 @@ export default function AdminGrowthCommand() {
 
 function Kpi({ icon: Icon, label, value, sub }) {
   return (
-    <div className="rounded-xl bg-emerald-950/60 border border-emerald-900 p-4">
-      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide text-emerald-100/60"><Icon className="w-3.5 h-3.5" /> {label}</div>
-      <div className="mt-1.5 text-xl font-bold text-white">{value}</div>
-      {sub && <div className="text-[11px] text-emerald-100/40">{sub}</div>}
+    <div className="rounded-xl bg-white border-slate-200 p-4">
+      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide text-slate-500"><Icon className="w-3.5 h-3.5 text-[#187B65]" /> {label}</div>
+      <div className="mt-1.5 text-xl font-bold text-[#102B2A]">{value}</div>
+      {sub && <div className="text-[11px] text-slate-400">{sub}</div>}
     </div>
   );
 }
@@ -170,27 +170,27 @@ function Kpi({ icon: Icon, label, value, sub }) {
 function DecisionCard({ d, children }) {
   const badge = STATUS_STYLE[d.status] || "bg-slate-100 text-slate-600";
   return (
-    <div className="rounded-xl bg-emerald-950/60 border border-emerald-900 p-4">
+    <div className="rounded-xl bg-white border-slate-200 p-4">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${badge}`}>{d.status}</span>
-            <span className="rounded-full bg-emerald-900/60 px-2 py-0.5 text-[10px] font-bold text-emerald-200">{d.risk_tier} risk</span>
-            <span className="text-[11px] font-bold text-emerald-100/60">priority {d.priority_score}</span>
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">{d.risk_tier} risk</span>
+            <span className="text-[11px] font-bold text-slate-500">priority {d.priority_score}</span>
           </div>
-          <h3 className="mt-1.5 font-bold text-white text-sm">{d.title}</h3>
-          <p className="mt-1 text-xs text-emerald-100/60 line-clamp-3">{d.summary}</p>
+          <h3 className="mt-1.5 font-bold text-[#102B2A] text-sm">{d.title}</h3>
+          <p className="mt-1 text-xs text-slate-600 line-clamp-3">{d.summary}</p>
           {d.measured_effect?.click_change_pct != null && (
-            <p className="mt-1.5 text-xs font-bold text-emerald-300">Measured: {d.measured_effect.click_change_pct > 0 ? "+" : ""}{d.measured_effect.click_change_pct}% clicks, {d.measured_effect.impression_change_pct != null ? (d.measured_effect.impression_change_pct > 0 ? "+" : "") + d.measured_effect.impression_change_pct + "% impressions" : "impressions n/a"}</p>
+            <p className="mt-1.5 text-xs font-bold text-emerald-700">Measured: {d.measured_effect.click_change_pct > 0 ? "+" : ""}{d.measured_effect.click_change_pct}% clicks, {d.measured_effect.impression_change_pct != null ? (d.measured_effect.impression_change_pct > 0 ? "+" : "") + d.measured_effect.impression_change_pct + "% impressions" : "impressions n/a"}</p>
           )}
-          {d.revert_reason && <p className="mt-1.5 text-xs text-orange-300">{d.revert_reason}</p>}
+          {d.revert_reason && <p className="mt-1.5 text-xs text-orange-600">{d.revert_reason}</p>}
         </div>
         <div className="flex gap-2 shrink-0">{children}</div>
       </div>
       {d.changelog?.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-emerald-900/70 space-y-1">
+        <div className="mt-3 pt-3 border-t border-slate-100 space-y-1">
           {d.changelog.slice(-4).map((c, i) => (
-            <div key={i} className="text-[11px] text-emerald-100/40"><span className="font-bold text-emerald-100/60">{day(c.date)} · {c.event}</span>{c.note ? ` — ${c.note}` : ""}</div>
+            <div key={i} className="text-[11px] text-slate-400"><span className="font-bold text-slate-600">{day(c.date)} · {c.event}</span>{c.note ? ` — ${c.note}` : ""}</div>
           ))}
         </div>
       )}
@@ -201,28 +201,28 @@ function DecisionCard({ d, children }) {
 function HealthTab({ stats }) {
   return (
     <>
-      <div className="rounded-xl bg-emerald-950/60 border border-emerald-900 p-4">
-        <h3 className="font-bold text-white text-sm flex items-center gap-2 mb-3"><Search className="w-4 h-4 text-emerald-400" /> Search performance (verified GSC snapshots)</h3>
+      <div className="rounded-xl bg-white border-slate-200 p-4">
+        <h3 className="font-bold text-[#102B2A] text-sm flex items-center gap-2 mb-3"><Search className="w-4 h-4 text-[#187B65]" /> Search performance (verified GSC snapshots)</h3>
         {stats.gsc.length === 0 ? <Empty text="No verified snapshots recorded yet." /> : (
           <div className="space-y-2">
             {stats.gsc.map((s, i) => (
-              <div key={i} className="flex flex-wrap items-baseline justify-between gap-2 text-xs border-b border-emerald-900/50 pb-2">
-                <span className="font-bold text-emerald-100">{s.page_path}</span>
-                <span className="text-emerald-100/60">{day(s.snapshot_date)} · {s.clicks} clicks · {s.impressions} impressions · pos {s.avg_position || "—"}</span>
+              <div key={i} className="flex flex-wrap items-baseline justify-between gap-2 text-xs border-b border-slate-100 pb-2">
+                <span className="font-bold text-[#102B2A]">{s.page_path}</span>
+                <span className="text-slate-600">{day(s.snapshot_date)} · {s.clicks} clicks · {s.impressions} impressions · pos {s.avg_position || "—"}</span>
               </div>
             ))}
           </div>
         )}
       </div>
-      <div className="rounded-xl bg-emerald-950/60 border border-emerald-900 p-4">
-        <h3 className="font-bold text-white text-sm mb-3">Website health context</h3>
-        <p className="text-xs text-emerald-100/60">Latest audit: {stats.latestAudit ? `${day(stats.latestAudit.test_date)} — performance ${stats.latestAudit.performance ?? "n/a"}, accessibility ${stats.latestAudit.accessibility ?? "n/a"}, SEO ${stats.latestAudit.seo ?? "n/a"} (${stats.latestAudit.test_source || "admin_imported"})` : "No performance audit recorded yet."}</p>
-        <p className="mt-2 text-xs text-emerald-100/40">Scheduled integrity sweeps, platform audits and SEO engines keep running on their own workflows; this centre consolidates their verified outcomes.</p>
+      <div className="rounded-xl bg-white border-slate-200 p-4">
+        <h3 className="font-bold text-[#102B2A] text-sm mb-3">Website health context</h3>
+        <p className="text-xs text-slate-600">Latest audit: {stats.latestAudit ? `${day(stats.latestAudit.test_date)} — performance ${stats.latestAudit.performance ?? "n/a"}, accessibility ${stats.latestAudit.accessibility ?? "n/a"}, SEO ${stats.latestAudit.seo ?? "n/a"} (${stats.latestAudit.test_source || "admin_imported"})` : "No performance audit recorded yet."}</p>
+        <p className="mt-2 text-xs text-slate-400">Scheduled integrity sweeps, platform audits and SEO engines keep running on their own workflows; this centre consolidates their verified outcomes.</p>
       </div>
     </>
   );
 }
 
 function Empty({ text }) {
-  return <div className="rounded-xl border border-dashed border-emerald-900 p-8 text-center text-sm text-emerald-100/40">{text}</div>;
+  return <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-400">{text}</div>;
 }
