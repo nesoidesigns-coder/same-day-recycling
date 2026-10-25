@@ -8,6 +8,7 @@ import { useServiceMeta } from "@/components/seo/useServiceMeta";
 import { CITIES } from "@/lib/cities";
 import BeforeAfterGallery from "./BeforeAfterGallery";
 import ServiceDeepContent from "./ServiceDeepContent";
+import TrustStrip from "./TrustStrip";
 
 const BASE = PRODUCTION_URL;
 
@@ -67,6 +68,8 @@ export default function ServiceLanding({ config }) {
           </div>
         </div>
       </section>
+
+      <TrustStrip />
 
       <section className="max-w-7xl mx-auto px-4 py-14">
         <h2 className="text-3xl font-bold tracking-tight text-[#102B2A]">What we take</h2>
