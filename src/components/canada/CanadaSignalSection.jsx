@@ -20,6 +20,8 @@ export default function CanadaSignalSection() {
   const data = feed.data;
   const signal = data?.signal;
   const gauges = data?.gauges;
+  const mi = data?.market_interest;
+  const kp = data?.keyword_planner;
 
   const categories = (signal?.categories || []).map((c) => ({
     ...c,
@@ -150,6 +152,41 @@ export default function CanadaSignalSection() {
                 <div className={`mt-1 text-lg font-bold ${l.ok ? "text-ri-forest" : "text-ri-slate"}`}>{l.value}</div>
               </div>
             ))}
+          </div>
+
+          {/* Market-wide online activity — whole-market layer, labelled */}
+          <div className="rounded-2xl border border-si-line bg-white p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="text-base font-bold text-si-ink">Canada's online market activity</h3>
+              <span className="font-plex text-xs text-ri-slate">Google Trends · relative interest, 0-100</span>
+            </div>
+            {mi?.available ? (
+              <>
+                <p className="mt-1 text-sm leading-relaxed text-si-muted">
+                  Whole-market search interest from public Google Trends — everyone searching, including searches that never reach this site. A relative index, never a count.
+                </p>
+                <ul className="mt-3 space-y-2">
+                  {mi.categories.slice(0, 5).map((c) => (
+                    <li key={c.key} className="flex items-center gap-3">
+                      <span className="w-36 shrink-0 truncate text-xs font-bold text-ri-charcoal sm:w-44">{SIGNAL_CATEGORY_LABEL[c.key] || c.key}</span>
+                      <div className="h-2 min-w-0 flex-1 rounded-full bg-ri-ivory">
+                        <div className="h-2 rounded-full bg-ri-forest" style={{ width: `${Math.max(3, Math.min(100, c.index))}%` }} />
+                      </div>
+                      <span className="w-7 shrink-0 text-right font-plex text-xs font-bold text-ri-forest">{c.index}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className="mt-1 text-sm leading-relaxed text-si-muted">
+                No whole-market trend records yet — shown as nothing rather than estimated.
+              </p>
+            )}
+            {kp && !kp.configured && (
+              <p className="mt-3 rounded-lg bg-ri-amber/10 px-3 py-2 text-xs leading-snug text-ri-amber-ink">
+                Actual monthly search counts for the entire Canadian market — by province and city — come from Google Ads Keyword Planner. That connection isn't active yet, so this layer shows relative interest only.
+              </p>
+            )}
           </div>
 
           {/* What Canada Is Looking For */}

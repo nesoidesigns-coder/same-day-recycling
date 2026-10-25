@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
+import { secrets } from 'base44:runtime';
 import { detectMarkets } from '../../shared/demandTaxonomy.ts';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
@@ -31,6 +32,9 @@ const MARKET_CATEGORIES = [
 
 const ACTIVITY_TYPES = ['observed_public_request', 'platform_inquiry', 'qualified_opportunity', 'confirmed_booking'];
 const FINDING_TYPES = ['observed_public_request', 'search_interest', 'market_indicator'];
+
+// Whole-market actual search counts require Google Ads Keyword Planner.
+const KP_SECRETS = ['GOOGLE_ADS_DEVELOPER_TOKEN', 'GOOGLE_ADS_CUSTOMER_ID', 'GOOGLE_ADS_CLIENT_ID', 'GOOGLE_ADS_CLIENT_SECRET', 'GOOGLE_ADS_REFRESH_TOKEN'];
 
 const VERIFICATION = {
   internal_record: 'verified',
@@ -114,6 +118,23 @@ export default async function (req: Request): Promise<Response> {
     const activityRecords = signals.filter((s) => ACTIVITY_TYPES.includes(s.demand_type));
     const searchRecords = signals.filter((s) => s.demand_type === 'search_interest');
 
+    // Market-wide online activity — public Google Trends relative interest.
+    // Covers everyone searching Canada-wide, not just this site's traffic.
+    // Location is never inferred for trends, so this layer is always
+    // national; only a category filter applies.
+    const trendRecords = allSignals.filter((s) => s.demand_type === 'search_interest' && Number(s.metric_context?.trend_index) > 0);
+    const marketTrends = category ? trendRecords.filter((s) => (s.market_categories || []).includes(category)) : trendRecords;
+    const marketByCat = new Map();
+    for (const t of marketTrends) {
+      const idx = Number(t.metric_context?.trend_index) || 0;
+      if (idx <= 0) continue;
+      for (const cat of t.market_categories || []) {
+        const entry = { index: idx, keyword: String(t.title || '').replace(/ — search interest$/i, '').trim(), period: t.metric_context?.period || '' };
+        const cur = marketByCat.get(cat);
+        if (!cur || idx > cur.index) marketByCat.set(cat, entry);
+      }
+    }
+
     const categoryCounts = MARKET_CATEGORIES
       .map((key) => ({ key, count: signals.filter((s) => (s.market_categories || []).includes(key)).length }))
       .filter((r) => r.count > 0);
@@ -168,6 +189,17 @@ export default async function (req: Request): Promise<Response> {
       updated_at: new Date().toISOString(),
       source: 'published pricing configuration',
       verification: 'verified',
+    };
+
+    const marketInterest = {
+      available: marketByCat.size > 0,
+      basis: 'Google Trends relative search interest, 0-100 index within each keyword group — a whole-market online-activity indicator, never a count of searches and never attributed to this site',
+      source: 'Google Trends (relative index)',
+      record_count: marketTrends.length,
+      categories: [...marketByCat.entries()]
+        .map(([key, e]) => ({ key, ...e }))
+        .sort((a, b) => b.index - a.index),
+      updated_at: new Date().toISOString(),
     };
 
     // Canada Signal — ACTUAL customer search demand. The gauge counts real
@@ -304,6 +336,8 @@ export default async function (req: Request): Promise<Response> {
       partners: { total: cityPartners.length, available: availableContractors.length, same_day: cityPartners.filter((p) => p.same_day_capable).length },
       findings,
       signal,
+      market_interest: marketInterest,
+      keyword_planner: { configured: KP_SECRETS.every((n) => secrets.get(n)) },
       insufficient: {
         recorded_activity: activityRecords.length === 0 ? 'No recorded demand for this selection in the window yet.' : null,
         search_interest: searchRecords.length === 0 ? 'No search-intelligence records for this selection yet.' : null,
