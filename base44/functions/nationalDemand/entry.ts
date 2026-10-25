@@ -24,17 +24,38 @@ async function ensureSeeded(srole: any, force = false) {
 
 const norm = (v: any) => String(v || '').toLowerCase();
 
-function matchObs(keyword: string, topic: AnyRec) {
-  const k = norm(keyword);
-  return topic.keywords.some((kw: string) => {
-    const w = norm(kw);
-    return k.includes(w) || w.includes(k);
-  });
+// Deterministic classification: every search phrase fits its single most
+// specific topic, so each search counts once, in the right industry.
+const STOP = new Set(['the', 'and', 'for', 'with', 'near', 'me', 'my', 'our', 'your', 'a', 'an', 'of', 'in', 'to', 'on', 'at', 'is', 'are', 'best', 'cheap', 'need', 'want', 'looking', 'help', 'service', 'services', 'company', 'companies', 'local', 'any', 'there', 'can', 'will', 'how', 'much', 'cost', 'quote']);
+const stem = (w: string) => w.replace(/ies$/, 'y').replace(/sses$/, 'ss').replace(/ches$/, 'ch').replace(/shes$/, 'sh').replace(/xes$/, 'x').replace(/s$/, '');
+function tokenSet(text: string) {
+  const out = new Set<string>();
+  norm(text).split(/[^a-z0-9]+/).forEach((w) => { if (w.length >= 2 && !STOP.has(w)) out.add(stem(w)); });
+  return out;
 }
-
-function matchText(text: string, topic: AnyRec) {
-  const t = norm(text);
-  return topic.keywords.some((kw: string) => t.includes(norm(kw)));
+function kwScore(textTokens: Set<string>, kw: string): number {
+  const parts = norm(kw).split(/[^a-z0-9]+/).map(stem).filter((p) => p && !STOP.has(p));
+  if (!parts.length) return 0;
+  return parts.every((p) => textTokens.has(p)) ? parts.length : 0;
+}
+function classify(text: string, topics: AnyRec[], index: Map<string, number>): string | null {
+  const tokens = tokenSet(text);
+  if (!tokens.size) return null;
+  let best: { slug: string; score: number; len: number; order: number } | null = null;
+  for (const topic of topics) {
+    let score = 0, len = 0;
+    for (const kw of topic.keywords || []) {
+      const s = kwScore(tokens, kw);
+      if (s > 0) { score += s; len = Math.max(len, norm(kw).length); }
+    }
+    if (score > 0) {
+      const order = index.get(topic.slug) ?? 999;
+      if (!best || score > best.score || (score === best.score && (len > best.len || (len === best.len && order < best.order)))) {
+        best = { slug: topic.slug, score, len, order };
+      }
+    }
+  }
+  return best ? best.slug : null;
 }
 
 function monthKey(iso: string) { return String(iso || '').slice(0, 7); }
@@ -57,8 +78,14 @@ async function buildGauge(srole: any) {
   const nodes = (await srole.entities.IndustryNode.list({ limit: 1000 })).items as AnyRec[];
   if (!nodes.length) return { error: 'Taxonomy not seeded.' };
 
-  const [obs, queries, signals] = await Promise.all([
-    srole.entities.DemandObservation.list({ limit: 2000 }),
+  // A live gauge only needs the most recent reporting period — fetch just
+  // that month so every keyword is included regardless of history size.
+  const peek = await srole.entities.DemandObservation.list({ sort: '-period', limit: 1 });
+  const latestPeriod = String((((peek as AnyRec).items || peek)[0] || {}).period || '');
+  const obs = latestPeriod
+    ? await srole.entities.DemandObservation.filter({ period: latestPeriod }, { limit: 500 })
+    : await srole.entities.DemandObservation.list({ limit: 500 });
+  const [queries, signals] = await Promise.all([
     srole.entities.ServiceQuery.list({ limit: 1000 }),
     srole.entities.DemandSignal.list({ limit: 1000 }),
   ]);
@@ -71,10 +98,20 @@ async function buildGauge(srole: any) {
   const subsBySlug = new Map(nodes.filter((n) => n.level === 'subdivision').map((n) => [n.slug, n]));
   const indsBySlug = new Map(nodes.filter((n) => n.level === 'industry').map((n) => [n.slug, n]));
 
+  // Classify every real record into exactly one best-fitting topic.
+  const topicIndex = new Map(topicNodes.map((n: AnyRec, i: number) => [n.slug, Number(n.order ?? i)]));
+  const bucket = (map: Map<string, AnyRec[]>, slug: string, rec: AnyRec) => { const arr = map.get(slug) || []; arr.push(rec); map.set(slug, arr); };
+  const obsByTopic = new Map<string, AnyRec[]>();
+  obsItems.forEach((o: AnyRec) => { const slug = classify(`${o.keyword || ''} ${o.close_variants || ''}`, topicNodes, topicIndex); if (slug) bucket(obsByTopic, slug, o); });
+  const queryByTopic = new Map<string, AnyRec[]>();
+  queryItems.forEach((q: AnyRec) => { const slug = classify(q.query_text || '', topicNodes, topicIndex); if (slug) bucket(queryByTopic, slug, q); });
+  const signalByTopic = new Map<string, AnyRec[]>();
+  signalItems.forEach((d: AnyRec) => { const slug = classify(`${d.title || ''} ${(d.keywords || []).join(' ')}`, topicNodes, topicIndex); if (slug) bucket(signalByTopic, slug, d); });
+
   const statsFor = (topic: AnyRec) => {
-    const obsMatches = obsItems.filter((o: AnyRec) => matchObs(o.keyword, topic));
-    const sqMatches = queryItems.filter((q: AnyRec) => matchText(q.query_text, topic));
-    const dsMatches = signalItems.filter((d: AnyRec) => matchText(`${d.title || ''} ${(d.keywords || []).join(' ')}`, topic));
+    const obsMatches = obsByTopic.get(topic.slug) || [];
+    const sqMatches = queryByTopic.get(topic.slug) || [];
+    const dsMatches = signalByTopic.get(topic.slug) || [];
 
     let interest: any = null;
     if (obsMatches.length) {

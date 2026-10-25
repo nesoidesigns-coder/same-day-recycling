@@ -6,17 +6,103 @@ import { currentPeriod } from '../../shared/demand.ts';
 // Indices are 0-100 samples normalized within each keyword group's window —
 // never search volumes, never summed, never relabeled as monthly volumes.
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36';
+// One representative Canadian search phrase per taxonomy topic. Consecutive
+// groups of 5 are kept thematically related (indices normalize within a group).
 const TERMS = [
-  ['junk removal', 'junk_removal'],
-  ['furniture removal', 'furniture_removal'],
-  ['appliance removal', 'appliance_removal'],
-  ['mattress disposal', 'mattress_disposal'],
-  ['waste disposal', 'waste_disposal'],
-  ['estate cleanout', 'estate_cleanout'],
-  ['demolition cleanup', 'demolition_cleanup'],
-  ['yard waste removal', 'yard_waste_removal'],
-  ['scrap metal', 'scrap_metal'],
-  ['hot tub removal', 'hot_tub_removal'],
+  ['junk removal', 'junk-removal'],
+  ['furniture removal', 'furniture-removal'],
+  ['appliance removal', 'appliance-removal'],
+  ['mattress disposal', 'mattress-disposal'],
+  ['waste disposal', 'waste-disposal'],
+  ['estate cleanout', 'estate-cleanouts'],
+  ['demolition cleanup', 'demolition-cleanup'],
+  ['yard waste removal', 'yard-waste'],
+  ['scrap metal', 'scrap-metal-pickup'],
+  ['hot tub removal', 'hot-tub-removal'],
+  ['recycling depot', 'recycling-drop-off'],
+  ['bin rental', 'bin-rentals'],
+  ['electronics recycling', 'electronics-recycling'],
+  ['moving company', 'moving-services'],
+  ['storage units', 'packing-storage'],
+  ['downsizing', 'downsizing-help'],
+  ['house cleaning', 'house-cleaning'],
+  ['pressure washing', 'pressure-washing'],
+  ['gutter cleaning', 'gutter-window'],
+  ['pest control', 'pest-control'],
+  ['construction debris disposal', 'construction-debris'],
+  ['kitchen renovation', 'kitchen-bath-reno'],
+  ['flooring installation', 'flooring-painting'],
+  ['roofing contractor', 'roofing'],
+  ['foundation repair', 'foundation-drainage'],
+  ['excavation contractor', 'excavation'],
+  ['concrete contractor', 'concrete-works'],
+  ['real estate agent', 'realtors'],
+  ['home appraisal', 'home-valuation'],
+  ['eviction cleanout', 'tenant-turnover'],
+  ['property management', 'strata-condo'],
+  ['home staging', 'home-staging'],
+  ['home inspection', 'home-inspection'],
+  ['movers', 'local-movers'],
+  ['long distance movers', 'long-distance-movers'],
+  ['car shipping', 'car-shipping'],
+  ['towing service', 'towing'],
+  ['freight shipping', 'freight'],
+  ['courier service', 'courier-delivery'],
+  ['auto repair', 'auto-repair'],
+  ['oil change', 'oil-tires'],
+  ['scrap car removal', 'scrap-car'],
+  ['tire disposal', 'tire-disposal'],
+  ['auto parts', 'auto-parts'],
+  ['car detailing', 'car-detailing'],
+  ['furniture stores', 'furniture-stores'],
+  ['appliance stores', 'appliance-stores'],
+  ['used furniture', 'used-furniture'],
+  ['donation pickup', 'donation-pickup'],
+  ['furniture delivery', 'big-item-delivery'],
+  ['walk in clinic', 'walk-in-clinic'],
+  ['dentist', 'dental-care'],
+  ['home care', 'home-care'],
+  ['medical equipment rental', 'medical-equipment'],
+  ['gym near me', 'gyms-fitness'],
+  ['tutoring', 'tutoring'],
+  ['daycare', 'childcare'],
+  ['apprenticeship', 'trades-courses'],
+  ['first aid course', 'safety-certification'],
+  ['mortgage rates', 'mortgage-rates'],
+  ['mortgage refinance', 'refinancing'],
+  ['home insurance', 'home-insurance'],
+  ['car insurance', 'auto-insurance'],
+  ['accountant', 'accountant'],
+  ['tax return', 'tax-filing'],
+  ['computer repair', 'computer-repair'],
+  ['it support', 'it-services'],
+  ['web design', 'web-design'],
+  ['crm software', 'business-software'],
+  ['smart home installation', 'smart-install'],
+  ['lawyer', 'lawyer'],
+  ['notary', 'notary'],
+  ['business consultant', 'business-consulting'],
+  ['marketing agency', 'marketing-agency'],
+  ['catering', 'catering'],
+  ['event planner', 'event-planning'],
+  ['party rentals', 'party-rentals'],
+  ['event venues', 'event-venues'],
+  ['farm worker', 'farm-labour'],
+  ['land clearing', 'land-clearing'],
+  ['equipment repair', 'equipment-repair'],
+  ['feed store', 'feed-supplies'],
+  ['machining', 'machining'],
+  ['machinery removal', 'factory-equipment-removal'],
+  ['warehousing', 'warehousing'],
+  ['pallet recycling', 'pallet-recycling'],
+  ['recreation centre', 'rec-activities'],
+  ['hiking trails', 'trails-outdoors'],
+  ['photographer', 'photography'],
+  ['videographer', 'videography'],
+  ['charity', 'charity-donation'],
+  ['volunteer', 'volunteering'],
+  ['pet grooming', 'pet-services'],
+  ['veterinary clinic', 'vet-clinics'],
 ];
 const chunk = (arr, n) => arr.length <= n ? [arr] : [arr.slice(0, n), ...chunk(arr.slice(n), n)];
 
@@ -45,11 +131,14 @@ export default async function(req) {
     if (!user || user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
     const started = new Date().toISOString();
     const today = new Date().toISOString().slice(0, 10);
+    const body = await req.json().catch(() => ({}));
+    const only: number[] = Array.isArray(body?.only) ? body.only : [];
 
     const warm = await fetch('https://trends.google.com/trends/explore?geo=CA', { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(10000) });
     const cookie = (warm.headers.getSetCookie?.() || []).map((c) => c.split(';')[0]).join('; ');
 
-    const groups = chunk(TERMS, 5);
+    const allGroups = chunk(TERMS, 5);
+    const groups = only.length ? allGroups.filter((_, i) => only.includes(i)) : allGroups;
     const results = [], errors = [];
     let upserted = 0, firstMonth = null, lastMonth = null;
     for (const group of groups) {
@@ -95,7 +184,9 @@ export default async function(req) {
           });
         }
         if (!records.length) { errors.push({ group: group.map((t) => t[0]).join(', '), error: 'No data points returned' }); continue; }
-        await base44.entities.DemandObservation.deleteMany({ provider: 'google_trends', geo_key: 'CA', comparison_group: cg });
+        // Replace by keyword (not by group window) so every keyword keeps
+        // exactly one current dataset across runs.
+        await base44.entities.DemandObservation.deleteMany({ provider: 'google_trends', geo_key: 'CA', keyword: { $in: group.map((t) => t[0]) } });
         for (let i = 0; i < records.length; i += 400) await base44.entities.DemandObservation.bulkCreate(records.slice(i, i + 400));
         upserted += records.length;
         firstMonth = firstMonth || periods[0]; lastMonth = periods[periods.length - 1];
