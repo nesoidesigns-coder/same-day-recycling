@@ -1,0 +1,204 @@
+{
+  "name": "GrowthDecision",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The opportunity or issue, stated in one line."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "seo_recommendation",
+        "improvement",
+        "integrity_finding",
+        "demand_signal",
+        "brand_scan",
+        "coordinator"
+      ],
+      "default": "coordinator",
+      "description": "Which existing engine produced this decision."
+    },
+    "source_id": {
+      "type": "string",
+      "default": "",
+      "description": "Record id at the source engine, for traceability and deduplication."
+    },
+    "summary": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "What was discovered and why it matters, with the evidence basis."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "seo_metadata",
+        "website_quality",
+        "content",
+        "demand_opportunity",
+        "competitive",
+        "consumer_experience",
+        "structural"
+      ],
+      "default": "website_quality",
+      "description": "What kind of change this is."
+    },
+    "city": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80
+    },
+    "value": {
+      "type": "number",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Estimated customer value (1-5). Owner-tunable."
+    },
+    "confidence": {
+      "type": "number",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Confidence in the evidence (1-5). Verified data scores higher."
+    },
+    "effort": {
+      "type": "number",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 5
+    },
+    "cost": {
+      "type": "number",
+      "default": 1,
+      "minimum": 1,
+      "maximum": 5
+    },
+    "priority_score": {
+      "type": "number",
+      "default": 0,
+      "description": "Computed ranking: (value x 2 + confidence) / (effort/2 + cost/2 + 1). Auditable and deterministic."
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "low",
+      "description": "low = reversible metadata/text change; medium = code change after approval; high = pricing, payment, security or structural - never auto-executed."
+    },
+    "executable": {
+      "type": "boolean",
+      "default": false,
+      "description": "True only when the coordinator can apply the change itself (e.g. approved SEO metadata)."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "monitoring",
+        "executed",
+        "reverted",
+        "declined",
+        "escalated"
+      ],
+      "default": "proposed"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": true,
+      "description": "Nothing is applied without owner approval; high-risk items additionally require manual execution."
+    },
+    "proposed_change": {
+      "type": "object",
+      "default": {},
+      "description": "The exact change, e.g. {path, title, description} for metadata decisions."
+    },
+    "previous_state": {
+      "type": "object",
+      "default": {},
+      "description": "Snapshot before execution, enabling exact rollback."
+    },
+    "changelog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "default": []
+      },
+      "description": "Immutable auditable history: proposed, approved, executed, monitored, reverted."
+    },
+    "expected_effect": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    },
+    "measured_effect": {
+      "type": "object",
+      "default": {},
+      "description": "Verified before/after data captured by the monitoring pass."
+    },
+    "baseline_metrics": {
+      "type": "object",
+      "default": {},
+      "description": "Verified metrics captured at execution time for later comparison."
+    },
+    "executed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "revert_reason": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

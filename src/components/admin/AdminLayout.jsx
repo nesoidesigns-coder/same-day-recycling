@@ -35,6 +35,7 @@ const INTELLIGENCE = [
   { to: "/admin/business-master", label: "AI Business Master", icon: BrainCircuit, exact: true },
   { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
   { to: "/admin/growth-engine", label: "Network Growth Engine", icon: RocketIcon },
+  { to: "/admin/growth-command", label: "Owner Command Centre", icon: ShieldCheck },
   { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
   { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
   { to: "/admin/bi", label: "Live Business Intelligence", icon: BarChart3, exact: true },

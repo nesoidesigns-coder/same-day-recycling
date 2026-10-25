@@ -1,0 +1,63 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "growth_coordinator_weekly",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "scan_and_prioritize": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "growthCoordinator",
+            "args": {
+              "action": "run"
+            }
+          },
+          "then": "monitor_outcomes",
+          "x-base44": {
+            "title": "Scan and prioritize",
+            "description": "Collect and rank opportunities"
+          }
+        }
+      },
+      {
+        "monitor_outcomes": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "growthCoordinator",
+            "args": {
+              "action": "monitor"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Monitor outcomes",
+            "description": "Measure executed changes, roll back regressions"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Central growth coordinator: scans existing engines for open opportunities, prioritizes them, and monitors approved changes for regressions with automatic rollback of low-risk metadata.",
+  "name": "Growth Coordinator Weekly"
+}
