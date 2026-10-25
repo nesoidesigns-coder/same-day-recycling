@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 150 17% 98%;   /* Service Intelligence si-bg */
+    --foreground: 165 30% 13%;   /* si-ink */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 165 30% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --popover-foreground: 165 30% 13%;
+    --primary: 165 54% 16%;      /* si-forest */
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --secondary: 150 23% 95%;    /* si-bg2 */
+    --secondary-foreground: 165 30% 13%;
+    --muted: 150 23% 95%;
+    --muted-foreground: 156 9% 42%;  /* si-muted */
+    --accent: 150 23% 95%;
+    --accent-foreground: 165 30% 13%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --border: 150 21% 89%;       /* si-line */
+    --input: 150 21% 89%;
+    --ring: 165 54% 16%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -37,14 +37,14 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --brand-gold: 43 88% 55%;
     --brand-gold-dark: 32 82% 33%;
-    --brand-cyan: 189 94% 43%;
-    --brand-mint: 161 52% 59%;
+    --brand-cyan: 166 72% 47%;   /* si-mint */
+    --brand-mint: 166 72% 47%;
     --market-bg: 168 48% 7%;
     --market-surface: 167 36% 12%;
     --market-ink: 156 30% 96%;
     --market-muted: 165 21% 74%;
     --market-line: 167 24% 28%;
-    --market-accent: 161 64% 59%;
+    --market-accent: 166 72% 47%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -54,21 +54,21 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     /* Recycling OS unified design identity — brand tokens (constant in light & dark) */
-    --brand-navy: 212 58% 13%;
-    --brand-emerald: 164 67% 29%;
-    --brand-softmint: 144 46% 93%;
-    --warm-white: 48 60% 98%;
-    --brand-amber: 38 88% 52%;
+    --brand-navy: 165 54% 16%;   /* dark sections adopt si-forest */
+    --brand-emerald: 165 54% 22%;
+    --brand-softmint: 150 23% 95%;
+    --warm-white: 150 17% 98%;
+    --brand-amber: 38 79% 57%;   /* si-amber */
     /* Recycling OS — Living Infrastructure identity */
-    --li-cloud: 150 14% 97%;
-    --li-forest: 165 58% 15%;
-    --li-infra: 162 67% 25%;
-    --li-mint: 162 72% 46%;
-    --li-graphite: 172 27% 11%;
-    --li-carbon: 168 24% 12%;
-    --li-slate: 160 37% 42%;
-    --li-steel: 153 15% 88%;
-    --li-pale: 180 36% 94%;
+    --li-cloud: 150 17% 98%;     /* si-bg */
+    --li-forest: 165 54% 16%;    /* si-forest */
+    --li-infra: 165 54% 22%;
+    --li-mint: 166 72% 47%;      /* si-mint */
+    --li-graphite: 165 30% 13%;  /* si-ink */
+    --li-carbon: 165 30% 13%;
+    --li-slate: 156 9% 42%;      /* si-muted */
+    --li-steel: 150 21% 89%;     /* si-line */
+    --li-pale: 150 23% 95%;      /* si-bg2 */
     --li-amber: 35 68% 53%;
     --li-red: 5 51% 51%;
     --font-plex: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -103,7 +103,7 @@
     --market-ink: 156 30% 96%;
     --market-muted: 165 21% 74%;
     --market-line: 167 24% 28%;
-    --market-accent: 161 64% 59%;
+    --market-accent: 166 72% 47%;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;

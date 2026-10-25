@@ -14,13 +14,14 @@ import SearchIndexing from '@/components/seo/SearchIndexing';
 // Add page imports here.
 // Route-level code splitting: only the home page (LCP target) and auth pages
 // load upfront; every other page is fetched on demand.
-import LivingInfrastructureHome from './pages/LivingInfrastructureHome';
+import ServiceIntelligencePrototype from './pages/ServiceIntelligencePrototype';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
 const lazyPage = (loader) => lazy(loader);
+const LivingInfrastructureHome = lazyPage(() => import('./pages/LivingInfrastructureHome'));
 const Privacy = lazyPage(() => import('./pages/Privacy'));
 const Terms = lazyPage(() => import('./pages/Terms'));
 const AdminPricing = lazyPage(() => import('./pages/AdminPricing'));
@@ -101,7 +102,6 @@ const RecyclingOsHome = lazyPage(() => import('./pages/RecyclingOsHome'));
 const DemandObservatory = lazyPage(() => import('./pages/DemandObservatory'));
 const CanadaConnectedPrototype = lazyPage(() => import('./pages/CanadaConnectedPrototype'));
 const CanadaServiceObservatory = lazyPage(() => import('./pages/CanadaServiceObservatory'));
-const ServiceIntelligencePrototype = lazyPage(() => import('./pages/ServiceIntelligencePrototype'));
 
 const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
 const RequestService = lazyPage(() => import('./pages/RequestService'));
@@ -182,7 +182,7 @@ const AuthenticatedApp = () => {
     <Suspense fallback={<RouteFallback />}>
     <Routes>
       {/* Add your page Route elements here */}
-      <Route path="/" element={<LivingInfrastructureHome />} />
+      <Route path="/" element={<ServiceIntelligencePrototype />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
