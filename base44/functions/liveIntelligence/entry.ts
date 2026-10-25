@@ -122,9 +122,13 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
   const trendMap: any = {};
   signals.forEach((s: any) => {
     const m = monthKey(s.created_date);
-    if (m) trendMap[m] = (trendMap[m] || 0) + 1;
+    if (!m) return;
+    const entry = trendMap[m] || (trendMap[m] = { count: 0, demand_types: {} });
+    entry.count += 1;
+    const t = s.demand_type || 'unknown';
+    entry.demand_types[t] = (entry.demand_types[t] || 0) + 1;
   });
-  const trend = Object.keys(trendMap).sort().map((m) => ({ month: m, count: trendMap[m] }));
+  const trend = Object.keys(trendMap).sort().map((m) => ({ month: m, count: trendMap[m].count, demand_types: trendMap[m].demand_types }));
 
   const by_source: Record<string, number> = {};
   signals.forEach((s: any) => {

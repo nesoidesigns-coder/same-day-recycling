@@ -7,6 +7,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import IntelligencePreview from "@/components/home/IntelligencePreview";
 import LiveRing from "@/components/os/LiveRing";
+import VancouverDemandTrend from "@/components/os/VancouverDemandTrend";
 
 // Recycling OS homepage prototype (Phase 1) — lives on its own route so the
 // live homepage stays untouched until this passes review. Five sections:
@@ -83,6 +84,9 @@ export default function RecyclingOsHome() {
               <Link to="/live" className="text-sm font-bold text-[#187B65] hover:underline inline-flex items-center gap-1.5">Full LIVE centre <ArrowRight className="w-4 h-4" /></Link>
             </div>
             <LiveRing />
+            <div className="mt-6">
+              <VancouverDemandTrend />
+            </div>
             <div className="mt-4">
               <IntelligencePreview />
             </div>
