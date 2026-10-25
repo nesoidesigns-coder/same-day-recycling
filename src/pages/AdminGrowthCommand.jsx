@@ -29,15 +29,18 @@ export default function AdminGrowthCommand() {
   const [message, setMessage] = useState("");
 
   const load = useCallback(async () => {
-    const [page, audits, snaps, fin, bookings] = await Promise.all([
+    const [page, auditsPage, snapsPage, finPage, bookings] = await Promise.all([
       base44.entities.GrowthDecision.list({ sort: "-priority_score", limit: 200 }),
       base44.entities.PerformanceAudit.list({ sort: "-test_date", limit: 5 }),
       base44.entities.SeoPerformanceSnapshot.list({ sort: "-snapshot_date", limit: 10 }),
       base44.entities.JobFinancials.list({ limit: 500 }),
       base44.entities.Booking.count({ status: "completed" }),
     ]);
-    setDecisions(page.items || page);
     const items = page.items || page;
+    const audits = auditsPage.items || auditsPage;
+    const snaps = snapsPage.items || snapsPage;
+    const fin = finPage.items || finPage;
+    setDecisions(items);
     const revenue = fin.filter((f) => (f.job_status || "") === "completed" && f.expenses_verified).reduce((s, f) => s + (f.platform_profit || 0), 0);
     const revenueAll = fin.filter((f) => (f.job_status || "") === "completed").reduce((s, f) => s + (f.final_customer_price || 0), 0);
     setStats({
