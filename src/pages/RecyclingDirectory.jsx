@@ -6,6 +6,7 @@ import { base44 } from "@/api/base44Client";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
+import DirectoryMap from "@/components/sdr/DirectoryMap";
 import { CATEGORIES, CATEGORY_LABELS, matchCategories, providerMatchesQuery, providerMatchesLocation } from "@/lib/recyclingTaxonomy";
 
 const TYPE_LABELS = { municipal: "Municipal service", public_facility: "Public facility", private_business: "Private business", independent: "Independent provider" };
@@ -96,6 +97,8 @@ export default function RecyclingDirectory() {
             </button>
           ))}
         </div>
+
+        <DirectoryMap results={results} />
 
         {providers === null ? (
           <p className="text-sm text-slate-400 py-16 text-center">Loading listings…</p>

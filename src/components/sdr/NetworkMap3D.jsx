@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Loader2, Navigation, Sparkles, Send, MousePointerClick, X } from "lucide-react";
+import { Loader2, Navigation, Sparkles, Send, MousePointerClick, MapPinned, X } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import LiveCityView from "@/components/sdr/LiveCityView";
 
 
 // Simple equirectangular projection onto the 3D board (Canada bbox).
@@ -29,6 +30,7 @@ const glowTexture = (() => {
 export default function NetworkMap3D({ coverageCities = [], providers = [], trafficByCity = {}, openRegions = [], territoryLinks = [] }) {
   const mountRef = useRef(null);
   const [selected, setSelected] = useState(null);
+  const [live, setLive] = useState(null);
   const [ask, setAsk] = useState("");
   const [rex, setRex] = useState({ loading: false, reply: "" });
 
@@ -131,8 +133,13 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       rings.push(ring);
     });
 
-    // Orbit controls (drag rotate, wheel/pinch zoom) + tap to select.
-    let yaw = 0, pitch = 0.55, dist = 30, dragging = false, moved = 0, lx = 0, ly = 0;
+    // Orbit controls (drag rotate, wheel/pinch zoom with cinematic glide) +
+    // tap to select. The camera glides toward a target distance, and deep
+    // zooms hand off to the live map via the "Live map · street view" button.
+    let yaw = 0, pitch = 0.55, dist = 30, distTarget = 30, dragging = false, moved = 0, lx = 0, ly = 0;
+    const pointers = new Map();
+    let pinchStart = 0, pinchDist0 = 30;
+    const clampDist = (d) => Math.min(60, Math.max(12, d));
     const applyView = () => {
       camera.position.set(
         dist * Math.sin(pitch) * Math.sin(yaw),
@@ -151,8 +158,29 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       const hit = raycaster.intersectObjects(picks)[0];
       return hit?.object.userData || null;
     };
-    const onDown = (e) => { dragging = true; moved = 0; lx = e.clientX; ly = e.clientY; };
+    const onDown = (e) => {
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      try { renderer.domElement.setPointerCapture(e.pointerId); } catch { /* pointer already gone */ }
+      if (pointers.size === 1) {
+        dragging = true; moved = 0;
+        lx = e.clientX; ly = e.clientY;
+      } else if (pointers.size === 2) {
+        dragging = false; moved = Infinity;
+        const [a, b] = [...pointers.values()];
+        pinchStart = Math.hypot(a.x - b.x, a.y - b.y);
+        pinchDist0 = distTarget;
+      }
+    };
     const onMove = (e) => {
+      const p = pointers.get(e.pointerId);
+      if (!p) return;
+      p.x = e.clientX; p.y = e.clientY;
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchStart > 0 && d > 0) distTarget = clampDist((pinchDist0 * pinchStart) / d);
+        return;
+      }
       if (!dragging) return;
       const dx = e.clientX - lx, dy = e.clientY - ly;
       moved += Math.abs(dx) + Math.abs(dy);
@@ -162,21 +190,29 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       applyView();
     };
     const onUp = (e) => {
-      dragging = false;
-      if (moved < 6) {
-        const meta = pickAt(e.clientX, e.clientY);
-        setSelected(meta ? { name: meta.name, city: meta.city, state: meta.state } : null);
-        setRex({ loading: false, reply: "" });
+      const had = pointers.has(e.pointerId);
+      pointers.delete(e.pointerId);
+      if (pointers.size === 0) {
+        dragging = false; pinchStart = 0;
+        if (had && moved < 6) {
+          const meta = pickAt(e.clientX, e.clientY);
+          setSelected(meta ? { name: meta.name, city: meta.city, state: meta.state } : null);
+          setRex({ loading: false, reply: "" });
+        }
+      } else if (pointers.size === 1) {
+        const [remaining] = [...pointers.values()];
+        dragging = true; moved = Infinity; pinchStart = 0;
+        lx = remaining.x; ly = remaining.y;
       }
     };
     const onWheel = (e) => {
       e.preventDefault();
-      dist = Math.min(60, Math.max(12, dist + e.deltaY * 0.03));
-      applyView();
+      distTarget = clampDist(distTarget + e.deltaY * 0.03);
     };
     renderer.domElement.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    renderer.domElement.addEventListener("pointercancel", onUp);
     renderer.domElement.addEventListener("wheel", onWheel, { passive: false });
     renderer.domElement.style.touchAction = "none";
 
@@ -193,7 +229,16 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
     let raf = 0;
     const clock = new THREE.Clock();
     const tick = () => {
-      const t = clock.getElapsedTime();
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const t = clock.elapsedTime;
+      // Cinematic zoom glide toward the wheel/pinch target distance
+      if (Math.abs(dist - distTarget) > 0.02) {
+        dist += (distTarget - dist) * Math.min(1, dt * 8);
+        applyView();
+      } else if (dist !== distTarget) {
+        dist = distTarget;
+        applyView();
+      }
       if (!reduced && !dragging) yaw += 0.0012;
       if (!reduced && !dragging) applyView();
 
@@ -210,6 +255,7 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       renderer.domElement.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      renderer.domElement.removeEventListener("pointercancel", onUp);
       renderer.domElement.removeEventListener("wheel", onWheel);
       renderer.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); o.material?.dispose?.(); });
@@ -233,6 +279,11 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
   return (
     <div className="rounded-3xl overflow-hidden border border-[#187b65]/25 bg-[#051511] h-[520px] md:h-[620px] relative z-0">
       <div ref={mountRef} className="absolute inset-0" />
+      {live && (
+        <div className="absolute inset-0 z-20">
+          <LiveCityView lat={live.lat} lng={live.lng} label={live.label} onClose={() => setLive(null)} className="h-full" />
+        </div>
+      )}
 
       {/* orbit hint */}
       <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full glass-dark px-3 py-1.5 text-[11px] font-semibold text-emerald-100/80">
@@ -257,14 +308,22 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
             </button>
           </div>
           {selected.city && (
-            <a
-              href={`https://www.google.com/maps/dir/?api=1&destination=${selected.city.lat},${selected.city.lng}&travelmode=driving`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#187b65] text-white text-xs font-bold px-3 py-2 w-fit hover:bg-[#125c4e] transition-colors"
-            >
-              <Navigation className="w-3 h-3" /> Directions · live traffic
-            </a>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${selected.city.lat},${selected.city.lng}&travelmode=driving`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#187b65] text-white text-xs font-bold px-3 py-2 hover:bg-[#125c4e] transition-colors"
+              >
+                <Navigation className="w-3 h-3" /> Directions
+              </a>
+              <button
+                onClick={() => setLive({ lat: selected.city.lat, lng: selected.city.lng, label: selected.name })}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#54D9AE]/60 text-[#54D9AE] text-xs font-bold px-3 py-2 hover:bg-[#187b65]/25 transition-colors"
+              >
+                <MapPinned className="w-3 h-3" /> Live map · street view
+              </button>
+            </div>
           )}
           <div className="border-t border-[#187b65]/25 pt-3">
             <div className="flex items-center gap-1.5 mb-2">

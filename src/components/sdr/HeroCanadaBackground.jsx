@@ -13,6 +13,8 @@ import HeroNetworkModes from "@/components/sdr/HeroNetworkModes";
 import HeroNetworkPulse from "@/components/sdr/HeroNetworkPulse";
 import HeroNetworkRex from "@/components/sdr/HeroNetworkRex";
 import PickupLocationPanel from "@/components/sdr/PickupLocationPanel";
+import LiveCityView from "@/components/sdr/LiveCityView";
+import { MapPinned } from "lucide-react";
 import { networkRexQuestion } from "@/components/sdr/heroNetworkCopy";
 import usePickupLocation from "@/hooks/usePickupLocation";
 
@@ -27,6 +29,8 @@ export default function HeroCanadaBackground({ lang = "en" }) {
   // City currently under the view centre while zoomed in — shows its demand
   // and services automatically, without a tap.
   const [zoomCityKey, setZoomCityKey] = useState(null);
+  // Deep zoom handoff: the live street map the 3D globe zooms into.
+  const [live, setLive] = useState(null);
   const node = nodes.find((n) => n.key === selected);
   const zoomCity = nodes.find((n) => n.key === zoomCityKey) || null;
   const pickup = usePickupLocation();
@@ -62,6 +66,16 @@ export default function HeroCanadaBackground({ lang = "en" }) {
       <div className="relative">
         <HeroNetworkScene nodes={nodes} links={links} focus={focus} selectedKey={selected} onSelect={select} onHover={setHover} onZoomCity={(n) => { setZoomCityKey(n?.key || null); if (n) base44.analytics.track({ eventName: "hero_map_zoom_city", properties: { city: n.name, mode } }); }} lang={lang} />
         {hover && !selected && <div className="pointer-events-none absolute left-3 top-2 z-10 hidden w-72 rounded-2xl border border-market-line bg-market-bg p-3 shadow-xl md:block"><HeroMapCityTooltip node={hover} availability={hover.availability} lang={lang} /></div>}
+        {!live && !pickup && (zoomCity || node) && (
+          <button type="button" onClick={() => { const n = zoomCity || node; setLive(n); base44.analytics.track({ eventName: "hero_map_live_view", properties: { city: n.name } }); }} className="absolute bottom-3 left-3 z-10 inline-flex min-h-9 items-center gap-1.5 rounded-full border border-market-line bg-market-bg px-3 text-xs font-bold text-market-ink shadow-sm hover:bg-market-surface">
+            <MapPinned className="h-3.5 w-3.5 text-market-accent" /> {lang === "fr" ? "Vue carte en direct" : "Live map view"}
+          </button>
+        )}
+        {live && (
+          <div className="absolute inset-0 z-20">
+            <LiveCityView lat={live.lat} lng={live.lng} label={live.name} onClose={() => setLive(null)} className="h-full" />
+          </div>
+        )}
       </div>
       {node && <HeroNetworkSelection node={node} onClose={() => setSelected("")} lang={lang} />}
       {!node && zoomCity && !pickup && mode === "network" && <HeroNetworkSelection node={zoomCity} onClose={() => setZoomCityKey(null)} lang={lang} />}
