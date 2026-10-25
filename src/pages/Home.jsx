@@ -37,8 +37,8 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroBooking />
-        <RexDiscover />
         <InstantQuoteFlow />
+        <RexDiscover />
         <Services />
         <CoverageStrip />
         <HowItWorks />
