@@ -5,6 +5,7 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import IntelligenceHero from "@/components/home/IntelligenceHero";
 import IntelligencePreview from "@/components/home/IntelligencePreview";
+import VancouverIntelDashboard from "@/components/home/VancouverIntelDashboard";
 import RexDiscover from "@/components/home/RexDiscover";
 import CoverageStrip from "@/components/home/CoverageStrip";
 import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
@@ -46,6 +47,7 @@ export default function Home() {
             <IntelligencePreview />
           </div>
         </section>
+        <VancouverIntelDashboard />
         <InstantQuoteFlow />
         <RexDiscover />
         <Services />
