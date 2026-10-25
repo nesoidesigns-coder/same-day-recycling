@@ -9,6 +9,7 @@ import LocalIntelPreview from "@/components/si/LocalIntelPreview";
 import ContractorEntrance from "@/components/si/ContractorEntrance";
 import ConsumerIntelligenceGauge from "@/components/si/ConsumerIntelligenceGauge";
 import useServiceIntelligence from "@/components/si/useServiceIntelligence";
+import NationalSignalsSection from "@/components/signals/NationalSignalsSection";
 import { keyOf } from "@/components/si/siShared";
 import { CITIES } from "@/lib/cities";
 
@@ -101,6 +102,7 @@ export default function ServiceIntelligencePrototype() {
           resources={si.resources}
           activity={si.activity.data}
         />
+        <NationalSignalsSection />
       </main>
 
       <div className="mx-auto max-w-[1280px] px-4 md:px-8">

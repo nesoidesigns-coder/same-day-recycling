@@ -482,9 +482,42 @@ h1, h2, h3, h4, p, a, span, li, button {
 .obs-city-label { font-family: var(--font-plex); }
 .obs-map-node:focus-visible .obs-node-focus { opacity: 1; }
 
+/* ---- Living Signals: one-shot update pulse (single ring, no loop) ---- */
+@keyframes signal-pulse-dot {
+  0% { transform: scale(0.4); opacity: 0.4; }
+  50% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.signal-pulse-dot {
+  animation: signal-pulse-dot 400ms ease-out 1 both;
+}
+
+@keyframes signal-pulse-ring {
+  from { box-shadow: 0 0 0 0 rgba(22, 137, 119, 0.45); }
+  to { box-shadow: 0 0 0 10px rgba(22, 137, 119, 0); }
+}
+
+.signal-pulse-ring {
+  animation: signal-pulse-ring 1.2s ease-out 1 both;
+}
+
+/* GeographicSignal: single crossfade on scope change */
+@keyframes geo-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.geo-signal-fade {
+  animation: geo-fade 200ms ease-out 1 both;
+}
+
 /* ---- Reduced motion: calm every ambient animation at once ---- */
 
 @media (prefers-reduced-motion: reduce) {
+  .signal-pulse-dot,
+  .signal-pulse-ring,
+  .geo-signal-fade,
   .holo-scan,
   .holo-flicker,
   .mascot-float,

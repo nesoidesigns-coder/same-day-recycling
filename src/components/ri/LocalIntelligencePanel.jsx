@@ -1,5 +1,5 @@
 import { MapPin, Recycle, Clock } from "lucide-react";
-import IntelligenceGauge from "./IntelligenceGauge";
+import SignalGauge from "@/components/signals/SignalGauge";
 
 // "Your Local Service Intelligence" — one gauge plus at most three cards.
 // Data comes only from verified sources (coverage snapshot of verified
@@ -44,7 +44,7 @@ export default function LocalIntelligencePanel({ city, coverage, estimate, servi
     <aside className="rounded-2xl bg-white border border-si-line shadow-sm p-5" aria-label="Your local service intelligence">
       <div className="text-sm font-bold text-ri-charcoal">Your Local Service Intelligence</div>
       <div className="mt-4">
-        <IntelligenceGauge {...gauge} />
+        <SignalGauge {...gauge} />
       </div>
 
       <div className="mt-5 space-y-3">

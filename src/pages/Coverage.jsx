@@ -6,6 +6,7 @@ import Footer from "@/components/sdr/Footer";
 import { REGIONS } from "@/lib/regions";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import CoverageMap from "@/components/coverage/CoverageMap";
+import SignalGauge from "@/components/signals/SignalGauge";
 
 // Coverage page — driven entirely by the live status engine
 // (src/hooks/useCoverageStatus.js → coverageStatus endpoint). Three honest,
@@ -104,6 +105,18 @@ export default function Coverage() {
       <section className="bg-[#f4f7f5] border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
           <CoverageMap />
+          <div className="mx-auto mt-10 max-w-sm rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
+            <SignalGauge
+              value={loaded ? sameDayCitiesList.length : null}
+              max={Math.max(1, locations.length)}
+              unit="cities"
+              label="Cities with a verified provider"
+              sub="Verified territory records only. A booking is confirmed per job, after a contractor accepts."
+              source="Verified partner records"
+              updatedAt={loaded ? new Date().toISOString() : null}
+              unavailableReason={loaded ? (sameDayCitiesList.length ? null : "No city currently has a verified provider — requests stay open nationwide.") : "Checking live network status…"}
+            />
+          </div>
         </div>
       </section>
 

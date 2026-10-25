@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSEO } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import { Truck, Scale, ShieldCheck, HandCoins, Phone, Recycle, XCircle } from "lucide-react";
+import LoadSizeScale from "@/components/signals/LoadSizeScale";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -107,6 +108,14 @@ export default function Pricing() {
             </div>
           ))}
         </div>
+        <div className="mt-6">
+          <LoadSizeScale />
+        </div>
+        {tierPrices && (
+          <div className="mt-3 font-plex text-[11px] text-slate-500">
+            Source: live pricing configuration · Updated {new Date().toLocaleDateString("en-CA", { month: "short", day: "numeric" })} · Verified
+          </div>
+        )}
         <div className="mt-6 rounded-2xl bg-[#102B2A] text-white p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Recycle className="w-6 h-6 text-[#187B65] shrink-0" />
