@@ -6,7 +6,7 @@ import {
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
   Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles, BrainCircuit,
-  Target, FileSearch, ListChecks, UsersRound, Radar, Radio, Crosshair, Gauge as GaugeIcon, Rocket as RocketIcon,
+  Target, FileSearch, ListChecks, UsersRound, Radar, Radio, Crosshair, Gauge as GaugeIcon, Rocket as RocketIcon, Orbit,
 } from "lucide-react";
 
 const OPS = [
@@ -45,6 +45,7 @@ const INTELLIGENCE = [
   { to: "/admin/discovery", label: "Opportunity Discovery", icon: Radar },
   { to: "/admin/ads", label: "Community Ads", icon: Megaphone },
   { to: "/admin/demand", label: "Market Intelligence", icon: Globe2 },
+  { to: "/admin/observatory", label: "Demand Observatory", icon: Orbit },
   { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
   { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },
   { to: "/admin/integrity", label: "Platform Integrity", icon: ShieldCheck, exact: true },

@@ -1,0 +1,78 @@
+{
+  "name": "DemandNetworkSettings",
+  "type": "object",
+  "properties": {
+    "weights": {
+      "type": "object",
+      "default": {},
+      "description": "Opportunity scoring weights per factor (relevance, evidence, geo_confidence, recency, intent, urgency, capacity). Owner-configurable; changes are logged to history."
+    },
+    "queue_threshold": {
+      "type": "number",
+      "default": 60,
+      "description": "Minimum opportunity score for a public request or platform inquiry to enter the review queue."
+    },
+    "stale_days": {
+      "type": "number",
+      "default": 30,
+      "description": "Public requests older than this are expired, not ingested as live demand."
+    },
+    "duplicate_window_days": {
+      "type": "number",
+      "default": 7,
+      "description": "Window for related/duplicate detection (same city and market category)."
+    },
+    "last_run_at": {
+      "type": "string",
+      "description": "Timestamp of the last completed ingestion run."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      },
+      "default": [],
+      "description": "Auditable log of settings changes and ingestion runs."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000,
+      "default": ""
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

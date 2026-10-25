@@ -20,12 +20,14 @@ export default async function(req) {
       base44.functions.invoke('conversionFunnel', { days: 30 }),
       base44.functions.invoke('searchAuthority', {}),
       base44.functions.invoke('marketOpportunity', {}),
+      base44.functions.invoke('demandSignalEngine', { action: 'feed' }),
     ]);
     const val = (i) => (settled[i].status === 'fulfilled' ? (settled[i].value?.data ?? settled[i].value) : { unavailable: true });
 
     const funnel = val(0);
     const search = val(1);
     const market = val(2);
+    const ds = val(3);
 
     const compact = JSON.stringify({
       funnel_30d: {
@@ -51,6 +53,15 @@ export default async function(req) {
       market: {
         cities: (market?.cities || []).slice(0, 12),
         search_connected: market?.search_connected,
+      },
+      demand_signals: {
+        generated_at: ds?.generated_at,
+        by_type: ds?.counts?.by_type,
+        by_market: ds?.counts?.by_market,
+        top_cities: (ds?.top_cities || []).slice(0, 10),
+        review_queue: { pending: ds?.counts?.review?.pending, qualified: ds?.counts?.review?.qualified },
+        coverage_gaps: ds?.counts?.coverage,
+        source_health: ds?.sources,
       },
     });
 

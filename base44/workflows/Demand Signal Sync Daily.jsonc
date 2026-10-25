@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * *",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Runs the unified DemandSignal ingestion pipeline every morning: harvests public discovery, search intelligence and internal platform records, classifies into the eight core markets, deduplicates, checks contractor coverage, scores opportunities, and refreshes the Canadian Demand Observatory.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "demand_signal_sync_daily",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_signals": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "demandSignalEngine",
+            "args": {
+              "action": "run"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Ingest demand signals",
+            "description": "Classify, dedupe, score and refresh"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Demand Signal Sync Daily"
+}

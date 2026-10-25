@@ -1,0 +1,275 @@
+{
+  "name": "DemandSignal",
+  "type": "object",
+  "properties": {
+    "signal_key": {
+      "type": "string",
+      "maxLength": 220,
+      "description": "Stable deduplication key: source_type:source_ref. One record per underlying evidence item."
+    },
+    "source_platform": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "Platform the signal came from (reddit, public_forum, search_console, keyword_dataset, recycling_os)."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "public_discovery",
+        "search_intelligence",
+        "internal_platform",
+        "market_context"
+      ],
+      "description": "Which collection pipeline produced the signal."
+    },
+    "source_ref": {
+      "type": "string",
+      "maxLength": 180,
+      "description": "Stable identifier of the original record at its source (external_id, record id, or keyword+geo+period key). Never invented."
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 500,
+      "description": "Direct link to the original public evidence, where the source permits."
+    },
+    "source_published_at": {
+      "type": "string",
+      "description": "Source's own publication/reporting timestamp, never substituted with collection time."
+    },
+    "collected_at": {
+      "type": "string",
+      "description": "When the signal was collected into this entity."
+    },
+    "last_verified_at": {
+      "type": "string",
+      "description": "When the signal was last re-verified against its source record."
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 220,
+      "description": "Short customer need or keyword summary. For public posts, the original title shown with attribution."
+    },
+    "customer_need": {
+      "type": "string",
+      "maxLength": 600,
+      "description": "Brief permitted description of the need. Never a full republication of a public post. No personal information."
+    },
+    "demand_type": {
+      "type": "string",
+      "enum": [
+        "observed_public_request",
+        "search_interest",
+        "market_indicator",
+        "platform_inquiry",
+        "qualified_opportunity",
+        "confirmed_booking"
+      ],
+      "description": "One of six mutually distinct demand types. Search interest is never counted as an individual lead."
+    },
+    "market_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "furniture_appliance_removal",
+          "moving_downsizing",
+          "renovation_construction_debris",
+          "property_management_turnover",
+          "recycling_specialty_disposal",
+          "commercial_office_cleanouts",
+          "urgent_same_day",
+          "donation_reuse_circular"
+        ]
+      },
+      "default": [],
+      "description": "Eight-market taxonomy. One signal may belong to several categories. Assigned by deterministic keyword/classification rules."
+    },
+    "service_category": {
+      "type": "string",
+      "maxLength": 40,
+      "default": "other",
+      "description": "The original fine-grained service category from the source record, kept for continuity."
+    },
+    "city": {
+      "type": "string",
+      "maxLength": 80,
+      "default": "",
+      "description": "City only when supported by the source. Empty = location-unresolved; never guessed. Public posters' exact locations are never stored."
+    },
+    "province_code": {
+      "type": "string",
+      "maxLength": 10,
+      "default": ""
+    },
+    "geo_confidence": {
+      "type": "string",
+      "enum": [
+        "exact_city",
+        "metro",
+        "province",
+        "unresolved"
+      ],
+      "default": "unresolved",
+      "description": "How precisely the source supports the location."
+    },
+    "commercial_intent": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "none"
+      ],
+      "default": "none",
+      "description": "Expressed purchasing intent from deterministic text rules on the source record."
+    },
+    "urgency": {
+      "type": "string",
+      "enum": [
+        "immediate",
+        "soon",
+        "flexible",
+        "none"
+      ],
+      "default": "none"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "fr",
+        "other"
+      ],
+      "default": "en"
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Explainable opportunity score (0-100) computed by the shared scoring module with configurable weights."
+    },
+    "score_factors": {
+      "type": "object",
+      "default": {},
+      "description": "Per-factor breakdown {factor: {raw, weight, weighted, note}} so every score is auditable."
+    },
+    "score_explanation": {
+      "type": "string",
+      "maxLength": 1000,
+      "default": ""
+    },
+    "source_reliability": {
+      "type": "string",
+      "enum": [
+        "internal_record",
+        "verified_source",
+        "public_source",
+        "aggregate_data"
+      ],
+      "default": "public_source"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 60
+      },
+      "default": [],
+      "description": "Recognized service/need expressions found in the evidence."
+    },
+    "coverage_status": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "province_near",
+        "uncovered",
+        "unknown"
+      ],
+      "default": "unknown",
+      "description": "Verified contractor capacity at the signal's location, from Partner records only. Never assumed."
+    },
+    "recommended_action": {
+      "type": "string",
+      "maxLength": 200,
+      "default": "",
+      "description": "Deterministic next step suggestion. Staff review precedes any outreach; nothing is messaged automatically."
+    },
+    "processing_status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "classified",
+        "review_pending",
+        "reviewed",
+        "actioned",
+        "expired"
+      ],
+      "default": "new"
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "qualified",
+        "dismissed",
+        "not_required"
+      ],
+      "default": "not_required",
+      "description": "Owner review decision for outreach-eligible signals. Qualified never auto-contacts anyone."
+    },
+    "review_note": {
+      "type": "string",
+      "maxLength": 500,
+      "default": ""
+    },
+    "reviewed_by": {
+      "type": "string",
+      "maxLength": 200,
+      "default": ""
+    },
+    "reviewed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "related_signal_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Keys of signals judged likely duplicates or related (same city + category within the freshness window)."
+    },
+    "metric_context": {
+      "type": "object",
+      "default": {},
+      "description": "Search-intelligence metadata: {metric_type, trend_index, volume_basis, period, comparison_group}. Indices are never displayed as absolute counts."
+    }
+  },
+  "required": [
+    "signal_key",
+    "source_platform",
+    "source_type",
+    "demand_type",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
