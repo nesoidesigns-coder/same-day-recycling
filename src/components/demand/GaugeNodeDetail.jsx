@@ -41,8 +41,7 @@ export default function GaugeNodeDetail({ industry, subdivision, topic, onClose 
   };
 
   const showOnMap = () => {
-    if (province) window.dispatchEvent(new CustomEvent("hero-map:focus", { detail: { province } }));
-    document.getElementById("pickup-map-experience")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("recycling-centers")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
