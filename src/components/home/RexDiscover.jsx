@@ -78,7 +78,7 @@ export default function RexDiscover() {
             <Compass className="w-4 h-4" /> Rex Discover — free research, no account needed
           </div>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#102B2A]">Figure it out first, decide later</h2>
-          <p className="mt-2 text-slate-600">Ask anything about removals, recycling, costs or planning. Anonymous, cited, and honest about what we don't know.</p>
+          <p className="mt-2 text-slate-600">Meet Rex — the friend who knows removals, recycling and what things really cost. Ask him anything. No sign-up, no sales pitch.</p>
         </div>
 
         <form
@@ -110,21 +110,32 @@ export default function RexDiscover() {
         </label>
 
         {messages.length === 0 && !loading && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {SUGGESTIONS.map((s) => (
-              <button key={s} onClick={() => send(s)} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:border-[#187B65] hover:text-[#187B65]">
-                {s}
-              </button>
-            ))}
+          <div className="mt-5 flex gap-2.5">
+            <div className="rex-orb w-10 h-10 shrink-0"><div className="rex-orb__core" /></div>
+            <div className="flex-1">
+              <div className="rounded-2xl rounded-tl-md bg-[#f4f7f5] px-4 py-3.5 text-sm leading-relaxed text-[#102B2A]">
+                Hi, I'm Rex. Whether it's an old couch that won't fit down the stairs, a garage that's gotten away from you, or a move coming up — tell me what's going on and I'll help you figure it out, one honest answer at a time.
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {SUGGESTIONS.map((s) => (
+                  <button key={s} onClick={() => send(s)} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:border-[#187B65] hover:text-[#187B65]">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
         <div className="mt-6 space-y-5">
           {messages.map((m, i) => (
-            <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+            <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start gap-2.5"}`}>
+              {m.role === "assistant" && (
+                <div className={`rex-orb w-8 h-8 shrink-0 mt-1 ${m.loading ? "rex-orb--listening" : ""}`}><div className="rex-orb__core" /></div>
+              )}
               <div className={`max-w-full md:max-w-[90%] rounded-2xl px-4 py-3.5 text-sm leading-relaxed ${m.role === "user" ? "bg-[#102B2A] text-white" : "bg-[#f4f7f5] text-[#102B2A]"}`}>
                 {m.loading ? (
-                  <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-4 h-4 animate-spin" /> Rex is researching…</div>
+                  <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-4 h-4 animate-spin" /> Rex is looking into this for you…</div>
                 ) : (
                   <>
                     <div className="flex items-center gap-2 mb-2">
