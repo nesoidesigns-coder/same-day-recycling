@@ -98,6 +98,7 @@ const AdminDemandObservatory = lazyPage(() => import('./pages/AdminDemandObserva
 const DemandPage = lazyPage(() => import('./pages/DemandPage'));
 const LiveCentre = lazyPage(() => import('./pages/LiveCentre'));
 const RecyclingOsHome = lazyPage(() => import('./pages/RecyclingOsHome'));
+const LivingInfrastructureHome = lazyPage(() => import('./pages/LivingInfrastructureHome'));
 const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
 const RequestService = lazyPage(() => import('./pages/RequestService'));
 const RequestStatus = lazyPage(() => import('./pages/RequestStatus'));
@@ -219,6 +220,7 @@ const AuthenticatedApp = () => {
       <Route path="/demand" element={<DemandPage />} />
       <Route path="/live" element={<LiveCentre />} />
       <Route path="/recycling-os" element={<Home />} />
+      <Route path="/living-infrastructure" element={<LivingInfrastructureHome />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />

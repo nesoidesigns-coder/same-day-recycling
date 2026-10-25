@@ -47,6 +47,19 @@ module.exports = {
   			'brand-softmint': 'hsl(var(--brand-softmint))',
   			'warm-white': 'hsl(var(--warm-white))',
   			'brand-amber': 'hsl(var(--brand-amber))',
+  			li: {
+  				cloud: 'hsl(var(--li-cloud))',
+  				forest: 'hsl(var(--li-forest))',
+  				infra: 'hsl(var(--li-infra))',
+  				mint: 'hsl(var(--li-mint))',
+  				graphite: 'hsl(var(--li-graphite))',
+  				carbon: 'hsl(var(--li-carbon))',
+  				slate: 'hsl(var(--li-slate))',
+  				steel: 'hsl(var(--li-steel))',
+  				pale: 'hsl(var(--li-pale))',
+  				amber: 'hsl(var(--li-amber))',
+  				red: 'hsl(var(--li-red))'
+  			},
   			'gold-dark': 'hsl(var(--brand-gold-dark))',
   			'brand-cyan': 'hsl(var(--brand-cyan))',
 			mint: 'hsl(var(--brand-mint))',
@@ -76,7 +89,8 @@ module.exports = {
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],
   			display: ['var(--font-display)'],
-  			mono: ['var(--font-mono)']
+  			mono: ['var(--font-mono)'],
+  			plex: ['var(--font-plex)']
   		},
   		keyframes: {
   			'accordion-down': {
