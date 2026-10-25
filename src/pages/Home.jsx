@@ -29,6 +29,7 @@ const OperatingSystemPitch = lazy(() => import("@/components/sdr/OperatingSystem
 const BusinessSolutions = lazy(() => import("@/components/sdr/BusinessSolutions"));
 const Reviews = lazy(() => import("@/components/sdr/Reviews"));
 const FinalCTA = lazy(() => import("@/components/sdr/FinalCTA"));
+const NationalDemandPanel = lazy(() => import("@/components/demand/NationalDemandPanel"));
 
 export default function Home() {
   useSEO({
@@ -54,6 +55,8 @@ export default function Home() {
       <main>
       <InstantQuoteFlow />
       <DiscoveryHero />
+      {/* Canadian demand intelligence: national gauge + prominent search, no account needed */}
+      <NationalDemandPanel />
       <section id="live-discovery" className="relative max-w-6xl mx-auto px-4 pb-10 md:pb-14">
         <HomeDiscoveryFeed />
       </section>
