@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 
 // Canada's Recycling Pulse: public, aggregated operational metrics.
@@ -55,7 +55,7 @@ export default async function(req) {
     const [quoteLeadsPage, requestsPage, requestsTestPage, bookingsPage, partnersPage, settingsList, userResult] =
       await Promise.allSettled([
         base44.asServiceRole.entities.QuoteLead.list({ limit: 500 }),
-        base44.asServiceRole.entities.NationalRequest.filter({ record_type: 'service' }, { limit: 500 }),
+        base44.asServiceRole.entities.NationalRequest.list({ limit: 500 }),
         base44.asServiceRole.entities.NationalRequest.filter({ record_type: 'internal_test' }, { limit: 500 }),
         base44.asServiceRole.entities.Booking.list({ limit: 500 }),
         base44.asServiceRole.entities.Partner.list({ limit: 500 }),
@@ -63,6 +63,10 @@ export default async function(req) {
         base44.auth.me().catch(() => null),
       ]);
 
+    console.log('[publicPulse] pages:', quoteLeadsPage.status, requestsPage.status, requestsTestPage.status, bookingsPage.status, partnersPage.status, settingsList.status);
+    if (requestsPage.status === 'rejected') console.log('[publicPulse] requests rejected:', String(requestsPage.reason));
+    if (bookingsPage.status === 'rejected') console.log('[publicPulse] bookings rejected:', String(bookingsPage.reason));
+    if (partnersPage.status === 'rejected') console.log('[publicPulse] partners rejected:', String(partnersPage.reason));
     const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
     const quoteLeads = items(quoteLeadsPage);
     const serviceRequests = items(requestsPage);

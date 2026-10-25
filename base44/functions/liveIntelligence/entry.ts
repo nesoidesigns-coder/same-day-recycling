@@ -32,13 +32,15 @@ async function overview(base44: any, days: number) {
   const startIso = new Date(Date.now() - days * DAY_MS).toISOString();
   const [leadsP, requestsP, signalsP, partnersP] = await Promise.allSettled([
     base44.asServiceRole.entities.QuoteLead.filter({ created_date: { $gte: startIso } }, { limit: 1000 }),
-    base44.asServiceRole.entities.NationalRequest.filter({ record_type: 'service', created_date: { $gte: startIso } }, { limit: 1000 }),
+    base44.asServiceRole.entities.NationalRequest.filter({ created_date: { $gte: startIso } }, { limit: 1000 }),
     base44.asServiceRole.entities.DemandSignal.list({ limit: 1000 }),
     base44.asServiceRole.entities.Partner.filter({ active: true, verified: true }, { limit: 500 }),
   ]);
 
   const leads = valueOf(leadsP);
-  const requests = valueOf(requestsP).filter((r: any) => r.record_type === 'service');
+  // Real records predating the record_type field have it empty — treat
+  // missing as service; internal-test fixtures are always excluded.
+  const requests = valueOf(requestsP).filter((r: any) => (r.record_type || 'service') === 'service');
   const signals = valueOf(signalsP);
   const partners = valueOf(partnersP).filter((p: any) => !isTestPartner(p));
 
