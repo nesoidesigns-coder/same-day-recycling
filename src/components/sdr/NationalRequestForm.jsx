@@ -72,28 +72,28 @@ export default function NationalRequestForm() {
 
   if (result) {
     return (
-      <div className="rounded-3xl bg-white p-8 border border-slate-100 text-center">
-        <CheckCircle2 className="w-14 h-14 text-[#187B65] mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-[#102B2A]">Request received</h3>
-        <p className="mt-2 text-slate-600 max-w-md mx-auto">
+      <div className="rounded-3xl bg-white p-8 border border-si-line text-center">
+        <CheckCircle2 className="w-14 h-14 text-si-mint mx-auto mb-4" />
+        <h3 className="text-2xl font-bold text-si-ink">Request received</h3>
+        <p className="mt-2 text-si-muted max-w-md mx-auto">
           {result.message || "Your request is in the provider matching queue."}
         </p>
         {result.reference_code && (
-          <div className="mt-4 inline-block rounded-full bg-[#f4f7f5] border border-slate-200 px-5 py-2 font-mono font-bold text-[#102B2A]">
+          <div className="mt-4 inline-block rounded-full bg-si-bg2 border border-si-line px-5 py-2 font-plex font-bold text-si-ink">
             Reference: {result.reference_code}
           </div>
         )}
-        <div className="mt-6 text-left max-w-md mx-auto rounded-2xl bg-[#f4f7f5] border border-slate-100 p-5">
-          <div className="text-sm font-bold text-[#102B2A] mb-2">What happens next</div>
-          <ol className="text-sm text-slate-600 space-y-1.5 list-decimal list-inside">
+        <div className="mt-6 text-left max-w-md mx-auto rounded-2xl bg-si-bg2 border border-si-line p-5">
+          <div className="text-sm font-bold text-si-ink mb-2">What happens next</div>
+          <ol className="text-sm text-si-muted space-y-1.5 list-decimal list-inside">
             <li>We match your request with a verified local provider.</li>
             <li>The provider confirms availability and pricing.</li>
             <li>You receive a confirmed quote and service appointment.</li>
           </ol>
-          <p className="mt-3 text-xs text-slate-500">Nothing is charged and no pickup is scheduled until a provider accepts your job.</p>
+          <p className="mt-3 text-xs text-si-muted">Nothing is charged and no pickup is scheduled until a provider accepts your job.</p>
         </div>
-        <Link to={`/request-status?reference=${encodeURIComponent(result.reference_code || "")}`} className="mt-6 inline-flex min-h-11 items-center rounded-full bg-brand-emerald px-5 text-sm font-bold text-market-ink">Track my request</Link>
-        <button onClick={() => { setResult(null); setForm({ name: "", phone: "", email: "", city: "", province_code: "", postal_code: "", service_type: "junk_removal", items_description: "", preferred_date: "", notes: "" }); }} className="mt-6 text-[#187B65] font-semibold hover:underline">
+        <Link to={`/request-status?reference=${encodeURIComponent(result.reference_code || "")}`} className="mt-6 inline-flex min-h-11 items-center rounded-full bg-si-forest px-5 text-sm font-bold text-white hover:bg-si-mint hover:text-si-forest transition-colors">Track my request</Link>
+        <button onClick={() => { setResult(null); setForm({ name: "", phone: "", email: "", city: "", province_code: "", postal_code: "", service_type: "junk_removal", items_description: "", preferred_date: "", notes: "" }); }} className="mt-6 text-si-forest font-semibold hover:underline">
           Submit another request
         </button>
       </div>
@@ -103,9 +103,9 @@ export default function NationalRequestForm() {
   const notLive = coverage !== "same_day";
 
   return (
-    <form onSubmit={submit} className="rounded-3xl bg-white p-6 md:p-8 border border-slate-100 shadow-sm">
-      <h3 className="text-2xl font-bold text-[#102B2A]">Request service</h3>
-      <p className="text-sm text-slate-500 mt-1 mb-6">Requests accepted in every Canadian province and territory. Pickup requires contractor acceptance.</p>
+    <form onSubmit={submit} className="rounded-3xl bg-white p-6 md:p-8 border border-si-line shadow-sm">
+      <h3 className="text-2xl font-bold text-si-ink">Request service</h3>
+      <p className="text-sm text-si-muted mt-1 mb-6">Requests accepted in every Canadian province and territory. Pickup requires contractor acceptance.</p>
 
       <PickupCoverageNotice city={form.city} />
 
@@ -142,7 +142,7 @@ export default function NationalRequestForm() {
               </select>
             </div>
           ) : form.province_code ? (
-            <div className="input bg-[#f4f7f5] text-slate-600">{provinceName(form.province_code)} <span className="text-xs text-slate-400">(from your postal code)</span></div>
+            <div className="input bg-si-bg2 text-si-muted">{provinceName(form.province_code)} <span className="text-xs text-si-muted/60">(from your postal code)</span></div>
           ) : (
             <select value={form.province_code} onChange={update("province_code")} className="input">
               <option value="">Select province or territory</option>
@@ -167,14 +167,14 @@ export default function NationalRequestForm() {
           </Field>
         </div>
         {notLive && (
-          <p className="text-xs text-slate-500 flex items-start gap-1.5">
-            <ShieldAlert className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-400" />
+          <p className="text-xs text-si-muted flex items-start gap-1.5">
+            <ShieldAlert className="w-3.5 h-3.5 shrink-0 mt-0.5 text-si-muted/60" />
             Provider Confirmation Required: your request is matched with a local provider before any pickup is scheduled. No payment is taken for unconfirmed services.
           </p>
         )}
       </div>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      <button disabled={submitting} className="mt-6 w-full rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-[#125C4E] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+      <button disabled={submitting} className="mt-6 w-full rounded-full bg-si-forest text-white font-bold px-7 py-4 hover:bg-si-mint hover:text-si-forest transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
         {submitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending…</> : <><Send className="w-5 h-5" /> Submit service request</>}
       </button>
     </form>
@@ -184,7 +184,7 @@ export default function NationalRequestForm() {
 function Field({ label, required, children }) {
   return (
     <label className="block">
-      <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">{label}{required && <span className="text-[#187B65]"> *</span>}</span>
+      <span className="block text-sm font-semibold text-si-ink mb-1.5">{label}{required && <span className="text-si-mint"> *</span>}</span>
       {children}
     </label>
   );

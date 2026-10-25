@@ -156,7 +156,7 @@
   }
 
   .input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[#102B2A] placeholder:text-slate-400 focus:border-[#187B65] focus:outline-none focus:ring-2 focus:ring-[#187B65]/30 transition-colors;
+    @apply w-full rounded-xl border border-si-line bg-white px-4 py-3 text-si-ink placeholder:text-si-muted/60 focus:border-si-mint focus:outline-none focus:ring-2 focus:ring-si-mint/30 transition-colors;
   }
 }
 
