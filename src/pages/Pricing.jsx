@@ -1,17 +1,22 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSEO } from "@/lib/seo";
+import { base44 } from "@/api/base44Client";
 import { Truck, Scale, ShieldCheck, HandCoins, Phone, Recycle, XCircle } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 
+// Tier definitions without prices — the "from" prices are loaded live from
+// the one authoritative pricing configuration (PricingSettings), never
+// hard-coded here.
 const TIERS = [
-  { label: "Minimum pickup", price: 139, weight: "Up to 200 lbs", example: "A few bags, a nightstand, odds and ends" },
-  { label: "1/8 truck", price: 189, weight: "200 – 350 lbs", example: "A mattress, a couple of boxes, a small dresser" },
-  { label: "1/4 truck", price: 269, weight: "350 – 700 lbs", example: "A sofa and love seat, or a small fridge" },
-  { label: "1/2 truck", price: 419, weight: "700 – 1,400 lbs", example: "A studio apartment clear-out" },
-  { label: "3/4 truck", price: 549, weight: "1,400 – 2,100 lbs", example: "A garage or basement clear-out" },
-  { label: "Full truck", price: 649, weight: "2,100 – 2,800 lbs", example: "A full home or office clear-out" },
+  { label: "Minimum pickup", key: "minimum_pickup", weight: "Up to 200 lbs", example: "A few bags, a nightstand, odds and ends" },
+  { label: "1/8 truck", key: "eighth_truck", weight: "200 – 350 lbs", example: "A mattress, a couple of boxes, a small dresser" },
+  { label: "1/4 truck", key: "quarter_truck", weight: "350 – 700 lbs", example: "A sofa and love seat, or a small fridge" },
+  { label: "1/2 truck", key: "half_truck", weight: "700 – 1,400 lbs", example: "A studio apartment clear-out" },
+  { label: "3/4 truck", key: "three_quarter_truck", weight: "1,400 – 2,100 lbs", example: "A garage or basement clear-out" },
+  { label: "Full truck", key: "full_truck", weight: "2,100 – 2,800 lbs", example: "A full home or office clear-out" },
 ];
 
 const GUARANTEES = [
@@ -21,7 +26,7 @@ const GUARANTEES = [
 ];
 
 const FAQS = [
-  { q: "How much does junk removal cost?", a: "Pricing is based on the truck space your load fills, from a $139 minimum pickup up to about $649 for a full truck at the national standard rate (some cities set their own approved rates — your quote always shows your exact figure). The exact price depends on volume and weight, and the final price is confirmed on arrival before we lift anything." },
+  { q: "How much does junk removal cost?", a: "Pricing is based on the truck space your load fills, from a minimum pickup up to a full truck. Live rates are shown in the tier table above, and your quote always shows your city's exact figure. The exact price depends on volume and weight, and the final price is confirmed on arrival before we lift anything." },
   { q: "How do I know what I'll pay before the crew arrives?", a: "Get an instant estimate with our online quote tool or from a photo, or call for a free no-obligation estimate. You approve the final price on arrival before we lift a thing — no surprise hikes." },
   { q: "Are there extra fees like fuel or dumping charges?", a: "No. Labor, loading, transport, sorting and disposal are all included in the tier price. No hidden fees, no scale surprises." },
   { q: "What can't you take?", a: "Hazardous materials — paint, chemicals, asbestos, fuel, solvents and propane tanks. Everything else that fits in a truck, we can usually take." },
@@ -35,6 +40,27 @@ const FAQS = [
 ];
 
 export default function Pricing() {
+  // Live national "from" price per tier, computed from the pricing
+  // configuration. Neutral label if the config can't load — never stale
+  // hard-coded numbers.
+  const [tierPrices, setTierPrices] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    base44.entities.PricingSettings.list({}, { limit: 200 })
+      .then((res) => {
+        const rows = Array.isArray(res) ? res : res?.items || [];
+        if (alive && rows.length) {
+          const prices = {};
+          TIERS.forEach((t) => {
+            const nums = rows.map((r) => r[t.key]).filter((n) => typeof n === "number");
+            if (nums.length) prices[t.key] = Math.min(...nums);
+          });
+          setTierPrices(prices);
+        }
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
   useSEO({
     title: "Junk Removal Pricing — Upfront Rates | Same Day Recycling",
     description: "Transparent junk removal pricing in Canadian dollars — single-item, half-load and full-load rates with recycling-first disposal. Get an instant quote online.",
@@ -67,7 +93,7 @@ export default function Pricing() {
 
       <section className="max-w-5xl mx-auto px-4 py-14">
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#102B2A] text-center">What each price tier covers</h2>
-        <p className="text-center text-slate-600 mt-2 text-sm">Standard rates shown (exact city pricing varies slightly — your quote always shows your rate). Tier prices are the base rate for the band: a load near the top of the band prices toward the next tier, which is why instant estimates can show a range above the base price.</p>
+        <p className="text-center text-slate-600 mt-2 text-sm">Lowest live rates from the pricing configuration across priced cities (exact city pricing varies — your quote always shows your rate). Tier prices are the base rate for the band: a load near the top of the band prices toward the next tier, which is why instant estimates can show a range above the base price.</p>
         <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {TIERS.map((t) => (
             <div key={t.label} className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-6">
@@ -75,7 +101,7 @@ export default function Pricing() {
                 <Truck className="w-4 h-4 text-[#187B65]" />
                 <span className="font-bold text-sm uppercase tracking-wide">{t.label}</span>
               </div>
-              <div className="mt-3 text-3xl font-extrabold text-[#102B2A] tabular-nums">from ${t.price}</div>
+              <div className="mt-3 text-3xl font-extrabold text-[#102B2A] tabular-nums">{tierPrices && tierPrices[t.key] != null ? `from $${tierPrices[t.key]}` : "Quoted per load"}</div>
               <div className="mt-1 text-sm font-bold text-[#187B65]">{t.weight}</div>
               <p className="mt-2 text-sm text-slate-600">{t.example}</p>
             </div>
