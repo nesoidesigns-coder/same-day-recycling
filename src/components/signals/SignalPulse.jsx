@@ -18,9 +18,9 @@ export default function SignalPulse({ trigger, label = "Updated with newly verif
   if (!on) return null;
   return (
     <span className="relative inline-flex items-center" role="status" aria-label={label}>
-      <span className="signal-pulse-dot block w-2 h-2 rounded-full bg-ri-emerald" />
-      <span className="signal-pulse-ring absolute inset-0 rounded-full border-2 border-ri-emerald" />
-      <span className="ml-1.5 font-plex text-[10px] font-bold text-ri-emerald">{label}</span>
+      <span className="signal-pulse-dot block w-2 h-2 rounded-full bg-ri-amber" />
+      <span className="signal-pulse-ring absolute inset-0 rounded-full border-2 border-ri-amber" />
+      <span className="ml-1.5 font-plex text-[10px] font-bold text-ri-forest">{label}</span>
     </span>
   );
 }

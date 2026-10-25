@@ -53,7 +53,7 @@ export default function CanadaSignalSection() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-xl">
           <h2 className="text-[26px] font-bold tracking-tight text-si-ink md:text-[34px]">
-            The Canada <span className="text-ri-emerald">Signal</span>
+            The Canada <span className="text-ri-amber">Signal</span>
           </h2>
           <p className="mt-1 text-sm text-si-muted md:text-base">
             Canada's Service Intelligence — Powered by Recycling OS. Verified search-interest signals across the services we provide, explained in plain language.

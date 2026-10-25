@@ -56,7 +56,7 @@ export default function CanadaSignal({
           const isSel = selected === c.key;
           const isDim = selected && !isSel;
           const frac = c.available ? Math.max(0.12, Math.min(1, (Number(c.value) || 0) / 100)) : 0.12;
-          const stroke = c.available ? "hsl(var(--ri-emerald))" : "hsl(var(--ri-slate) / 0.25)";
+          const stroke = isSel ? "hsl(var(--ri-amber))" : c.available ? "hsl(var(--ri-forest))" : "hsl(var(--ri-slate) / 0.25)";
           return (
             <path
               key={c.key}
@@ -89,7 +89,7 @@ export default function CanadaSignal({
         ))}
 
         {/* Inner ring — geographic layer: one dot per covered city */}
-        <circle cx={CX} cy={CY} r={98} fill="none" strokeWidth="1.5" style={{ stroke: "hsl(var(--ri-steel))" }} />
+        <circle cx={CX} cy={CY} r={98} fill="none" strokeWidth="1.5" style={{ stroke: "hsl(var(--ri-forest) / 0.25)" }} />
         {Array.from({ length: Math.min(coverageCount, 12) }, (_, i) => {
           const p = polar(98, (i / 12) * 360);
           return (
@@ -105,16 +105,16 @@ export default function CanadaSignal({
         })}
 
         {/* Soft orbital accents */}
-        <circle cx={CX} cy={CY} r={112} fill="none" strokeWidth="1" strokeDasharray="2 10" style={{ stroke: "hsl(var(--ri-emerald) / 0.35)" }} />
+        <circle cx={CX} cy={CY} r={112} fill="none" strokeWidth="1" strokeDasharray="2 10" style={{ stroke: "hsl(var(--ri-amber) / 0.4)" }} />
       </svg>
 
       {/* Central display */}
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-8 text-center sm:px-10">
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-5 text-center sm:px-10">
         {isLoading && !hasValue ? (
           <span className="text-sm font-semibold text-ri-slate">Reading verified data…</span>
         ) : hasValue ? (
           <>
-            <span key={pulseKey} className="signal-pulse-dot inline-block rounded-full font-plex text-[52px] font-bold leading-none text-ri-charcoal">
+            <span key={pulseKey} className="signal-pulse-dot inline-block rounded-full font-plex text-[44px] font-bold leading-none text-ri-forest sm:text-[52px]">
               {display}
             </span>
             <span className="mt-1 text-[11px] font-bold tracking-wide text-ri-forest">National Signal Index</span>
@@ -127,7 +127,7 @@ export default function CanadaSignal({
             <span className="mt-1 text-[10px] leading-snug text-ri-slate">Not yet available — insufficient verified search-interest data</span>
           </>
         )}
-        <span className="mt-2 rounded-full bg-ri-mint px-2.5 py-0.5 text-[10px] font-bold text-ri-forest">{geoLabel}</span>
+        <span className="mt-2 rounded-full bg-ri-amber/15 px-2.5 py-0.5 text-[10px] font-bold text-ri-forest">{geoLabel}</span>
         {updatedAt && <span className="mt-1 font-plex text-[9px] text-ri-slate/70">updated {new Date(updatedAt).toLocaleString("en-CA", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>}
       </div>
 

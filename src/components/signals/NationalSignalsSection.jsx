@@ -67,7 +67,7 @@ export default function NationalSignalsSection() {
     : null;
 
   return (
-    <section aria-label="National market intelligence" className="mt-12 rounded-[20px] border border-si-line bg-white p-5 shadow-sm md:p-7">
+    <section aria-label="National market intelligence" className="mt-12 rounded-[20px] border border-si-line bg-white p-4 shadow-sm sm:p-6 md:p-7">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold tracking-tight text-si-ink md:text-2xl">National market intelligence</h2>
@@ -83,7 +83,7 @@ export default function NationalSignalsSection() {
             key={c.key}
             onClick={() => setCategory(c.key)}
             className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors duration-200 ${
-              category === c.key ? "bg-si-forest text-white" : "bg-si-bg2 text-si-ink hover:bg-si-bg2/70"
+              category === c.key ? "bg-ri-forest text-white" : "bg-ri-ivory text-ri-charcoal hover:bg-ri-mint"
             }`}
           >
             {c.label}

@@ -61,7 +61,7 @@ export default function SignalGauge({
             cx="80" cy="80" r={R} fill="none" strokeWidth="8" strokeLinecap="round"
             strokeDasharray={C} strokeDashoffset={C * (1 - drawn)}
             transform="rotate(-90 80 80)"
-            style={{ stroke: "hsl(var(--ri-emerald))", transition: "stroke-dashoffset 500ms cubic-bezier(0.4, 0, 0.2, 1)" }}
+            style={{ stroke: "hsl(var(--ri-forest))", transition: "stroke-dashoffset 500ms cubic-bezier(0.4, 0, 0.2, 1)" }}
           />
         )}
         {ticks.map((t, i) => (
@@ -71,12 +71,12 @@ export default function SignalGauge({
             style={{ stroke: t.major ? "hsl(var(--ri-slate) / 0.5)" : "hsl(var(--ri-slate) / 0.28)" }}
           />
         ))}
-        <text x="80" y="78" textAnchor="middle" fontSize="30" fontWeight="700" className="font-plex fill-ri-charcoal">
+        <text x="80" y="78" textAnchor="middle" fontSize="30" fontWeight="700" className="font-plex fill-ri-forest">
           {center}
         </text>
         {unit && <text x="80" y="97" textAnchor="middle" fontSize="10" fontWeight="600" className="fill-ri-slate">{unit}</text>}
       </svg>
-      <div className="mt-2 text-sm font-bold text-ri-charcoal">{unavailableReason ? "Not available" : label}</div>
+      <div className="mt-2 text-sm font-bold text-ri-forest">{unavailableReason ? "Not available" : label}</div>
       {(unavailableReason || sub) && <div className="mt-1 text-xs text-ri-slate max-w-[280px]">{unavailableReason || sub}</div>}
       {pulse && usable && (
         <div className="mt-1.5 h-4">
