@@ -31,6 +31,9 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
   const mountRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [live, setLive] = useState(null);
+  // The Three.js effect reads the latest selection through this ref.
+  const selectedRef = useRef(null);
+  selectedRef.current = selected;
   const [ask, setAsk] = useState("");
   const [rex, setRex] = useState({ loading: false, reply: "" });
 
@@ -149,6 +152,28 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       camera.lookAt(0, 0, 0);
     };
     applyView();
+    // Zoom-all-the-way-in handoff: when the camera bottoms out, the live
+    // street view opens automatically — for the selected city, or the nearest
+    // listed city when nothing is selected.
+    let liveFired = false;
+    const maybeAutoOpen = () => {
+      if (liveFired) return;
+      const sel = selectedRef.current;
+      let target = null;
+      if (sel?.city) {
+        target = { lat: sel.city.lat, lng: sel.city.lng, label: sel.name, mode: "street" };
+      } else {
+        const nearest = coverageCities
+          .filter((c) => c.city)
+          .sort((a, b) => Math.hypot(a.city.lat - PROJ.lat0, a.city.lng - PROJ.lng0) - Math.hypot(b.city.lat - PROJ.lat0, b.city.lng - PROJ.lng0))[0];
+        if (nearest) {
+          target = { lat: nearest.city.lat, lng: nearest.city.lng, label: nearest.name, mode: "street" };
+          setSelected({ name: nearest.name, city: nearest.city, state: nearest.state });
+        }
+      }
+      if (target) { liveFired = true; setLive(target); }
+    };
+
     const raycaster = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
     const pickAt = (x, y) => {
@@ -179,6 +204,8 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
         const [a, b] = [...pointers.values()];
         const d = Math.hypot(a.x - b.x, a.y - b.y);
         if (pinchStart > 0 && d > 0) distTarget = clampDist((pinchDist0 * pinchStart) / d);
+        if (distTarget > 18) liveFired = false;
+        if (distTarget <= 12.5) maybeAutoOpen();
         return;
       }
       if (!dragging) return;
@@ -208,6 +235,8 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
     const onWheel = (e) => {
       e.preventDefault();
       distTarget = clampDist(distTarget + e.deltaY * 0.03);
+      if (distTarget > 18) liveFired = false;
+      if (distTarget <= 12.5) maybeAutoOpen();
     };
     renderer.domElement.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
@@ -281,13 +310,13 @@ export default function NetworkMap3D({ coverageCities = [], providers = [], traf
       <div ref={mountRef} className="absolute inset-0" />
       {live && (
         <div className="absolute inset-0 z-20">
-          <LiveCityView lat={live.lat} lng={live.lng} label={live.label} onClose={() => setLive(null)} className="h-full" />
+          <LiveCityView lat={live.lat} lng={live.lng} label={live.label} initialMode={live.mode} onClose={() => setLive(null)} className="h-full" />
         </div>
       )}
 
       {/* orbit hint */}
       <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full glass-dark px-3 py-1.5 text-[11px] font-semibold text-emerald-100/80">
-        <MousePointerClick className="w-3 h-3 text-[#54D9AE]" /> Drag to orbit · scroll to zoom · tap a city
+        <MousePointerClick className="w-3 h-3 text-[#54D9AE]" /> Drag to orbit · tap a city · zoom all the way in for street view
       </div>
 
       {/* selected city panel + Rex */}

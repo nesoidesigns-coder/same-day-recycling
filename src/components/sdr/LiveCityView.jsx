@@ -20,8 +20,8 @@ const MODES = [
 // 3D maps deep-zoom into. Street photos are openly licensed Panoramax
 // photography verified by this app; Google Street View opens outside the app
 // when no permitted photo exists nearby.
-export default function LiveCityView({ lat, lng, label, onClose, className = "" }) {
-  const [mode, setMode] = useState("map");
+export default function LiveCityView({ lat, lng, label, onClose, className = "", initialMode = "map" }) {
+  const [mode, setMode] = useState(initialMode);
   const { data: imagery, isLoading: checking } = useQuery({
     queryKey: ["liveStreetImagery", lat.toFixed(4), lng.toFixed(4)],
     queryFn: async () => (await base44.functions.invoke("streetImagery", { lat, lng })).data,
