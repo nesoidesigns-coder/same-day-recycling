@@ -34,10 +34,9 @@ const SERVICE_OPTIONS = ["Junk removal", "Furniture removal", "Appliance removal
 
 export default function RecyclingOsHome() {
   useSEO({
-    title: "Recycling OS Prototype | Same Day Recycling",
-    description: "Prototype homepage for Recycling OS: explore Canadian service intelligence, live demand records and verified contractor coverage.",
-    path: "/recycling-os",
-    noindex: true,
+    title: "Junk Removal Across Canada | Same Day Recycling",
+    description: "Explore junk removal, furniture and appliance services across Canada. Understand pricing, recycling options and live service activity — then book with confidence.",
+    path: "/",
   });
   const navigate = useNavigate();
   const [location, setLocation] = useState("");
@@ -54,11 +53,6 @@ export default function RecyclingOsHome() {
       <TopBar />
       <Navbar />
       <main>
-        {/* Prototype banner */}
-        <div className="bg-[#102B2A] text-white text-center text-xs font-bold py-2 px-4">
-          Recycling OS prototype — reviewing before anything replaces the live homepage. <Link to="/" className="underline text-emerald-300">Back to current homepage</Link>
-        </div>
-
         {/* Section 1 — Welcome */}
         <section className="bg-warm-white">
           <div className="max-w-3xl mx-auto px-4 pt-12 pb-10 text-center">

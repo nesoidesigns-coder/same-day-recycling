@@ -173,7 +173,7 @@ const AuthenticatedApp = () => {
     <Suspense fallback={<RouteFallback />}>
     <Routes>
       {/* Add your page Route elements here */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<RecyclingOsHome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -218,7 +218,7 @@ const AuthenticatedApp = () => {
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/demand" element={<DemandPage />} />
       <Route path="/live" element={<LiveCentre />} />
-      <Route path="/recycling-os" element={<RecyclingOsHome />} />
+      <Route path="/recycling-os" element={<Home />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />
