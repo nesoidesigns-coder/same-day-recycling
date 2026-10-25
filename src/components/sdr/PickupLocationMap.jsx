@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Camera } from "lucide-react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -21,7 +22,7 @@ export default function PickupLocationMap({ lang = "en" }) {
   };
   return <div>
     <div className="mb-2 flex flex-wrap gap-2" role="group" aria-label={fr ? "Type de carte" : "Map type"}>
-      {[{ key: "map", label: fr ? "Carte" : "Map" }, { key: "satellite", label: "Satellite" }, { key: "street", label: fr ? "Vue de rue" : "Street View" }].map((item) => <button key={item.key} type="button" onClick={() => changeMode(item.key)} aria-pressed={mode === item.key} className={`min-h-11 rounded-full border px-4 text-sm font-bold ${mode === item.key ? "border-market-accent bg-market-accent/20" : "border-market-line"}`}>{item.label}</button>)}
+      {[{ key: "map", label: fr ? "Carte" : "Map" }, { key: "satellite", label: "Satellite" }, { key: "street", label: fr ? "Vue de rue" : "Street View" }].map((item) => <button key={item.key} type="button" onClick={() => changeMode(item.key)} aria-pressed={mode === item.key} className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm font-bold ${mode === item.key ? "border-market-accent bg-market-accent/20" : item.key === "street" ? "border-market-accent text-market-accent" : "border-market-line"}`}>{item.key === "street" && <Camera className="h-4 w-4" />}{item.label}</button>)}
     </div>
     {mode === "street" && imagery.status === "available" ? <HeroStreetView key={imagery.image_id} lang={lang} /> : mode === "street" ? <StreetViewFallback lang={lang} /> : <div className="relative z-0 h-64 overflow-hidden rounded-xl border border-market-line sm:h-72" data-pickup-lat={pickup.lat} data-pickup-lng={pickup.lng}>
       <MapContainer center={[pickup.lat, pickup.lng]} zoom={pickup.camera.local.zoom} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }} aria-label={fr ? "Carte du lieu de ramassage" : "Pickup location map"}>

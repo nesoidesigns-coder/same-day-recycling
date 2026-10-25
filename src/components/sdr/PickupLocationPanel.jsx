@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { Loader2, MapPin } from "lucide-react";
 import PickupCoverageNotice from "@/components/sdr/PickupCoverageNotice";
 import PickupLocationActions from "@/components/sdr/PickupLocationActions";
@@ -9,9 +9,13 @@ const PickupLocationMap = lazy(() => import("@/components/sdr/PickupLocationMap"
 
 export default function PickupLocationPanel({ lang = "en" }) {
   const pickup = usePickupLocation(), fr = lang === "fr";
+  const sectionRef = useRef(null);
   usePickupImagery();
+  // The panel appears below the 3D globe right after the address is confirmed;
+  // glide to it so it is easy to find on phones.
+  useEffect(() => { sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }, []);
   if (!pickup) return null;
-  return <section id="pickup-location-details" className="relative border-t border-market-line px-4 pb-4 pt-3" aria-label={fr ? "Votre lieu de ramassage" : "Your pickup location"}>
+  return <section ref={sectionRef} id="pickup-location-details" className="relative border-t border-market-line px-4 pb-4 pt-3" aria-label={fr ? "Votre lieu de ramassage" : "Your pickup location"}>
     <div className="flex items-start gap-2"><MapPin className="mt-1 h-5 w-5 shrink-0 text-market-accent" /><div className="min-w-0">
       <h3 className="text-base font-bold">{fr ? "Votre lieu de ramassage" : "Your pickup location"}</h3>
       <p className="mt-1 break-words text-sm">{pickup.formattedAddress}</p>
