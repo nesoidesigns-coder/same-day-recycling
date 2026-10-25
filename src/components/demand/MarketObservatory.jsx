@@ -3,7 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Loader2, Globe2, TrendingUp, TrendingDown, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import SearchDemandGauge from '@/components/demand/SearchDemandGauge';
+import ObservatoryIndustryExplorer from '@/components/demand/ObservatoryIndustryExplorer';
+import SearchVolumePanel from '@/components/demand/SearchVolumePanel';
+import MomentumPanel from '@/components/demand/MomentumPanel';
+import ObservedPublicDemand from '@/components/demand/ObservedPublicDemand';
 import RegionalActivityGauge from '@/components/demand/RegionalActivityGauge';
 const MarketArchive = lazy(() => import('@/components/admin/demand/MarketArchive'));
 
@@ -48,9 +51,6 @@ export default function MarketObservatory({ compact = false, onImport, showHisto
   const latestPeriod = data?.overview?.available ? data.overview.period : (trends[0]?.period || data?.latest_period || null);
   const periodLabel = latestPeriod ? new Date(`${latestPeriod}-01T00:00:00Z`).toLocaleDateString('en-CA', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : null;
   const nationalTrends = trends.filter((t) => t.geo_type === 'national' || !t.geo_type);
-  const momentum = nationalTrends.filter((t) => Number.isFinite(t.change_points));
-  const rising = momentum.filter((t) => t.change_points > 0).sort((a, b) => b.change_points - a.change_points).slice(0, 4);
-  const falling = momentum.filter((t) => t.change_points < 0).sort((a, b) => a.change_points - b.change_points).slice(0, 3);
   const useTrendsRanking = !data?.keywords?.length;
   const rankedServices = useTrendsRanking
     ? [...nationalTrends].sort((a, b) => b.value - a.value).slice(0, 8)
@@ -67,24 +67,17 @@ export default function MarketObservatory({ compact = false, onImport, showHisto
       <p className="mt-2 text-xs text-market-muted">
         {periodLabel ? <>Latest verified reporting period: <span className="font-bold text-market-ink">{periodLabel}</span> · Google</> : 'No verified reporting period available yet.'}
       </p>
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <BlockShell title="Canadian National Search Demand" question="How much demand is there across Canada's services industry at large, and where is momentum building?">
-          <SearchDemandGauge data={data} />
-          {!data.overview?.available && <Unavailable message={data.data_status?.state === 'not_backfilled'
-            ? 'Verified monthly volume estimates have not been backfilled yet. The verified signal currently available is Trends relative interest, shown below.'
-            : 'No verified monthly volume estimates match this period. The verified signal currently available is Trends relative interest, shown below.'} />}
+      {/* Central interactive industry explorer — full width, the headline */}
+      <BlockShell title="Canadian Demand" question="Which industries are Canadians looking for help in? Tap a category segment to explore its specialties and searches.">
+        <ObservatoryIndustryExplorer />
+      </BlockShell>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <BlockShell title="Search Demand" question="Measurement 1 of 3 — how much demand is there?">
+          <SearchVolumePanel data={data} />
         </BlockShell>
-        <BlockShell title="Market Demand Momentum" question="Which services are gaining or losing search interest?">
-          {data.overview?.available && Number.isFinite(data.overview.mom_pct) && (
-            <div className="mb-3 flex items-baseline gap-2"><p className="text-3xl font-extrabold">{data.overview.mom_pct > 0 ? '+' : ''}{data.overview.mom_pct}%</p><span className="text-xs text-market-muted">vs {data.overview.previous_period}</span></div>
-          )}
-          {rising.length || falling.length ? (
-            <div className="space-y-1.5">
-              {rising.map((t) => <p key={t.keyword} className="flex items-center gap-2 text-xs text-market-ink"><TrendingUp className="h-3.5 w-3.5 text-[#54D9AE]" /><span className="font-bold">{t.keyword}</span><span className="text-[#54D9AE]">+{t.change_points}</span></p>)}
-              {falling.map((t) => <p key={t.keyword} className="flex items-center gap-2 text-xs text-market-ink"><TrendingDown className="h-3.5 w-3.5 text-amber-300" /><span className="font-bold">{t.keyword}</span><span className="text-amber-300">{t.change_points}</span></p>)}
-              <p className="pt-1 text-[11px] text-market-muted">Change in Trends index (0-100) vs the previous month.</p>
-            </div>
-          ) : <Unavailable message="No month-over-month comparison is available yet for this period." />}
+        <BlockShell title="Market Demand Momentum" question="Measurement 2 of 3 — is relative search interest rising or falling?">
+          <MomentumPanel data={data} />
         </BlockShell>
         <BlockShell title="Most Searched Services" question="Which removal and recycling services are searched most?">
           {rankedServices.length ? (
@@ -109,6 +102,11 @@ export default function MarketObservatory({ compact = false, onImport, showHisto
               <p className="pt-1 text-[11px] text-market-muted">{data.coverage_note}</p>
             </div>
           ) : <Unavailable message="Regional (province and city) observations are not yet available — the current verified samples are Canada-wide. Provincial and city data will appear here once a regional dataset is retrieved." />}
+        </BlockShell>
+
+        {/* Observed public demand + data-source transparency, full width */}
+        <BlockShell title="Observed Public Demand" question="Measurement 3 of 3 — what public requests and discussions have been collected?">
+          <ObservedPublicDemand />
         </BlockShell>
       </div>
       {admin && <Suspense fallback={<p role="status" className="mt-5 text-xs text-market-muted">Loading historical views…</p>}><MarketArchive data={data} onSelect={() => {}} /></Suspense>}
