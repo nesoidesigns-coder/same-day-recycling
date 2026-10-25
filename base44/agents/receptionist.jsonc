@@ -351,18 +351,6 @@
       "description": "Platform integrity checks: {action:'latest'} returns the most recent run and coverage changes; {action:'run'} executes the automated checks now (coverage, pricing, booking availability, contractor status, payment health, reviews, page rendering, broken links, conflicting claims, meta drift, quote journey); {action:'full_audit'} is the deeper pass including live quote-journey testing."
     },
     {
-      "function_name": "coverageStatus",
-      "description": "Live national coverage status per city: verified contractor capacity, matching activity and recruitment. Rex must check this before making any availability claim."
-    },
-    {
-      "function_name": "requestLookup",
-      "description": "Customer request/booking status by 8-character reference code, read from the actual stored record only. Rex uses it to explain a booking's real state."
-    },
-    {
-      "function_name": "jobTracking",
-      "description": "Job lifecycle timeline: {action:'lookup', reference_code} returns the job's actual recorded stage history. Rex uses it to tell a customer exactly what happens next."
-    },
-    {
       "entity_name": "NationalRequest",
       "allowed_operations": [
         "read"
