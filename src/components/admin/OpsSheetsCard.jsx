@@ -67,7 +67,7 @@ export default function OpsSheetsCard() {
         <Loader2 className="w-5 h-5 text-[#187B65] animate-spin shrink-0" />
       ) : settings?.spreadsheet_url ? (
         <div className="flex gap-2 shrink-0">
-          <a href={settings.spreadsheet_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 rounded-full bg-[#187B65] text-white font-bold px-4 py-2 text-xs hover:bg-[#125C4E]">
+          <a href={settings.spreadsheet_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 rounded-full bg-li-btn text-white font-bold px-4 py-2 text-xs hover:bg-li-btn-hover">
             <ExternalLink className="w-3.5 h-3.5" /> Open tracker
           </a>
           <button onClick={toggle} className="rounded-full border border-slate-200 text-slate-600 font-bold px-4 py-2 text-xs hover:border-[#187B65]">
@@ -75,7 +75,7 @@ export default function OpsSheetsCard() {
           </button>
         </div>
       ) : (
-        <button onClick={setUp} className="rounded-full bg-[#102B2A] text-white font-bold px-4 py-2 text-xs hover:bg-[#0a3020] shrink-0">
+        <button onClick={setUp} className="rounded-full bg-li-btn text-white font-bold px-4 py-2 text-xs hover:bg-li-btn-hover shrink-0">
           Set up tracker
         </button>
       )}

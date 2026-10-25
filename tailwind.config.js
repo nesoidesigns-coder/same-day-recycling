@@ -58,7 +58,9 @@ module.exports = {
   				steel: 'hsl(var(--li-steel))',
   				pale: 'hsl(var(--li-pale))',
   				amber: 'hsl(var(--li-amber))',
-  				red: 'hsl(var(--li-red))'
+  				red: 'hsl(var(--li-red))',
+  				btn: 'hsl(var(--li-btn))',
+  				'btn-hover': 'hsl(var(--li-btn-hover))'
   			},
   			'gold-dark': 'hsl(var(--brand-gold-dark))',
   			'brand-cyan': 'hsl(var(--brand-cyan))',

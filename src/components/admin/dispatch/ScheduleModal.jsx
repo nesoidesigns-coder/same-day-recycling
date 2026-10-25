@@ -32,7 +32,7 @@ export default function ScheduleModal({ booking, onClose, onSchedule }) {
             <input value={timeWindow} onChange={(e) => setTimeWindow(e.target.value)} placeholder="e.g. 1–3 PM" className="input py-2.5" />
           </label>
           <div className="flex gap-2 pt-1">
-            <button onClick={submit} disabled={busy || !date} className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 disabled:opacity-50">
+            <button onClick={submit} disabled={busy || !date} className="flex-1 rounded-full bg-li-btn text-white font-bold px-5 py-3 disabled:opacity-50">
               {busy ? "Saving…" : "Confirm pickup"}
             </button>
             <button onClick={onClose} className="rounded-full border border-slate-200 text-slate-600 font-bold px-5 py-3">Cancel</button>

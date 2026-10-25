@@ -68,7 +68,7 @@ export default function CompleteModal({ booking, onClose, onComplete }) {
             <span className="block text-[11px] font-normal text-slate-500 mt-1">Contractor net after fees: {money(Math.max(0, net))}</span>
           </div>
           <div className="flex gap-2 pt-1">
-            <button onClick={submit} disabled={busy || !invoice} className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 disabled:opacity-50">
+            <button onClick={submit} disabled={busy || !invoice} className="flex-1 rounded-full bg-li-btn text-white font-bold px-5 py-3 disabled:opacity-50">
               {busy ? "Saving…" : "Mark complete"}
             </button>
             <button onClick={onClose} className="rounded-full border border-slate-200 text-slate-600 font-bold px-5 py-3">Cancel</button>

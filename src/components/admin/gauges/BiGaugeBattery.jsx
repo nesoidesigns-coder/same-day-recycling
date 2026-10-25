@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import GaugeWall, { countScale, moneyScale } from "@/components/admin/gauges/GaugeWall";
+import { countScale, moneyScale } from "@/components/admin/gauges/GaugeWall";
+import UnifiedGaugePanel from "@/components/admin/gauges/UnifiedGaugePanel";
 
 // Gauge battery for the Command Centre: every collected business metric as a
 // readable gauge. Scaling rules (in order):
@@ -107,41 +108,11 @@ export default function BiGaugeBattery({ data: propData }) {
     },
   ];
 
-  // One focal point: the four command-signal gauges open the wall; everything
-  // else stays one click away in a collapsed section so the view never crowds.
-  const [signal, detail] = sections.reduce(
-    ([sig, det], s) => {
-      if (s.focal) sig.push({ title: s.title, gauges: s.gauges });
-      else det.push(s);
-      return [sig, det];
-    },
-    [[], []]
-  );
-
+  // One unified instrument: the command signal as the big hero gauge, with
+  // every other reading listed inside the same panel — nothing collapsed.
   return (
     <div className="space-y-5">
-      {signal.map((s) => (
-        <div key={s.title}>
-          <h3 className="font-plex mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate">{s.title}</h3>
-          <GaugeWall gauges={s.gauges} />
-        </div>
-      ))}
-      {detail.length > 0 && (
-        <details className="rounded-[14px] border border-li-steel bg-white">
-          <summary className="font-plex flex cursor-pointer select-none items-center justify-between px-4 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate hover:text-li-carbon">
-            All gauges
-            <span className="font-plex normal-case tracking-normal text-[11px] text-li-slate">show the full wall</span>
-          </summary>
-          <div className="space-y-5 px-4 pb-4">
-            {detail.map((s) => (
-              <div key={s.title}>
-                <h3 className="font-plex mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate">{s.title}</h3>
-                <GaugeWall gauges={s.gauges} cols="grid-cols-2 lg:grid-cols-3" />
-              </div>
-            ))}
-          </div>
-        </details>
-      )}
+      <UnifiedGaugePanel sections={sections} />
       <p className="font-plex text-[11px] text-li-slate">
         Gauge scales: percentage gauges use 0–100 or your targets; count gauges scale to the next sensible round number above current volume; the daily-visitor gauge scales to the 14-day peak with the median as its marker; revenue gauges use your revenue target when one is set (editable in <strong>Analytics</strong>). Gauges without a target show the value plainly — nothing is invented.
       </p>

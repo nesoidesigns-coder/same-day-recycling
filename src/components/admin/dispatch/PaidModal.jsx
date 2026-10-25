@@ -140,7 +140,7 @@ export default function PaidModal({ booking, onClose, onPaid }) {
             </label>
           )}
           <div className="flex gap-2 pt-1">
-            <button onClick={submit} disabled={!canSave} className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 disabled:opacity-50">
+            <button onClick={submit} disabled={!canSave} className="flex-1 rounded-full bg-li-btn text-white font-bold px-5 py-3 disabled:opacity-50">
               {busy ? "Saving…" : externallyPaid ? "Save" : "Save payments"}
             </button>
             <button onClick={onClose} className="rounded-full border border-slate-200 text-slate-600 font-bold px-5 py-3">Cancel</button>

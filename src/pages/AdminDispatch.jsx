@@ -26,7 +26,7 @@ const badge = (a) => {
     accepted: "bg-blue-100 text-blue-700",
     scheduled: "bg-indigo-100 text-indigo-700",
     completed: "bg-[#102B2A]/10 text-[#102B2A]",
-    paid: "bg-[#187B65]/15 text-[#187B65]",
+    paid: "bg-li-mint/15 text-li-infra",
     declined: "bg-red-100 text-red-700",
   };
   return <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold capitalize ${styles[a] || styles.unassigned}`}>{a || "unassigned"}</span>;
@@ -351,7 +351,7 @@ export default function AdminDispatch() {
     return (
       <div className={`flex flex-wrap gap-1.5 ${mobile ? "px-4 py-2" : "px-2.5 py-1.5 text-xs"}`}>
         {ASSIGN_STATES.includes(b.assignment_status) && b.status !== "cancelled" && (
-          <button onClick={() => setModal({ mode: "assign", booking: b })} className={`${cls} bg-[#102B2A] text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:bg-[#0a3020]`}>Assign</button>
+          <button onClick={() => setModal({ mode: "assign", booking: b })} className={`${cls} bg-li-btn text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:bg-li-btn-hover`}>Assign</button>
         )}
         {b.assignment_status === "assigned" && (
           <button onClick={() => accept(b)} className={`${cls} border border-blue-300 text-blue-700 font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Accept</button>
@@ -360,7 +360,7 @@ export default function AdminDispatch() {
           <button onClick={() => setModal({ mode: "schedule", booking: b })} className={`${cls} border border-indigo-300 text-indigo-700 font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Confirm pickup</button>
         )}
         {["assigned", "accepted", "scheduled"].includes(b.assignment_status) && b.status !== "completed" && b.status !== "cancelled" && (
-          <button onClick={() => setModal({ mode: "complete", booking: b })} className={`${cls} bg-[#187B65] text-[#102B2A] font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:bg-[#125C4E]`}>Complete</button>
+          <button onClick={() => setModal({ mode: "complete", booking: b })} className={`${cls} bg-li-btn text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:bg-li-btn-hover`}>Complete</button>
         )}
         {b.payment_status === "paid_externally" && !b.external_payment_verified ? (
           <button onClick={() => setModal({ mode: "paid", booking: b })} className={`${cls} bg-amber-500 text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Reconcile external payment</button>
@@ -458,7 +458,7 @@ export default function AdminDispatch() {
                 <p className="text-xs text-slate-500 mt-1 line-clamp-2">{b.items_description}</p>
                 <button
                   onClick={() => setModal({ mode: "assign", booking: b })}
-                  className="mt-3 rounded-full bg-[#102B2A] text-white font-bold px-4 py-2 text-xs hover:bg-[#0a3020] transition-colors"
+                  className="mt-3 rounded-full bg-li-btn text-white font-bold px-4 py-2 text-xs hover:bg-li-btn-hover transition-colors"
                 >
                   Assign to partner
                 </button>
@@ -654,7 +654,7 @@ export default function AdminDispatch() {
                 <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} className="input py-2.5" />
               </label>
               <div className="flex gap-2 pt-1">
-                <button onClick={reschedule} disabled={busy || !newDate} className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 disabled:opacity-50">{busy ? "Saving…" : "Save date"}</button>
+                <button onClick={reschedule} disabled={busy || !newDate} className="flex-1 rounded-full bg-li-btn text-white font-bold px-5 py-3 disabled:opacity-50">{busy ? "Saving…" : "Save date"}</button>
                 <button onClick={closeModal} className="rounded-full border border-slate-200 text-slate-600 font-bold px-5 py-3">Cancel</button>
               </div>
             </div>
@@ -674,7 +674,7 @@ export default function AdminDispatch() {
             <div className="space-y-3">
               <textarea value={smsMsg} onChange={(e) => setSmsMsg(e.target.value)} rows={3} maxLength={320} className="input text-sm" aria-label="Text message" />
               <div className="flex gap-2">
-                <button onClick={sendSms} disabled={busy} className="flex-1 rounded-full bg-[#187B65] text-[#102B2A] font-bold px-5 py-3 disabled:opacity-50">{busy ? "Sending…" : "Send text"}</button>
+                <button onClick={sendSms} disabled={busy} className="flex-1 rounded-full bg-li-btn text-white font-bold px-5 py-3 disabled:opacity-50">{busy ? "Sending…" : "Send text"}</button>
                 <button onClick={closeModal} className="rounded-full border border-slate-200 text-slate-600 font-bold px-5 py-3">Cancel</button>
               </div>
             </div>

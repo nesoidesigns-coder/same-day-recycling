@@ -71,6 +71,8 @@
     --li-pale: 150 23% 95%;      /* si-bg2 */
     --li-amber: 35 68% 53%;
     --li-red: 5 51% 51%;
+    --li-btn: 165 62% 37%;       /* bright action emerald — admin buttons */
+    --li-btn-hover: 165 58% 30%;
     --font-plex: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     /* Service Intelligence homepage prototype — light consumer palette */
     --si-bg: 150 17% 98%;
