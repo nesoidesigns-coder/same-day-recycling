@@ -6,7 +6,7 @@ import {
   Wallet, Tag, MapPin, Star, Search, Activity, BarChart3, Megaphone,
   MessagesSquare, Globe, Images, Lock, ExternalLink, Loader2, Route as RouteIcon, LineChart, Wand2,
   Globe2, PieChart, FileSignature, TrendingUp, Trello, Scale, ShieldCheck, MessageSquare, Filter, Briefcase, Sparkles, BrainCircuit,
-  Target, FileSearch, ListChecks, UsersRound, Radar, Radio, Crosshair, Gauge as GaugeIcon,
+  Target, FileSearch, ListChecks, UsersRound, Radar, Radio, Crosshair, Gauge as GaugeIcon, Rocket as RocketIcon,
 } from "lucide-react";
 
 const OPS = [
@@ -34,6 +34,7 @@ const INTELLIGENCE = [
   { to: "/admin/marketing-command", label: "Marketing Command", icon: Radar, exact: true },
   { to: "/admin/business-master", label: "AI Business Master", icon: BrainCircuit, exact: true },
   { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
+  { to: "/admin/growth-engine", label: "Network Growth Engine", icon: RocketIcon },
   { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
   { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
   { to: "/admin/bi", label: "Live Business Intelligence", icon: BarChart3, exact: true },

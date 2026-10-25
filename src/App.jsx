@@ -88,6 +88,7 @@ const AdminSearchAuthority = lazyPage(() => import('./pages/AdminSearchAuthority
 const AdminIntelligence = lazyPage(() => import('./pages/AdminIntelligence'));
 const AdminBusinessMaster = lazyPage(() => import('./pages/AdminBusinessMaster'));
 const AdminGrowth = lazyPage(() => import('./pages/AdminGrowth'));
+const AdminGrowthEngine = lazyPage(() => import('./pages/AdminGrowthEngine'));
 const AdminImprovements = lazyPage(() => import('./pages/AdminImprovements'));
 const AdminSeoCommand = lazyPage(() => import('./pages/AdminSeoCommand'));
 const AdminSeoAction = lazyPage(() => import('./pages/AdminSeoAction'));
@@ -248,6 +249,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/intelligence" element={<AdminIntelligence />} />
           <Route path="/admin/business-master" element={<AdminBusinessMaster />} />
           <Route path="/admin/growth" element={<AdminGrowth />} />
+          <Route path="/admin/growth-engine" element={<AdminGrowthEngine />} />
           <Route path="/admin/improvements" element={<AdminImprovements />} />
           <Route path="/admin/community" element={<AdminCommunity />} />
           <Route path="/admin/discovery" element={<AdminDiscovery />} />

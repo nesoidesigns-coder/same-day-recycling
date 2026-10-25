@@ -1,0 +1,86 @@
+{
+  "name": "NetworkGrowthSettings",
+  "type": "object",
+  "properties": {
+    "allocation_pct": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Owner-controlled percentage of eligible net contractor revenue reserved as a PLANNING budget for the Network Growth Fund. Planning input only \u2014 never an automatic spending authorization and never actual spend."
+    },
+    "monthly_operating_costs": {
+      "type": "number",
+      "default": 0,
+      "description": "Verified monthly platform operating costs (hosting, processing fees, support, taxes) subtracted before fund allocation is computed."
+    },
+    "available_cash_reserve": {
+      "type": "number",
+      "default": 0,
+      "description": "Owner-verified cash reserve available before committing advertising spend."
+    },
+    "contributions_program_status": {
+      "type": "string",
+      "enum": [
+        "off",
+        "open",
+        "paused"
+      ],
+      "default": "off",
+      "description": "Whether the optional contractor marketing-contribution program is accepting participants."
+    },
+    "default_contribution_terms": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Standard disclosure shown to contractors considering a voluntary marketing contribution: contributions are separate from software fees, never guarantee leads or revenue, and are not investments or profit-sharing."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Immutable log of fund and program setting changes."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

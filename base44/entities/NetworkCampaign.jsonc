@@ -1,0 +1,165 @@
+{
+  "name": "NetworkCampaign",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "pending_approval",
+        "approved",
+        "paused",
+        "completed",
+        "declined",
+        "cancelled"
+      ],
+      "default": "proposed",
+      "description": "The owner approves activation and spending. Proposed campaigns never spend automatically."
+    },
+    "target_region": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "Province or territory code the campaign targets."
+    },
+    "target_city": {
+      "type": "string",
+      "default": "",
+      "maxLength": 80
+    },
+    "service_category": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "value": {},
+          "source": {
+            "type": "string"
+          },
+          "basis": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "search_volume_estimate",
+              "trend",
+              "ai_estimate"
+            ]
+          }
+        }
+      },
+      "default": [],
+      "description": "Supporting market evidence. Each item states whether it is verified data, a search-volume estimate, a relative trend or an AI prediction."
+    },
+    "planned_monthly_budget": {
+      "type": "number",
+      "default": 0,
+      "description": "Planned monthly advertising budget. Not spend until the owner approves and funds it."
+    },
+    "lead_cost_estimate": {
+      "type": "number",
+      "default": 0,
+      "description": "Scenario assumption: estimated cost per qualified lead. Labeled estimate."
+    },
+    "conversion_rate_estimate": {
+      "type": "number",
+      "default": 0,
+      "description": "Scenario assumption: estimated lead-to-booking rate. Labeled estimate."
+    },
+    "est_monthly_bookings": {
+      "type": "number",
+      "default": 0,
+      "description": "Scenario assumption: estimated monthly bookings. Labeled estimate."
+    },
+    "est_platform_commission": {
+      "type": "number",
+      "default": 0,
+      "description": "Scenario assumption: estimated platform commission per month. Labeled estimate."
+    },
+    "fulfillment_cities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Cities with verified contractor capacity at planning time."
+    },
+    "capacity_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500,
+      "description": "Verified fulfillment capacity context. Campaigns are not activated in regions without capacity."
+    },
+    "risk_assessment": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    },
+    "approved_by": {
+      "type": "string",
+      "default": "",
+      "maxLength": 120
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "actual_spend": {
+      "type": "number",
+      "default": 0,
+      "description": "Advertising actually spent, recorded by the owner. Never projected."
+    },
+    "results": {
+      "type": "object",
+      "default": {},
+      "description": "Attributed verified outcomes: {inquiries, qualified_leads, bookings, completed_jobs, platform_commission} and an attribution_basis note."
+    },
+    "attribution_note": {
+      "type": "string",
+      "default": "",
+      "maxLength": 500,
+      "description": "How outcomes were attributed (UTM tags, tracked forms). Never inferred."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

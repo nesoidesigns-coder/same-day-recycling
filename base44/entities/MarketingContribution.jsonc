@@ -1,0 +1,118 @@
+{
+  "name": "MarketingContribution",
+  "type": "object",
+  "properties": {
+    "partner_id": {
+      "type": "string",
+      "description": "The contractor contributing. One active program record per contractor."
+    },
+    "partner_name": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "partner_email": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "territory_cities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Verified service cities the contribution may target. Never inferred."
+    },
+    "service_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Approved service categories for the funded campaigns."
+    },
+    "monthly_limit": {
+      "type": "number",
+      "default": 0,
+      "description": "Maximum monthly contribution the contractor authorized. Spending never exceeds this."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "invited",
+        "active",
+        "paused",
+        "cancelled"
+      ],
+      "default": "invited",
+      "description": "invited = terms sent, not yet authorized. active = written authorization on file. Contributions are separate from software subscription fees."
+    },
+    "authorized_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the contractor explicitly authorized the contribution (signed agreement or payment authorization). Empty = not authorized; never spend."
+    },
+    "authorization_method": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200,
+      "description": "How authorization was captured (agreement id, signed PDF, payment setup)."
+    },
+    "terms_disclosure": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Terms the contractor agreed to: no guaranteed leads, rankings, bookings or revenue; not an investment or profit-sharing arrangement."
+    },
+    "attributed_results": {
+      "type": "object",
+      "default": {},
+      "description": "Campaign reporting for this contractor: {inquiries, qualified_leads, bookings, completed_jobs, spend} \u2014 verified records only."
+    },
+    "notes": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "partner_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.partner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "$or": [
+        {
+          "data.partner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
