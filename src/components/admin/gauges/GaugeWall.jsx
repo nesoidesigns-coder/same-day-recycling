@@ -17,7 +17,7 @@ export function moneyScale(value) {
   return steps.find((s) => s >= v * 1.25) || Math.ceil((v * 1.25) / 100000) * 100000;
 }
 
-export default function GaugeWall({ gauges, cols = "sm:grid-cols-2 lg:grid-cols-4" }) {
+export default function GaugeWall({ gauges, cols = "grid-cols-2 lg:grid-cols-4" }) {
   return (
     <div className={`grid grid-cols-1 ${cols} gap-3`}>
       {gauges.map((g) => (

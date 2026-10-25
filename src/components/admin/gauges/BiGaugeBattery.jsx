@@ -60,16 +60,23 @@ export default function BiGaugeBattery({ data: propData }) {
 
   const sections = [
     {
+      title: "Command signal",
+      focal: true,
+      gauges: [
+        { label: "Confirmed bookings (30d)", value: a.confirmed_bookings || 0, max: countScale(a.confirmed_bookings || 0), unit: "", sub: "Tests & cancelled excluded", tooltip: defined.confirmed_bookings },
+        { label: "Session-to-booking conversion", value: a.conversion?.visit_to_booking_pct ?? 0, max: 100, unit: "%", ...tgt("conversion"), sub: "Confirmed bookings ÷ visitor sessions", tooltip: defined.conversion_rate },
+        { label: "Collected revenue (30d)", value: a.revenue_collected || 0, max: moneyScale(Math.max(a.revenue_collected || 0, 0)), unit: "", display: money(a.revenue_collected || 0), ...tgt("collected_revenue"), sub: "Platform + owner-verified external payments", tooltip: defined.completed_payments },
+        { label: "Unfulfilled requests", value: p.unfulfilled_requests || 0, max: countScale(p.unfulfilled_requests || 0), unit: "", sub: "Open national dispatch requests — lower is better" },
+      ],
+    },
+    {
       title: "Acquisition & conversion",
       gauges: [
         { label: "Visitor sessions (30d)", value: t.sessions || 0, max: countScale(t.sessions || 0), unit: "", sub: "Anonymous session keys · page-loads without a session key are excluded", tooltip: defined.sessions },
         { label: "Customer-intent visits (30d)", value: a.intent_visits || 0, max: countScale(a.intent_visits || 0), unit: "", sub: "Buying behavior on service, pricing & booking pages", tooltip: defined.customer_intent },
         { label: "Qualified leads (30d)", value: a.qualified_leads || 0, max: countScale(a.qualified_leads || 0), unit: "", sub: "Captured quote requests", tooltip: defined.qualified_leads },
-        { label: "Confirmed bookings (30d)", value: a.confirmed_bookings || 0, max: countScale(a.confirmed_bookings || 0), unit: "", sub: "Tests & cancelled excluded", tooltip: defined.confirmed_bookings },
-        { label: "Session-to-booking conversion", value: a.conversion?.visit_to_booking_pct ?? 0, max: 100, unit: "%", ...tgt("conversion"), sub: "Confirmed bookings ÷ visitor sessions", tooltip: defined.conversion_rate },
         { label: "Intent-session conversion", value: a.conversion?.intent_session_to_booking_pct ?? 0, max: 100, unit: "%", ...tgt("conversion"), sub: "Confirmed bookings ÷ intent sessions" },
         { label: "Lead-to-booking conversion", value: a.conversion?.lead_to_booking_pct ?? 0, max: 100, unit: "%", ...tgt("conversion"), sub: "Confirmed bookings ÷ captured leads" },
-        { label: "Collected revenue (30d)", value: a.revenue_collected || 0, max: moneyScale(Math.max(a.revenue_collected || 0, 0)), unit: "", display: money(a.revenue_collected || 0), ...tgt("collected_revenue"), sub: "Platform + owner-verified external payments", tooltip: defined.completed_payments },
       ],
     },
     {
@@ -87,7 +94,6 @@ export default function BiGaugeBattery({ data: propData }) {
         { label: "Booking completion rate", value: p.booking_completion_pct ?? 0, max: 100, unit: "%", ...tgt("booking_completion"), sub: "Completed of confirmed jobs", tooltip: defined.booking_completion_pct },
         { label: "Commission earned (30d)", value: p.revenue?.commission_earned || 0, max: moneyScale(p.revenue?.commission_earned || 0), unit: "", display: money(p.revenue?.commission_earned || 0), ...tgt("commission"), sub: "From completed platform jobs" },
         { label: "Contractor-matched jobs (30d)", value: p.contractor_matched_jobs || 0, max: countScale(p.contractor_matched_jobs || 0), unit: "", sub: "Assigned to a verified partner" },
-        { label: "Unfulfilled requests", value: p.unfulfilled_requests || 0, max: countScale(p.unfulfilled_requests || 0), unit: "", sub: "Open national dispatch requests — lower is better" },
       ],
     },
     {
@@ -101,15 +107,42 @@ export default function BiGaugeBattery({ data: propData }) {
     },
   ];
 
+  // One focal point: the four command-signal gauges open the wall; everything
+  // else stays one click away in a collapsed section so the view never crowds.
+  const [signal, detail] = sections.reduce(
+    ([sig, det], s) => {
+      if (s.focal) sig.push({ title: s.title, gauges: s.gauges });
+      else det.push(s);
+      return [sig, det];
+    },
+    [[], []]
+  );
+
   return (
     <div className="space-y-5">
-      {sections.map((s) => (
+      {signal.map((s) => (
         <div key={s.title}>
           <h3 className="font-plex mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate">{s.title}</h3>
           <GaugeWall gauges={s.gauges} />
         </div>
       ))}
-      <p className="text-[11px] text-slate-500">
+      {detail.length > 0 && (
+        <details className="rounded-[14px] border border-li-steel bg-white">
+          <summary className="font-plex flex cursor-pointer select-none items-center justify-between px-4 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate hover:text-li-carbon">
+            All gauges
+            <span className="font-plex normal-case tracking-normal text-[11px] text-li-slate">show the full wall</span>
+          </summary>
+          <div className="space-y-5 px-4 pb-4">
+            {detail.map((s) => (
+              <div key={s.title}>
+                <h3 className="font-plex mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate">{s.title}</h3>
+                <GaugeWall gauges={s.gauges} cols="grid-cols-2 lg:grid-cols-3" />
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+      <p className="font-plex text-[11px] text-li-slate">
         Gauge scales: percentage gauges use 0–100 or your targets; count gauges scale to the next sensible round number above current volume; the daily-visitor gauge scales to the 14-day peak with the median as its marker; revenue gauges use your revenue target when one is set (editable in <strong>Analytics</strong>). Gauges without a target show the value plainly — nothing is invented.
       </p>
     </div>
