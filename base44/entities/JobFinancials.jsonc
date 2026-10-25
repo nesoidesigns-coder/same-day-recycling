@@ -287,6 +287,12 @@
       },
       "default": [],
       "description": "Auditable history: syncs, quote approvals captured, commission calculations, expense entries, receipt attachments."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
     }
   },
   "required": [

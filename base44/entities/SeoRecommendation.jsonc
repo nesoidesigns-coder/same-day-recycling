@@ -78,6 +78,12 @@
     "recommended_date": {
       "type": "string",
       "format": "date"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
     }
   },
   "required": [

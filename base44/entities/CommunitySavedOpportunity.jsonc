@@ -27,6 +27,12 @@
       "default": "",
       "maxLength": 1000,
       "description": "Private business notes, visible only to the member who saved the opportunity."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
     }
   },
   "required": [

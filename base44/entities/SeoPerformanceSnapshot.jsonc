@@ -42,6 +42,12 @@
     "source": {
       "type": "string",
       "default": "google_search_console"
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
     }
   },
   "required": [

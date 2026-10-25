@@ -24,6 +24,12 @@
       "type": "string",
       "maxLength": 200,
       "description": "The reacting member's account email, set at creation."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
     }
   },
   "required": [

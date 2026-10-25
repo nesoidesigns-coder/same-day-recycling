@@ -245,6 +245,12 @@
       "type": "object",
       "default": {},
       "description": "Search-intelligence metadata: {metric_type, trend_index, volume_basis, period, comparison_group}. Indices are never displayed as absolute counts."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
     }
   },
   "required": [

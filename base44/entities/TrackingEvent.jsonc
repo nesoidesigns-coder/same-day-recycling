@@ -64,6 +64,12 @@
       "default": "",
       "maxLength": 1000
     },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
+    },
     "occurred_at": {
       "type": "string",
       "description": "When the event happened."
