@@ -42,20 +42,23 @@ export default function CanadaSignal({
   const hasValue = value != null;
   const display = hasValue ? String(Math.round(value)) : "—";
   const pulseKey = hasValue ? Math.round(value) : 0;
+  // Categories now carry real search counts — segment fill is relative to
+  // the strongest category, not a fixed 0-100 scale.
+  const maxCategory = Math.max(...categories.map((c) => Number(c.value) || 0), 0);
 
   const segSpan = 360 / Math.max(categories.length, 1);
   const gap = segSpan > 20 ? 7 : 3;
 
   return (
     <div className="relative mx-auto w-full max-w-[340px]">
-      <svg viewBox="0 0 340 340" className="w-full" role="img" aria-label={`Canada Signal: National Signal Index ${hasValue ? display : "not available"} of 100, ${period || ""}, ${geoLabel}`}>
+      <svg viewBox="0 0 340 340" className="w-full" role="img" aria-label={`Canada Signal: ${hasValue ? `${display} customer searches` : "not available"}, ${period || ""}, ${geoLabel}`}>
         {/* Outer ring — service-category signal segments */}
         {categories.map((c, i) => {
           const start = i * segSpan + gap / 2;
           const end = (i + 1) * segSpan - gap / 2;
           const isSel = selected === c.key;
           const isDim = selected && !isSel;
-          const frac = c.available ? Math.max(0.12, Math.min(1, (Number(c.value) || 0) / 100)) : 0.12;
+          const frac = c.available ? Math.max(0.12, Math.min(1, (Number(c.value) || 0) / (maxCategory || 1))) : 0.12;
           const stroke = isSel ? "hsl(var(--ri-amber))" : c.available ? "hsl(var(--ri-forest))" : "hsl(var(--ri-slate) / 0.25)";
           return (
             <path
@@ -72,7 +75,7 @@ export default function CanadaSignal({
               }}
               onClick={() => onSelect?.(isSel ? "" : c.key)}
             >
-              <title>{`${c.label}${c.available ? ` — index ${c.value}` : " — no data yet"}`}</title>
+              <title>{`${c.label}${c.available ? ` — ${c.value} customer searches` : " — no searches recorded yet"}`}</title>
             </path>
           );
         })}
@@ -117,14 +120,14 @@ export default function CanadaSignal({
             <span key={pulseKey} className="signal-pulse-dot inline-block rounded-full font-plex text-[44px] font-bold leading-none text-ri-forest sm:text-[52px]">
               {display}
             </span>
-            <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">National Signal Index</span>
-            <span className="mt-0.5 font-plex text-xs text-ri-slate">0–100 · {period || "28-day window"}</span>
+            <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">Customer searches</span>
+            <span className="mt-0.5 font-plex text-xs text-ri-slate">actual count · {period || "28-day window"}</span>
           </>
         ) : (
           <>
             <span className="font-plex text-[40px] font-bold leading-none text-ri-slate">—</span>
-            <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">National Signal Index</span>
-            <span className="mt-1 text-xs leading-snug text-ri-slate">Not yet available — insufficient verified search-interest data</span>
+            <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">Customer searches</span>
+            <span className="mt-1 text-xs leading-snug text-ri-slate">Not yet available — no recorded customer searches</span>
           </>
         )}
         <span className="mt-2 rounded-full bg-ri-amber/15 px-2.5 py-0.5 text-xs font-bold text-ri-forest">{geoLabel}</span>

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
+import { detectMarkets } from '../../shared/demandTaxonomy.ts';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 import { capacityByCity, partnerCoversCity } from '../../shared/territory.ts';
@@ -169,41 +170,86 @@ export default async function (req: Request): Promise<Response> {
       verification: 'verified',
     };
 
-    // Canada Signal — the documented National Signal Index. A single basis
-    // only: relative search-interest indices from search-intelligence
-    // records. Requests, bookings, traffic and contractor availability are
-    // separate layers and are never blended into this number.
-    // A Trends index of 0 is a missing-data reading (the source returned no
-    // usable weekly volume for that keyword), not proof of zero interest.
-    // Zero-index records are excluded from every index math so a gap never
-    // drags a category or the national mean toward a false "dead market" —
-    // a category with only zero readings reports as unavailable instead.
-    const indexedSearch = allSignals.filter(
-      (s) => s.demand_type === 'search_interest' && Number(s.metric_context?.trend_index) > 0
-        && (s.market_categories || []).length > 0
-    );
+    // Canada Signal — ACTUAL customer search demand. The gauge counts real
+    // searches (Google Search Console impressions for this site, ~2-day
+    // reporting lag), matched to service categories by deterministic keyword
+    // rules. No relative scoring, no index, and never blended with requests,
+    // bookings or contractor availability.
+    let gscQueries: Array<{ query: string; clicks: number; impressions: number }> | null = null;
+    let gscError = '';
+    try {
+      const { accessToken } = await base44.asServiceRole.connectors.getConnection('google_search_console');
+      const sitesRes = await fetch('https://www.googleapis.com/webmasters/v3/sites', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!sitesRes.ok) {
+        gscError = `Search Console sites request failed (${sitesRes.status})`;
+      } else {
+        const sitesData = await sitesRes.json();
+        const sites = (sitesData.siteEntry || []).map((s) => s.siteUrl);
+        const target = sites.find((s) => s.includes('samedayrecycling.ca')) || sites[0] || '';
+        if (!target) {
+          gscError = 'No verified Search Console property';
+        } else {
+          const fmtDate = (d: Date) => d.toISOString().slice(0, 10);
+          const endD = new Date();
+          endD.setUTCDate(endD.getUTCDate() - 2);
+          const startD = new Date(endD);
+          startD.setUTCDate(startD.getUTCDate() - (days - 1));
+          const analyticsRes = await fetch(
+            `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(target)}/searchAnalytics/query`,
+            {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ startDate: fmtDate(startD), endDate: fmtDate(endD), dimensions: ['query'], rowLimit: 250 }),
+              signal: AbortSignal.timeout(10000),
+            }
+          );
+          if (!analyticsRes.ok) {
+            gscError = `Search Analytics request failed (${analyticsRes.status})`;
+          } else {
+            const rows = (await analyticsRes.json()).rows || [];
+            gscQueries = rows.map((r) => ({ query: String(r.keys[0] || ''), clicks: r.clicks || 0, impressions: r.impressions || 0 }));
+          }
+        }
+      }
+    } catch (e) {
+      gscError = String(e?.message || e);
+    }
+
+    const queryCategories = (q: { query: string }) => detectMarkets(q.query);
+    let searchQueries = gscQueries ? gscQueries.filter((q) => queryCategories(q).length > 0) : null;
+    if (searchQueries && city) searchQueries = searchQueries.filter((q) => norm(q.query).includes(norm(city)));
+    if (searchQueries && category) searchQueries = searchQueries.filter((q) => queryCategories(q).includes(category));
+
+    const totalSearches = searchQueries ? searchQueries.reduce((a, q) => a + q.impressions, 0) : null;
+    const totalClicks = searchQueries ? searchQueries.reduce((a, q) => a + q.clicks, 0) : null;
+
     const signalCategories = MARKET_CATEGORIES.map((key) => {
-      const recs = indexedSearch.filter((s) => (s.market_categories || []).includes(key));
-      const mean = recs.length
-        ? Math.round(recs.reduce((a, s) => a + Number(s.metric_context.trend_index || 0), 0) / recs.length)
-        : null;
-      return { key, value: mean, record_count: recs.length, available: recs.length > 0 };
+      const qs = gscQueries ? gscQueries.filter((q) => queryCategories(q).includes(key)) : [];
+      const searches = qs.reduce((a, q) => a + q.impressions, 0);
+      return {
+        key,
+        value: gscQueries ? searches : null,
+        clicks: qs.reduce((a, q) => a + q.clicks, 0),
+        record_count: qs.length,
+        available: gscQueries ? searches > 0 : false,
+      };
     });
-    const indexValue = indexedSearch.length
-      ? Math.round(
-          indexedSearch.reduce((a, s) => a + Number(s.metric_context.trend_index || 0), 0) / indexedSearch.length
-        )
-      : null;
+
     const signal = {
-      name: 'National Signal Index',
-      available: indexValue != null,
-      value: indexValue,
-      scale: '0-100',
+      name: 'Customer Search Demand',
+      available: gscQueries != null,
+      value: totalSearches,
+      clicks: totalClicks,
+      unit: 'searches',
+      scale: 'actual count',
       period: `last ${days} days`,
-      coverage: 'Canada — every search-intelligence record in the window, regardless of geographic filter',
+      coverage: 'Google Search Console queries for this site, matched to service categories by keyword rules',
       methodology:
-        'Equal-weight mean of relative search-interest indices (scale 0-100) taken from search-intelligence records (Google Search Console syncs and keyword datasets). Search interest only — never a count of requests, bookings or contractor availability.',
-      source: 'search intelligence records (Google Search Console syncs and keyword datasets)',
+        'Actual counts of customer searches (impressions) recorded in Google Search Console for this site, with roughly a 2-day reporting lag. Each search query is matched to service categories by deterministic keyword rules; the total counts each search once, and a search may appear in more than one matching category. Never a score or index, and never blended with requests, bookings or contractor availability.',
+      source: 'Google Search Console (verified)',
       verification: 'verified',
       categories: signalCategories,
       updated_at: new Date().toISOString(),
@@ -235,6 +281,9 @@ export default async function (req: Request): Promise<Response> {
         recorded_activity: activityRecords.length === 0 ? 'No recorded demand for this selection in the window yet.' : null,
         search_interest: searchRecords.length === 0 ? 'No search-intelligence records for this selection yet.' : null,
         contractor_availability: cityPartners.length === 0 ? 'No verified contractor covers this location yet — requests remain open nationwide.' : null,
+        search_demand: gscQueries == null
+          ? `Customer search counts are unavailable right now (${gscError || 'Search Console connection'}).`
+          : totalSearches === 0 ? 'No customer searches recorded in Search Console for this selection yet.' : null,
       },
     };
 

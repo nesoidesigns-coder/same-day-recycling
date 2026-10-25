@@ -56,7 +56,7 @@ export default function CanadaSignalSection() {
             The Canada <span className="text-ri-amber-ink">Signal</span>
           </h2>
           <p className="mt-1 text-sm text-si-muted md:text-base">
-            Canada's Service Intelligence — Powered by Recycling OS. Verified search-interest signals across the services we provide, explained in plain language.
+            Canada's Service Intelligence — Powered by Recycling OS. Actual customer search counts for our services (Google Search Console), explained in plain language.
           </p>
         </div>
         <select
@@ -113,25 +113,25 @@ export default function CanadaSignalSection() {
                 <h3 className="text-base font-bold text-si-ink">{selectedCat.label}</h3>
                 {selectedCat.available ? (
                   <p className="mt-1.5 text-sm leading-relaxed text-si-muted">
-                    Relative search interest scored <span className="font-bold text-ri-charcoal">{selectedCat.value} / 100</span> across the {signal.period} — from {selectedCat.record_count} verified search-interest record{selectedCat.record_count === 1 ? "" : "s"}. Search interest only: it is never counted as requests or booked work.
+                    <span className="font-bold text-ri-charcoal">{selectedCat.value}</span> actual customer search{selectedCat.value === 1 ? "" : "es"} for this category in the {signal.period}, across {selectedCat.record_count} distinct search term{selectedCat.record_count === 1 ? "" : "s"} — {selectedCat.clicks} of them clicked through to the site. Real Google Search Console counts, never a score or estimate.
                   </p>
                 ) : (
                   <p className="mt-1.5 text-sm leading-relaxed text-si-muted">
-                    No verified search-interest records for this category in the {signal.period} yet — shown as unavailable rather than estimated.
+                    No customer searches for this category recorded in Search Console in the {signal.period} yet — shown as zero rather than estimated.
                   </p>
                 )}
               </>
             ) : (
               <>
-                <h3 className="text-base font-bold text-si-ink">One index, one honest basis</h3>
+                <h3 className="text-base font-bold text-si-ink">Real searches, one honest basis</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-si-muted">
-                  The National Signal Index is the equal-weight mean of relative search-interest readings (0–100) from Search Console syncs and keyword datasets. Requests, contractor availability and pricing are shown as separate layers below — never merged into one number.
+                  The Canada Signal counts actual customer searches for our services — verified Google Search Console records, grouped by service category. Requests, contractor availability and pricing are shown as separate layers below — never merged into one number.
                 </p>
               </>
             )}
             <div className="mt-3 flex items-start gap-1.5 text-xs text-ri-slate">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              <span className="font-plex leading-snug">{signal?.methodology || "Documented methodology: equal-weight mean of relative search-interest indices from verified search-intelligence records."}</span>
+              <span className="font-plex leading-snug">{signal?.methodology || "Documented methodology: actual customer search counts (impressions) from Google Search Console, matched to service categories by keyword rules."}</span>
             </div>
           </div>
 
