@@ -67,7 +67,10 @@ export default async function(req) {
     if (requestsPage.status === 'rejected') console.log('[publicPulse] requests rejected:', String(requestsPage.reason));
     if (bookingsPage.status === 'rejected') console.log('[publicPulse] bookings rejected:', String(bookingsPage.reason));
     if (partnersPage.status === 'rejected') console.log('[publicPulse] partners rejected:', String(partnersPage.reason));
-    const items = (p) => (Array.isArray(p) ? p : p?.items) || [];
+    const items = (p) => {
+      const page = p?.value !== undefined && p?.status !== undefined ? p.value : p; // unwrap Promise.allSettled results
+      return (Array.isArray(page) ? page : page?.items) || [];
+    };
     const quoteLeads = items(quoteLeadsPage);
     const serviceRequests = items(requestsPage);
     const testRequests = items(requestsTestPage);
