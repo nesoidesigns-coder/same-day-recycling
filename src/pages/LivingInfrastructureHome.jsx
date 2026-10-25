@@ -8,6 +8,7 @@ import Footer from "@/components/sdr/Footer";
 import NationalSignalCore from "@/components/li/NationalSignalCore";
 import NationalDemandPulse from "@/components/home/NationalDemandPulse";
 import PriceEstimator from "@/components/sdr/PriceEstimator";
+import VancouverDemandGauges from "@/components/demand/VancouverDemandGauges";
 import SignalMetricCard from "@/components/li/SignalMetricCard";
 import DemandTrendChart from "@/components/li/DemandTrendChart";
 import ContractorOperationsPreview from "@/components/li/ContractorOperationsPreview";
@@ -121,6 +122,9 @@ export default function LivingInfrastructureHome() {
 
         {/* Section A2 — Interactive price estimator */}
         <PriceEstimator />
+
+        {/* Section A3 — Vancouver live demand gauges */}
+        <VancouverDemandGauges />
 
         {/* Section B — National Demand Pulse */}
         <section aria-label="National demand pulse" className="pb-8">
