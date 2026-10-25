@@ -104,6 +104,14 @@ export default function ServiceFinder() {
     setBusy(false);
   };
 
+  // A query passed from elsewhere (e.g. the demand gauge search) starts the
+  // conversation automatically — one prefilled send, never re-triggered.
+  const autoSent = useRef(false);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q && !autoSent.current) { autoSent.current = true; send(q); }
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <TopBar />

@@ -89,7 +89,7 @@ export default function GaugeNodeDetail({ industry, subdivision, topic, onClose 
       )}
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <button type="button" onClick={() => navigate(`/recycling?q=${encodeURIComponent(topic.name)}`)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#187B65] px-5 text-sm font-bold text-white hover:bg-[#125C4E]">
+        <button type="button" onClick={() => navigate(`/service-finder?q=${encodeURIComponent(`${topic.name} — I need help with this`)}`)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#187B65] px-5 text-sm font-bold text-white hover:bg-[#125C4E]">
           <Search className="h-4 w-4" /> Find help near you
         </button>
         <button type="button" onClick={openRex} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-300 px-5 text-sm font-bold text-[#102B2A] hover:border-[#187B65]">

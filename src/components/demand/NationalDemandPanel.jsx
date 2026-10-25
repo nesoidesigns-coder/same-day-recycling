@@ -46,7 +46,7 @@ export default function NationalDemandPanel() {
   const selectedSlug = chipLevel === "inner" ? sel.topic : chipLevel === "middle" ? sel.subdivision : sel.industry;
 
   const counts = data?.counts;
-  const go = (e) => { e.preventDefault(); if (query.trim()) navigate(`/recycling?q=${encodeURIComponent(query.trim())}`); };
+  const go = (e) => { e.preventDefault(); if (query.trim()) navigate(`/service-finder?q=${encodeURIComponent(query.trim())}`); };
 
   return (
     <section className="relative bg-[#102B2A] py-10 text-white sm:py-14" aria-label="Canadian demand intelligence">
