@@ -72,7 +72,7 @@ const ADVANCED = [
 function NavList({ pathname, onNavigate }) {
   const group = (title, items) => (
     <div className="mb-6">
-      <div className="px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">{title}</div>
+      <div className="px-3 mb-2 font-plex text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-100/40">{title}</div>
       <nav className="space-y-0.5">
         {items.map((n) => {
           const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
@@ -82,10 +82,10 @@ function NavList({ pathname, onNavigate }) {
               to={n.to}
               onClick={onNavigate}
               className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 min-h-[44px] text-sm font-semibold transition-colors ${
-                active ? "bg-[#102B2A] text-white shadow-sm" : "text-slate-600 hover:bg-[#eef4f0] hover:text-[#102B2A]"
+                active ? "bg-li-infra text-white shadow-sm" : "text-emerald-100/70 hover:bg-white/5 hover:text-white"
               }`}
             >
-              <n.icon className={`w-4 h-4 ${active ? "text-[#187B65]" : "text-slate-500"}`} />
+              <n.icon className={`w-4 h-4 ${active ? "text-li-mint" : "text-emerald-100/40"}`} />
               {n.label}
             </Link>
           );
@@ -106,12 +106,12 @@ function NavList({ pathname, onNavigate }) {
 function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5 px-3">
-      <span className="w-9 h-9 rounded-xl bg-[#102B2A] text-[#187B65] flex items-center justify-center">
+      <span className="w-9 h-9 rounded-xl bg-li-mint text-li-graphite flex items-center justify-center">
         <Recycle className="w-5 h-5" />
       </span>
       <span>
-        <span className="block text-sm font-bold text-[#102B2A] leading-tight">Same Day Recycling</span>
-        <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#187B65]">Command Centre</span>
+        <span className="block text-sm font-bold text-white leading-tight">Same Day Recycling</span>
+        <span className="font-plex block text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-300">Recycling OS Command Centre</span>
       </span>
     </Link>
   );
@@ -137,51 +137,51 @@ export default function AdminLayout() {
 
   if (role === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f6f8f7]">
-        <Loader2 className="w-8 h-8 text-[#187B65] animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-li-cloud">
+        <Loader2 className="w-8 h-8 text-li-infra animate-spin" />
       </div>
     );
   }
   if (role !== "admin") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-4 text-center bg-[#f6f8f7]">
-        <Lock className="w-10 h-10 text-[#187B65]" />
-        <h1 className="text-2xl font-bold text-[#102B2A]">Admins only</h1>
-        <p className="text-slate-600">You need an admin account to open the Command Centre.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-4 text-center bg-li-cloud">
+        <Lock className="w-10 h-10 text-li-infra" />
+        <h1 className="text-2xl font-bold text-li-carbon">Admins only</h1>
+        <p className="text-li-slate">You need an admin account to open the Command Centre.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f8f7]">
-      <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col bg-white border-r border-slate-200/80 z-40">
-        <div className="h-16 flex items-center border-b border-slate-100 shrink-0">
+    <div className="min-h-screen bg-li-cloud">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col bg-li-graphite border-r border-white/5 z-40">
+        <div className="h-16 flex items-center border-b border-white/5 shrink-0">
           <Brand />
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-5">
           <NavList pathname={location.pathname} />
         </div>
-        <div className="border-t border-slate-100 p-3">
-          <Link to="/" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-500 hover:text-[#102B2A] hover:bg-[#eef4f0] transition-colors">
+        <div className="border-t border-white/5 p-3">
+          <Link to="/" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-emerald-100/70 hover:text-white hover:bg-white/5 transition-colors">
             <ExternalLink className="w-4 h-4" /> View live site
           </Link>
         </div>
       </aside>
 
-      <header className="md:hidden sticky top-0 z-40 h-14 bg-white border-b border-slate-200/80 flex items-center justify-between px-4">
+      <header className="md:hidden sticky top-0 z-40 h-14 bg-li-graphite border-b border-white/5 flex items-center justify-between px-4">
         <Brand />
-        <button onClick={() => setOpen(true)} className="p-2 -mr-2 text-[#102B2A]" aria-label="Open menu">
+        <button onClick={() => setOpen(true)} className="p-2 -mr-2 text-white" aria-label="Open menu">
           <Menu className="w-6 h-6" />
         </button>
       </header>
 
       {open && (
         <div className="md:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-[#102B2A]/40" onClick={() => setOpen(false)} />
-          <div className="relative w-72 max-w-[85vw] bg-white h-full flex flex-col shadow-xl">
-            <div className="h-16 flex items-center justify-between border-b border-slate-100 px-3 pr-4 shrink-0">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
+          <div className="relative w-72 max-w-[85vw] bg-li-graphite h-full flex flex-col shadow-xl">
+            <div className="h-16 flex items-center justify-between border-b border-white/5 px-3 pr-4 shrink-0">
               <Brand />
-              <button onClick={() => setOpen(false)} className="p-1 text-slate-500" aria-label="Close menu">
+              <button onClick={() => setOpen(false)} className="p-1 text-emerald-100/60" aria-label="Close menu">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -192,7 +192,7 @@ export default function AdminLayout() {
         </div>
       )}
 
-      <div className="md:pl-64">
+      <div className="md:pl-60">
         <main className="max-w-6xl mx-auto px-4 pb-24 pt-6 md:px-8 md:py-8">
           <Outlet />
         </main>
