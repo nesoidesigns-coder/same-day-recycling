@@ -27,7 +27,7 @@ const QUESTIONS = [
   { icon: MapPin, q: "What are my local options?", a: "Verified providers, coverage status and alternatives in your city.", to: "/services" },
   { icon: Recycle, q: "Can this item be recycled?", a: "Ask the disposal advisor — municipal rules, cited sources.", to: "/recycling-assistant" },
   { icon: ShieldCheck, q: "Is a contractor available?", a: "Live coverage status, from verified partner territories only.", to: "/coverage" },
-  { icon: HelpCircle, q: "Is professional pickup worth the cost?", a: "Compare published rates against the DIY trip — time, fees, disposal.", to: "/#rex-discover" },
+  { icon: HelpCircle, q: "Is professional pickup worth the cost?", a: "Compare published rates against the DIY trip — time, fees, disposal.", to: "/recycling-os#rex-discover" },
 ];
 
 const SERVICE_OPTIONS = ["Junk removal", "Furniture removal", "Appliance removal", "Electronics recycling", "Moving cleanout", "Commercial cleanout"];
