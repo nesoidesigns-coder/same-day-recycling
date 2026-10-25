@@ -323,7 +323,7 @@ export default async function(req) {
         last_sync: lastReddit?.created_date || null, cadence: 'Daily',
         note: lastReddit && lastReddit.status !== 'success' ? lastReddit.error || lastReddit.notes || undefined : undefined,
       },
-      { key: 'google_trends', label: 'Google Trends (relative search interest)', layer: 'historical', status: sourceStatus(trendsLatest, 45), last_sync: trendsLatest, cadence: 'Monthly dataset', note: 'Relative interest index only — never converted into invented search volumes.' },
+      { key: 'google_trends', label: 'Google Trends (relative search interest)', layer: 'historical', status: sourceStatus(trendsLatest, 45), last_sync: trendsLatest, cadence: 'Daily (live Trends sample)', note: 'Relative interest index only — never converted into invented search volumes.' },
       { key: 'search_console', label: 'Google Search Console (verified site search data)', layer: 'historical', status: sourceStatus(seoLatest, 3), last_sync: seoLatest, cadence: 'Weekly snapshot', note: 'GSC reports lag ~2 days for fresh organic traffic.' },
       { key: 'google_ads', label: 'Google Ads (paid demand data)', layer: 'historical', status: 'unavailable', last_sync: null, cadence: 'Pending credentials', note: 'Google Ads API credentials are not yet provisioned; no paid-demand data is imported.' },
     ];

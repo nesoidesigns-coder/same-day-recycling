@@ -133,13 +133,21 @@ export default async function(req) {
     sources.google_ads_keyword_planner = kpMissing.length === 0
       ? { status: 'skipped', note: 'Google Ads credentials on file; volumes are retrieved monthly by the Keyword Planner Refresh (or on demand in Source Health).' }
       : { status: 'unavailable', note: `Google Ads credentials missing: ${kpMissing.join(', ')}. Verified Keyword Planner exports can also be imported in Market Intelligence > Import Data.` };
+    // Google Trends: live Canada-wide sampled indices via the industryTrendsSync
+    // pipeline. Honest status: fresh only if the pipeline ran in the last 7 days.
+    const trendPeek = await svc.entities.DemandObservation.list({ sort: '-retrieved_at', limit: 1 });
+    const trendLatest = (((trendPeek as { items?: Array<{ retrieved_at?: string }> }).items || [])[0] || {}).retrieved_at || '';
+    const trendAgeDays = trendLatest ? Math.round((Date.now() - new Date(trendLatest).getTime()) / 86400000) : null;
+    const trendOk = trendAgeDays !== null && trendAgeDays <= 7;
     sources.google_trends = {
-      status: 'unavailable',
-      note: 'Google Trends provides sampled relative-interest indices only. The official API is in a limited alpha (application-based access); until granted, indices come from CSV exports imported in Market Intelligence > Import Data — never presented as search counts.',
+      status: trendOk ? 'success' : 'unavailable',
+      note: trendOk
+        ? `Live Canada-wide relative-interest samples via the industryTrendsSync pipeline (last refreshed ${trendLatest.slice(0, 10)}). Sampled indices only — never search counts.`
+        : 'No fresh live Trends sample in the last 7 days; the industryTrendsSync pipeline refreshes daily. Indices are never presented as search counts.',
     };
     logs.push(
       { source: 'google_ads_keyword_planner', status: kpMissing.length === 0 ? 'skipped' : 'unavailable', run_date: today, started_at: started, coverage_note: kpMissing.length === 0 ? 'Google Ads credentials on file; the monthly Keyword Planner Refresh retrieves volumes.' : `No authorized Google Ads connection (missing: ${kpMissing.join(', ')}).`, next_update_cadence: KP_CADENCE },
-      { source: 'google_trends', status: 'unavailable', run_date: today, started_at: started, coverage_note: 'API in limited alpha; sampled indices are imported from CSV exports with their comparison window.', next_update_cadence: 'Manual (export import)' }
+      { source: 'google_trends', status: trendOk ? 'success' : 'unavailable', run_date: today, started_at: started, coverage_note: trendOk ? `Live Canada-wide sampled indices via industryTrendsSync (last refreshed ${trendLatest.slice(0, 10)}); indices only, never search counts.` : 'No fresh live Trends sample; indices only, never search counts.', next_update_cadence: 'Daily (live Trends sample)' }
     );
 
     // ---- Recycling OS verified operational records ----
@@ -169,8 +177,14 @@ export default async function(req) {
     // ---- Log everything ----
     await svc.entities.DemandSyncLog.bulkCreate(logs);
 
-    // Include the current industry summary for the admin panel.
-    const obsPage = await svc.entities.DemandObservation.list({ limit: 500 });
+    // Include the current industry summary for the admin panel. Only the most
+    // recent reporting period is loaded — full history is far larger than one
+    // page and past months are not current demand.
+    const obsPeek = await svc.entities.DemandObservation.list({ sort: '-period', limit: 1 });
+    const obsLatest = (obsPeek.items || [])[0]?.period || '';
+    const obsPage = obsLatest
+      ? await svc.entities.DemandObservation.filter({ period: obsLatest }, { limit: 500 })
+      : await svc.entities.DemandObservation.list({ limit: 500 });
     const industry = summarizeDemand(dedupeObservations(obsPage.items || []));
 
     return Response.json({
