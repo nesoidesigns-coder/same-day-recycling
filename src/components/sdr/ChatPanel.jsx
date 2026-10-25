@@ -8,6 +8,7 @@ import ChatMedia from "./ChatMedia";
 import RexOrb from "@/components/rex/RexOrb";
 import usePickupLocation from "@/hooks/usePickupLocation";
 import { pickupRexContext, getPickupLocation, pickupLocationActions } from "@/lib/pickupLocationStore";
+import { rexContextText } from "@/lib/rexSession";
 
 const AGENT_NAME = "receptionist";
 
@@ -128,7 +129,7 @@ export default function ChatPanel({ onClose, preset }) {
     try {
       await base44.agents.addMessage(conversation, {
         role: "user",
-        content: `${text || "Here are photos of the junk."}\n\n[Current booking-form context]\n${pickupRexContext(currentPickup)}`,
+        content: `${text || "Here are photos of the junk."}\n\n[Current page context] ${rexContextText() || "none"}\n\n[Current booking-form context]\n${pickupRexContext(currentPickup)}`,
         ...(file_urls.length ? { file_urls } : {}),
       });
     } finally {
@@ -141,7 +142,7 @@ export default function ChatPanel({ onClose, preset }) {
       <div className="bg-[#102B2A] text-white px-4 sm:px-5 py-3 flex items-center gap-3">
         <AiMascot size={36} />
         <div className="min-w-0 flex-1">
-          <div className="font-bold leading-tight text-sm sm:text-base">Rex · Same Day Recycling</div>
+          <div className="font-bold leading-tight text-sm sm:text-base">Rex · Your Recycling OS Assistant</div>
           <div className="min-w-0 overflow-hidden">
             <RexOrb state={sending ? "processing" : "idle"} size={12} label={sending ? "Thinking…" : "Online · 24/7 booking"} className="text-xs text-[#187B65] whitespace-nowrap" />
           </div>

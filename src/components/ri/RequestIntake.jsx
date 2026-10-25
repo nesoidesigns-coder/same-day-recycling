@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Loader2, Sparkles, Armchair, Refrigerator, PackageOpen, Recycle, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { setRexContext } from "@/lib/rexSession";
 
 // Service-first intake: four elegant interactive categories plus a
 // natural-language describe box. Interpretation reuses the platform's
@@ -24,6 +25,7 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
   const pick = (key) => {
     setSelected(key);
     onServiceType(key);
+    setRexContext({ service_type: key, page: "request-service" });
     base44.analytics.track({ eventName: "service_category_selected", properties: { service: key } });
   };
 
@@ -42,6 +44,13 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
         base44.analytics.track({ eventName: "quote_calculated", properties: { source: "request_service" } });
         const itemsText = (data.items || []).map((i) => `${i.quantity} × ${i.name}`).join(", ");
         if (itemsText && onFill) onFill(itemsText);
+        setRexContext({
+          page: "request-service",
+          ...(city ? { city } : {}),
+          ...(itemsText ? { items_description: itemsText } : {}),
+          estimate_range: data.range,
+          load_eighths: data.eighths,
+        });
       }
     } catch {
       setError("Could not read your description — you can still submit the request form below.");

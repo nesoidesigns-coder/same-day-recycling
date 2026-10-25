@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, MapPin, ArrowRight, Sofa, Refrigerator, Trash2, Boxes, KeyRound, Building2 } from "lucide-react";
 import { SERVICE_SHORTCUTS } from "./siShared";
+import { setRexContext } from "@/lib/rexSession";
 
 const ICONS = { furniture: Sofa, appliance: Refrigerator, junk: Trash2, moving: Boxes, estate: KeyRound, commercial: Building2 };
 
@@ -16,6 +17,7 @@ export default function HeroSearch({ category, onCategory, city, onCity, cities 
   const findService = (e) => {
     e.preventDefault();
     const text = `${query.trim() || "junk removal"} in ${city || "Canada"}`;
+    setRexContext({ intent: query.trim(), city: city || "", page: "homepage" });
     navigate(`/service-finder?q=${encodeURIComponent(text)}`);
   };
 

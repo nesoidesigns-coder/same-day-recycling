@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Armchair, Building2, Home, Recycle, Refrigerator, Trash2 } from "lucide-react";
 import { Image } from "@/components/ui/image";
+import { setRexContext } from "@/lib/rexSession";
 
 // Service-first hero: bright, welcoming, immediately actionable. Customers
 // describe their need in natural language — no Recycling OS knowledge needed.
@@ -22,6 +23,7 @@ export default function ServiceHero() {
     if (need.trim()) {
       // Shared session context — Rex and the request form pick this up.
       sessionStorage.setItem("sdr-intent", need.trim());
+      setRexContext({ intent: need.trim(), page: "homepage" });
     }
     navigate("/request-service");
   };

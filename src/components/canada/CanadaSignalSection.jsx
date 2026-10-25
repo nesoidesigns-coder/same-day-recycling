@@ -7,6 +7,7 @@ import useLivingSignals from "@/components/signals/useLivingSignals";
 import DiscoveryStream from "@/components/signals/DiscoveryStream";
 import DataFreshness from "@/components/signals/DataFreshness";
 import { CITIES } from "@/lib/cities";
+import { setRexContext } from "@/lib/rexSession";
 
 // The Canada Signal — homepage placement. One master gauge, one documented
 // index basis, separate labelled layers for availability and pricing, and
@@ -67,7 +68,10 @@ export default function CanadaSignalSection() {
         <select
           aria-label="Choose a geography"
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(e) => {
+            setCity(e.target.value);
+            if (e.target.value) setRexContext({ city: e.target.value, page: "canada-signal" });
+          }}
           className="w-full max-w-full rounded-full border border-si-line bg-ri-ivory px-4 py-2 text-sm font-semibold text-si-ink sm:w-auto"
         >
           <option value="">All of Canada</option>
