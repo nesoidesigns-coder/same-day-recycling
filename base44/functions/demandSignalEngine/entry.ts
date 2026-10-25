@@ -90,6 +90,22 @@ function buildDrafts(base44, settings, cities, provinces): Promise<{ drafts: Dra
   const load = async (entity: string, filter: any, limit = 200) =>
     (await (base44.asServiceRole as any).entities[entity].filter(filter, { sort: '-created_date', limit })).items || [];
 
+  // Full-scan loader: a small head-of-list window would only ingest the most
+  // recently synced keyword groups (the tail of the taxonomy), starving the
+  // signal index of the service keywords it actually measures.
+  const loadAll = async (entity: string, maxRecords = 8000) => {
+    const all: any[] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await (base44.asServiceRole as any).entities[entity].list(
+        cursor ? { sort: '-created_date', limit: 1000, cursor } : { sort: '-created_date', limit: 1000 },
+      );
+      all.push(...((page.items || []) as any[]));
+      cursor = page.next_cursor;
+    } while (cursor && all.length < maxRecords);
+    return all;
+  };
+
   return (async () => {
     const drafts: Draft[] = [];
     const skipped: any = {};
@@ -112,7 +128,7 @@ function buildDrafts(base44, settings, cities, provinces): Promise<{ drafts: Dra
     }
 
     // B) Search intelligence — aggregate observations; NEVER individual leads.
-    const obs = await load('DemandObservation', {}, 400);
+    const obs = await loadAll('DemandObservation');
     skipped.search_stale = 0;
     for (const o of obs) {
       const periodEnd = o.period_end || (o.period ? `${o.period}-28` : '');

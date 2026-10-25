@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 import { capacityByCity, partnerCoversCity } from '../../shared/territory.ts';
@@ -15,7 +15,7 @@ import { DEFAULT_PRICES, resolveCityPrices } from '../../shared/pricing.ts';
 // blended with request or booking counts, never presented as live activity.
 
 const DAY_MS = 86400000;
-const DAY_WINDOWS = [7, 30, 90, 365];
+const DAY_WINDOWS = [7, 28, 30, 90, 365];
 
 const MARKET_CATEGORIES = [
   'furniture_appliance_removal',
@@ -82,9 +82,7 @@ export default async function (req: Request): Promise<Response> {
     const startIso = new Date(Date.now() - days * DAY_MS).toISOString();
 
     const [signalsP, partnersP, pricingP, userP] = await Promise.allSettled([
-      base44.asServiceRole.entities.DemandSignal.filter(
-        { created_date: { $gte: startIso } }, { limit: 1000 }
-      ),
+      base44.asServiceRole.entities.DemandSignal.list({ sort: '-created_date', limit: 1000 }),
       base44.asServiceRole.entities.Partner.filter({ active: true, verified: true }, { limit: 500 }),
       base44.asServiceRole.entities.PricingSettings.filter(
         city ? { city } : { $or: [{ city: { $exists: false } }, { city: '' }] }, { limit: 1 }
@@ -94,7 +92,7 @@ export default async function (req: Request): Promise<Response> {
 
     const user = userP.status === 'fulfilled' ? userP.value : null;
 
-    let signals = items(signalsP);
+    let signals = items(signalsP).filter((s) => s.created_date >= startIso);
     const allSignals = signals;
     const partners = items(partnersP).filter((p) => !isTestPartner(p));
 
@@ -171,6 +169,7 @@ export default async function (req: Request): Promise<Response> {
     // separate layers and are never blended into this number.
     const indexedSearch = allSignals.filter(
       (s) => s.demand_type === 'search_interest' && s.metric_context?.trend_index != null
+        && (s.market_categories || []).length > 0
     );
     const signalCategories = MARKET_CATEGORIES.map((key) => {
       const recs = indexedSearch.filter((s) => (s.market_categories || []).includes(key));
@@ -200,7 +199,7 @@ export default async function (req: Request): Promise<Response> {
     };
 
     const findings = signals
-      .filter((s) => FINDING_TYPES.includes(s.demand_type))
+      .filter((s) => FINDING_TYPES.includes(s.demand_type) && (s.market_categories || []).length > 0)
       .sort((a, b) => String(b.source_published_at || b.created_date || '').localeCompare(String(a.source_published_at || a.created_date || '')))
       .slice(0, 12)
       .map(normalizeFinding);
@@ -219,6 +218,7 @@ export default async function (req: Request): Promise<Response> {
       partners: { total: cityPartners.length, available: availableContractors.length, same_day: cityPartners.filter((p) => p.same_day_capable).length },
       findings,
       signal,
+      read_errors: readErrors,
       insufficient: {
         recorded_activity: activityRecords.length === 0 ? 'No recorded demand for this selection in the window yet.' : null,
         search_interest: searchRecords.length === 0 ? 'No search-intelligence records for this selection yet.' : null,
