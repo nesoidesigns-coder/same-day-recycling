@@ -37,6 +37,14 @@ export default function NationalDemandPanel() {
   };
   const back = () => setSel(({ topic, ...s }) => (s.subdivision ? { ...s, subdivision: null } : { industry: null, subdivision: null, topic: null }));
 
+  // Strongest connected topic right now — shown in the gauge centre.
+  const topTopic = useMemo(() => {
+    const all = (data?.industries || []).flatMap((i) =>
+      i.subdivisions.flatMap((s) => s.topics.map((t) => ({ name: t.name, weight: t.stats?.weight || 0, connected: t.stats?.connected, sub: s.name, ind: i.name })))
+    ).filter((t) => t.connected);
+    return all.sort((a, b) => b.weight - a.weight)[0] || null;
+  }, [data]);
+
   const rings = {
     outer: (data?.industries || []).map((i) => ({ slug: i.slug, name: i.name, weight: i.weight || 0 })),
     middle: industry ? industry.subdivisions.map((s) => ({ slug: s.slug, name: s.name, weight: Math.max(0, ...s.topics.map((t) => t.stats.weight || 0)) })) : null,
@@ -85,6 +93,7 @@ export default function NationalDemandPanel() {
                 loading={isLoading}
                 centerTitle={industry ? industry.name : "NATIONAL DEMAND"}
                 centerSub={counts ? `${counts.connected_topics} of ${counts.topics} topics with connected data` : null}
+                topTopic={topTopic}
               />
               <div className="min-w-0">
                 {/* Level chips: the accessible, thumb-friendly way to navigate */}

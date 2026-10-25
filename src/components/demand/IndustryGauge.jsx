@@ -57,7 +57,7 @@ function ringSectors(ringKey, items, selectedSlug, onSelect, dimmed) {
 // Shared drag tracker (set inside the component's ref below).
 const dragState = { current: { moved: false } };
 
-export default function IndustryGauge({ rings, selected, onSelect, loading, centerTitle, centerSub, onBack }) {
+export default function IndustryGauge({ rings, selected, onSelect, loading, centerTitle, centerSub, onBack, topTopic }) {
   const [angle, setAngle] = useState(0);
   const [hovered, setHovered] = useState(null);
   const drag = useRef({ active: false, moved: false, startX: 0, startAngle: 0 });
@@ -110,9 +110,11 @@ export default function IndustryGauge({ rings, selected, onSelect, loading, cent
             </button>
           ) : (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300/90">Canada</p>
-              <p className="mt-0.5 text-sm font-bold leading-tight text-white">{hovered?.name || centerTitle}</p>
-              {centerSub && <p className="mt-1 text-[10px] leading-tight text-emerald-100/70">{hovered ? "Tap to explore" : centerSub}</p>}
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300/90">{topTopic ? "Strongest now" : "Canada"}</p>
+              <p className="mt-0.5 text-sm font-bold leading-tight text-white">{hovered?.name || (topTopic ? topTopic.name : centerTitle)}</p>
+              <p className="mt-1 text-[10px] leading-tight text-emerald-100/70">
+                {hovered ? "Tap to explore" : topTopic ? `${topTopic.sub} · ${topTopic.ind}` : centerSub}
+              </p>
             </div>
           )}
         </div>
