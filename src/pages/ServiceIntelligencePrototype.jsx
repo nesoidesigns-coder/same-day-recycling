@@ -9,6 +9,8 @@ import BookingSteps from "@/components/home/BookingSteps";
 import PricingPreview from "@/components/home/PricingPreview";
 import LocalIntelPreview from "@/components/si/LocalIntelPreview";
 import ContractorEntrance from "@/components/si/ContractorEntrance";
+import TrustStrip from "@/components/sdr/TrustStrip";
+import FinalServiceCta from "@/components/si/FinalServiceCta";
 import useServiceIntelligence from "@/components/si/useServiceIntelligence";
 import { CITIES } from "@/lib/cities";
 
@@ -40,6 +42,9 @@ export default function ServiceIntelligencePrototype() {
 
       <ServiceHero />
 
+      {/* Customer trust and proof — verified reviews and promises only */}
+      <TrustStrip />
+
       <main className="mx-auto flex max-w-[1280px] flex-col gap-10 px-4 py-10 md:px-8 md:py-14">
         {/* Signature technology — one coherent, interactive gauge */}
         <CanadaSignalSection />
@@ -68,6 +73,9 @@ export default function ServiceIntelligencePrototype() {
           resources={si.resources}
           activity={si.activity.data}
         />
+
+        {/* Final booking action */}
+        <FinalServiceCta />
       </main>
 
       <div className="mx-auto max-w-[1280px] px-4 pb-10 md:px-8">
