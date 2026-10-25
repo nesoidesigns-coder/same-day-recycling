@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Send, Loader2, Link2, AlertTriangle, Compass, BookOpen, GitCompareArrows, ClipboardList, Truck, Gift } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import RexPriceCompare from "@/components/home/RexPriceCompare";
 
 // Rex Discover: anonymous consumer research panel for the homepage. One
 // conversational field, four outcomes (learn / compare / plan / request),
@@ -108,6 +109,8 @@ export default function RexDiscover() {
             className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#187B65] focus:outline-none"
           />
         </label>
+
+        <RexPriceCompare />
 
         {messages.length === 0 && !loading && (
           <div className="mt-5 flex gap-2.5">

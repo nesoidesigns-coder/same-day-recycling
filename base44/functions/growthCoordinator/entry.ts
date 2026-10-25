@@ -74,7 +74,7 @@ async function scan(base44) {
   }
 
   // Refresh priority on every still-open decision.
-  const all = (open.items || open).concat(created);
+  const all = openRecords.concat(created);
   for (const d of all) {
     const next = priorityScore(d);
     if (d.priority_score !== next) await GD.update(d.id, { priority_score: next });

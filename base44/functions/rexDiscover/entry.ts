@@ -23,7 +23,9 @@ export default async function (req) {
     const body = await req.json().catch(() => ({}));
     const messages = Array.isArray(body.messages) ? body.messages.slice(-8).filter((m) => m && m.content) : [];
     const last = messages.length ? messages[messages.length - 1].content : (body.message || '');
-    if (!last || !last.trim()) return Response.json({ error: 'A question is required' }, { status: 400 });
+    if ((!last || !last.trim()) && body.mode !== 'price_compare') {
+      return Response.json({ error: 'A question is required' }, { status: 400 });
+    }
 
     const msgLoc = extractLocationHint(last);
     const loc = String(body.location || '').trim() || msgLoc;
@@ -32,6 +34,73 @@ export default async function (req) {
     // published/aggregate marketing data, safe to expose anonymously). ---
     const lower = last.toLowerCase();
     const esc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // --- Structured price-comparison mode: verified published rates only,
+    // no invented averages, no LLM needed. ---
+    if (body.mode === 'price_compare') {
+      const cityIn = String(body.city || loc || '').trim();
+      let ownRows = [];
+      try {
+        const page = await base44.asServiceRole.entities.PricingSettings.filter({});
+        ownRows = page.items || page;
+      } catch { ownRows = []; }
+      let compRows = [];
+      try {
+        const page = await base44.asServiceRole.entities.CompetitorPricing.filter({});
+        compRows = (page.items || page).filter((c) => c.is_sample !== true && c.is_sample !== 'true');
+      } catch { compRows = []; }
+      const seen = new Set();
+      const cityList = compRows
+        .map((c) => String(c.city || '').trim())
+        .filter((c) => {
+          const k = c.toLowerCase();
+          if (!c || seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+      const hitCity = cityIn
+        ? cityList.find((c) => new RegExp(`\\b${esc(c.toLowerCase())}\\b`).test(cityIn.toLowerCase())) || ''
+        : '';
+      const own = (hitCity && ownRows.find((p) => String(p.city || '').toLowerCase() === hitCity.toLowerCase()))
+        || ownRows.find((p) => !p.city) || null;
+      const competitors = hitCity
+        ? compRows.filter((c) => new RegExp(`\\b${esc(String(c.city || '').toLowerCase())}\\b`).test(hitCity.toLowerCase())).slice(0, 6)
+        : [];
+      const parseNum = (s) => {
+        const m = String(s || '').replace(/,/g, '').match(/\$?\s?(\d+(?:\.\d+)?)/);
+        return m ? parseFloat(m[1]) : null;
+      };
+      const mins = competitors.map((c) => parseNum(c.minimum)).filter((n) => n != null);
+      const lows = competitors.map((c) => parseNum(String(c.price_range || '').split(/[-\u2013\u2014]/)[0])).filter((n) => n != null);
+      const avg = (arr) => (arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null);
+      return Response.json({
+        mode: 'price_compare',
+        city: hitCity,
+        cities: cityList,
+        own_pricing: own ? {
+          city: own.city || '',
+          tiers: {
+            minimum_pickup: own.minimum_pickup,
+            one_eighth_truck: own.eighth_truck,
+            quarter_truck: own.quarter_truck,
+            half_truck: own.half_truck,
+            three_quarter_truck: own.three_quarter_truck,
+            full_truck: own.full_truck,
+          },
+        } : null,
+        competitors: competitors.map((c) => ({
+          name: c.name, city: c.city, price_range: c.price_range, minimum: c.minimum,
+          services: c.services, source_url: c.source_url,
+        })),
+        market_summary: competitors.find((c) => c.market_summary)?.market_summary || '',
+        local_averages: {
+          minimum_avg: avg(mins),
+          range_low_avg: avg(lows),
+          provider_count: mins.length,
+          basis: 'average of advertised minimums on file, from verified provider records only',
+        },
+      });
+    }
 
     // Own published pricing for the customer's city (or the platform default).
     let ownPricing = null;
