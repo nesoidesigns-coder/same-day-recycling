@@ -29,7 +29,7 @@ const targetQuaternion = (lat, lng) => {
 
 
 
-export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], onSelect, onHover, onFailure, mobile = false }) {
+export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], onSelect, onHover, onZoomCity, onFailure, mobile = false }) {
   if (!mount) return null;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -254,6 +254,30 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       velX = velY = pinchDist = 0;
     }
   };
+  // Zoomed-in auto-detection: the municipality closest to the view centre
+  // (front-facing only) becomes the "zoomed city" the wrapper reports on.
+  let autoCity = null;
+  const findCityAtCenter = () => {
+    const halfW = renderer.domElement.clientWidth / 2, halfH = renderer.domElement.clientHeight / 2;
+    const maxDist = Math.min(halfW, halfH) * 0.3;
+    let best = null, bestDist = maxDist;
+    for (const pick of picks) {
+      const world = pick.position.clone().applyQuaternion(globeGroup.quaternion);
+      if (world.z <= 0) continue; // far side of the globe
+      const p = world.project(camera);
+      const d = Math.hypot(p.x * halfW, -p.y * halfH);
+      if (d < bestDist) { bestDist = d; best = pick.userData; }
+    }
+    return best;
+  };
+  const maybeAutoZoomCity = () => {
+    const target = camDist < homeDist * 0.68 ? findCityAtCenter() : null;
+    if ((target?.key || null) !== (autoCity?.key || null)) {
+      autoCity = target;
+      onZoomCity?.(autoCity);
+    }
+  };
+
   const onPointerLeave = () => setHovered(null);
   const onWheel = (e) => {
     e.preventDefault();
@@ -331,6 +355,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       velX *= damping; velY *= damping;
       if (Math.abs(velX) <= 0.02 && Math.abs(velY) <= 0.02) { velX = velY = 0; baseQuat.copy(globeGroup.quaternion); }
     }
+    maybeAutoZoomCity();
     renderer.render(scene, camera);
   };
   tick();

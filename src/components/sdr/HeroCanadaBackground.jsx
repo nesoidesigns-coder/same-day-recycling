@@ -22,7 +22,11 @@ export default function HeroCanadaBackground({ lang = "en" }) {
   const { nodes, links, coverage, demand } = useHeroNetwork();
   const [mode, setMode] = useState("network");
   const [region, setRegion] = useState(""), [selected, setSelected] = useState(""), [hover, setHover] = useState(null);
+  // City currently under the view centre while zoomed in — shows its demand
+  // and services automatically, without a tap.
+  const [zoomCityKey, setZoomCityKey] = useState(null);
   const node = nodes.find((n) => n.key === selected);
+  const zoomCity = nodes.find((n) => n.key === zoomCityKey) || null;
   // A selected city becomes the map focus, so the globe zooms straight to it.
   const focus = node ? { lat: node.lat, lng: node.lng } : REGIONS.find((r) => r.code === region) || null;
   useEffect(() => {
@@ -45,10 +49,11 @@ export default function HeroCanadaBackground({ lang = "en" }) {
       <HeroNetworkHeader lang={lang} />
       <HeroNetworkModes mode={mode} onChange={changeMode} lang={lang} />
       <div className="relative">
-        <HeroNetworkScene nodes={nodes} links={links} focus={focus} selectedKey={selected} onSelect={select} onHover={setHover} lang={lang} />
+        <HeroNetworkScene nodes={nodes} links={links} focus={focus} selectedKey={selected} onSelect={select} onHover={setHover} onZoomCity={(n) => { setZoomCityKey(n?.key || null); if (n) base44.analytics.track({ eventName: "hero_map_zoom_city", properties: { city: n.name, mode } }); }} lang={lang} />
         {hover && !selected && <div className="pointer-events-none absolute left-3 top-2 z-10 hidden w-72 rounded-2xl border border-market-line bg-market-bg p-3 shadow-xl md:block"><HeroMapCityTooltip node={hover} availability={hover.availability} lang={lang} /></div>}
       </div>
       {node && <HeroNetworkSelection node={node} onClose={() => setSelected("")} lang={lang} />}
+      {!node && zoomCity && mode === "network" && <HeroNetworkSelection node={zoomCity} onClose={() => setZoomCityKey(null)} lang={lang} />}
       {mode === "network" && (
         <>
           <HeroNetworkControls nodes={nodes} region={region} selected={selected} lang={lang} onRegion={(value) => { setRegion(value); setSelected(""); setHover(null); }} onCity={(key) => { const n = nodes.find((n) => n.key === key); if (n) select(n); else setSelected(""); }} />

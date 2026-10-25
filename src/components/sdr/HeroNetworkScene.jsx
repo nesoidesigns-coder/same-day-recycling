@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Minus, Plus, RotateCcw } from "lucide-react";
 
-export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover, lang = "en" }) {
+export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover, onZoomCity, lang = "en" }) {
   const mount = useRef(null), scene = useRef(null), data = useRef({ nodes, links });
-  const callbacks = useRef({ onSelect, onHover });
-  callbacks.current = { onSelect, onHover };
+  const callbacks = useRef({ onSelect, onHover, onZoomCity });
+  callbacks.current = { onSelect, onHover, onZoomCity };
   data.current = { nodes, links };
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -17,7 +17,7 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
       try {
         const { default: createScene } = await import("@/components/sdr/HeroCanadaGlobe");
         if (cancelled || !mount.current) return;
-        instance = createScene(mount.current, { nodes: data.current.nodes, links: data.current.links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onFailure: unavailable });
+        instance = createScene(mount.current, { nodes: data.current.nodes, links: data.current.links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onZoomCity: (n) => callbacks.current.onZoomCity?.(n), onFailure: unavailable });
         if (!instance) { unavailable(); return; }
         scene.current = instance;
         setReady(true);
