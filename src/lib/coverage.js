@@ -33,6 +33,7 @@ export const COVERAGE = [
   { name: "Surrey", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Richmond", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Coquitlam", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
+  { name: "Port Coquitlam", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Victoria", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Kamloops", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },
   { name: "Kelowna", province: "BC", status: "requests_open", capabilities: FULL_CAPABILITIES },

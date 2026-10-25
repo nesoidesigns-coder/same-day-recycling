@@ -12,6 +12,7 @@ const CITY_META = {
   Surrey: { slug: "surrey", lat: 49.1913, lng: -122.849, radius: 14000 },
   Richmond: { slug: "richmond", lat: 49.1668, lng: -123.1336, radius: 12000 },
   Coquitlam: { slug: "coquitlam", lat: 49.2838, lng: -122.7932, radius: 12000 },
+  "Port Coquitlam": { slug: "port-coquitlam", lat: 49.2628, lng: -122.7811, radius: 8000 },
   Victoria: { slug: "victoria", lat: 48.4284, lng: -123.3656, radius: 10000 },
   Calgary: { slug: "calgary", lat: 51.0447, lng: -114.0719, radius: 14000 },
   Edmonton: { slug: "edmonton", lat: 53.5461, lng: -113.4938, radius: 14000 },
