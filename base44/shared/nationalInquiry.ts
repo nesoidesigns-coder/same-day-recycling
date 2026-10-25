@@ -24,6 +24,24 @@ export async function submitNationalInquiry(base44, input) {
   const email = str(input.email, 200);
   const address = str(input.address, 200);
   const notes = str(input.notes, 1000);
+
+  // Verified pickup location — one authoritative location record. Coordinates
+  // are accepted only from the address engine (verified geocode) or the
+  // customer's own pin adjustment, and only when they fall inside Canada.
+  const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+  let pickup_lat = num(input.pickup_lat);
+  let pickup_lng = num(input.pickup_lng);
+  if (pickup_lat === null || pickup_lng === null || pickup_lat < 41 || pickup_lat > 84 || pickup_lng < -142 || pickup_lng > -52) {
+    pickup_lat = null;
+    pickup_lng = null;
+  }
+  const pickup_unit = str(input.pickup_unit, 40);
+  const pickup_location_source = ['verified_geocode', 'customer_adjusted'].includes(input.pickup_location_source)
+    ? input.pickup_location_source
+    : '';
+  const access_notes = input.access_notes && typeof input.access_notes === 'object' && !Array.isArray(input.access_notes)
+    ? input.access_notes
+    : {};
   const service_type = SERVICE_TYPES.includes(input.service_type) ? input.service_type : 'other';
   const preferred_date = /^\d{4}-\d{2}-\d{2}$/.test(String(input.preferred_date || '')) ? input.preferred_date : '';
 
@@ -136,6 +154,10 @@ export async function submitNationalInquiry(base44, input) {
     status,
     quote_status,
     reference_code,
+    ...(pickup_lat !== null ? { pickup_lat, pickup_lng } : {}),
+    ...(pickup_unit ? { pickup_unit } : {}),
+    ...(pickup_location_source && pickup_lat !== null ? { pickup_location_source } : {}),
+    ...(Object.keys(access_notes).length ? { access_notes } : {}),
   });
 
   // Rule 5: EVERY new request automatically opens a dispatch task, so

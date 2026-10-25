@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Minus, Plus, RotateCcw } from "lucide-react";
 
-export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover, onZoomCity, lang = "en" }) {
+export default function HeroNetworkScene({ nodes, links, focus, pickupFocus, selectedKey, onSelect, onHover, onZoomCity, lang = "en" }) {
   const mount = useRef(null), scene = useRef(null), data = useRef({ nodes, links });
   const callbacks = useRef({ onSelect, onHover, onZoomCity });
   callbacks.current = { onSelect, onHover, onZoomCity };
@@ -27,7 +27,19 @@ export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onS
     return () => { cancelled = true; instance?.dispose(); scene.current = null; };
   }, []);
   useEffect(() => { if (ready) scene.current?.updateData(nodes, links); }, [nodes, links, ready]);
-  useEffect(() => { if (!ready) return; if (Number.isFinite(focusLat) && Number.isFinite(focusLng)) scene.current?.focusOn(focusLat, focusLng); else scene.current?.resetFocus(); }, [focusLat, focusLng, ready]);
+  const focusIsAddress = !!focus?.isAddress, focusInstant = !!focus?.instant;
+  useEffect(() => {
+    if (!ready) return;
+    if (Number.isFinite(focusLat) && Number.isFinite(focusLng)) {
+      // A confirmed pickup address glides deeper and drops the glowing marker;
+      // city and region selections keep the regular focus behaviour.
+      if (focusIsAddress) scene.current?.focusAddress(focusLat, focusLng, focusInstant);
+      else scene.current?.focusOn(focusLat, focusLng);
+    } else scene.current?.resetFocus();
+  }, [focusLat, focusLng, focusIsAddress, focusInstant, ready]);
+  // Pin adjustment from the local map moves only the marker — no refocus.
+  const adjustMode = pickupFocus?.mode === "adjust", adjustLat = pickupFocus?.lat, adjustLng = pickupFocus?.lng;
+  useEffect(() => { if (ready && adjustMode && Number.isFinite(adjustLat) && Number.isFinite(adjustLng)) scene.current?.setPickup(adjustLat, adjustLng); }, [adjustMode, adjustLat, adjustLng, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
     <div className="relative h-60 w-full sm:h-72 lg:h-[24rem] xl:h-[26rem]" data-map-mode={ready ? "3d" : failed ? "unavailable" : "loading"} onPointerDownCapture={() => setTouched(true)}>

@@ -12,6 +12,7 @@ import HeroMapCityTooltip from "@/components/sdr/HeroMapCityTooltip";
 import HeroNetworkModes from "@/components/sdr/HeroNetworkModes";
 import HeroNetworkPulse from "@/components/sdr/HeroNetworkPulse";
 import HeroNetworkRex from "@/components/sdr/HeroNetworkRex";
+import PickupLocationPanel from "@/components/sdr/PickupLocationPanel";
 import { networkRexQuestion } from "@/components/sdr/heroNetworkCopy";
 
 // Interactive Canadian service network with three exploration modes:
@@ -27,8 +28,35 @@ export default function HeroCanadaBackground({ lang = "en" }) {
   const [zoomCityKey, setZoomCityKey] = useState(null);
   const node = nodes.find((n) => n.key === selected);
   const zoomCity = nodes.find((n) => n.key === zoomCityKey) || null;
-  // A selected city becomes the map focus, so the globe zooms straight to it.
-  const focus = node ? { lat: node.lat, lng: node.lng } : REGIONS.find((r) => r.code === region) || null;
+  // Confirmed pickup address from the booking flow: the globe rotates toward
+  // the verified coordinates and drops a glowing pickup marker. The customer
+  // can adjust the pin on the detailed local map; the marker follows.
+  const [pickup, setPickup] = useState(null);
+  useEffect(() => {
+    const onAddress = (event) => {
+      const d = event.detail || {};
+      if (!Number.isFinite(d.lat) || !Number.isFinite(d.lng)) return;
+      setPickup({ lat: d.lat, lng: d.lng, address: d.address || "", unit: d.unit || "", city: d.city || "", province_name: d.province_name || "", instant: !!d.instant, adjusted: false });
+      setSelected(""); setHover(null); setZoomCityKey(null);
+      setRegion((r) => (REGIONS.some((reg) => reg.code === d.province) ? d.province : r));
+    };
+    const onAdjust = (event) => {
+      const d = event.detail || {};
+      if (!Number.isFinite(d.lat) || !Number.isFinite(d.lng)) return;
+      setPickup((p) => (p ? { ...p, lat: d.lat, lng: d.lng, adjusted: true } : p));
+    };
+    window.addEventListener("pickup:address", onAddress);
+    window.addEventListener("pickup:adjust", onAdjust);
+    return () => {
+      window.removeEventListener("pickup:address", onAddress);
+      window.removeEventListener("pickup:adjust", onAdjust);
+    };
+  }, []);
+  // A selected city becomes the map focus, so the globe zooms straight to it;
+  // a confirmed pickup address takes priority and glides to the exact point.
+  const focus = pickup
+    ? { lat: pickup.lat, lng: pickup.lng, isAddress: true, instant: pickup.instant }
+    : node ? { lat: node.lat, lng: node.lng } : REGIONS.find((r) => r.code === region) || null;
   useEffect(() => {
     const focusRegion = (event) => { if (REGIONS.some((r) => r.code === event.detail?.province)) setRegion(event.detail.province); };
     window.addEventListener("hero-map:focus", focusRegion);
@@ -49,11 +77,19 @@ export default function HeroCanadaBackground({ lang = "en" }) {
       <HeroNetworkHeader lang={lang} />
       <HeroNetworkModes mode={mode} onChange={changeMode} lang={lang} />
       <div className="relative">
-        <HeroNetworkScene nodes={nodes} links={links} focus={focus} selectedKey={selected} onSelect={select} onHover={setHover} onZoomCity={(n) => { setZoomCityKey(n?.key || null); if (n) base44.analytics.track({ eventName: "hero_map_zoom_city", properties: { city: n.name, mode } }); }} lang={lang} />
+        <HeroNetworkScene nodes={nodes} links={links} focus={focus} pickupFocus={pickup && pickup.adjusted ? { lat: pickup.lat, lng: pickup.lng, mode: "adjust" } : null} selectedKey={selected} onSelect={select} onHover={setHover} onZoomCity={(n) => { setZoomCityKey(n?.key || null); if (n) base44.analytics.track({ eventName: "hero_map_zoom_city", properties: { city: n.name, mode } }); }} lang={lang} />
         {hover && !selected && <div className="pointer-events-none absolute left-3 top-2 z-10 hidden w-72 rounded-2xl border border-market-line bg-market-bg p-3 shadow-xl md:block"><HeroMapCityTooltip node={hover} availability={hover.availability} lang={lang} /></div>}
       </div>
       {node && <HeroNetworkSelection node={node} onClose={() => setSelected("")} lang={lang} />}
-      {!node && zoomCity && mode === "network" && <HeroNetworkSelection node={zoomCity} onClose={() => setZoomCityKey(null)} lang={lang} />}
+      {!node && zoomCity && !pickup && mode === "network" && <HeroNetworkSelection node={zoomCity} onClose={() => setZoomCityKey(null)} lang={lang} />}
+      {pickup && mode === "network" && (
+        <PickupLocationPanel
+          pickup={pickup}
+          onClose={() => setPickup(null)}
+          onSkip={() => setPickup((p) => (p ? { ...p, instant: true } : p))}
+          lang={lang}
+        />
+      )}
       {mode === "network" && (
         <>
           <HeroNetworkControls nodes={nodes} region={region} selected={selected} lang={lang} onRegion={(value) => { setRegion(value); setSelected(""); setHover(null); }} onCity={(key) => { const n = nodes.find((n) => n.key === key); if (n) select(n); else setSelected(""); }} />

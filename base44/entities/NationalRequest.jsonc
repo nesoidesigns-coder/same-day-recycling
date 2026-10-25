@@ -27,6 +27,34 @@
       "type": "string",
       "default": ""
     },
+    "pickup_lat": {
+      "type": "number",
+      "description": "Verified latitude of the confirmed pickup location. Set only from real geocoding or the customer's own map adjustment \u2014 never inferred or invented."
+    },
+    "pickup_lng": {
+      "type": "number",
+      "description": "Verified longitude of the confirmed pickup location. One authoritative location record per request."
+    },
+    "pickup_unit": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40,
+      "description": "Apartment or unit number the customer entered. Never geocoded or inferred."
+    },
+    "pickup_location_source": {
+      "type": "string",
+      "enum": [
+        "verified_geocode",
+        "customer_adjusted"
+      ],
+      "default": "",
+      "description": "How the pickup coordinates were established: a verified geocode of the confirmed address, or the customer's own adjustment of the pickup pin. Empty = coordinates not captured."
+    },
+    "access_notes": {
+      "type": "object",
+      "default": {},
+      "description": "Customer's job-preparation answers for the contractor brief (items inside/outside, stairs, elevator, parking, heavy items, note). Never inferred from map imagery."
+    },
     "service_type": {
       "type": "string",
       "enum": [

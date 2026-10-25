@@ -31,6 +31,21 @@ export default async function(req) {
     const discount_amount = curbside ? 25 : 0;
     const province_code = provinceForCity(city);
     const sid = str(body?.sid, 40);
+    // Verified pickup location (address engine) + job-prep answers.
+    const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+    let pickup_lat = num(body?.pickup_lat);
+    let pickup_lng = num(body?.pickup_lng);
+    if (pickup_lat === null || pickup_lng === null || pickup_lat < 41 || pickup_lat > 84 || pickup_lng < -142 || pickup_lng > -52) {
+      pickup_lat = null;
+      pickup_lng = null;
+    }
+    const pickup_unit = str(body?.pickup_unit, 40);
+    const pickup_location_source = ['verified_geocode', 'customer_adjusted'].includes(body?.pickup_location_source)
+      ? body.pickup_location_source
+      : '';
+    const access_notes = body?.access_notes && typeof body.access_notes === 'object' && !Array.isArray(body.access_notes)
+      ? body.access_notes
+      : {};
 
     // Booking integrity: confirmed bookings are only accepted in active service
     // territories. The frontend routes non-live cities to the ServiceWaitlist;
@@ -60,6 +75,10 @@ export default async function(req) {
       ...(curbside ? { curbside_discount: true, discount_amount: 25 } : {}),
       ...(province_code ? { province_code } : {}),
       ...(sid ? { sid } : {}),
+      ...(pickup_lat !== null ? { pickup_lat, pickup_lng } : {}),
+      ...(pickup_unit ? { pickup_unit } : {}),
+      ...(pickup_location_source && pickup_lat !== null ? { pickup_location_source } : {}),
+      ...(Object.keys(access_notes).length ? { access_notes } : {}),
     });
 
     const notified = await sendBookingNotifications(base44.asServiceRole, {

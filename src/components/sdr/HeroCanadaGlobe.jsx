@@ -198,6 +198,18 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   ring.visible = false;
   globeGroup.add(ring);
 
+  // Pickup marker: placed at the verified coordinates of the customer's
+  // confirmed address, glowing so the eye lands on it during the zoom.
+  const pickupMarker = new THREE.Group();
+  const markerGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.55, 16, 12),
+    new THREE.MeshBasicMaterial({ color: 0xffc24b, transparent: true, opacity: 0.35 })
+  );
+  const markerCore = new THREE.Mesh(new THREE.SphereGeometry(0.26, 16, 12), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  pickupMarker.add(markerGlow, markerCore);
+  pickupMarker.visible = false;
+  globeGroup.add(pickupMarker);
+
   // ---- Gestures: drag to spin, pinch/wheel to zoom, tap to select ----
   const raycaster = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
@@ -413,6 +425,10 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       }
       dirty = true;
     }
+    if (pickupMarker.visible) {
+      markerGlow.scale.setScalar(1 + 0.18 * Math.sin(clock.elapsedTime * 3));
+      dirty = true;
+    }
     renderer.render(scene, camera);
   };
   tick();
@@ -457,7 +473,22 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       setCamDist(homeDist);
       focus.active = false;
       setAerial(null);
+      pickupMarker.visible = false;
       applyFocus(VIEW_LAT, VIEW_LNG, reduced);
+    },
+    setPickup: (lat, lng) => {
+      dirty = true;
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) { pickupMarker.visible = false; return; }
+      pickupMarker.position.copy(spherePoint(lat, lng, R * 1.02));
+      pickupMarker.visible = true;
+    },
+    focusAddress: (lat, lng, instant) => {
+      dirty = true;
+      // Glide deeper than a city selection so the high-detail aerial patch
+      // fades fully in at the verified coordinates.
+      setCamDist(Math.max(FOCUS_DIST * 0.92, CAM_MIN));
+      setAerial({ key: `addr:${lat.toFixed(3)}:${lng.toFixed(3)}`, lat, lng });
+      applyFocus(lat, lng, instant);
     },
     updateData: (nextNodes) => setData(nextNodes),
     zoomBy: (factor) => {
