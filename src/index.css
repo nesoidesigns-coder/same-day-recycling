@@ -344,6 +344,22 @@ h1, h2, h3, h4, p, a, span, li, button {
   animation: gauge-sweep-spin 12s linear infinite;
 }
 
+/* ---- National demand gauge: sectors breathe with vibrant glow ---- */
+@keyframes gauge-pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px rgba(24, 123, 101, 0.35));
+  }
+  50% {
+    opacity: 0.72;
+    filter: drop-shadow(0 0 10px rgba(64, 240, 180, 0.85));
+  }
+}
+
+.gauge-pulse {
+  animation: gauge-pulse-glow 3.4s ease-in-out infinite;
+}
+
 /* ---- Rex orb states (idle · listening · processing · success · attention) ---- */
 
 .rex-orb {
@@ -416,6 +432,7 @@ h1, h2, h3, h4, p, a, span, li, button {
   .data-flow,
   .pulse-arc-spin,
   .gauge-sweep,
+  .gauge-pulse,
   .rex-orb--processing::before,
   .rex-orb--listening,
   .rex-orb--processing .rex-orb__core {

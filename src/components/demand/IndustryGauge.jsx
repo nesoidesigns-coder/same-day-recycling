@@ -45,7 +45,8 @@ function ringSectors(ringKey, items, selectedSlug, onSelect, dimmed) {
         stroke={isSel ? "#7CFFC4" : isConnected ? tone.edge : "rgba(148,163,184,0.3)"}
         strokeWidth={isSel ? 2.5 : 1}
         strokeDasharray={isConnected ? undefined : "3 4"}
-        className="cursor-pointer"
+        className={`cursor-pointer ${isConnected ? "gauge-pulse" : ""}`}
+        style={isConnected ? { animationDelay: `${((i * 0.45) % 3.6).toFixed(2)}s`, animationDuration: `${(3 + item.weight * 1.6).toFixed(2)}s` } : undefined}
         opacity={dimmed ? 0.35 : 1}
         onClick={(e) => { e.stopPropagation(); if (!dragState.current.moved) onSelect(item); }}
       />
