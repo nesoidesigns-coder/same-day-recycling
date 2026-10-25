@@ -456,3 +456,64 @@ h1, h2, h3, h4, p, a, span, li, button {
     scroll-behavior: auto;
   }
 }
+
+/* ---- Admin LI compatibility layer ----
+   Legacy admin pages still carry the old forest/emerald hex utility classes.
+   Rather than restyling hundreds of files, this scoped layer remaps those
+   exact legacy utilities to the Living Infrastructure tokens whenever they
+   render inside the admin shell (anything under .admin-li). New admin UI
+   should use li-* token classes directly. */
+.admin-li {
+  color: hsl(var(--li-carbon));
+}
+
+/* Legacy ink & brand text colors */
+.admin-li [class*="text-[#102B2A]"]:not([class*=":text-[#102B2A]"]) { color: hsl(var(--li-carbon)); }
+.admin-li [class*=":text-[#102B2A]"]:hover { color: hsl(var(--li-carbon)); }
+.admin-li [class*="text-[#187B65]"]:not([class*=":text-[#187B65]"]) { color: hsl(var(--li-infra)); }
+.admin-li [class*=":text-[#187B65]"]:hover { color: hsl(var(--li-infra)); }
+.admin-li [class*="text-[#032015]"],
+.admin-li [class*="text-[#051511]"],
+.admin-li [class*="text-[#0f5c3f]"] { color: hsl(var(--li-carbon)); }
+
+/* Legacy emerald surfaces, borders and focus states */
+.admin-li [class*="bg-[#187B65]"]:not([class*=":bg-[#187B65]"]) { background-color: hsl(var(--li-infra)); }
+.admin-li [class*=":bg-[#187B65]"]:hover { background-color: hsl(var(--li-infra)); }
+.admin-li [class*="bg-[#125C4E]"]:hover,
+.admin-li [class*="bg-[#125c4c]"]:hover,
+.admin-li [class*="bg-[#1FA184]"]:hover { background-color: hsl(var(--li-infra)); }
+.admin-li [class*="border-[#187B65]"]:not([class*=":border-[#187B65]"]) { border-color: hsl(var(--li-infra)); }
+.admin-li [class*="hover:border-[#187B65]"]:hover { border-color: hsl(var(--li-infra)); }
+.admin-li [class*="focus:border-[#187B65]"]:focus { border-color: hsl(var(--li-infra)); }
+.admin-li [class*="focus:ring-[#187B65]"]:focus { --tw-ring-color: hsl(var(--li-infra)); }
+
+/* Legacy navy surfaces & borders */
+.admin-li [class*="bg-[#102B2A]"]:not([class*=":bg-[#102B2A]"]) { background-color: hsl(var(--li-graphite)); }
+.admin-li [class*=":bg-[#102B2A]"]:hover { background-color: hsl(var(--li-graphite)); }
+.admin-li [class*="border-[#102B2A]"] { border-color: hsl(var(--li-carbon)); }
+
+/* Legacy dark panel backgrounds */
+.admin-li [class*="bg-[#051511]"],
+.admin-li [class*="bg-[#0a2b1e]"],
+.admin-li [class*="bg-[#06251b]"],
+.admin-li [class*="bg-[#0c3b24]"] { background-color: hsl(var(--li-carbon)); }
+.admin-li [class*="bg-[#0a3020]"]:not([class*=":bg-[#0a3020]"]) { background-color: hsl(var(--li-carbon)); }
+.admin-li [class*=":bg-[#0a3020]"]:hover { background-color: hsl(var(--li-carbon)); }
+
+/* Legacy light surfaces */
+.admin-li [class*="bg-[#f4f7f5]"]:not([class*=":bg-[#f4f7f5]"]),
+.admin-li [class*="bg-[#f6f8f7]"],
+.admin-li [class*="bg-[#f6f9f8]"],
+.admin-li [class*="bg-[#eef4f0]"]:not([class*=":bg-[#eef4f0]"]),
+.admin-li [class*="bg-[#eef6f2]"] { background-color: hsl(var(--li-cloud)); }
+.admin-li [class*=":bg-[#f4f7f5]"]:hover,
+.admin-li [class*=":bg-[#eef4f0]"]:hover { background-color: hsl(var(--li-cloud)); }
+
+/* Legacy mint & gold accents */
+.admin-li [class*="text-[#54D9AE]"]:not([class*=":text-[#54D9AE]"]) { color: hsl(var(--li-mint)); }
+.admin-li [class*=":text-[#54D9AE]"]:hover { color: hsl(var(--li-mint)); }
+.admin-li [class*="bg-[#54D9AE]"]:not([class*=":bg-[#54D9AE]"]) { background-color: hsl(var(--li-mint)); }
+.admin-li [class*=":bg-[#54D9AE]"]:hover { background-color: hsl(var(--li-mint)); }
+.admin-li [class*="border-[#54D9AE]"]:not([class*=":border-[#54D9AE]"]) { border-color: hsl(var(--li-mint)); }
+.admin-li [class*="focus:border-[#54D9AE]"]:focus { border-color: hsl(var(--li-mint)); }
+.admin-li [class*="text-[#e2b04a]"] { color: hsl(var(--li-amber)); }

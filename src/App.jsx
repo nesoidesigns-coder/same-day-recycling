@@ -137,6 +137,10 @@ const MoveAssistDashboard = lazyPage(() => import('./pages/MoveAssistDashboard')
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
+// Wraps admin pages that live outside AdminLayout so they inherit the same
+// Living Infrastructure compatibility layer as the Command Centre shell.
+const AdminShell = ({ children }) => <div className="admin-li">{children}</div>;
+
 const RouteFallback = () => (
   <div className="min-h-[70vh] flex items-center justify-center" role="status" aria-label="Loading page">
     <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
@@ -277,18 +281,18 @@ const AuthenticatedApp = () => {
           <Route path="/admin/seo-action" element={<AdminSeoAction />} />
           <Route path="/admin/routes" element={<AdminRoutes />} />
         </Route>
-        <Route path="/admin/pricing" element={<AdminPricing />} />
-        <Route path="/admin/analytics" element={<AdminAnalytics />} />
-        <Route path="/admin/directory" element={<AdminDirectory />} />
-        <Route path="/admin/facebook" element={<AdminFacebook />} />
-        <Route path="/admin/white-label" element={<AdminWhiteLabel />} />
-        <Route path="/admin/gallery" element={<AdminGallery />} />
-        <Route path="/admin/marketing" element={<AdminMarketing />} />
-      <Route path="/admin/marketing-command" element={<AdminMarketingCommand />} />
-        <Route path="/admin/software" element={<AdminSoftware />} />
-        <Route path="/admin/national" element={<AdminNational />} />
-        <Route path="/company" element={<CompanyDashboard />} />
-        <Route path="/finance" element={<FinanceDashboard />} />
+        <Route path="/admin/pricing" element={<AdminShell><AdminPricing /></AdminShell>} />
+        <Route path="/admin/analytics" element={<AdminShell><AdminAnalytics /></AdminShell>} />
+        <Route path="/admin/directory" element={<AdminShell><AdminDirectory /></AdminShell>} />
+        <Route path="/admin/facebook" element={<AdminShell><AdminFacebook /></AdminShell>} />
+        <Route path="/admin/white-label" element={<AdminShell><AdminWhiteLabel /></AdminShell>} />
+        <Route path="/admin/gallery" element={<AdminShell><AdminGallery /></AdminShell>} />
+        <Route path="/admin/marketing" element={<AdminShell><AdminMarketing /></AdminShell>} />
+      <Route path="/admin/marketing-command" element={<AdminShell><AdminMarketingCommand /></AdminShell>} />
+        <Route path="/admin/software" element={<AdminShell><AdminSoftware /></AdminShell>} />
+        <Route path="/admin/national" element={<AdminShell><AdminNational /></AdminShell>} />
+        <Route path="/company" element={<AdminShell><CompanyDashboard /></AdminShell>} />
+        <Route path="/finance" element={<AdminShell><FinanceDashboard /></AdminShell>} />
         <Route path="/partners" element={<PartnersDashboard />} />
         <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<RealtorDashboard />} />

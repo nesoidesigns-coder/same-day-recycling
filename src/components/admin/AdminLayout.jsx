@@ -153,7 +153,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-li-cloud">
+    <div className="admin-li min-h-screen bg-li-cloud">
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col bg-li-graphite border-r border-white/5 z-40">
         <div className="h-16 flex items-center border-b border-white/5 shrink-0">
           <Brand />
