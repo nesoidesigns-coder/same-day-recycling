@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Loader2, CheckCircle2, Send, ShieldAlert } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -11,7 +11,7 @@ import { CITIES } from "@/lib/cities";
 // code can submit — nothing is represented as confirmed service until a
 // provider accepts. Verified territories show a direct-booking shortcut.
 // Accepts ?city= and ?service= params so other forms can hand off inquiries.
-export default function NationalRequestForm() {
+export default function NationalRequestForm({ handoff }) {
   const params = new URLSearchParams(window.location.search);
   const prefillCity = (params.get("city") || "").slice(0, 120);
   const prefillProvince = REGIONS.some((r) => r.code === (params.get("province") || "").toUpperCase()) ? params.get("province").toUpperCase() : "";
@@ -26,6 +26,17 @@ export default function NationalRequestForm() {
   const [error, setError] = useState("");
 
   const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  // Handoff from the smart intake: category selection and recognized items
+  // flow into this form without duplicate data entry.
+  useEffect(() => {
+    if (!handoff) return;
+    setForm((f) => ({
+      ...f,
+      ...(handoff.service_type ? { service_type: handoff.service_type } : {}),
+      ...(handoff.items_description ? { items_description: handoff.items_description } : {}),
+    }));
+  }, [handoff]);
 
   const liveCoverage = useCoverageStatus();
   const coverage = liveCoverage.statusFor(form.city);
@@ -174,7 +185,7 @@ export default function NationalRequestForm() {
         )}
       </div>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      <button disabled={submitting} className="mt-6 w-full rounded-full bg-si-forest text-white font-bold px-7 py-4 hover:bg-si-mint hover:text-si-forest transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+      <button disabled={submitting} className="mt-6 w-full rounded-full bg-ri-amber text-ri-charcoal font-bold px-7 py-4 hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
         {submitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending…</> : <><Send className="w-5 h-5" /> Submit service request</>}
       </button>
     </form>

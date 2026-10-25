@@ -97,6 +97,14 @@
     --obs-amber: 38 88% 52%;
     --obs-cyan: 189 94% 43%;
     --obs-map-ocean: 172 30% 9%;
+    /* Living Intelligence universal design system (ri-*) — consumer-facing brand tokens */
+    --ri-forest: 165 56% 16%;    /* #123F34 deep forest green */
+    --ri-emerald: 171 72% 31%;   /* #168977 intelligent emerald */
+    --ri-mint: 157 38% 89%;      /* #D9EEE6 soft mint */
+    --ri-ivory: 80 19% 97%;      /* #F7F8F5 warm ivory */
+    --ri-amber: 39 100% 48%;     /* #F6A000 premium amber — conversion CTA */
+    --ri-charcoal: 170 27% 13%;  /* #182A27 main text */
+    --ri-slate: 159 8% 43%;      /* #657670 supporting text */
   }
 
   .dark {

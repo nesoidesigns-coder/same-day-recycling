@@ -1,21 +1,19 @@
+import { useState } from "react";
 import { useSEO } from "@/lib/seo";
-import { Globe2, ClipboardList, Search, Handshake, CalendarCheck, BadgeCheck } from "lucide-react";
+import { ClipboardList, Sparkles, Calculator, Handshake, CalendarCheck } from "lucide-react";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import NationalRequestForm from "@/components/sdr/NationalRequestForm";
+import RequestIntake from "@/components/ri/RequestIntake";
+import LocalIntelligencePanel from "@/components/ri/LocalIntelligencePanel";
+import useCoverageStatus from "@/hooks/useCoverageStatus";
 
-const DISTINCTIONS = [
-  { icon: Globe2, label: "Request submissions available nationwide" },
-  { icon: BadgeCheck, label: "Verified service territories" },
-  { icon: Search, label: "Provider matching in progress" },
-  { icon: CalendarCheck, label: "Confirmed service appointments" },
-];
-
-const STEPS = [
-  { icon: ClipboardList, title: "Submit your request", text: "From any province or territory — any city, any postal code." },
-  { icon: Search, title: "We match local providers", text: "Your request is routed to verified local recycling and removal companies." },
-  { icon: Handshake, title: "Provider confirms", text: "A provider confirms availability and pricing for your job." },
-  { icon: CalendarCheck, title: "Confirmed appointment", text: "You receive a confirmed quote and appointment. No charge before confirmation." },
+const JOURNEY = [
+  { icon: ClipboardList, title: "Describe", text: "Tell us what needs to go, in your own words — or pick a category." },
+  { icon: Sparkles, title: "Understand", text: "We recognize your items and estimate the load size." },
+  { icon: Calculator, title: "Estimate", text: "You see an indicative range up front — never a surprise." },
+  { icon: Handshake, title: "Match", text: "Your request is routed to verified local providers." },
+  { icon: CalendarCheck, title: "Book", text: "A provider confirms availability, price and arrival window." },
 ];
 
 export default function RequestService() {
@@ -25,52 +23,67 @@ export default function RequestService() {
     path: "/request-service",
   });
 
+  const params = new URLSearchParams(window.location.search);
+  const [city] = useState((params.get("city") || "").slice(0, 120));
+  const [handoff, setHandoff] = useState({});
+  const [estimate, setEstimate] = useState(null);
+  const coverage = useCoverageStatus();
+
   return (
-    <div className="bg-si-bg">
+    <div className="bg-ri-ivory min-h-screen">
       <Navbar />
 
-      <section className="bg-si-forest text-white">
-        <div className="max-w-5xl mx-auto px-4 py-14 md:py-20">
-          <div className="font-plex text-[11px] font-semibold tracking-[0.18em] text-si-mint uppercase mb-3">National Network</div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">
-            Canada's Recycling Network. One Intelligent Platform.
-          </h1>
-          <p className="mt-5 text-lg text-white/70 max-w-2xl">
-            Now accepting recycling and junk removal inquiries across Canada. Local service availability
-            and scheduling are confirmed after your request.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-2">
-            {DISTINCTIONS.map((d) => (
-              <span key={d.label} className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-3.5 py-1.5 text-xs font-bold text-white">
-                <d.icon className="w-3.5 h-3.5 text-si-mint" /> {d.label}
-              </span>
-            ))}
-          </div>
+      {/* Compact, service-first hero — the request interface starts here */}
+      <section className="max-w-6xl mx-auto px-4 pt-8 pb-6 md:pt-12">
+        <div className="font-plex text-[11px] font-semibold tracking-[0.18em] text-ri-emerald uppercase">National service network</div>
+        <h1 className="mt-2 text-3xl md:text-5xl font-bold tracking-tight leading-[1.08] text-ri-charcoal">
+          A smarter way to clear your space.
+        </h1>
+        <p className="mt-3 text-base md:text-lg text-ri-slate max-w-2xl">
+          Tell us what you need removed. Explore pricing, local options, and pickup availability in one place.
+        </p>
+      </section>
+
+      {/* Intake + contextual intelligence, side by side on desktop */}
+      <section className="max-w-6xl mx-auto px-4 pb-12 grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
+        <div className="space-y-6 min-w-0">
+          <RequestIntake
+            city={city}
+            onServiceType={(service_type) => setHandoff((h) => ({ ...h, service_type }))}
+            onFill={(items_description) => setHandoff((h) => ({ ...h, items_description }))}
+            onEstimate={setEstimate}
+          />
+          <NationalRequestForm handoff={handoff} />
+        </div>
+        <div className="lg:sticky lg:top-20">
+          <LocalIntelligencePanel
+            city={city}
+            coverage={coverage}
+            estimate={estimate}
+            serviceType={handoff.service_type}
+          />
         </div>
       </section>
 
-      <section className="max-w-3xl mx-auto px-4 py-12">
-        <NationalRequestForm />
-      </section>
-
-      <section className="bg-si-bg2 border-t border-si-line">
-        <div className="max-w-6xl mx-auto px-4 py-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-si-ink text-center">How provider matching works</h2>
-          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {STEPS.map((s, i) => (
-              <div key={s.title} className="rounded-2xl bg-white border border-si-line shadow-sm p-6">
+      {/* The customer journey */}
+      <section className="bg-white border-t border-si-line">
+        <div className="max-w-6xl mx-auto px-4 py-14">
+          <h2 className="text-2xl md:text-3xl font-bold text-ri-charcoal text-center">From describe to booked, in five steps</h2>
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {JOURNEY.map((s, i) => (
+              <div key={s.title} className="relative rounded-2xl bg-ri-ivory border border-si-line p-5">
                 <div className="flex items-center justify-between">
-                  <span className="w-10 h-10 rounded-xl bg-si-forest text-si-mint flex items-center justify-center">
+                  <span className="w-10 h-10 rounded-xl bg-ri-forest text-ri-mint flex items-center justify-center">
                     <s.icon className="w-5 h-5" />
                   </span>
-                  <span className="font-plex text-xs font-bold text-si-muted/60">0{i + 1}</span>
+                  <span className="font-plex text-xs font-bold text-ri-slate/50">0{i + 1}</span>
                 </div>
-                <div className="mt-4 font-bold text-si-ink">{s.title}</div>
-                <p className="mt-1.5 text-sm text-si-muted">{s.text}</p>
+                <div className="mt-4 font-bold text-ri-charcoal">{s.title}</div>
+                <p className="mt-1.5 text-sm text-ri-slate">{s.text}</p>
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-sm text-si-muted max-w-xl mx-auto">
+          <p className="mt-8 text-center text-sm text-ri-slate max-w-xl mx-auto">
             Request junk removal anywhere in Canada. Same-day service is subject to confirmed local
             provider availability. A verified service territory is not a confirmed appointment: a local
             contractor must accept your specific job, with your price and arrival window agreed first.
