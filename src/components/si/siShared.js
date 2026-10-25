@@ -42,7 +42,7 @@ export const SI_COLORS = {
   mint: "#22CFA7",
   mint2: "#8DDFCA",
   blue: "#4F9EC4",
-  amber: "#E8A93B",
+  amber: "#F6A000",
   other: "#9CB4AA",
 };
 

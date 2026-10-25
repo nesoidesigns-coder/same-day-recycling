@@ -37,7 +37,7 @@ export default function LocalIntelPreview({ city, locations, coverage, prices, r
             {meta && (
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold"
-                style={{ background: `${meta.color}1A`, color: "#172B26" }}
+                style={{ background: `${meta.color}1A`, color: "hsl(var(--ri-forest))" }}
               >
                 <span className="inline-block size-2 rounded-full" style={{ background: meta.color }} />
                 {meta.label}
