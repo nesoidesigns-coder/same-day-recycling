@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Info, Maximize2, Clock, X } from "lucide-react";
 
-const STATUS_COLOR = { ok: "text-emerald-600", warn: "text-amber-600", bad: "text-red-600", Verified: "text-emerald-600" };
+const STATUS_COLOR = { ok: "text-li-infra", warn: "text-li-amber", bad: "text-li-red", Verified: "text-li-infra" };
 
 export default function GaugeCard({ title, tooltip, updated, onOpen, status, children, wide }) {
   const [tipOpen, setTipOpen] = useState(false);
 
   return (
-    <div className={`relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all flex flex-col ${wide ? "sm:col-span-2 lg:col-span-1" : ""}`}>
+    <div className={`relative rounded-[14px] border border-li-steel bg-white p-5 shadow-sm hover:shadow-md hover:border-li-mint/60 transition-all flex flex-col ${wide ? "sm:col-span-2 lg:col-span-1" : ""}`}>
       <div className="flex items-start justify-between gap-2 mb-3">
-        <div className="text-sm font-bold text-slate-800 leading-snug">{title}</div>
+        <div className="text-sm font-bold text-li-carbon leading-snug">{title}</div>
         <div className="flex items-center gap-1 shrink-0">
           {tooltip && (
             <div className="relative">
@@ -43,7 +43,7 @@ export default function GaugeCard({ title, tooltip, updated, onOpen, status, chi
         </div>
       </div>
       <div className="flex-1">{children}</div>
-      <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-[11px] text-slate-500">
+      <div className="mt-3 pt-3 border-t border-li-steel/60 flex items-center justify-between gap-2 font-plex text-[11px] text-li-slate">
         <span className="flex items-center gap-1 truncate"><Clock className="w-3 h-3 shrink-0" />{updated}</span>
         {status && <span className={`font-bold shrink-0 ${STATUS_COLOR[status] || "text-slate-500"}`}>{status}</span>}
       </div>

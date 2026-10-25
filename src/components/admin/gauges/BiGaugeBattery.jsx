@@ -36,10 +36,10 @@ export default function BiGaugeBattery({ data: propData }) {
   }, [propData]);
 
   if (loading) {
-    return <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">Loading gauges…</div>;
+    return <div className="rounded-[14px] border border-li-steel bg-white p-10 text-center text-sm text-li-slate">Loading gauges…</div>;
   }
   if (!data) {
-    return <p className="rounded-2xl bg-red-50 border border-red-200 p-5 text-sm text-red-700">Could not load business intelligence for the gauges. Refresh or check System Health.</p>;
+    return <p className="rounded-[14px] bg-li-red/10 border border-li-red/40 p-5 text-sm text-li-red">Could not load business intelligence for the gauges. Refresh or check System Health.</p>;
   }
 
   const a = data.acquisition || {};
@@ -105,7 +105,7 @@ export default function BiGaugeBattery({ data: propData }) {
     <div className="space-y-5">
       {sections.map((s) => (
         <div key={s.title}>
-          <h3 className="mb-3 text-sm font-bold uppercase tracking-[0.15em] text-slate-500">{s.title}</h3>
+          <h3 className="font-plex mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-li-slate">{s.title}</h3>
           <GaugeWall gauges={s.gauges} />
         </div>
       ))}

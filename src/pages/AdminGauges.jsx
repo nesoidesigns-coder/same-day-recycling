@@ -7,10 +7,10 @@ export default function AdminGauges() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-[#102B2A] tracking-tight">Command Centre Gauges</h1>
-        <p className="mt-1 text-sm text-slate-600 max-w-2xl">
+        <h1 className="text-2xl md:text-3xl font-bold text-li-carbon tracking-tight">Command Centre Gauges</h1>
+        <p className="mt-1 text-sm text-li-slate max-w-2xl">
           All collected business data as readable gauges — real records only, from the shared calculation layer behind every dashboard.
-          Edit your targets in <Link to="/admin/analytics" className="font-bold text-[#187B65] hover:underline">Analytics</Link>.
+          Edit your targets in <Link to="/admin/analytics" className="font-bold text-li-infra hover:underline">Analytics</Link>.
         </p>
       </div>
       <BiGaugeBattery />

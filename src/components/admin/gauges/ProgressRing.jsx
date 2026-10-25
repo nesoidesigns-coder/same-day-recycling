@@ -14,12 +14,12 @@ export default function ProgressRing({ value, target, display, targetDisplay, la
   const pct = target > 0 ? (Number(value) || 0) / target * 100 : 0;
   const capped = Math.max(0, Math.min(100, pct));
   const over = pct > 100;
-  const color = over ? "#10b981" : "#06b6d4";
+  const color = over ? "#116553" : "#21C997";
 
   return (
     <div>
       <svg viewBox="0 0 120 120" className="w-full max-w-[180px] mx-auto" role="img" aria-label={`${label || "Progress"}: ${capped.toFixed(0)}% of target`}>
-        <circle cx="60" cy="60" r="50" fill="none" stroke="#e5e7eb" strokeWidth="10" />
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#E2EDE8" strokeWidth="10" />
         <circle
           cx="60"
           cy="60"

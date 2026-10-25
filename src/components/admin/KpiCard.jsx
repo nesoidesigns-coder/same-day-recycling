@@ -2,18 +2,18 @@ import { Link } from "react-router-dom";
 
 export default function KpiCard({ label, value, sub, delta, tone = "forest", href }) {
   const tones = {
-    forest: "text-[#102B2A]",
-    emerald: "text-[#187B65]",
-    amber: "text-amber-600",
-    red: "text-red-600",
+    forest: "text-li-forest",
+    emerald: "text-li-infra",
+    amber: "text-li-amber",
+    red: "text-li-red",
   };
   const body = (
-    <div className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-5 h-full hover:border-[#187B65]/50 transition-colors">
-      <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">{label}</div>
-      <div className={`mt-2 text-2xl font-bold tracking-tight ${tones[tone]}`}>{value}</div>
-      {sub && <div className="mt-1 text-xs text-slate-500">{sub}</div>}
+    <div className="rounded-[14px] bg-white border border-li-steel shadow-sm p-5 h-full hover:border-li-mint/60 transition-colors">
+      <div className="font-plex text-[11px] font-semibold uppercase tracking-[0.15em] text-li-slate">{label}</div>
+      <div className={`font-plex mt-2 text-2xl font-semibold tracking-tight tabular-nums ${tones[tone]}`}>{value}</div>
+      {sub && <div className="mt-1 text-xs text-li-slate">{sub}</div>}
       {delta !== null && delta !== undefined && (
-        <div className={`mt-2 inline-block rounded-full px-2 py-0.5 text-[11px] font-bold ${delta >= 0 ? "bg-[#187B65]/10 text-[#187B65]" : "bg-red-50 text-red-600"}`}>
+        <div className={`font-plex mt-2 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold ${delta >= 0 ? "bg-li-mint/15 text-li-forest" : "bg-li-red/10 text-li-red"}`}>
           {delta >= 0 ? "+" : ""}{delta}% vs prior period
         </div>
       )}

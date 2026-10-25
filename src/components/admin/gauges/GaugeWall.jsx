@@ -31,7 +31,7 @@ export default function GaugeWall({ gauges, cols = "sm:grid-cols-2 lg:grid-cols-
             warning={g.warning}
             display={g.display}
           />
-          {g.sub && <p className="mt-1 text-[11px] text-slate-500 text-center leading-snug">{g.sub}</p>}
+          {g.sub && <p className="font-plex mt-1 text-[11px] text-li-slate text-center leading-snug">{g.sub}</p>}
         </GaugeCard>
       ))}
     </div>

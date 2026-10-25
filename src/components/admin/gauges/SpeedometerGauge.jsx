@@ -17,7 +17,7 @@ export function speedoStatus(value, target, warning) {
   return "bad";
 }
 
-const COLORS = { ok: "#10b981", warn: "#f59e0b", bad: "#ef4444" };
+const COLORS = { ok: "#21C997", warn: "#DDA448", bad: "#C9584F" };
 const STATUS_TEXT = { ok: "On target", warn: "Needs attention", bad: "Critical" };
 
 export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%", target, warning, display }) {
@@ -41,14 +41,14 @@ export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%"
     const innerR = 62;
     const inner = { x: CX - innerR * Math.cos((tDeg * Math.PI) / 180), y: CY - innerR * Math.sin((tDeg * Math.PI) / 180) };
     marker = (
-      <line x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y} stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y} stroke="#172623" strokeWidth="2.5" strokeLinecap="round" />
     );
   }
 
   return (
     <div>
       <svg viewBox="0 0 220 132" className="w-full" role="img" aria-label={`${STATUS_TEXT[status]}: ${display || clamped} ${unit}`}>
-        <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`} fill="none" stroke="#e5e7eb" strokeWidth="14" strokeLinecap="round" />
+        <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`} fill="none" stroke="#E2EDE8" strokeWidth="14" strokeLinecap="round" />
         <path
           d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`}
           fill="none"
@@ -60,14 +60,14 @@ export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%"
           className="transition-[stroke-dashoffset] duration-700 ease-out motion-reduce:transition-none"
         />
         {marker}
-        <text x={CX} y={CY - 14} textAnchor="middle" fontSize="30" fontWeight="700" className="fill-slate-900">
+        <text x={CX} y={CY - 14} textAnchor="middle" fontSize="30" fontWeight="700" className="fill-li-carbon">
           {display != null ? display : Math.round(clamped)}
         </text>
-        <text x={CX} y={CY + 4} textAnchor="middle" fontSize="11" className="fill-slate-400" fontWeight="600">{unit}</text>
-        <text x={CX - R} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-slate-400">{min}{unit}</text>
-        <text x={CX + R} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-slate-400">{max}{unit}</text>
+        <text x={CX} y={CY + 4} textAnchor="middle" fontSize="11" className="fill-li-slate" fontWeight="600">{unit}</text>
+        <text x={CX - R} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-li-slate">{min}{unit}</text>
+        <text x={CX + R} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-li-slate">{max}{unit}</text>
         {target != null && (
-          <text x={CX} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-slate-500" fontWeight="700">target {target}{unit}</text>
+          <text x={CX} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-li-carbon" fontWeight="700">target {target}{unit}</text>
         )}
       </svg>
       <div className="mt-1 text-center text-[11px] font-semibold" style={{ color }}>
