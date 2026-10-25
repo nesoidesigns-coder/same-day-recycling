@@ -92,9 +92,15 @@ export default async function (req: Request): Promise<Response> {
 
     const user = userP.status === 'fulfilled' ? userP.value : null;
 
-    let signals = items(signalsP).filter((s) => s.created_date >= startIso);
+    // Surface rejected reads instead of silently rendering an empty feed.
+    const readErrors: Record<string, string> = {};
+    for (const [name, p] of [['signals', signalsP], ['partners', partnersP], ['pricing', pricingP]] as const) {
+      if (p.status === 'rejected') readErrors[name] = String(p.reason?.message || p.reason);
+    }
+
+    let signals = items(signalsP.value).filter((s) => s.created_date >= startIso);
     const allSignals = signals;
-    const partners = items(partnersP).filter((p) => !isTestPartner(p));
+    const partners = items(partnersP.value).filter((p) => !isTestPartner(p));
 
     // Scope filtering — exact city match only (never proximity or substring).
     if (city) {
@@ -117,7 +123,7 @@ export default async function (req: Request): Promise<Response> {
     const capacity = capacityByCity(cityPartners);
 
     // Published pricing — the authoritative pricing configuration only.
-    const priceRows = items(pricingP);
+    const priceRows = items(pricingP.value);
     const prices = priceRows[0] ? resolveCityPrices(priceRows[0]) : { ...DEFAULT_PRICES };
 
     const demandGauge = {
@@ -206,6 +212,7 @@ export default async function (req: Request): Promise<Response> {
 
     const result = {
       generated_at: new Date().toISOString(),
+      read_errors: readErrors,
       filters: { scope, province: province || 'all', city: city || 'all', category: category || 'all', window_days: days },
       gauges: {
         recorded_activity: demandGauge,
@@ -218,7 +225,6 @@ export default async function (req: Request): Promise<Response> {
       partners: { total: cityPartners.length, available: availableContractors.length, same_day: cityPartners.filter((p) => p.same_day_capable).length },
       findings,
       signal,
-      read_errors: readErrors,
       insufficient: {
         recorded_activity: activityRecords.length === 0 ? 'No recorded demand for this selection in the window yet.' : null,
         search_interest: searchRecords.length === 0 ? 'No search-intelligence records for this selection yet.' : null,

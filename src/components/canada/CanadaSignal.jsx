@@ -109,7 +109,7 @@ export default function CanadaSignal({
       </svg>
 
       {/* Central display */}
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-10 text-center">
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-8 text-center sm:px-10">
         {isLoading && !hasValue ? (
           <span className="text-sm font-semibold text-ri-slate">Reading verified data…</span>
         ) : hasValue ? (

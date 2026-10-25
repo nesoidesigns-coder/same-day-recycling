@@ -49,7 +49,7 @@ export default function CanadaSignalSection() {
   ];
 
   return (
-    <section id="canada-signal" className="rounded-[24px] border border-si-line bg-white p-6 shadow-sm md:p-10">
+    <section id="canada-signal" className="rounded-[24px] border border-si-line bg-white p-4 shadow-sm sm:p-6 md:p-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-xl">
           <h2 className="text-[26px] font-bold tracking-tight text-si-ink md:text-[34px]">
@@ -63,7 +63,7 @@ export default function CanadaSignalSection() {
           aria-label="Choose a geography"
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="rounded-full border border-si-line bg-ri-ivory px-4 py-2 text-sm font-semibold text-si-ink"
+          className="w-full max-w-full rounded-full border border-si-line bg-ri-ivory px-4 py-2 text-sm font-semibold text-si-ink sm:w-auto"
         >
           <option value="">All of Canada</option>
           {CITIES.map((c) => (
@@ -72,7 +72,7 @@ export default function CanadaSignalSection() {
         </select>
       </div>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
+      <div className="mt-6 grid gap-6 md:mt-8 md:gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
         {/* Gauge + category chips */}
         <div>
           <CanadaSignal
@@ -86,7 +86,7 @@ export default function CanadaSignalSection() {
             updatedAt={data?.generated_at}
             isLoading={feed.isLoading}
           />
-          <div className="mt-5 flex flex-wrap justify-center gap-1.5">
+          <div className="mt-4 flex flex-wrap justify-center gap-1.5">
             <button
               onClick={() => setCategory("")}
               className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${!category ? "bg-ri-forest text-white" : "bg-ri-ivory text-ri-charcoal hover:bg-ri-mint"}`}
