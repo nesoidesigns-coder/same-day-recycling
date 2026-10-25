@@ -3,6 +3,7 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import HeroBooking from "@/components/home/HeroBooking";
 import RexDiscover from "@/components/home/RexDiscover";
+import CoverageStrip from "@/components/home/CoverageStrip";
 import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
@@ -17,8 +18,8 @@ import Footer from "@/components/sdr/Footer";
 // all existing pages and routes stay intact.
 export default function Home() {
   useSEO({
-    title: "Same Day Recycling | Junk Removal & Recycling in Canada",
-    description: "Same Day Recycling connects customers with junk removal, furniture pickup, and responsible recycling services. Explore service availability and request a quote.",
+    title: "Junk Removal Across Canada | Same Day Recycling",
+    description: "Request junk, furniture, and appliance removal across Canada. Get clear estimates, explore local availability, and book with Same Day Recycling.",
     path: "/",
   });
   useStructuredData("home-faq", {
@@ -39,6 +40,7 @@ export default function Home() {
         <RexDiscover />
         <InstantQuoteFlow />
         <Services />
+        <CoverageStrip />
         <HowItWorks />
         <TransparentPricing />
         <Reviews />

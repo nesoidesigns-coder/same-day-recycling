@@ -117,7 +117,7 @@ export default function RexDiscover() {
             <div className="rex-orb w-10 h-10 shrink-0"><div className="rex-orb__core" /></div>
             <div className="flex-1">
               <div className="rounded-2xl rounded-tl-md bg-[#f4f7f5] px-4 py-3.5 text-sm leading-relaxed text-[#102B2A]">
-                Hi, I'm Rex. Whether it's an old couch that won't fit down the stairs, a garage that's gotten away from you, or a move coming up — tell me what's going on and I'll help you figure it out, one honest answer at a time.
+                Hi, I'm Rex! What do you need picked up? An old couch that won't fit down the stairs, a garage that's gotten away from you, or a move coming up — tell me what's going on and I'll help you figure it out, one honest answer at a time.
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {SUGGESTIONS.map((s) => (

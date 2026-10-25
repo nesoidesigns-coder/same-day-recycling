@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, MessageCircle, ShieldCheck, Star, Wallet } from "lucide-react";
+import { ArrowRight, MessageCircle, Phone, ShieldCheck, Star, Wallet } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { isValidPostal, normalizePostal } from "@/lib/geo";
 
@@ -39,13 +39,13 @@ export default function HeroBooking() {
       <div className="max-w-7xl mx-auto px-4 pt-10 pb-12 md:pt-16 md:pb-16 grid lg:grid-cols-2 gap-10 items-center">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full bg-[#187B65]/10 px-3 py-1 text-[11px] font-bold tracking-wide text-[#187B65] uppercase">
-            Same-day pickup options across Canada
+            Pickup options across Canada
           </span>
           <h1 className="mt-4 text-4xl sm:text-5xl font-bold tracking-tight text-[#102B2A] leading-tight">
-            Got Junk? We'll Take Care of It.
+            Need Something Gone? We Can Help.
           </h1>
           <p className="mt-4 text-lg text-slate-600 max-w-xl leading-relaxed">
-            Furniture, appliances, moving leftovers, and more. Clear prices, friendly service, and same-day pickup options across Canada.
+            Furniture, appliances, moving leftovers and more. Get a clear estimate and find pickup options in your area.
           </p>
 
           <div className="mt-7 rounded-3xl bg-white border border-slate-200 p-4 sm:p-5 max-w-xl shadow-sm">
@@ -68,7 +68,7 @@ export default function HeroBooking() {
                 onClick={check}
                 className="shrink-0 rounded-xl bg-amber-500 text-[#102B2A] font-bold px-6 py-3 hover:bg-amber-600 hover:text-white transition-colors inline-flex items-center justify-center gap-2"
               >
-                Check Pickup Options <ArrowRight className="w-4 h-4" />
+                Get My Pickup Estimate <ArrowRight className="w-4 h-4" />
               </button>
             </div>
             <p className="mt-2.5 text-xs text-slate-500">
@@ -81,6 +81,12 @@ export default function HeroBooking() {
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+            <a
+              href="tel:+16048491745"
+              className="inline-flex items-center gap-2 font-bold text-[#102B2A] hover:text-[#187B65] transition-colors"
+            >
+              <Phone className="w-4 h-4 text-[#187B65]" /> Call (604) 849-1745
+            </a>
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("rex:open"))}
               className="inline-flex items-center gap-2 font-bold text-[#187B65] hover:underline"
