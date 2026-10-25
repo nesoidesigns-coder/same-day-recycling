@@ -173,8 +173,13 @@ export default async function (req: Request): Promise<Response> {
     // only: relative search-interest indices from search-intelligence
     // records. Requests, bookings, traffic and contractor availability are
     // separate layers and are never blended into this number.
+    // A Trends index of 0 is a missing-data reading (the source returned no
+    // usable weekly volume for that keyword), not proof of zero interest.
+    // Zero-index records are excluded from every index math so a gap never
+    // drags a category or the national mean toward a false "dead market" —
+    // a category with only zero readings reports as unavailable instead.
     const indexedSearch = allSignals.filter(
-      (s) => s.demand_type === 'search_interest' && s.metric_context?.trend_index != null
+      (s) => s.demand_type === 'search_interest' && Number(s.metric_context?.trend_index) > 0
         && (s.market_categories || []).length > 0
     );
     const signalCategories = MARKET_CATEGORIES.map((key) => {
@@ -205,7 +210,8 @@ export default async function (req: Request): Promise<Response> {
     };
 
     const findings = signals
-      .filter((s) => FINDING_TYPES.includes(s.demand_type) && (s.market_categories || []).length > 0)
+      .filter((s) => FINDING_TYPES.includes(s.demand_type) && (s.market_categories || []).length > 0
+        && (s.demand_type !== 'search_interest' || Number(s.metric_context?.trend_index) > 0))
       .sort((a, b) => String(b.source_published_at || b.created_date || '').localeCompare(String(a.source_published_at || a.created_date || '')))
       .slice(0, 12)
       .map(normalizeFinding);
