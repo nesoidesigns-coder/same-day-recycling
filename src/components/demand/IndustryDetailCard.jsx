@@ -26,7 +26,7 @@ function TrendingRow({ topic }) {
 // Detail card shown when an industry segment is clicked on the gauge:
 // its top trending searches and local demand, aggregated from the connected
 // topics. Every figure keeps its basis — indices are never search counts.
-export default function IndustryDetailCard({ industry, onClose }) {
+export default function IndustryDetailCard({ industry, onClose, onSelectSubdivision }) {
   const navigate = useNavigate();
   const topics = (industry.subdivisions || []).flatMap((s) => s.topics || []);
   const trending = topics
@@ -108,10 +108,20 @@ export default function IndustryDetailCard({ industry, onClose }) {
         <button type="button" onClick={() => navigate(`/service-finder?q=${encodeURIComponent(`${industry.name} — I need help with this`)}`)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#187B65] px-5 text-sm font-bold text-white hover:bg-[#125C4E]">
           <SearchIcon className="h-4 w-4" /> Find help near you
         </button>
-        <button type="button" onClick={onClose} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-300 px-5 text-sm font-bold text-[#102B2A] hover:border-[#187B65]">
-          Explore specialties
-        </button>
       </div>
+
+      {(industry.subdivisions || []).length > 0 && (
+        <div className="mt-4">
+          <p className="text-sm font-semibold text-[#102B2A]">Explore specialties</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {industry.subdivisions.map((s) => (
+              <button key={s.slug} type="button" onClick={() => onSelectSubdivision?.(s)} className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-slate-200 px-3 text-xs font-bold text-slate-700 hover:border-[#187B65] hover:text-[#187B65]">
+                {s.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

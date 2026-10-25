@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Send, Loader2, Sparkles, Phone, ArrowRight } from "lucide-react";
+import { Send, Loader2, Sparkles, Phone, ArrowRight, MapPin } from "lucide-react";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
@@ -81,7 +81,14 @@ export default function ServiceFinder() {
       text: `That postal code identifies ${PROVINCE_NAMES[province]}, not your municipality or a confirmed service territory. Which city is the pickup in?`,
       actions: [{ label: "View coverage", to: "/coverage" }],
     };
-    return { role: "assistant", text: `Got it — ${service.label}${items}. Which city or municipality is the pickup in?` };
+    return {
+      role: "assistant",
+      text: `Got it — ${service.label}${items}. Which city or municipality is the pickup in? Tap your city below to continue.`,
+      actions: [
+        { label: "View coverage", to: "/coverage" },
+        ...CITIES.slice(0, 6).map((c) => ({ label: c.name, send: `${service.label} in ${c.name}` })),
+      ],
+    };
   };
 
   const send = async (text) => {
@@ -154,7 +161,11 @@ export default function ServiceFinder() {
                   {m.actions?.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {m.actions.map((a) =>
-                        a.href ? (
+                        a.send ? (
+                          <button key={a.label} onClick={() => send(a.send)} className="inline-flex items-center gap-1.5 rounded-full border border-[#187B65]/40 bg-white text-[#102B2A] text-xs font-bold px-3.5 py-2 hover:border-[#187B65] hover:text-[#187B65] transition-colors">
+                            <MapPin className="w-3 h-3" /> {a.label}
+                          </button>
+                        ) : a.href ? (
                           <a key={a.label} href={a.href} className="inline-flex items-center gap-1.5 rounded-full bg-brand-emerald text-market-ink text-xs font-bold px-3.5 py-2 hover:bg-[#125C4E] transition-colors">
                             <Phone className="w-3 h-3" /> {a.label}
                           </a>

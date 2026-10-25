@@ -122,7 +122,7 @@ export default function NationalDemandPanel() {
                   </div>
                 ) : industry && !subdivision ? (
                   <div className="mt-4">
-                    <IndustryDetailCard industry={industry} onClose={back} />
+                    <IndustryDetailCard industry={industry} onClose={back} onSelectSubdivision={(s) => pick("middle", s)} />
                   </div>
                 ) : (
                   <div className="mt-4 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-emerald-100/70">
