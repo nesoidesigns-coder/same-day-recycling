@@ -65,6 +65,7 @@ module.exports = {
 			mint: 'hsl(var(--brand-mint))',
 			       market: { bg: 'hsl(var(--market-bg))', surface: 'hsl(var(--market-surface))', ink: 'hsl(var(--market-ink))', muted: 'hsl(var(--market-muted))', line: 'hsl(var(--market-line))', accent: 'hsl(var(--market-accent))' },
 			obs: { bg: 'hsl(var(--obs-bg))', surface: 'hsl(var(--obs-surface))', land: 'hsl(var(--obs-land))', ink: 'hsl(var(--obs-ink))', muted: 'hsl(var(--obs-muted))', line: 'hsl(var(--obs-line))', mint: 'hsl(var(--obs-mint))', amber: 'hsl(var(--obs-amber))', cyan: 'hsl(var(--obs-cyan))' },
+			si: { bg: 'hsl(var(--si-bg))', bg2: 'hsl(var(--si-bg2))', forest: 'hsl(var(--si-forest))', mint: 'hsl(var(--si-mint))', mint2: 'hsl(var(--si-mint2))', ink: 'hsl(var(--si-ink))', muted: 'hsl(var(--si-muted))', line: 'hsl(var(--si-line))', amber: 'hsl(var(--si-amber))', blue: 'hsl(var(--si-blue))' },
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',

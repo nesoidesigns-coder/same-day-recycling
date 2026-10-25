@@ -72,6 +72,17 @@
     --li-amber: 35 68% 53%;
     --li-red: 5 51% 51%;
     --font-plex: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Service Intelligence homepage prototype — light consumer palette */
+    --si-bg: 150 17% 98%;
+    --si-bg2: 150 23% 95%;
+    --si-forest: 165 54% 16%;
+    --si-mint: 166 72% 47%;
+    --si-mint2: 165 56% 71%;
+    --si-ink: 165 30% 13%;
+    --si-muted: 156 9% 42%;
+    --si-line: 150 21% 89%;
+    --si-amber: 38 79% 57%;
+    --si-blue: 200 43% 54%;
     /* Canadian Service Observatory — midnight graphite canvas (constant) */
     --obs-bg: 168 48% 7%;
     --obs-surface: 167 36% 12%;
