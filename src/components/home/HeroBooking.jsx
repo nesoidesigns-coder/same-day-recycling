@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, MessageCircle, ShieldCheck, Star, Wallet } from "lucide-react";
 import { Image } from "@/components/ui/image";
@@ -11,6 +11,20 @@ const HERO_PHOTO =
 // guided booking flow below (#book) through the hero-booking:start event.
 export default function HeroBooking() {
   const [postal, setPostal] = useState("");
+  // Starting price comes from the one authoritative pricing configuration —
+  // never a hard-coded claim.
+  const [fromPrice, setFromPrice] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    base44.entities.PricingSettings.list({}, { limit: 200 })
+      .then((res) => {
+        const rows = Array.isArray(res) ? res : res?.items || [];
+        const mins = rows.map((r) => r.minimum_pickup).filter((n) => typeof n === "number");
+        if (alive && mins.length) setFromPrice(Math.min(...mins));
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const check = () => {
     const norm = normalizePostal(postal);
@@ -58,7 +72,7 @@ export default function HeroBooking() {
               </button>
             </div>
             <p className="mt-2.5 text-xs text-slate-500">
-              Free quotes · From $149 in covered cities · Price approved by you before any work
+              Free quotes{fromPrice ? ` · Pickups from $${fromPrice}` : ""} · Price approved by you before any work
             </p>
             <p className="mt-1.5 text-xs text-slate-500 flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />
