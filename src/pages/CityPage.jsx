@@ -338,6 +338,23 @@ export default function CityPage() {
         <div className="mt-8">
           <CityRulesBlock city={city.name} province={city.province} />
         </div>
+        <div className="mt-10">
+          <h3 className="text-2xl font-bold tracking-tight text-[#102B2A]">How junk pickup works in {city.name}</h3>
+          <ol className="mt-5 space-y-4">
+            <li className="flex gap-3">
+              <span className="shrink-0 w-7 h-7 rounded-full bg-[#187B65] text-white font-bold text-sm flex items-center justify-center">1</span>
+              <p className="text-slate-600"><span className="font-bold text-[#102B2A]">Send your items.</span> List what needs to go — or send a photo — and get an upfront estimate based on truck space. Everything is sorted after pickup: metals, electronics and reusable pieces are separated from true residual waste before any disposal.</p>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 w-7 h-7 rounded-full bg-[#187B65] text-white font-bold text-sm flex items-center justify-center">2</span>
+              <p className="text-slate-600"><span className="font-bold text-[#102B2A]">Prepare for the crew.</span> If you can, stage items at the curb or driveway and keep the access path clear — curbside loads qualify for a discount. Let us know about stairs, elevators or parking so the crew brings the right equipment.</p>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 w-7 h-7 rounded-full bg-[#187B65] text-white font-bold text-sm flex items-center justify-center">3</span>
+              <p className="text-slate-600"><span className="font-bold text-[#102B2A]">Approve, then relax.</span> The crew confirms the final price on arrival before lifting anything, does all the carrying and loading, and you receive a receipt showing how your load was sorted and where it went.</p>
+            </li>
+          </ol>
+        </div>
         <div className="mt-8 space-y-3">
           {(isActive ? ACTIVE_FAQ(city) : OFFBOARD_FAQ(city)).map((f) => (
             <details key={f.q} className="rounded-2xl border border-slate-200 bg-white p-5" open={false}>
