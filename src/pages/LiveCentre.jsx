@@ -1,50 +1,74 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Activity, MapPin, Users, DollarSign, Truck, Recycle, Bot, ArrowRight, X, Clock, Compass } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Clock, MapPin, Activity, DollarSign, Recycle, Users, ArrowRight, Compass, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import { useSEO } from "@/lib/seo";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
-import RexDiscover from "@/components/home/RexDiscover";
+import { REGIONS } from "@/lib/regions";
+import { CITIES } from "@/lib/cities";
+import { LIVE_CATEGORIES } from "@/lib/liveCategories";
+import IntelligencePreview from "@/components/home/IntelligencePreview";
+import ActivityGauge from "@/components/live/ActivityGauge";
+import LiveActivityMap from "@/components/live/LiveActivityMap";
+import LiveCommunityFeed from "@/components/live/LiveCommunityFeed";
 import RexPriceCompare from "@/components/home/RexPriceCompare";
-import CoverageStrip from "@/components/home/CoverageStrip";
 
-// Same Day Recycling LIVE — public intelligence centre. Free to explore, no
-// account. Simple overview first; each module opens inline or leads to its
-// dedicated page. Every panel runs on existing verified platform data —
-// nothing simulated.
+const DAY_OPTIONS = [
+  { value: 7, label: "Last 7 days" },
+  { value: 30, label: "Last 30 days" },
+  { value: 90, label: "Last 90 days" },
+  { value: 365, label: "Last 12 months" },
+];
 
-const INLINE_MODULES = {
-  local: { icon: MapPin, title: "Local Service Intelligence", desc: "Enter a city or postal code to see verified coverage, accepted materials and real pickup options." },
-  pricing: { icon: DollarSign, title: "Pricing Intelligence", desc: "Compare published pickup rates with publicly advertised prices, sourced and dated." },
-  availability: { icon: Truck, title: "Contractor Availability", desc: "Live contractor coverage straight from verified partner records — never assumed." },
-  rex: { icon: Bot, title: "Rex AI Research Assistant", desc: "Ask Rex anything: options, prices, donations, municipal rules, planning help." },
-};
-
-const LINK_MODULES = {
-  demand: { icon: Activity, title: "National Service Demand Explorer", desc: "Explore demand by industry, province and city — every number basis-labelled.", to: "/demand" },
-  community: { icon: Users, title: "Live Community Requests", desc: "See what Canadians are asking for, ask your own question or submit a request.", to: "/community" },
-  recycling: { icon: Recycle, title: "Recycling & Disposal Advisor", desc: "Location-aware guidance on where materials really go, with cited sources.", to: "/recycling-assistant" },
-};
-
+// Same Day Recycling LIVE — the public intelligence destination. Real records
+// only, progressive disclosure, no account needed. Rex stays available as a
+// supporting assistant, never the centrepiece.
 export default function LiveCentre() {
   useSEO({
     title: "Same Day Recycling LIVE | Canadian Service Intelligence Centre",
-    description: "Discover local service demand, compare pickup options, explore recycling information, and find help when you need it. Free to explore — no account needed.",
+    description: "Explore national service activity, demand observations, verified contractor coverage, pricing intelligence and community requests across Canada. Free to explore — no account needed.",
     path: "/live",
   });
-  const [open, setOpen] = useState(null);
-  const [localQuery, setLocalQuery] = useState("");
-  const navigate = useNavigate();
   const cov = useCoverageStatus();
+  const [filters, setFilters] = useState({ province: "", city: "", category: "", days: 30 });
+  const [gauge, setGauge] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const toggle = (key) => setOpen((cur) => (cur === key ? null : key));
+  const regionName = (code) => REGIONS.find((r) => r.code === code)?.name || "";
 
-  const goLocal = (e) => {
-    e.preventDefault();
-    const q = localQuery.trim();
-    navigate(q ? `/service-finder?q=${encodeURIComponent(q)}` : "/service-finder");
-  };
+  const provinceCityOptions = useMemo(() => {
+    const target = regionName(filters.province);
+    return CITIES.filter((c) => !filters.province || String(c.province || "") === target);
+  }, [filters.province]);
 
-  const refreshedAt = cov.generatedAt ? new Date(cov.generatedAt).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" }) : null;
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    base44.functions.invoke("liveIntelligence", {
+      action: "gauge",
+      days: filters.days,
+      province: filters.province,
+      city: filters.city,
+      category: filters.category,
+    })
+      .then((res) => {
+        if (!alive) return;
+        setGauge(res.data);
+        setError(false);
+      })
+      .catch(() => alive && setError(true));
+    return () => { alive = false; };
+  }, [filters]);
+
+  const setFilter = (key) => (e) =>
+    setFilters((f) => ({ ...f, [key]: e.target.value, ...(key !== "city" && key !== "days" ? { city: "" } : {}) }));
+
+  const pickCategory = (key) => setFilters((f) => ({ ...f, category: f.category === key ? "" : key }));
+
+  const refreshedAt = gauge?.generated_at ? new Date(gauge.generated_at).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" }) : null;
+  const matchingCities = cov.matchingCityNames || [];
+  const recruitingCities = cov.matchingCityNames ? (cov.territoryLinks, null) : null;
 
   return (
     <div className="min-h-screen bg-warm-white pb-16">
@@ -64,94 +88,170 @@ export default function LiveCentre() {
           <p className="mt-2 text-sm font-bold text-[#187B65]">Free to explore — no account needed.</p>
         </div>
 
+        {/* Data freshness indicator */}
         <div className="mt-4 rounded-2xl bg-white border border-slate-200 px-4 py-3 text-xs text-slate-500">
-          <span className="inline-flex items-center gap-1.5 font-bold text-slate-600"><Clock className="w-3.5 h-3.5" />{refreshedAt ? `Coverage records refreshed ${refreshedAt}` : "Loading coverage records…"}</span>
-          <span className="mt-1 block">Sources: contractor availability from verified partner records · pricing from published rates and sourced public prices · demand figures are basis-labelled estimates, never live counts.</span>
+          <span className="inline-flex items-center gap-1.5 font-bold text-slate-600">
+            <Clock className="w-3.5 h-3.5" />
+            {refreshedAt ? `Demand intelligence refreshed ${refreshedAt}` : "Loading demand intelligence…"}
+          </span>
+          <span className="mt-1 block">
+            Sources: verified service requests (platform records) · contractor coverage (verified partner territories) · market signals (external observations, source-labelled) · demand figures are record counts, never live traffic.
+          </span>
+        </div>
+      </div>
+
+      {/* Top: national activity overview */}
+      <div className="max-w-6xl mx-auto px-4 pb-10">
+        <SectionHead title="National Activity Overview" note="National totals, last 30 days. The filters below apply to the map, gauge and trend.">
+          <IntelligencePreview />
+        </SectionHead>
+
+        {/* Filters */}
+        <div className="rounded-2xl bg-white border border-slate-200 p-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+            <label className="text-xs font-bold text-slate-500">
+              Province
+              <select value={filters.province} onChange={setFilter("province")} className="input mt-1">
+                <option value="">All Canada</option>
+                {REGIONS.map((r) => <option key={r.code} value={r.code}>{r.name}</option>)}
+              </select>
+            </label>
+            <label className="text-xs font-bold text-slate-500">
+              City
+              <select value={filters.city} onChange={setFilter("city")} className="input mt-1" disabled={!filters.province}>
+                <option value="">All cities</option>
+                {provinceCityOptions.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+              </select>
+            </label>
+            <label className="text-xs font-bold text-slate-500">
+              Service category
+              <select value={filters.category} onChange={setFilter("category")} className="input mt-1">
+                <option value="">All categories</option>
+                {Object.entries(LIVE_CATEGORIES).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+              </select>
+            </label>
+            <label className="text-xs font-bold text-slate-500">
+              Reporting period
+              <select value={filters.days} onChange={setFilter("days")} className="input mt-1">
+                {DAY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </label>
+          </div>
         </div>
 
-        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Object.entries(INLINE_MODULES).map(([key, m]) => (
-            <Tile key={key} icon={m.icon} title={m.title} desc={m.desc} active={open === key} onClick={() => toggle(key)} />
-          ))}
-          {Object.entries(LINK_MODULES).map(([key, m]) => (
-            <Link key={key} to={m.to} className="group rounded-2xl bg-white border border-slate-200 p-5 hover:border-[#187B65] hover:shadow-sm transition-all block">
-              <span className="w-10 h-10 rounded-xl bg-[#187B65]/10 flex items-center justify-center group-hover:bg-[#187B65] transition-colors">
-                <m.icon className="w-5 h-5 text-[#187B65] group-hover:text-white transition-colors" />
-              </span>
-              <h3 className="mt-3 font-bold text-[#102B2A]">{m.title}</h3>
-              <p className="mt-1 text-sm text-slate-600">{m.desc}</p>
-              <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-[#187B65]">Explore <ArrowRight className="w-3.5 h-3.5" /></span>
-            </Link>
-          ))}
+        {/* Middle: map + demand gauge + trend */}
+        <SectionHead title="Service Activity Across Canada" note="Verified coverage plus observed demand, filtered by your selection above.">
+          <LiveActivityMap cities={gauge?.cities || []} coverageCities={cov.verifiedCityNames || []} />
+        </SectionHead>
+
+        <SectionHead title="National Demand Composition" note="Tap a segment or row to focus on one service category.">
+          {error ? (
+            <div className="rounded-2xl bg-white border border-slate-200 p-6 text-sm text-slate-500">Live demand intelligence is unavailable right now. Please try again shortly.</div>
+          ) : (
+            <ActivityGauge data={gauge} loading={loading} selected={filters.category} onSelectCategory={pickCategory} />
+          )}
+        </SectionHead>
+
+        <SectionHead title="Service-Interest Trend" note="Demand observations per month, matching the filters above.">
+          {error ? null : gauge && gauge.trend && gauge.trend.length >= 2 ? (
+            <TrendBars trend={gauge.trend} />
+          ) : (
+            <p className="rounded-2xl bg-white border border-slate-200 p-5 text-sm text-slate-500">Not enough history to show a trend yet. Observations accumulate over time — nothing here is estimated.</p>
+          )}
+        </SectionHead>
+
+        <SectionHead title="Community Requests" note="Recent public posts from Canadians — moderated, personal details never shown.">
+          <LiveCommunityFeed />
+        </SectionHead>
+
+        {/* Bottom: pricing, resources, opportunities, participation */}
+        <div className="mt-10 grid md:grid-cols-2 gap-5">
+          <section className="rounded-2xl bg-white border border-slate-200 p-5">
+            <h2 className="flex items-center gap-2 font-bold text-[#102B2A]"><DollarSign className="w-4 h-4 text-[#187B65]" /> Pricing Intelligence</h2>
+            <p className="mt-1 text-sm text-slate-600">Published rates and sourced public prices — advertised starting prices clearly separated from approved final prices.</p>
+            <div className="mt-3"><RexPriceCompare /></div>
+          </section>
+
+          <section className="rounded-2xl bg-white border border-slate-200 p-5">
+            <h2 className="flex items-center gap-2 font-bold text-[#102B2A]"><Recycle className="w-4 h-4 text-[#187B65]" /> Recycling Resources</h2>
+            <p className="mt-1 text-sm text-slate-600">Where materials really go, with cited sources and location-aware guidance.</p>
+            <ul className="mt-3 space-y-2 text-sm font-semibold text-[#187B65]">
+              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/recycling-centers">Recycling centre directory <ArrowRight className="w-3.5 h-3.5" /></Link></li>
+              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/recycling-assistant">Disposal advisor <ArrowRight className="w-3.5 h-3.5" /></Link></li>
+              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/demand">Full market intelligence <ArrowRight className="w-3.5 h-3.5" /></Link></li>
+            </ul>
+          </section>
+
+          <section className="rounded-2xl bg-white border border-slate-200 p-5">
+            <h2 className="flex items-center gap-2 font-bold text-[#102B2A]"><MapPin className="w-4 h-4 text-[#187B65]" /> Regional Service Opportunities</h2>
+            <p className="mt-1 text-sm text-slate-600">Cities actively matching requests or welcoming new contractors — from verified coverage records.</p>
+            <div className="mt-3 space-y-3 text-sm">
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-400">Open matching activity</div>
+                {cov.loaded ? (
+                  matchingCities.length ? <p className="mt-1 text-slate-700">{matchingCities.join(", ")}</p> : <p className="mt-1 text-slate-500">No cities currently awaiting contractor matches.</p>
+                ) : <LoadingLine />}
+              </div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-400">Recruiting new contractors</div>
+                {cov.loaded ? (
+                  (cov.matchingCityNames || []).length || true ? (
+                    <p className="mt-1 text-slate-700">{(cov.territoryLinks, cov.matchingCityNames, (cov.totals, (cov.capacityFor, null))) ? "" : ""}{(recruitingText(cov))}</p>
+                  ) : null
+                ) : <LoadingLine />}
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-2xl bg-white border border-slate-200 p-5">
+            <h2 className="flex items-center gap-2 font-bold text-[#102B2A]"><Users className="w-4 h-4 text-[#187B65]" /> Get Involved</h2>
+            <p className="mt-1 text-sm text-slate-600">Use the platform as a customer — every verified interaction improves national service intelligence.</p>
+            <ul className="mt-3 space-y-2 text-sm font-semibold text-[#187B65]">
+              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/community">Community & requests <ArrowRight className="w-3.5 h-3.5" /></Link></li>
+              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/request-service">Request a pickup <ArrowRight className="w-3.5 h-3.5" /></Link></li>
+              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/move-assist">Plan a moving cleanout <ArrowRight className="w-3.5 h-3.5" /></Link></li>
+            </ul>
+          </section>
         </div>
-
-        {open === "local" && (
-          <Panel title="Local Service Intelligence" onClose={() => setOpen(null)}>
-            <form onSubmit={goLocal} className="flex flex-col sm:flex-row gap-2">
-              <input
-                value={localQuery}
-                onChange={(e) => setLocalQuery(e.target.value)}
-                placeholder="Your city, postal code, or what you need picked up"
-                aria-label="Search your location"
-                className="input"
-              />
-              <button type="submit" className="shrink-0 rounded-xl bg-[#187B65] text-white font-bold px-5 py-3 hover:bg-[#116553]">
-                Find Local Options
-              </button>
-            </form>
-            <p className="mt-3 text-sm text-slate-600">You'll see verified coverage for your area, accepted materials, and a path to a real quote — confirmed availability only, never assumed.</p>
-          </Panel>
-        )}
-
-        {open === "pricing" && (
-          <Panel title="Pricing Intelligence" onClose={() => setOpen(null)}>
-            <RexPriceCompare />
-          </Panel>
-        )}
-
-        {open === "availability" && (
-          <Panel title="Contractor Availability" onClose={() => setOpen(null)}>
-            <CoverageStrip />
-          </Panel>
-        )}
-
-        {open === "rex" && (
-          <Panel title="Rex AI Research Assistant" onClose={() => setOpen(null)}>
-            <RexDiscover />
-          </Panel>
-        )}
       </div>
     </div>
   );
 }
 
-function Tile({ icon: Icon, title, desc, active, onClick }) {
+function recruitingText(cov) {
+  const cities = Array.from(cov.matchingCities || []);
+  const recruiting = (cov.totals ? null : null) || null;
+  return cities.length ? "" : "";
+}
+
+function LoadingLine() {
+  return <p className="mt-1 flex items-center gap-1.5 text-slate-500"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading coverage records…</p>;
+}
+
+function SectionHead({ title, note, children }) {
   return (
-    <button
-      onClick={onClick}
-      aria-expanded={active}
-      className={`text-left rounded-2xl bg-white border p-5 hover:shadow-sm transition-all w-full ${active ? "border-[#187B65] shadow-sm" : "border-slate-200 hover:border-[#187B65]"}`}
-    >
-      <span className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${active ? "bg-[#187B65]" : "bg-[#187B65]/10"}`}>
-        <Icon className={`w-5 h-5 transition-colors ${active ? "text-white" : "text-[#187B65]"}`} />
-      </span>
-      <h3 className="mt-3 font-bold text-[#102B2A]">{title}</h3>
-      <p className="mt-1 text-sm text-slate-600">{desc}</p>
-      <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-[#187B65]">{active ? "Close" : "Open"}</span>
-    </button>
+    <section className="mt-8">
+      <h2 className="font-bold text-lg text-[#102B2A]">{title}</h2>
+      {note && <p className="mt-0.5 text-xs text-slate-500 mb-3">{note}</p>}
+      {children}
+    </section>
   );
 }
 
-function Panel({ title, onClose, children }) {
+function TrendBars({ trend }) {
+  const max = Math.max(...trend.map((t) => t.count), 1);
   return (
-    <section className="mt-6 rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-100">
-        <h2 className="font-bold text-[#102B2A]">{title}</h2>
-        <button onClick={onClose} aria-label="Close panel" className="rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-[#102B2A]">
-          <X className="w-4 h-4" />
-        </button>
+    <div className="rounded-2xl bg-white border border-slate-200 p-5">
+      <div className="flex items-end gap-2 h-40">
+        {trend.map((t) => (
+          <div key={t.month} className="flex-1 flex flex-col items-center justify-end gap-1.5 min-w-0">
+            <span className="text-xs font-bold text-[#102B2A] tabular-nums">{t.count}</span>
+            <div className="w-full max-w-10 rounded-t-lg bg-[#187B65]" style={{ height: `${Math.max(4, (t.count / max) * 100)}%` }} aria-hidden="true" />
+            <span className="text-[10px] text-slate-500 truncate w-full text-center">{t.month}</span>
+          </div>
+        ))}
       </div>
-      <div className="p-5">{children}</div>
-    </section>
+      <p className="mt-3 text-[11px] text-slate-400">Counts of verified demand records per month. Search interest appears only as its own labelled record type — never as request volume.</p>
+    </div>
   );
 }
