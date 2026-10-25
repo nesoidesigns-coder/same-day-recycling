@@ -1,43 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Recycle, ChevronDown, MapPin } from "lucide-react";
-import { REGIONS } from "@/lib/regions";
+import { Menu, X, Recycle, Phone } from "lucide-react";
 
+// Simple consumer navigation: the five things a customer needs to find.
 const primaryLinks = [
   { label: "Services", to: "/#services" },
   { label: "Pricing", to: "/pricing" },
+  { label: "Locations", to: "/coverage" },
   { label: "How It Works", to: "/#how-it-works" },
-  { label: "Service Area", to: "/#service-area" },
-  { label: "Business Solutions", to: "/subscriptions" },
-  { label: "Community", to: "/community" },
-  { label: "Recycling OS", to: "/software" },
-  { label: "Contact", to: "/contact" },
-];
-
-const moreLinks = [
-  { label: "Request Service (Nationwide)", to: "/request-service" },
-  { label: "Track Your Request", to: "/request-status" },
-  { label: "Explore Services", to: "/services" },
-  { label: "Service Finder", to: "/service-finder" },
-  { label: "AI Booking Center", to: "/ai-booking" },
-  { label: "Demand Intelligence", to: "/demand" },
-  { label: "Recycling Directory", to: "/recycling" },
-  { label: "Recycling Assistant", to: "/recycling-assistant" },
-  { label: "Software OS", to: "/software" },
-  { label: "Realtors", to: "/realtors" },
-  { label: "Contractors", to: "/contractors" },
-  { label: "Partner Onboarding", to: "/contractor-onboarding" },
-  { label: "Coverage", to: "/coverage" },
-  { label: "Free Metal Pickup", to: "/free-metal-pickup" },
-  { label: "About", to: "/about" },
-  { label: "White Label", to: "/white-label" },
-  { label: "Gallery", to: "/gallery" },
-  { label: "FAQ", to: "/#faq" },
+  { label: "For Businesses", to: "/subscriptions" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100">
@@ -48,55 +23,16 @@ export default function Navbar() {
           </span>
           <span className="leading-tight">
             <span className="block text-lg tracking-tight">Same Day Recycling</span>
-            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-500">Canada's Intelligent Recycling & Removal Network. Powered by Recycling OS.</span>
+            <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-slate-500">Friendly junk removal & recycling across Canada</span>
           </span>
         </Link>
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-7">
           {primaryLinks.map((l) => (
             <Link key={l.to} to={l.to} className="text-sm font-medium text-slate-700 hover:text-[#187B65] transition-colors">
               {l.label}
             </Link>
           ))}
-          <div className="relative">
-            <button
-              onClick={() => setMoreOpen(!moreOpen)}
-              className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-[#187B65] transition-colors"
-            >
-              More <ChevronDown className={`w-4 h-4 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
-            </button>
-            {moreOpen && (
-              <div className="absolute right-0 top-full mt-2 w-72 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50">
-                {moreLinks.map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    onClick={() => setMoreOpen(false)}
-                    className="block px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#f4f7f5] hover:text-[#187B65] transition-colors"
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-                <div className="mt-2 pt-3 border-t border-slate-100 px-4 pb-1">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">
-                    <MapPin className="w-3 h-3 text-[#187B65]" /> Service coverage
-                  </div>
-                  <div className="grid grid-cols-2 gap-1">
-                    {REGIONS.map((r) => (
-                      <Link
-                        key={r.code}
-                        to={`/region/${r.code}`}
-                        onClick={() => setMoreOpen(false)}
-                        className="rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-600 hover:bg-[#f4f7f5] hover:text-[#187B65] transition-colors"
-                      >
-                        {r.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          <Link to="/#book" className="rounded-full bg-[#187B65] text-white font-bold px-5 py-2.5 text-sm shadow-sm shadow-[#187B65]/30 hover:bg-[#125C4E] hover:shadow-md transition-all">
+          <Link to="/#book" className="rounded-full bg-amber-500 text-[#102B2A] font-bold px-5 py-2.5 text-sm shadow-sm hover:bg-amber-600 hover:text-white transition-all">
             Get a Free Quote
           </Link>
         </div>
@@ -111,36 +47,12 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link to="/#book" onClick={() => setOpen(false)} className="rounded-full bg-[#187B65] text-white font-bold px-5 py-3 text-sm text-center shadow-sm shadow-[#187B65]/30">
+          <Link to="/#book" onClick={() => setOpen(false)} className="rounded-full bg-amber-500 text-[#102B2A] font-bold px-5 py-3 text-sm text-center shadow-sm">
             Get a Free Quote
           </Link>
-          <div className="pt-2 border-t border-slate-100">
-            <div className="text-xs font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">More</div>
-            <div className="grid grid-cols-2 gap-2">
-              {moreLinks.map((l) => (
-                <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-medium text-slate-600 py-1.5 rounded-lg px-2 hover:bg-[#f4f7f5]">
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-            <div className="mt-3 pt-3 border-t border-slate-100">
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-[0.15em] text-slate-500 uppercase mb-2">
-                <MapPin className="w-3 h-3 text-[#187B65]" /> Service Coverage
-              </div>
-              <div className="grid grid-cols-2 gap-1">
-                {REGIONS.map((r) => (
-                  <Link
-                    key={r.code}
-                    to={`/region/${r.code}`}
-                    onClick={() => setOpen(false)}
-                    className="text-xs font-semibold text-slate-600 py-1.5 rounded-lg px-2 hover:bg-[#f4f7f5] hover:text-[#187B65] transition-colors"
-                  >
-                    {r.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
+          <a href="tel:+16048491745" className="flex items-center gap-2 text-sm font-bold text-[#102B2A] py-1">
+            <Phone className="w-4 h-4 text-[#187B65]" /> (604) 849-1745
+          </a>
         </div>
       )}
     </nav>

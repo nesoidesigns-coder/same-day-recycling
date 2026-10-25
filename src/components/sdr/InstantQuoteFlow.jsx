@@ -25,8 +25,8 @@ import { pickupLocationActions, pickupBookingFields, getPickupLocation } from "@
 
 const T = {
   en: {
-    tag: "Canada's intelligent removal & recycling network",
-    title: "Junk Removal. Recycling. Intelligent Service Across Canada.",
+    tag: "Same-day pickup across Canada",
+    title: "Tell us what you need gone. We'll handle the rest.",
     sub: "Your next pickup starts here. Enter your postal code, see a transparent estimate before you book — and Rex is with you the whole way.",
     postal: "Your postal code",
     postalPh: "e.g. V6B 1A1",
@@ -66,8 +66,8 @@ const T = {
     },
   },
   fr: {
-    tag: "Le réseau intelligent de débarras et de recyclage du Canada",
-    title: "Débarras. Recyclage. Un service intelligent partout au Canada.",
+    tag: "Collecte le jour même partout au Canada",
+    title: "Dites-nous quoi enlever. On s'occupe du reste.",
     sub: "Votre prochaine collecte commence ici. Entrez votre code postal, consultez une estimation transparente avant de réserver — et Rex vous accompagne à chaque étape.",
     postal: "Votre code postal",
     postalPh: "p. ex. V6B 1A1",
@@ -238,6 +238,20 @@ export default function InstantQuoteFlow() {
     return () => window.removeEventListener("pickup:continue", continuePickup);
   }, [location?.pinConfirmed, location?.selectionId, postalRaw, city, territory, lang]);
 
+  // Hero "Check Pickup Options" handoff: prefill the postal code and let the
+  // customer continue from step one. No business logic changes.
+  useEffect(() => {
+    const start = (e) => {
+      const postal = String(e.detail?.postal || "").toUpperCase();
+      if (isValidPostal(normalizePostal(postal))) {
+        setPostalRaw(postal);
+        setFsa(normalizePostal(postal));
+      }
+    };
+    window.addEventListener("hero-booking:start", start);
+    return () => window.removeEventListener("hero-booking:start", start);
+  }, []);
+
   const getEstimate = async () => {
     if (!selected.length) { setError(t.errors.estimate); return; }
     setError("");
@@ -296,13 +310,13 @@ export default function InstantQuoteFlow() {
   const tax = TAX_RATES[province] || null;
 
   return (
-    <section id="book" className="relative bg-market-bg text-market-ink">
+    <section id="book" className="relative bg-white text-[#102B2A]">
       <div className="mx-auto grid max-w-screen-2xl items-start gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.7fr)] lg:gap-7 lg:py-6">
       <div className="min-w-0">
         <PickupHeroHeading lang={lang} onLanguage={setLang} step={step} copy={t} />
         <div className="mt-4">
           {step === 0 && (
-            <div className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
+            <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4 sm:p-5">
               <AddressSearch lang={lang} onSelect={onAddressSelect} />
               <PickupSessionSummary lang={lang} editable />
               <div className="grid grid-cols-2 gap-3">
@@ -324,7 +338,7 @@ export default function InstantQuoteFlow() {
                   <span className="block text-sm font-semibold mb-2">{t.pickTerritory}</span>
                   <div className="flex gap-2">
                     {["NT", "NU"].map((c) => (
-                      <button key={c} onClick={() => setTerritory(c)} className={`rounded-full border px-4 py-2 text-sm font-bold transition-colors ${territory === c ? "bg-brand-emerald text-market-ink border-[#187B65]" : "border-white/25 hover:border-[#187B65]"}`}>
+                      <button key={c} onClick={() => setTerritory(c)} className={`rounded-full border px-4 py-2 text-sm font-bold transition-colors ${territory === c ? "bg-brand-emerald text-white border-[#187B65]" : "border-slate-300 text-[#102B2A] hover:border-[#187B65]"}`}>
                         {networkRegionName({ code: c, name: c === "NT" ? "Northwest Territories" : "Nunavut" }, lang)}
                       </button>
                     ))}
@@ -338,23 +352,23 @@ export default function InstantQuoteFlow() {
               </label>
               </div>
               {postalOk && <PickupCoverageNotice city={city} lang={lang} dark />}
-              {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
-              <button onClick={goPostal} className="mt-5 w-full rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors flex items-center justify-center gap-2">
+              {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+              <button onClick={goPostal} className="mt-5 w-full rounded-full bg-brand-emerald text-white font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors flex items-center justify-center gap-2">
                 {t.postalNext} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           )}
 
           {step === 1 && (
-            <div className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
+            <div className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h3 className="text-lg font-bold">{t.materials}</h3>
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#54D9AE]">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#187B65]">
                   <MapPin className="w-3.5 h-3.5" /> {postalRaw || fsa} · {networkRegionName({ code: province, name: provinceName(province) || province }, lang)}
                 </span>
               </div>
               <PickupSessionSummary lang={lang} />
-              <p className="text-xs text-market-muted mb-4">{t.materialsSub}</p>
+              <p className="text-xs text-slate-500 mb-4">{t.materialsSub}</p>
               <PickupCoverageNotice city={city} lang={lang} dark />
               <div className="grid sm:grid-cols-2 gap-2">
                 {MATERIALS.map((m) => (
@@ -372,12 +386,12 @@ export default function InstantQuoteFlow() {
                   </div>
                 ))}
               </div>
-              {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+              {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
               <div className="mt-5 flex gap-2">
-                <button onClick={() => setStep(0)} className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold hover:border-white/50 transition-colors inline-flex items-center gap-2">
+                <button onClick={() => setStep(0)} className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold text-[#102B2A] hover:border-[#187B65] transition-colors inline-flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" /> {lang === "fr" ? "Retour" : "Back"}
                 </button>
-                <button onClick={getEstimate} disabled={loading} className="flex-1 rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <button onClick={getEstimate} disabled={loading} className="flex-1 rounded-full bg-brand-emerald text-white font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Calculator className="w-5 h-5" />}
                   {loading ? t.submitting : t.estNext}
                 </button>
@@ -386,25 +400,25 @@ export default function InstantQuoteFlow() {
           )}
 
           {step === 2 && estimate && (
-            <form onSubmit={submit} className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
+            <form onSubmit={submit} className="rounded-2xl border border-slate-200 bg-[#f4f7f5] p-4 sm:p-5">
               <h3 className="text-lg font-bold">{t.estimate}</h3>
               <PickupSessionSummary lang={lang} />
-              <div className="mt-4 rounded-2xl bg-[#102B2A]/60 border border-[#187B65]/25 p-5">
+              <div className="mt-4 rounded-2xl bg-white border border-slate-200 p-5">
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{estimate.range}</div>
-                <div className="mt-2 inline-block rounded-full border border-market-line bg-market-bg text-market-accent font-semibold px-4 py-1.5 text-sm">{estimate.label}</div>
+                <div className="mt-2 inline-block rounded-full border border-slate-200 bg-white text-[#187B65] font-semibold px-4 py-1.5 text-sm">{estimate.label}</div>
                 <div className="mt-4 pt-4 border-t border-[#187B65]/20 grid sm:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <div className="text-market-muted text-xs font-bold uppercase tracking-wider">{t.subtotal}</div>
+                    <div className="text-slate-500 text-xs font-bold uppercase tracking-wider">{t.subtotal}</div>
                     <div className="font-bold mt-0.5 tabular-nums">{estimate.range} CAD</div>
                   </div>
                   <div>
-                    <div className="text-market-muted text-xs font-bold uppercase tracking-wider">{t.taxLabel}</div>
+                    <div className="text-slate-500 text-xs font-bold uppercase tracking-wider">{t.taxLabel}</div>
                     <div className="font-bold mt-0.5">{tax ? tax.label : `GST (5%) — ${province || "?"}`}</div>
                   </div>
                 </div>
-                <p className="mt-3 text-[11px] text-market-muted">{t.taxNote}</p>
-                <p className="mt-1 text-[11px] text-market-muted flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />{t.incl}</p>
-                <p className="mt-2 text-[11px] text-market-muted">
+                <p className="mt-3 text-[11px] text-slate-500">{t.taxNote}</p>
+                <p className="mt-1 text-[11px] text-slate-500 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65] shrink-0" />{t.incl}</p>
+                <p className="mt-2 text-[11px] text-slate-500">
                   {lang === "fr" ? "Estimation préliminaire. Le prix final est soumis à votre approbation avant le travail. Tout ajout exige une approbation distincte." : "Preliminary estimate. You approve the final price before work begins. Additional items require a separate quote and your approval."}
                 </p>
               </div>
@@ -418,19 +432,19 @@ export default function InstantQuoteFlow() {
                 <input value={form.preferred_date} min={new Date().toISOString().slice(0, 10)} onChange={(e) => setForm({ ...form, preferred_date: e.target.value })} className="input bg-white/95" type="date" aria-label={t.dateOpt} />
               </div>
               <h3 className="text-lg font-bold mt-6 mb-2">{lang === "fr" ? "Préparation du travail (Rex)" : "Job preparation (Rex)"}</h3>
-              <p className="text-xs text-market-muted mb-2">{lang === "fr" ? "Rex transmet ces détails à votre entrepreneur — ils ne changent jamais l'estimation." : "Rex passes these details to your contractor — they never change the estimate."}</p>
+              <p className="text-xs text-slate-500 mb-2">{lang === "fr" ? "Rex transmet ces détails à votre entrepreneur — ils ne changent jamais l'estimation." : "Rex passes these details to your contractor — they never change the estimate."}</p>
               <div className="flex flex-wrap gap-2">
                 {ACCESS_TAGS.map((tag) => (
-                  <button key={tag.key} type="button" onClick={() => setAccessTags((tags) => (tags.includes(tag.key) ? tags.filter((k) => k !== tag.key) : [...tags, tag.key]))} aria-pressed={accessTags.includes(tag.key)} className={`min-h-10 rounded-full border px-3.5 text-sm font-bold transition-colors ${accessTags.includes(tag.key) ? "border-[#187B65] bg-[#187B65]/20 text-market-ink" : "border-white/25 hover:border-[#187B65]"}`}>{lang === "fr" ? tag.fr : tag.en}</button>
+                  <button key={tag.key} type="button" onClick={() => setAccessTags((tags) => (tags.includes(tag.key) ? tags.filter((k) => k !== tag.key) : [...tags, tag.key]))} aria-pressed={accessTags.includes(tag.key)} className={`min-h-10 rounded-full border px-3.5 text-sm font-bold transition-colors ${accessTags.includes(tag.key) ? "border-[#187B65] bg-[#187B65]/20 text-[#102B2A]" : "border-slate-300 text-[#102B2A] hover:border-[#187B65]"}`}>{lang === "fr" ? tag.fr : tag.en}</button>
                 ))}
               </div>
               <input value={accessNote} onChange={(e) => setAccessNote(e.target.value)} maxLength={200} className="input bg-white/95 mt-2" placeholder={lang === "fr" ? "Note d'accès (facultatif) — p. ex. entrée par la ruelle" : "Access note (optional) — e.g. enter from the back lane"} />
-              {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+              {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
               <div className="mt-5 flex gap-2">
-                <button type="button" onClick={() => setStep(1)} className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold hover:border-white/50 transition-colors inline-flex items-center gap-2">
+                <button type="button" onClick={() => setStep(1)} className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold text-[#102B2A] hover:border-[#187B65] transition-colors inline-flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" /> {lang === "fr" ? "Retour" : "Back"}
                 </button>
-                <button type="submit" disabled={loading} className="flex-1 rounded-full bg-brand-emerald text-market-ink font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <button type="submit" disabled={loading} className="flex-1 rounded-full bg-brand-emerald text-white font-bold px-7 py-4 hover:bg-brand-emerald/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
                   {loading ? t.submitting : t.submit}
                 </button>
@@ -439,13 +453,13 @@ export default function InstantQuoteFlow() {
           )}
 
           {step === 3 && (
-            <div className="rounded-3xl bg-white/5 border border-[#187B65]/40 p-6 md:p-8 text-center">
+            <div className="rounded-3xl bg-[#f4f7f5] border border-[#187B65]/40 p-6 md:p-8 text-center">
               <CheckCircle2 className="w-12 h-12 text-[#187B65] mx-auto" />
-              <p className="mt-3 text-sm text-market-muted">{t.doneSub}</p>
-              <div className="mt-3 inline-block rounded-2xl bg-[#102B2A]/70 border border-[#187B65]/30 px-6 py-3 font-mono text-xl font-bold tracking-[0.25em] text-white">
+              <p className="mt-3 text-sm text-slate-500">{t.doneSub}</p>
+              <div className="mt-3 inline-block rounded-2xl bg-white border border-slate-200 px-6 py-3 font-mono text-xl font-bold tracking-[0.25em] text-[#102B2A]">
                 {result?.reference_code || "PENDING"}
               </div>
-              <p className="mt-4 text-xs text-market-muted">{t.matchingNote}</p>
+              <p className="mt-4 text-xs text-slate-500">{t.matchingNote}</p>
               <a href={`/request-status?reference=${encodeURIComponent(result?.reference_code || "")}`} className="mt-5 inline-block rounded-full bg-[#187B65] text-white font-bold px-6 py-3 text-sm hover:bg-[#1FA184] transition-colors">
                 {lang === "fr" ? "Suivre ma demande" : "Track my request"}
               </a>
