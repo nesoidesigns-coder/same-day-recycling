@@ -334,6 +334,16 @@ h1, h2, h3, h4, p, a, span, li, button {
   animation: data-dash 1.2s linear infinite;
 }
 
+/* ---- National demand gauge: live radar sweep ---- */
+@keyframes gauge-sweep-spin {
+  to { transform: rotate(360deg); }
+}
+
+.gauge-sweep {
+  transform-origin: 200px 200px;
+  animation: gauge-sweep-spin 12s linear infinite;
+}
+
 /* ---- Rex orb states (idle · listening · processing · success · attention) ---- */
 
 .rex-orb {
@@ -405,6 +415,7 @@ h1, h2, h3, h4, p, a, span, li, button {
   .network-pulse,
   .data-flow,
   .pulse-arc-spin,
+  .gauge-sweep,
   .rex-orb--processing::before,
   .rex-orb--listening,
   .rex-orb--processing .rex-orb__core {

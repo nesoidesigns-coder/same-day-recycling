@@ -18,7 +18,8 @@ export default function NationalDemandPanel() {
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ["national-demand-gauge"],
     queryFn: async () => (await base44.functions.invoke("nationalDemand", { action: "gauge" })).data,
-    staleTime: 5 * 60000,
+    staleTime: 60 * 1000,
+    refetchInterval: 60 * 1000, // live: the gauge refreshes itself every minute
     retry: 1,
   });
 
@@ -53,7 +54,7 @@ export default function NationalDemandPanel() {
     <section className="relative bg-[#102B2A] py-10 text-white sm:py-14" aria-label="Canadian demand intelligence">
       <div className="mx-auto max-w-6xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300"><Compass className="h-3.5 w-3.5" /> National demand intelligence</span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300"><Compass className="h-3.5 w-3.5" /> National demand intelligence <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] tracking-widest text-emerald-200"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" aria-hidden="true" /> Live</span></span>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">What Canada needs, in one gauge</h2>
           <p className="mt-2 text-sm text-emerald-100/70">Explore industries, their specialties and the searches inside them — built only from connected sources. No account needed.</p>
         </div>
