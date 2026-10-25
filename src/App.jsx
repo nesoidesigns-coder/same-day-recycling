@@ -100,6 +100,7 @@ const LiveCentre = lazyPage(() => import('./pages/LiveCentre'));
 const RecyclingOsHome = lazyPage(() => import('./pages/RecyclingOsHome'));
 const DemandObservatory = lazyPage(() => import('./pages/DemandObservatory'));
 const CanadaConnectedPrototype = lazyPage(() => import('./pages/CanadaConnectedPrototype'));
+const CanadaServiceObservatory = lazyPage(() => import('./pages/CanadaServiceObservatory'));
 
 const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
 const RequestService = lazyPage(() => import('./pages/RequestService'));
@@ -228,6 +229,7 @@ const AuthenticatedApp = () => {
       <Route path="/recycling-os" element={<RecyclingOsHome />} />
       <Route path="/adi" element={<DemandObservatory />} />
       <Route path="/prototype" element={<CanadaConnectedPrototype />} />
+      <Route path="/prototype-observatory" element={<CanadaServiceObservatory />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />

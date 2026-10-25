@@ -72,6 +72,18 @@
     --li-amber: 35 68% 53%;
     --li-red: 5 51% 51%;
     --font-plex: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Canadian Service Observatory — midnight graphite canvas (constant) */
+    --obs-bg: 168 48% 7%;
+    --obs-surface: 167 36% 12%;
+    --obs-land: 170 28% 15%;
+    --obs-land-hover: 167 30% 20%;
+    --obs-ink: 156 30% 96%;
+    --obs-muted: 165 21% 74%;
+    --obs-line: 167 24% 28%;
+    --obs-mint: 161 64% 59%;
+    --obs-amber: 38 88% 52%;
+    --obs-cyan: 189 94% 43%;
+    --obs-map-ocean: 172 30% 9%;
   }
 
   .dark {
@@ -430,6 +442,24 @@ h1, h2, h3, h4, p, a, span, li, button {
 .rex-orb--attention {
   background: radial-gradient(circle at 30% 30%, #fbbf24, #b45309);
 }
+
+/* ---- Canadian Service Observatory (obs-*) components ---- */
+.obs-panel { border-radius: 1.25rem; border: 1px solid hsl(var(--obs-line) / 0.6); background: hsl(var(--obs-surface) / 0.7); }
+.obs-button { display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 9999px; background: hsl(var(--obs-mint)); color: hsl(var(--obs-bg)); font-weight: 700; font-size: 0.875rem; padding: 0.625rem 1.25rem; transition: background-color 0.15s ease; }
+.obs-button:hover { background: hsl(var(--obs-ink)); }
+.obs-stat { border: 1px solid hsl(var(--obs-line) / 0.5); background: hsl(var(--obs-surface) / 0.8); border-radius: 0.75rem; padding: 1rem; }
+.obs-stat-label { margin-top: 0.25rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: hsl(var(--obs-muted)); }
+.obs-section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: hsl(var(--obs-muted)); }
+.obs-card-cta { display: block; border-radius: 1.25rem; border: 1px solid hsl(var(--obs-line) / 0.6); background: hsl(var(--obs-surface) / 0.7); padding: 1.5rem; transition: border-color 0.15s ease; }
+.obs-card-cta:hover { border-color: hsl(var(--obs-mint)); }
+.obs-sector-row { display: flex; align-items: center; gap: 0.75rem; width: 100%; border-radius: 0.75rem; border: 1px solid transparent; padding: 0.5rem 0.625rem; transition: background-color 0.15s ease, border-color 0.15s ease; }
+.obs-sector-row:hover { background: hsl(var(--obs-surface)); border-color: hsl(var(--obs-line) / 0.6); }
+.obs-sector-row-active { background: hsl(var(--obs-mint) / 0.08); border-color: hsl(var(--obs-mint) / 0.4); }
+.obs-province { fill: hsl(var(--obs-land)); stroke: hsl(var(--obs-mint) / 0.3); stroke-width: 0.6; cursor: pointer; transition: fill 0.15s ease; }
+.obs-province:hover { fill: hsl(var(--obs-land-hover)); }
+.obs-province-selected { fill: hsl(var(--obs-land-hover)); stroke: hsl(var(--obs-mint) / 0.8); stroke-width: 1.1; }
+.obs-city-label { font-family: var(--font-plex); }
+.obs-map-node:focus-visible .obs-node-focus { opacity: 1; }
 
 /* ---- Reduced motion: calm every ambient animation at once ---- */
 
