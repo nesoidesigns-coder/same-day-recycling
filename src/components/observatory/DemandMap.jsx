@@ -16,6 +16,14 @@ const PROVINCE_COORDS = {
 
 const DAY_MS = 86400000;
 
+// Basemap tile sources, in order. OpenStreetMap's public server is keyless and
+// used lightly per its usage policy; the OSM community server (FOSSGIS) is the
+// one approved fallback. After both fail we stop — no endless tile retries.
+const TILE_SOURCES = [
+  { name: 'OpenStreetMap', url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+  { name: 'OSM Community', url: 'https://tile.openstreetmap.de/{z}/{x}/{y}.png' },
+];
+
 // Keeps the map centered on a selected city when the drill-down opens.
 function FlyTo({ center }) {
   const map = useMap();
@@ -34,6 +42,26 @@ function FlyTo({ center }) {
 export default function DemandMap({ data }) {
   const [layers, setLayers] = useState({ demand: true, coverage: true, unmatched: true });
   const [selected, setSelected] = useState(null); // { row, center, events }
+
+  // Basemap health: log every failed tile, try the next approved source after
+  // three failures, and stop after the last one instead of retrying forever.
+  const [tileIdx, setTileIdx] = useState(0);
+  const [tileErrs, setTileErrs] = useState(0);
+  const [basemapFailed, setBasemapFailed] = useState(false);
+  const onTileError = (e) => {
+    console.warn('[DemandMap] basemap tile failed:', e?.tile?.src || 'unknown tile', e?.error?.message || 'request failed');
+    if (tileErrs + 1 >= 3) {
+      if (tileIdx < TILE_SOURCES.length - 1) {
+        setTileIdx(tileIdx + 1);
+        setTileErrs(0);
+        setBasemapFailed(false);
+      } else {
+        setBasemapFailed(true);
+      }
+    } else {
+      setTileErrs(tileErrs + 1);
+    }
+  };
 
   const regions = data?.regions || [];
   const feed = data?.feed || [];
@@ -97,8 +125,11 @@ export default function DemandMap({ data }) {
       <div className="mt-3 overflow-hidden rounded-2xl border border-market-line h-[420px] sm:h-[500px] relative z-0">
         <MapContainer center={[53, -100]} zoom={4} minZoom={3} scrollWheelZoom={false} className="w-full h-full">
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            key={tileIdx}
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url={TILE_SOURCES[tileIdx].url}
+            maxZoom={19}
+            eventHandlers={{ tileerror: onTileError }}
           />
           <FlyTo center={selected?.center} />
           {regions.map((r) => {
@@ -158,6 +189,12 @@ export default function DemandMap({ data }) {
         <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#b45309]" /> Demand marker (size = volume)</span>
         <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full border border-amber-300" /> Unmatched demand</span>
       </div>
+
+      {basemapFailed && (
+        <p role="alert" className="mt-3 flex items-center gap-2 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-3.5 py-2.5 text-xs font-semibold text-amber-200">
+          The map's background image isn't loading right now. All demand markers, layers and city drill-downs still work — please try again shortly.
+        </p>
+      )}
 
       {regions.length === 0 && (
         <p role="status" className="mt-3 flex items-center gap-2 text-xs text-market-muted">
