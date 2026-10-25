@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, MapPin, Activity, DollarSign, Recycle, Users, ArrowRight, Compass, Loader2 } from "lucide-react";
+import { Clock, MapPin, DollarSign, Recycle, Users, ArrowRight, Compass, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useSEO } from "@/lib/seo";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
@@ -68,7 +68,7 @@ export default function LiveCentre() {
 
   const refreshedAt = gauge?.generated_at ? new Date(gauge.generated_at).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" }) : null;
   const matchingCities = cov.matchingCityNames || [];
-  const recruitingCities = cov.matchingCityNames ? (cov.territoryLinks, null) : null;
+  const recruitingCities = cov.recruitingCityNames || [];
 
   return (
     <div className="min-h-screen bg-warm-white pb-16">
@@ -195,9 +195,7 @@ export default function LiveCentre() {
               <div>
                 <div className="text-xs font-bold uppercase tracking-wide text-slate-400">Recruiting new contractors</div>
                 {cov.loaded ? (
-                  (cov.matchingCityNames || []).length || true ? (
-                    <p className="mt-1 text-slate-700">{(cov.territoryLinks, cov.matchingCityNames, (cov.totals, (cov.capacityFor, null))) ? "" : ""}{(recruitingText(cov))}</p>
-                  ) : null
+                  recruitingCities.length ? <p className="mt-1 text-slate-700">{recruitingCities.join(", ")}</p> : <p className="mt-1 text-slate-500">Every active registry city already has verified coverage.</p>
                 ) : <LoadingLine />}
               </div>
             </div>
@@ -216,12 +214,6 @@ export default function LiveCentre() {
       </div>
     </div>
   );
-}
-
-function recruitingText(cov) {
-  const cities = Array.from(cov.matchingCities || []);
-  const recruiting = (cov.totals ? null : null) || null;
-  return cities.length ? "" : "";
 }
 
 function LoadingLine() {

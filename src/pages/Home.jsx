@@ -3,7 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
-import HeroBooking from "@/components/home/HeroBooking";
+import IntelligenceHero from "@/components/home/IntelligenceHero";
+import IntelligencePreview from "@/components/home/IntelligencePreview";
 import RexDiscover from "@/components/home/RexDiscover";
 import CoverageStrip from "@/components/home/CoverageStrip";
 import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
@@ -38,7 +39,13 @@ export default function Home() {
       <TopBar />
       <Navbar />
       <main>
-        <HeroBooking />
+        <IntelligenceHero />
+        <section className="bg-warm-white pb-12 md:pb-16">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-center text-xs font-bold tracking-[0.2em] text-slate-500 uppercase mb-4">Live platform intelligence</h2>
+            <IntelligencePreview />
+          </div>
+        </section>
         <InstantQuoteFlow />
         <RexDiscover />
         <Services />

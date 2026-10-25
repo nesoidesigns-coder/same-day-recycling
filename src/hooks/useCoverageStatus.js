@@ -41,6 +41,7 @@ export default function useCoverageStatus() {
       loaded: isSuccess && !isError, error: isError,
       verifiedCities: verified, matchingCities: matching,
       verifiedCityNames: verifiedNames, matchingCityNames: matchingNames,
+      recruitingCityNames: [...new Map((data?.recruiting_cities || []).filter((name) => !verified.has(key(name)) && !matching.has(key(name))).map((name) => [key(name), String(name).trim()])).values()],
       contractorCounts: data?.contractor_counts || {},
       capacityFor: (city) => capacity.get(key(city)) || null,
       totals: data?.totals || null,

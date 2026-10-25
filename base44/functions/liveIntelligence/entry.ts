@@ -141,7 +141,7 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
     trend,
     by_source,
     basis_note:
-      'Counts of real demand records. Observed public requests, platform inquiries and confirmed bookings are shown separately — never merged into one demand score. Search interest is never counted as individual requests.',
+      'Counts of real demand records. Observed public requests, platform inquiries and confirmed bookings are each labelled. Search interest appears only as its own labelled record type — it is never blended into request or booking counts, and never shown as a live national score.',
     empty_note: 'Insufficient observations for this selection.',
     generated_at: new Date().toISOString(),
   };
