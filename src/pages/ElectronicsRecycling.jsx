@@ -11,7 +11,7 @@ const CONFIG = {
   items: ["TVs & monitors", "Computers & laptops", "Printers & scanners", "Phones & tablets", "Audio & AV equipment", "Cables & accessories"],
   steps: [
     { title: "Get a quote", text: "List your e-waste online or send a photo — pricing is by truck space, starting at $139." },
-    { title: "Book your slot", text: "Pick a date and time window. Book before noon and same-day pickup is usually available." },
+    { title: "Book your slot", text: "Pick a date and time window. Book before noon to request a same-day pickup, subject to local contractor availability." },
     { title: "We sort and recycle", text: "Electronics are separated from the rest of your load and routed to dedicated e-waste recyclers." },
   ],
   faqs: [

@@ -70,7 +70,7 @@ const requirements = [
   { icon: Truck, text: "You own your truck and crew" },
   { icon: Building2, text: "You're a registered business" },
   { icon: ShieldCheck, text: "Liability insurance — provide a certificate (COI)" },
-  { icon: Clock, text: "Same-day service standard on every booking" },
+  { icon: Clock, text: "Same-day requests on every booking, subject to contractor acceptance" },
   { icon: DollarSign, text: "Upfront pricing honored on every job" },
 ];
 

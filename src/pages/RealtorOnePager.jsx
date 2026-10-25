@@ -146,7 +146,7 @@ export default function RealtorOnePager() {
               <div className="grid sm:grid-cols-3 gap-3">
                 {[
                   { step: "1", text: "Book online in 2 minutes or call us directly — send us photos of the items if it's easier." },
-                  { step: "2", text: "We confirm an upfront flat price by load size and arrive the same day when booked before noon." },
+                  { step: "2", text: "We confirm an upfront flat price by load size and request same-day arrival when booked before noon, subject to local contractor acceptance." },
                   { step: "3", text: "We lift, sweep up and leave — recycling and donating everything salvageable." },
                 ].map((s) => (
                   <div key={s.step} className="rounded-2xl bg-[#f4f7f5] p-4 print:border print:border-slate-200">
@@ -239,7 +239,7 @@ export default function RealtorOnePager() {
 
             {/* CTA / footer */}
             <section className="rounded-2xl bg-[#102B2A] text-white px-6 py-6 text-center">
-              <p className="font-bold text-lg">Book before noon — we haul the same day.</p>
+              <p className="font-bold text-lg">Book before noon to request same-day pickup.</p>
               <p className="text-white/80 text-sm mt-1">Upfront pricing approved before we lift a thing. Eco receipts on every job.</p>
               <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a href="tel:+16048491745" className="rounded-full bg-[#187B65] text-[#102B2A] font-bold px-6 py-3 text-sm flex items-center gap-2">

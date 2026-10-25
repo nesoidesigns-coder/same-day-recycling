@@ -10,7 +10,7 @@ import { useSEO } from "@/lib/seo";
 const heroImg = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/5dbff3504_generated_image.png";
 
 const BENEFITS = [
-  { icon: Home, title: "Same-day cleanouts", text: "Book before noon and the clutter is gone that afternoon — listings photograph and show clean, without delaying your timeline." },
+  { icon: Home, title: "Same-day cleanouts", text: "Book before noon to request a same-day window — confirmed once a qualified contractor accepts — so listings photograph and show clean, without delaying your timeline." },
   { icon: DollarSign, title: "Upfront flat pricing", text: "Priced by truck space, approved before we lift anything. One invoice you can bill to the estate, the seller, or yourself." },
   { icon: Clock, title: "Closing-day rescues", text: "Buyers didn't want the furniture? Tenant left a garage behind? We haul it before possession day." },
   { icon: Recycle, title: "Eco-friendly story", text: "We recycle and donate everything salvageable — a selling point your clients will appreciate." },

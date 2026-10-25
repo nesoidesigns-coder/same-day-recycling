@@ -8,7 +8,7 @@ import FinalCTA from "@/components/sdr/FinalCTA";
 import Footer from "@/components/sdr/Footer";
 
 const BENEFITS = [
-  ["Priority scheduling", "Property managers jump the same-day queue — a turnover unit gets a pickup window the same afternoon when you book before noon."],
+  ["Priority scheduling", "Property managers jump the same-day queue — request a same-day window when you book before noon, confirmed once a qualified contractor accepts."],
   ["Upfront per-load pricing", "Priced by truck space, confirmed before we lift anything — no hourly meter running in your parkade."],
   ["Elevator & strata coordination", "We align with your building's move-out schedule, book around elevator reservations and protect floors and hallways."],
   ["Recycling receipts for records", "Every load comes with a receipt showing what was donated, recycled or disposed of — ready for strata minutes and reporting."],

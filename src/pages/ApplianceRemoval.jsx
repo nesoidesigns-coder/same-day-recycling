@@ -12,7 +12,7 @@ const CONFIG = {
   items: ["Fridges & freezers", "Washers & dryers", "Stoves & ovens", "Dishwashers & microwaves", "Water heaters & furnaces", "Small appliances"],
   steps: [
     { title: "Get a quote", text: "Tell us what appliances you're replacing — pricing is by truck space, starting at $139." },
-    { title: "Book your slot", text: "Pick a date and time window. Book before noon and same-day pickup is usually available." },
+    { title: "Book your slot", text: "Pick a date and time window. Book before noon to request a same-day pickup, subject to local contractor availability." },
     { title: "We haul and recycle", text: "The crew carries appliances out of any room — most of their weight becomes recycled scrap metal." },
   ],
   faqs: [

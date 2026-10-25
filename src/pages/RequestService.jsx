@@ -71,8 +71,9 @@ export default function RequestService() {
             ))}
           </div>
           <p className="mt-8 text-center text-sm text-slate-500 max-w-xl mx-auto">
-            A verified service territory is not a confirmed appointment. Same-day pickup requires a local
-            contractor to accept your specific job, with your price and arrival window agreed first.
+            Request junk removal anywhere in Canada. Same-day service is subject to confirmed local
+            provider availability. A verified service territory is not a confirmed appointment: a local
+            contractor must accept your specific job, with your price and arrival window agreed first.
           </p>
         </div>
       </section>

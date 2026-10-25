@@ -62,7 +62,7 @@ export default function Coverage() {
       empty: "Every registry territory currently has verified capacity or active matching.",
     },
     {
-      key: "currently_unavailable", title: "Service Not Currently Available",
+      key: "currently_unavailable", title: "Unavailable",
       icon: <Hourglass className="w-5 h-5 text-muted-foreground" />, dot: "bg-muted-foreground",
       intro: "Verified territory records exist, but no current dispatch availability is confirmed. Requests remain open for review; no pickup is promised.",
       cardLabel: "No current dispatch availability confirmed", cities: unavailableList,
@@ -79,10 +79,11 @@ export default function Coverage() {
           <div className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-3">Coverage</div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08]">Recycling &amp; Junk Removal Requests Across Canada</h1>
           <p className="mt-5 text-lg text-slate-300 max-w-2xl">
-            Service requests are open in all 10 provinces and 3 territories — cities, towns, rural
-            communities and remote locations. Tell us what needs to go and we'll work to connect you
-            with a qualified local service provider. Same-day fulfillment depends on contractor
-            availability and is confirmed with you before anything is scheduled or charged.
+            Request junk removal anywhere in Canada. Same-day service is subject to confirmed local
+            provider availability. Service requests are open in all 10 provinces and 3 territories —
+            cities, towns, rural communities and remote locations. Tell us what needs to go and we'll
+            work to connect you with a qualified local service provider, with price and arrival
+            window confirmed with you before anything is scheduled or charged.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
             {["Requests open in every province & territory", "Nationwide contractor matching", "Pricing & availability confirmed before pickup", "Every job tracked to completion"].map((t) => (

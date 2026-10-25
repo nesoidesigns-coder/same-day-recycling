@@ -6,7 +6,7 @@ import { CalendarCheck, Zap, ShieldCheck, Recycle } from "lucide-react";
 
 const PERKS = [
   { icon: CalendarCheck, t: "Up to 4 pickups a month", d: "One flat $299/month — no per-trip scheduling fees." },
-  { icon: Zap, t: "Priority same-day slots", d: "Members jump the queue. Book before noon, gone today." },
+  { icon: Zap, t: "Priority same-day slots", d: "Members jump the queue. Same-day requests are subject to confirmed local provider availability." },
   { icon: Recycle, t: "Eco disposal reporting", d: "Donation and recycling receipts for every load." },
   { icon: Recycle, t: "Eco-friendly disposal", d: "Recycled or donated first, on every visit." },
 ];
