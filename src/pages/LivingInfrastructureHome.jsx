@@ -6,6 +6,7 @@ import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import NationalSignalCore from "@/components/li/NationalSignalCore";
+import NationalDemandPulse from "@/components/home/NationalDemandPulse";
 import SignalMetricCard from "@/components/li/SignalMetricCard";
 import DemandTrendChart from "@/components/li/DemandTrendChart";
 import ContractorOperationsPreview from "@/components/li/ContractorOperationsPreview";
@@ -31,8 +32,6 @@ const PARTICIPATION = [
   { icon: HandHeart, title: "Report recycling resources", desc: "Know a depot, drop-off or donation centre? Add it so neighbours can find it.", to: "/recycling-centers" },
   { icon: MapPinned, title: "Explore community needs", desc: "See what services Canadians are researching and requesting right now.", to: "/live" },
 ];
-
-const fmtDate = (iso) => (iso ? new Date(iso).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" }) : null);
 
 export default function LivingInfrastructureHome() {
   useSEO({
@@ -119,28 +118,9 @@ export default function LivingInfrastructureHome() {
           </div>
         </section>
 
-        {/* Section B — Live national activity strip */}
-        <section aria-label="Live national activity" className="mb-4">
-          <div className="rounded-[20px] border border-li-steel bg-li-pale px-5 py-4 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3">
-            <div>
-              <div className="font-plex text-[11px] font-semibold text-li-slate">Selected region</div>
-              <div className="mt-0.5 text-sm font-bold text-li-carbon">Canada</div>
-            </div>
-            <div>
-              <div className="font-plex text-[11px] font-semibold text-li-slate">Latest verified observation</div>
-              <div className="mt-0.5 text-sm font-bold text-li-carbon">
-                {overview ? (overview.service_requests?.available ? `${overview.service_requests.value} verified service requests` : "Collecting verified data") : "Loading…"}
-              </div>
-            </div>
-            <div>
-              <div className="font-plex text-[11px] font-semibold text-li-slate">Most recent data update</div>
-              <div className="font-plex mt-0.5 text-sm font-semibold text-li-carbon">{fmtDate(overview?.generated_at) || "—"}</div>
-            </div>
-            <div>
-              <div className="font-plex text-[11px] font-semibold text-li-slate">Selected service category</div>
-              <div className="mt-0.5 text-sm font-bold text-li-carbon">All categories</div>
-            </div>
-          </div>
+        {/* Section B — National Demand Pulse */}
+        <section aria-label="National demand pulse" className="pb-8">
+          <NationalDemandPulse />
         </section>
 
         {/* Section C — Interactive intelligence (map layer arrives next) */}

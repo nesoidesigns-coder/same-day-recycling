@@ -95,22 +95,22 @@ export default function NationalSignalCore({ compact = false }) {
   };
 
   return (
-    <div className={`rounded-[20px] border border-li-steel bg-li-cloud ${compact ? "p-4" : "p-5 md:p-6"}`}>
+    <div className={`min-w-0 rounded-[20px] border border-li-steel bg-li-cloud ${compact ? "p-4" : "p-5 md:p-6"}`}>
       {!compact && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2">
           <select value={province} onChange={(e) => setProv(e.target.value)} aria-label="Province"
-            className="rounded-xl border border-li-steel bg-white px-3 py-2 text-sm font-semibold text-li-carbon">
+            className="w-full sm:w-auto max-w-full rounded-xl border border-li-steel bg-white px-3 py-2 text-sm font-semibold text-li-carbon">
             <option value="">All provinces</option>
             {REGIONS.map((r) => <option key={r.code} value={r.code}>{r.name}</option>)}
           </select>
           {province && (
             <select value={city} onChange={(e) => { setCity(e.target.value); setCategory(null); }} aria-label="City"
-              className="rounded-xl border border-li-steel bg-white px-3 py-2 text-sm font-semibold text-li-carbon">
+              className="w-full sm:w-auto max-w-full rounded-xl border border-li-steel bg-white px-3 py-2 text-sm font-semibold text-li-carbon">
               <option value="">All cities</option>
               {cityOptions.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
             </select>
           )}
-          <div className="ml-auto flex items-center gap-1 rounded-xl border border-li-steel bg-white p-1">
+          <div className="w-full sm:w-auto sm:ml-auto flex items-center justify-center gap-1 rounded-xl border border-li-steel bg-white p-1">
             {TIME_OPTIONS.map((t) => (
               <button key={t.days} onClick={() => { setDays(t.days); setCategory(null); }}
                 className={`font-plex rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors duration-200 ${days === t.days ? "bg-li-pale text-li-forest" : "text-li-slate hover:text-li-carbon"}`}>
