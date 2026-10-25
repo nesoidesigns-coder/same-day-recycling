@@ -6,6 +6,7 @@ import usePickupLocation from "@/hooks/usePickupLocation";
 import { pickupLocationActions } from "@/lib/pickupLocationStore";
 import PickupMapCamera from "@/components/sdr/PickupMapCamera";
 import HeroStreetView from "@/components/sdr/HeroStreetView";
+import StreetViewFallback from "@/components/sdr/StreetViewFallback";
 const SATELLITE_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 const STREET_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const pickupIcon = L.divIcon({ className: "", html: '<div class="h-7 w-7 rounded-full border-4 border-background bg-brand-emerald shadow-lg"></div>', iconSize: [28, 28], iconAnchor: [14, 14] });
@@ -16,13 +17,13 @@ export default function PickupLocationMap({ lang = "en" }) {
   const mode = pickup.camera.local.mode, imagery = pickup.imagery;
   const changeMode = (next) => {
     pickupLocationActions.setCamera("local", { mode: next });
-    if (next === "street") pickupLocationActions.setCamera("street", { lat: imagery.lat, lng: imagery.lng, imageId: imagery.image_id });
+    if (next === "street" && imagery.status === "available") pickupLocationActions.setCamera("street", { lat: imagery.lat, lng: imagery.lng, imageId: imagery.image_id });
   };
   return <div>
     <div className="mb-2 flex flex-wrap gap-2" role="group" aria-label={fr ? "Type de carte" : "Map type"}>
-      {[{ key: "map", label: fr ? "Carte" : "Map" }, { key: "satellite", label: "Satellite" }, ...(imagery.status === "available" ? [{ key: "street", label: fr ? "Vue de rue" : "Street View" }] : [])].map((item) => <button key={item.key} type="button" onClick={() => changeMode(item.key)} aria-pressed={mode === item.key} className={`min-h-11 rounded-full border px-4 text-sm font-bold ${mode === item.key ? "border-market-accent bg-market-accent/20" : "border-market-line"}`}>{item.label}</button>)}
+      {[{ key: "map", label: fr ? "Carte" : "Map" }, { key: "satellite", label: "Satellite" }, { key: "street", label: fr ? "Vue de rue" : "Street View" }].map((item) => <button key={item.key} type="button" onClick={() => changeMode(item.key)} aria-pressed={mode === item.key} className={`min-h-11 rounded-full border px-4 text-sm font-bold ${mode === item.key ? "border-market-accent bg-market-accent/20" : "border-market-line"}`}>{item.label}</button>)}
     </div>
-    {mode === "street" && imagery.status === "available" ? <HeroStreetView key={imagery.image_id} lang={lang} /> : <div className="relative z-0 h-64 overflow-hidden rounded-xl border border-market-line sm:h-72" data-pickup-lat={pickup.lat} data-pickup-lng={pickup.lng}>
+    {mode === "street" && imagery.status === "available" ? <HeroStreetView key={imagery.image_id} lang={lang} /> : mode === "street" ? <StreetViewFallback lang={lang} /> : <div className="relative z-0 h-64 overflow-hidden rounded-xl border border-market-line sm:h-72" data-pickup-lat={pickup.lat} data-pickup-lng={pickup.lng}>
       <MapContainer center={[pickup.lat, pickup.lng]} zoom={pickup.camera.local.zoom} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }} aria-label={fr ? "Carte du lieu de ramassage" : "Pickup location map"}>
         <PickupMapCamera />
         {mode === "satellite" ? <TileLayer key="sat" url={SATELLITE_URL} attribution="Imagery &copy; Esri" maxZoom={19} /> : <TileLayer key="osm" url={STREET_URL} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>' maxZoom={19} />}

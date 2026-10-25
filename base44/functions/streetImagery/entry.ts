@@ -14,7 +14,7 @@ export default async function(req) {
     const dy = radius / 111320, dx = dy / Math.cos(lat * Math.PI / 180);
     const query = new URLSearchParams({ bbox: [lng - dx, lat - dy, lng + dx, lat + dy].join(','), limit: '12', filter: 'field_of_view = 360' });
     const response = await fetch(`https://api.panoramax.xyz/api/search?${query}`, { headers: { Accept: 'application/geo+json', 'User-Agent': 'RecyclingOS/1.0' }, signal: AbortSignal.timeout(10000) });
-    const base = { provider: 'panoramax', radius_m: radius, google: 'not_configured', checked_at: new Date().toISOString() };
+    const base = { provider: 'panoramax', radius_m: radius, google_maps_url: `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`, google: 'not_configured', checked_at: new Date().toISOString() };
     if (!response.ok) return Response.json({ ...base, status: 'provider_error' });
     const body = await response.json();
     if (!Array.isArray(body.features)) return Response.json({ ...base, status: 'provider_error' });
