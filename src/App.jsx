@@ -14,7 +14,7 @@ import SearchIndexing from '@/components/seo/SearchIndexing';
 // Add page imports here.
 // Route-level code splitting: only the home page (LCP target) and auth pages
 // load upfront; every other page is fetched on demand.
-import Home from './pages/Home';
+import LivingInfrastructureHome from './pages/LivingInfrastructureHome';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -98,7 +98,7 @@ const AdminDemandObservatory = lazyPage(() => import('./pages/AdminDemandObserva
 const DemandPage = lazyPage(() => import('./pages/DemandPage'));
 const LiveCentre = lazyPage(() => import('./pages/LiveCentre'));
 const RecyclingOsHome = lazyPage(() => import('./pages/RecyclingOsHome'));
-const LivingInfrastructureHome = lazyPage(() => import('./pages/LivingInfrastructureHome'));
+
 const ExploreServices = lazyPage(() => import('./pages/ExploreServices'));
 const RequestService = lazyPage(() => import('./pages/RequestService'));
 const RequestStatus = lazyPage(() => import('./pages/RequestStatus'));
@@ -174,7 +174,7 @@ const AuthenticatedApp = () => {
     <Suspense fallback={<RouteFallback />}>
     <Routes>
       {/* Add your page Route elements here */}
-      <Route path="/" element={<RecyclingOsHome />} />
+      <Route path="/" element={<LivingInfrastructureHome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -219,8 +219,7 @@ const AuthenticatedApp = () => {
       <Route path="/ai-booking" element={<AIBookingCenter />} />
       <Route path="/demand" element={<DemandPage />} />
       <Route path="/live" element={<LiveCentre />} />
-      <Route path="/recycling-os" element={<Home />} />
-      <Route path="/living-infrastructure" element={<LivingInfrastructureHome />} />
+      <Route path="/recycling-os" element={<RecyclingOsHome />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />

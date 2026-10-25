@@ -38,7 +38,7 @@ export default function LivingInfrastructureHome() {
   useSEO({
     title: "Canada's Service Network | Same Day Recycling",
     description: "Explore removal and recycling services across Canada, understand local pricing, discover verified market activity, and find the right pickup options.",
-    path: "/living-infrastructure",
+    path: "/",
   });
   const navigate = useNavigate();
   const [location, setLocation] = useState("");
