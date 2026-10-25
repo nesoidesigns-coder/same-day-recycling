@@ -11,7 +11,7 @@ import { CITIES } from "@/lib/cities";
 // code can submit — nothing is represented as confirmed service until a
 // provider accepts. Verified territories show a direct-booking shortcut.
 // Accepts ?city= and ?service= params so other forms can hand off inquiries.
-export default function NationalRequestForm({ handoff }) {
+export default function NationalRequestForm({ handoff, onProgress, onSubmitted }) {
   const params = new URLSearchParams(window.location.search);
   const prefillCity = (params.get("city") || "").slice(0, 120);
   const prefillProvince = REGIONS.some((r) => r.code === (params.get("province") || "").toUpperCase()) ? params.get("province").toUpperCase() : "";
@@ -25,7 +25,11 @@ export default function NationalRequestForm({ handoff }) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
-  const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const update = (k) => (e) => {
+    const next = { ...form, [k]: e.target.value };
+    setForm(next);
+    onProgress?.(next);
+  };
 
   // Handoff from the smart intake: category selection and recognized items
   // flow into this form without duplicate data entry.
@@ -48,11 +52,13 @@ export default function NationalRequestForm({ handoff }) {
     const code = e.target.value;
     const f = normalizePostal(code);
     const prov = provinceFromFsa(f);
-    setForm((prev) => ({
-      ...prev,
+    const next = {
+      ...form,
       postal_code: code,
-      province_code: prov || (territoryNeeded(f) ? "" : prev.province_code),
-    }));
+      province_code: prov || (territoryNeeded(f) ? "" : form.province_code),
+    };
+    setForm(next);
+    onProgress?.(next);
   };
 
   const submit = async (e) => {
@@ -74,6 +80,7 @@ export default function NationalRequestForm({ handoff }) {
       });
       base44.analytics.track({ eventName: "national_request_submitted", properties: { province: res?.data?.province_code || "", service: form.service_type } });
       setResult(res?.data || null);
+      onSubmitted?.(res?.data || null);
     } catch {
       setError("Something went wrong. Please try again or call (604) 849-1745.");
     } finally {
@@ -121,17 +128,7 @@ export default function NationalRequestForm({ handoff }) {
       <PickupCoverageNotice city={form.city} />
 
       <div className="space-y-4">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Name" required>
-            <input value={form.name} onChange={update("name")} required className="input" placeholder="Your name" />
-          </Field>
-          <Field label="Phone number" required>
-            <input value={form.phone} onChange={update("phone")} required type="tel" className="input" placeholder="(000) 000-0000" />
-          </Field>
-        </div>
-        <Field label="Email">
-          <input value={form.email} onChange={update("email")} type="email" className="input" placeholder="you@email.com" />
-        </Field>
+        <div className="font-plex text-[10px] font-bold uppercase tracking-[0.15em] text-ri-emerald">Step 4 · Locate</div>
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="City / municipality" required>
             <input value={form.city} onChange={update("city")} required list="sdr-city-list" className="input" placeholder="Any city in Canada" />
@@ -160,6 +157,18 @@ export default function NationalRequestForm({ handoff }) {
               {REGIONS.map((r) => <option key={r.code} value={r.code}>{r.name}</option>)}
             </select>
           )}
+        </Field>
+        <div className="font-plex text-[10px] font-bold uppercase tracking-[0.15em] text-ri-emerald pt-2">Step 5 · Confirm</div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Name" required>
+            <input value={form.name} onChange={update("name")} required className="input" placeholder="Your name" />
+          </Field>
+          <Field label="Phone number" required>
+            <input value={form.phone} onChange={update("phone")} required type="tel" className="input" placeholder="(000) 000-0000" />
+          </Field>
+        </div>
+        <Field label="Email">
+          <input value={form.email} onChange={update("email")} type="email" className="input" placeholder="you@email.com" />
         </Field>
         <Field label="Service type" required>
           <select value={form.service_type} onChange={update("service_type")} required className="input">

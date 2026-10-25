@@ -52,7 +52,8 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
 
   return (
     <div className="rounded-2xl bg-white border border-si-line shadow-sm p-5 md:p-6">
-      <div className="text-sm font-bold text-ri-charcoal">What do you need removed?</div>
+      <div className="font-plex text-[10px] font-bold uppercase tracking-[0.15em] text-ri-emerald">Step 1 · Describe</div>
+      <div className="mt-1 text-sm font-bold text-ri-charcoal">What do you need removed?</div>
       <div className="mt-3 grid grid-cols-2 gap-2.5">
         {CATEGORIES.map((c) => {
           const active = selected === c.key;
@@ -111,6 +112,10 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
 
       {estimate && !error && (
         <div className="mt-4 rounded-xl bg-ri-ivory border border-si-line p-4" data-testid="preliminary-estimate">
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            <span className="rounded-full bg-ri-emerald/10 px-2.5 py-0.5 font-plex text-[10px] font-bold text-ri-emerald-ink">Step 2 · Understand</span>
+            <span className="rounded-full bg-ri-emerald/10 px-2.5 py-0.5 font-plex text-[10px] font-bold text-ri-emerald-ink">Step 3 · Estimate</span>
+          </div>
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <span className="font-plex text-xl font-bold text-ri-charcoal">{estimate.range}</span>
             <span className="text-[11px] font-bold uppercase tracking-wide text-ri-emerald">{estimate.label}</span>
