@@ -80,8 +80,10 @@ export default async function(req) {
 
     // Curbside discount: only applies when the customer explicitly opts in.
     const curbside = body?.curbside === true;
-    const quote = computeQuote(eighths, prices, { curbside });
-    return Response.json({ ...quote, eighths, city, items: estimateItems, curbside });
+    const travelKm = Number(body?.travel_km);
+    const travel_km = Number.isFinite(travelKm) ? Math.max(0, Math.min(500, travelKm)) : 0;
+    const quote = computeQuote(eighths, prices, { curbside, travel_km });
+    return Response.json({ ...quote, eighths, city, items: estimateItems, curbside, travel_km });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

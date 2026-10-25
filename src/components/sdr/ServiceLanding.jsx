@@ -9,6 +9,7 @@ import { CITIES } from "@/lib/cities";
 import BeforeAfterGallery from "./BeforeAfterGallery";
 import ServiceDeepContent from "./ServiceDeepContent";
 import TrustStrip from "./TrustStrip";
+import PriceEstimator from "./PriceEstimator";
 
 const BASE = PRODUCTION_URL;
 
@@ -82,6 +83,8 @@ export default function ServiceLanding({ config }) {
           ))}
         </div>
       </section>
+
+      <PriceEstimator />
 
       <section className="bg-[#f4f7f5]">
         <div className="max-w-7xl mx-auto px-4 py-14">

@@ -15,6 +15,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
   const [description, setDescription] = useState("");
   const [city, setCity] = useState(fixedCity || "");
   const [curbside, setCurbside] = useState(false);
+  const [travelKm, setTravelKm] = useState(0);
   const [loading, setLoading] = useState(false);
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState("");
@@ -30,6 +31,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
       const payload = items.length ? { items } : { description: description.trim() };
       if (city) payload.city = city;
       payload.curbside = curbside;
+      payload.travel_km = travelKm;
       const res = await base44.functions.invoke("quoteEstimate", payload);
       setQuote(res.data);
       base44.analytics.track({ eventName: "quote_calculated", properties: { city: city || "", items: items.length } });
@@ -102,6 +104,14 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                 placeholder="e.g. old couch, a mini fridge and about ten boxes from the garage"
               />
             </label>
+            <label className="block mb-4">
+              <span className="block text-sm font-semibold text-[#102B2A] mb-1.5">Distance from your city's centre</span>
+              <select value={travelKm} onChange={(e) => setTravelKm(Number(e.target.value))} className="input">
+                <option value={0}>Within city &amp; metro — travel included (up to 30 km)</option>
+                <option value={45}>Out of town — about 30 to 60 km</option>
+                <option value={80}>Far out — about 60 to 100 km</option>
+              </select>
+            </label>
             <label className="flex items-start gap-3 mt-4 mb-4 rounded-xl bg-white border border-[#187B65]/30 px-4 py-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -134,6 +144,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                 <p className="mt-2 text-sm text-emerald-100/60">Estimated load size: {quote.eighths} of 8 truck sections</p>
                 <ul className="mt-4 space-y-1.5 text-sm text-slate-300">
                   <li>Base service price for the {quote.label} tier band{quote.discount ? `, less the $${quote.discount} curbside discount` : ""}</li>
+                  {quote.travel_fee > 0 && <li>Includes ${quote.travel_fee} travel beyond the included base distance</li>}
                   <li>Includes transport to the sorting facility and standard disposal</li>
                   <li>Labour and loading included within the tier band</li>
                   <li>Recycling and donation sorting at no extra charge</li>

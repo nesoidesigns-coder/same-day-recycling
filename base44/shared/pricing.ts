@@ -47,6 +47,17 @@ export const ITEM_WEIGHTS = {
 // Advertised curbside discount: customer stages items curbside, $25 off.
 export const CURBSIDE_DISCOUNT = 25;
 
+// Travel: a base distance from the job's city centre is included in every
+// quote; beyond it a flat per-km surcharge applies. These are rough-quote
+// estimates — the final price is approved by the customer before any work.
+export const INCLUDED_TRAVEL_KM = 30;
+export const TRAVEL_RATE_PER_KM = 2;
+
+export function travelSurcharge(travel_km) {
+  const km = Math.max(0, Number(travel_km) || 0);
+  return Math.round(Math.max(0, km - INCLUDED_TRAVEL_KM) * TRAVEL_RATE_PER_KM);
+}
+
 const round5 = (n) => Math.round(n / 5) * 5;
 
 export function tierFor(eighths) {
@@ -82,13 +93,16 @@ export function computeQuote(eighths, prices, opts) {
     low = Math.max(50, low - discount);
     high = Math.max(low + 5, high - discount);
   }
-  return {
-    label,
-    low,
-    high,
-    discount,
-    range: "$" + low + " \u2013 $" + high + (discount ? " ($" + discount + " curbside discount applied)" : ""),
-  };
+  // Travel surcharge beyond the included base distance (rough estimate).
+  const travel_fee = travelSurcharge(opts && opts.travel_km);
+  if (travel_fee) {
+    low += travel_fee;
+    high += travel_fee;
+  }
+  const range = "$" + low + " \u2013 $" + high +
+    (discount ? " ($" + discount + " curbside discount applied)" : "") +
+    (travel_fee ? " (includes $" + travel_fee + " travel)" : "");
+  return { label, low, high, discount, travel_fee, range };
 }
 
 export function itemsToEighths(items) {

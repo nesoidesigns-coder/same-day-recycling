@@ -11,6 +11,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import PostalCheck, { PROVINCE_NAMES } from "@/components/sdr/PostalCheck";
 import { CITIES } from "@/lib/cities";
+import PriceEstimator from "@/components/sdr/PriceEstimator";
 import { REGIONS } from "@/lib/regions";
 import { useSEO, useStructuredData } from "@/lib/seo";
 
@@ -127,6 +128,9 @@ export default function ExploreServices() {
           ))}
         </div>
       </section>
+
+      {/* Price estimator */}
+      <PriceEstimator />
 
       {/* City browser */}
       <section className="bg-[#f4f7f5]">

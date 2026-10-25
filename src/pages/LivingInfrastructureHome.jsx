@@ -7,6 +7,7 @@ import Navbar from "@/components/sdr/Navbar";
 import Footer from "@/components/sdr/Footer";
 import NationalSignalCore from "@/components/li/NationalSignalCore";
 import NationalDemandPulse from "@/components/home/NationalDemandPulse";
+import PriceEstimator from "@/components/sdr/PriceEstimator";
 import SignalMetricCard from "@/components/li/SignalMetricCard";
 import DemandTrendChart from "@/components/li/DemandTrendChart";
 import ContractorOperationsPreview from "@/components/li/ContractorOperationsPreview";
@@ -117,6 +118,9 @@ export default function LivingInfrastructureHome() {
             </div>
           </div>
         </section>
+
+        {/* Section A2 — Interactive price estimator */}
+        <PriceEstimator />
 
         {/* Section B — National Demand Pulse */}
         <section aria-label="National demand pulse" className="pb-8">
