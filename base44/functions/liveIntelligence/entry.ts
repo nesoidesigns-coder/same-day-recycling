@@ -156,7 +156,9 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
 export default async function (req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    const limited = await checkRateLimit(base44, req, 'liveIntelligence', 60);
+    // The homepage makes four feed calls per visit (overview + three gauges), so
+// the per-IP budget must cover several page views, not just one.
+const limited = await checkRateLimit(base44, req, 'liveIntelligence', 240);
     if (!limited.allowed) return rateLimitedResponse();
     const body = await req.json().catch(() => ({}));
     const action = body?.action || 'overview';
