@@ -10,9 +10,9 @@ const TONES = {
 };
 
 const TYPE_CHIP = {
-  recorded_activity: { label: "Demand", tone: "bg-ri-emerald/10 text-ri-emerald" },
-  search_interest: { label: "Search interest", tone: "bg-ri-amber/10 text-ri-amber" },
-  contractor_availability: { label: "Availability", tone: "bg-ri-emerald/10 text-ri-emerald" },
+  recorded_activity: { label: "Demand", tone: "bg-ri-emerald/10 text-ri-emerald-ink" },
+  search_interest: { label: "Search interest", tone: "bg-ri-amber/10 text-ri-amber-ink" },
+  contractor_availability: { label: "Availability", tone: "bg-ri-emerald/10 text-ri-emerald-ink" },
   published_pricing: { label: "Pricing", tone: "bg-ri-mint text-ri-forest" },
 };
 
@@ -21,13 +21,13 @@ export default function InsightCard({ title, text, signalType, source, observedA
   return (
     <div className={`rounded-2xl bg-white border shadow-sm p-4 flex flex-col ${TONES[signalType && TYPE_CHIP[signalType] ? (signalType === "search_interest" ? "amber" : "emerald") : "slate"]} ${className}`}>
       <div className="flex items-center gap-2">
-        {chip && <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${chip.tone}`}>{chip.label}</span>}
+        {chip && <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${chip.tone}`}>{chip.label}</span>}
         {title && <span className="text-xs font-bold text-ri-charcoal">{title}</span>}
       </div>
       {text ? (
         <p className="mt-2 text-xs text-ri-slate leading-relaxed flex-1">{text}</p>
       ) : (
-        <p className="mt-2 text-xs text-ri-slate/70 leading-relaxed flex-1 italic">{emptyReason || "Insufficient verified data for this selection yet."}</p>
+        <p className="mt-2 text-xs text-ri-slate leading-relaxed flex-1 italic">{emptyReason || "Insufficient verified data for this selection yet."}</p>
       )}
       <DataFreshness className="mt-3" source={source} observedAt={observedAt} updatedAt={updatedAt} verification={verification} size="xs" />
     </div>

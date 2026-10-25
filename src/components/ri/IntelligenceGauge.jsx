@@ -61,14 +61,14 @@ export default function IntelligenceGauge({ value, max, unit = "", label, sub, s
           {center}
         </text>
         {unit && (
-          <text x="80" y="97" textAnchor="middle" fontSize="10" fontWeight="600" className="fill-ri-slate">
+          <text x="80" y="97" textAnchor="middle" fontSize="11.5" fontWeight="600" className="fill-ri-slate">
             {unit}
           </text>
         )}
       </svg>
       <div className="mt-2 text-sm font-bold text-ri-charcoal">{unavailableReason ? "Not available" : label}</div>
       {(unavailableReason || sub) && <div className="mt-1 text-xs text-ri-slate max-w-[260px]">{unavailableReason || sub}</div>}
-      <div className="mt-2 font-plex text-[10px] text-ri-slate/80">
+      <div className="mt-2 font-plex text-xs text-ri-slate">
         {unavailableReason
           ? "Insufficient verified data"
           : <>Source: {source} · Updated {fmtTime(updatedAt) || "recently"}</>}

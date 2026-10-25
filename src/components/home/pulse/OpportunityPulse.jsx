@@ -72,7 +72,7 @@ export default function OpportunityPulse() {
         coverage={`Trailing 90 days · ${c90} actionable signals for ${service.toLowerCase()} categories`}
       >
         <div className="space-y-1.5">
-          <div className="font-plex text-[10px] font-semibold uppercase tracking-wider text-li-slate">Signals by type · 90 days</div>
+          <div className="font-plex text-xs font-semibold uppercase tracking-wider text-li-slate">Signals by type · 90 days</div>
           {Object.keys(TYPE_LABELS).filter((t) => mix[t]).length ? (
             Object.keys(TYPE_LABELS).filter((t) => mix[t]).map((t) => (
               <div key={t}>
@@ -86,7 +86,7 @@ export default function OpportunityPulse() {
               </div>
             ))
           ) : (
-            <p className="text-[11px] text-li-slate">No actionable signals recorded for this service yet — the gauge reports that instead of showing a zero.</p>
+            <p className="text-xs text-li-slate">No actionable signals recorded for this service yet — the gauge reports that instead of showing a zero.</p>
           )}
         </div>
       </PulseRing>

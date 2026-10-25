@@ -82,7 +82,7 @@ export default function PriceIntelligenceGauge({ prices, cityLabel, generatedAt,
               const p1 = polar(cx, cy, 130, angleFor(min));
               const p2 = polar(cx, cy, 130, angleFor(max));
               return (
-                <g fontSize="10.5" fill="#61756D" fontWeight="600">
+                <g fontSize="11.5" fill="#61756D" fontWeight="600">
                   <text x={p1.x} y={p1.y + 4} textAnchor="middle">{money(min)}</text>
                   <text x={p2.x} y={p2.y + 4} textAnchor="middle">{money(max)}</text>
                 </g>
@@ -92,7 +92,7 @@ export default function PriceIntelligenceGauge({ prices, cityLabel, generatedAt,
             <text x={cx} y={cy - 2} textAnchor="middle" fontSize="34" fontWeight="700" fill="#172B26">
               From {money(min)}
             </text>
-            <text x={cx} y={cy + 20} textAnchor="middle" fontSize="11" fill="#61756D">
+            <text x={cx} y={cy + 20} textAnchor="middle" fontSize="12" fill="#61756D">
               starting pickup price · {cityLabel || "platform rate"}
             </text>
           </g>
@@ -113,7 +113,7 @@ export default function PriceIntelligenceGauge({ prices, cityLabel, generatedAt,
             </div>
           ))}
         </dl>
-        <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-0.5 font-plex text-[11px] text-si-muted">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-0.5 font-plex text-xs text-si-muted">
           <span>Platform published rates{cityLabel ? ` · ${cityLabel}` : ""}</span>
           {generatedAt && <span>· Updated {new Date(generatedAt).toLocaleDateString("en-CA")}</span>}
         </div>

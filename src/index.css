@@ -106,6 +106,8 @@
     --ri-charcoal: 170 27% 13%;  /* #182A27 main text */
     --ri-slate: 159 8% 43%;      /* #657670 supporting text */
     --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
+    --ri-amber-ink: 35 100% 28%;    /* #8F5D00 — dark amber for text on light tints (AA) */
+    --ri-emerald-ink: 172 79% 24%;  /* #126A5F — dark emerald for text on light tints (AA) */
   }
 
   .dark {

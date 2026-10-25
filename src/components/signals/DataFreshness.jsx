@@ -1,7 +1,7 @@
 // One consistent freshness label used by every Living Signals display:
 // source, observation/update time and verification status.
 const VERIFICATION_LABEL = {
-  verified: { text: "Verified", tone: "text-ri-emerald" },
+  verified: { text: "Verified", tone: "text-ri-emerald-ink" },
   public: { text: "Public source", tone: "text-ri-slate" },
   aggregate: { text: "Aggregate data", tone: "text-ri-slate" },
 };
@@ -16,7 +16,7 @@ export default function DataFreshness({ source, observedAt, updatedAt, verificat
   const status = VERIFICATION_LABEL[verification] || VERIFICATION_LABEL.public;
   const updated = fmt(updatedAt) || fmt(observedAt);
   return (
-    <div className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 font-plex ${size === "xs" ? "text-[10px]" : "text-[11px]"} text-ri-slate/90 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 font-plex text-xs text-ri-slate ${className}`}>
       {updated && <span>Updated {updated}</span>}
       {source && <span aria-hidden="true">·</span>}
       {source && <span>{source}</span>}

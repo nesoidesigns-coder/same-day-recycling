@@ -53,7 +53,7 @@ export default function CanadaSignalSection() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-xl">
           <h2 className="text-[26px] font-bold tracking-tight text-si-ink md:text-[34px]">
-            The Canada <span className="text-ri-amber">Signal</span>
+            The Canada <span className="text-ri-amber-ink">Signal</span>
           </h2>
           <p className="mt-1 text-sm text-si-muted md:text-base">
             Canada's Service Intelligence — Powered by Recycling OS. Verified search-interest signals across the services we provide, explained in plain language.
@@ -129,7 +129,7 @@ export default function CanadaSignalSection() {
                 </p>
               </>
             )}
-            <div className="mt-3 flex items-start gap-1.5 text-[11px] text-ri-slate">
+            <div className="mt-3 flex items-start gap-1.5 text-xs text-ri-slate">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span className="font-plex leading-snug">{signal?.methodology || "Documented methodology: equal-weight mean of relative search-interest indices from verified search-intelligence records."}</span>
             </div>
@@ -139,7 +139,7 @@ export default function CanadaSignalSection() {
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {layerChips.map((l) => (
               <div key={l.label} className="rounded-2xl border border-si-line bg-white p-4" title={l.title}>
-                <div className="text-[11px] font-bold text-si-muted">{l.label}</div>
+                <div className="text-xs font-bold text-si-muted">{l.label}</div>
                 <div className={`mt-1 text-lg font-bold ${l.ok ? "text-ri-forest" : "text-ri-slate"}`}>{l.value}</div>
               </div>
             ))}

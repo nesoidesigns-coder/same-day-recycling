@@ -6,8 +6,8 @@ import DataFreshness from "./DataFreshness";
 // Signals engine — normalized, sanitized, no identities. Search-interest
 // rows are explicitly labelled so they are never read as customer activity.
 const TYPE_LABEL = {
-  observed_public_request: { label: "Observed request", tone: "bg-ri-emerald/10 text-ri-emerald" },
-  search_interest: { label: "Search interest", tone: "bg-ri-amber/10 text-ri-amber" },
+  observed_public_request: { label: "Observed request", tone: "bg-ri-emerald/10 text-ri-emerald-ink" },
+  search_interest: { label: "Search interest", tone: "bg-ri-amber/10 text-ri-amber-ink" },
   market_indicator: { label: "Market indicator", tone: "bg-ri-mint text-ri-forest" },
 };
 
@@ -38,9 +38,9 @@ export default function DiscoveryStream({ signals = [], isLoading, emptyLabel = 
           return (
             <li key={f.id} className="rounded-xl bg-ri-ivory border border-si-line px-3.5 py-2.5">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${type.tone}`}>{type.label}</span>
-                {place && <span className="font-plex text-[10px] text-ri-slate">{place}</span>}
-                <span className="font-plex text-[10px] text-ri-slate/70">{fmt(f.observed_at)}</span>
+                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${type.tone}`}>{type.label}</span>
+                {place && <span className="font-plex text-xs text-ri-slate">{place}</span>}
+                <span className="font-plex text-xs text-ri-slate">{fmt(f.observed_at)}</span>
               </div>
               <p className="mt-1 text-xs text-ri-charcoal leading-relaxed">{f.title}</p>
               <DataFreshness className="mt-1" source={`via ${f.source}`} observedAt={f.observed_at} updatedAt={f.updated_at} verification={f.verification} size="xs" />

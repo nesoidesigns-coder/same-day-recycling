@@ -88,7 +88,7 @@ export default function ConsumerIntelligenceGauge({
           <g>
             <circle cx={cx} cy={cy} r={126} fill="none" stroke="#DCE8E2" strokeWidth="20" strokeDasharray="4 10" opacity="0.8" />
             <text x={cx} y={cy - 4} textAnchor="middle" fontSize="38" fontWeight="700" fill="#61756D">—</text>
-            <text x={cx} y={cy + 22} textAnchor="middle" fontSize="11" fill="#61756D">{emptyLabel}</text>
+            <text x={cx} y={cy + 22} textAnchor="middle" fontSize="12" fill="#61756D">{emptyLabel}</text>
           </g>
         ) : (
           <g role={interactive ? "radiogroup" : undefined} aria-label={label}>
@@ -134,7 +134,7 @@ export default function ConsumerIntelligenceGauge({
           {centerPrimary}
         </text>
         {centerSub && (
-          <text x={cx} y={cy + 22} textAnchor="middle" fontSize="11.5" fill="#61756D">
+          <text x={cx} y={cy + 22} textAnchor="middle" fontSize="12" fill="#61756D">
             {centerSub}
           </text>
         )}
@@ -142,7 +142,7 @@ export default function ConsumerIntelligenceGauge({
 
       {/* Source, scope, period and freshness — always visible */}
       <figcaption className="mt-1">
-        <div className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-0.5 font-plex text-[11px] text-si-muted">
+        <div className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-0.5 font-plex text-xs text-si-muted">
           {period && <span>{period}</span>}
           {scope && <span>· {scope}</span>}
           {source && <span>· Source: {source}</span>}

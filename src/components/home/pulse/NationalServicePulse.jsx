@@ -75,7 +75,7 @@ export default function NationalServicePulse() {
         {/* Category mix */}
         {rows.length > 0 && (
           <div className="space-y-1.5">
-            <div className="font-plex text-[10px] font-semibold uppercase tracking-wider text-white/50">Activity by category</div>
+            <div className="font-plex text-xs font-semibold uppercase tracking-wider text-white/70">Activity by category</div>
             {rows.slice(0, 4).map((r) => (
               <button
                 key={r.key}
@@ -120,13 +120,13 @@ export default function NationalServicePulse() {
             ["Last 90 days", c90],
           ].map(([label, n]) => (
             <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.06] px-2 py-4">
-              <dt className="font-plex text-[10px] font-semibold uppercase tracking-wider text-white/50">{label}</dt>
+              <dt className="font-plex text-xs font-semibold uppercase tracking-wider text-white/70">{label}</dt>
               <dd className="mt-1 font-plex text-2xl font-bold text-white tabular-nums">{loading ? "…" : n}</dd>
             </div>
           ))}
         </dl>
 
-        <p className="mt-5 border-t border-white/10 pt-4 text-[11px] leading-relaxed text-white/50">
+        <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-relaxed text-white/70">
           Counts include only observations this platform can legitimately access and verify: public request posts
           (with attribution), first-party inquiries and bookings, and labelled search-interest records. Records with
           an unresolved location are never assigned to a city or province. If there are no signals yet for a selection,

@@ -173,7 +173,7 @@ export default function NationalSignalsSection() {
 
       <div className="mt-5 text-xs text-si-muted">
         Looking for local numbers?{" "}
-        <Link to="/request-service" className="font-bold text-ri-emerald hover:underline">
+        <Link to="/request-service" className="font-bold text-ri-emerald-ink hover:underline">
           Request a pickup
         </Link>{" "}
         and the intelligence panel filters to your city automatically.

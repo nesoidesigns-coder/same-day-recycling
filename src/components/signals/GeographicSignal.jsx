@@ -62,7 +62,7 @@ export default function GeographicSignal({ scope, onScope, provinces = [], provi
       )}
 
       {summary && (
-        <p key={fadeKey} className="geo-signal-fade mt-2 font-plex text-[11px] text-ri-slate">{summary}</p>
+        <p key={fadeKey} className="geo-signal-fade mt-2 font-plex text-xs text-ri-slate">{summary}</p>
       )}
     </div>
   );

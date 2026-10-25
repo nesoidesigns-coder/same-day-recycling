@@ -43,7 +43,7 @@ export default function LoadSizeScale() {
         {TIER_POS.map((t) => (
           <div key={t.key} className="absolute -top-1" style={{ left: `${(t.eighths / 8) * 100}%` }}>
             <div className="w-0.5 h-5 -translate-x-1/2 bg-[#102B2A]/30" />
-            <div className="mt-1 -translate-x-1/2 whitespace-nowrap font-plex text-[10px] font-semibold text-[#102B2A]">
+            <div className="mt-1 -translate-x-1/2 whitespace-nowrap font-plex text-xs font-semibold text-[#102B2A]">
               {t.label}
             </div>
           </div>

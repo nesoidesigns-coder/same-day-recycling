@@ -17,7 +17,7 @@ const TONES = {
     track: "rgba(255,255,255,0.12)",
     arc: "#2FD9C8",
     center: "#FFFFFF",
-    dim: "rgba(255,255,255,0.55)",
+    dim: "rgba(255,255,255,0.7)",
     chip: "border-white/15 bg-white/[0.06] text-white/70",
     panel: "border-white/10 bg-white/[0.04] text-white/70",
     divider: "border-white/10",
@@ -77,14 +77,14 @@ export default function PulseRing({
             <text x="100" y="106" textAnchor="middle" fontSize="13" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>Loading…</text>
           ) : empty ? (
             <>
-              <text x="100" y="94" textAnchor="middle" fontSize="11" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>Awaiting</text>
-              <text x="100" y="110" textAnchor="middle" fontSize="11" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>verified</text>
-              <text x="100" y="126" textAnchor="middle" fontSize="11" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>signals</text>
+              <text x="100" y="94" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>Awaiting</text>
+              <text x="100" y="110" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>verified</text>
+              <text x="100" y="126" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>signals</text>
             </>
           ) : (
             <>
               <text x="100" y="108" textAnchor="middle" fontSize="42" fontWeight="700" fontFamily="'IBM Plex Mono', monospace" fill={t.center}>{shown}</text>
-              <text x="100" y="130" textAnchor="middle" fontSize="11" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>of 100</text>
+              <text x="100" y="130" textAnchor="middle" fontSize="12" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>of 100</text>
             </>
           )}
         </svg>
@@ -108,7 +108,7 @@ export default function PulseRing({
           How this number is built
           <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
         </summary>
-        <div className={`mt-3 space-y-2 text-[11px] leading-relaxed ${t.sub}`}>
+        <div className={`mt-3 space-y-2 text-xs leading-relaxed ${t.sub}`}>
           {methodology && <p>{methodology}</p>}
           {source && <p className={`font-plex ${t.sub}`}><span className="font-semibold">Source:</span> {source}</p>}
           {coverage && <p className={`font-plex ${t.sub}`}><span className="font-semibold">Sample coverage:</span> {coverage}</p>}

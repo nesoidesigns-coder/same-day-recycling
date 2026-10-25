@@ -117,18 +117,18 @@ export default function CanadaSignal({
             <span key={pulseKey} className="signal-pulse-dot inline-block rounded-full font-plex text-[44px] font-bold leading-none text-ri-forest sm:text-[52px]">
               {display}
             </span>
-            <span className="mt-1 text-[11px] font-bold tracking-wide text-ri-forest">National Signal Index</span>
-            <span className="mt-0.5 font-plex text-[10px] text-ri-slate">0–100 · {period || "28-day window"}</span>
+            <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">National Signal Index</span>
+            <span className="mt-0.5 font-plex text-xs text-ri-slate">0–100 · {period || "28-day window"}</span>
           </>
         ) : (
           <>
             <span className="font-plex text-[40px] font-bold leading-none text-ri-slate">—</span>
-            <span className="mt-1 text-[11px] font-bold tracking-wide text-ri-forest">National Signal Index</span>
-            <span className="mt-1 text-[10px] leading-snug text-ri-slate">Not yet available — insufficient verified search-interest data</span>
+            <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">National Signal Index</span>
+            <span className="mt-1 text-xs leading-snug text-ri-slate">Not yet available — insufficient verified search-interest data</span>
           </>
         )}
-        <span className="mt-2 rounded-full bg-ri-amber/15 px-2.5 py-0.5 text-[10px] font-bold text-ri-forest">{geoLabel}</span>
-        {updatedAt && <span className="mt-1 font-plex text-[9px] text-ri-slate/70">updated {new Date(updatedAt).toLocaleString("en-CA", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>}
+        <span className="mt-2 rounded-full bg-ri-amber/15 px-2.5 py-0.5 text-xs font-bold text-ri-forest">{geoLabel}</span>
+        {updatedAt && <span className="mt-1 font-plex text-[11px] text-ri-slate">updated {new Date(updatedAt).toLocaleString("en-CA", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>}
       </div>
 
       {/* Update pulse indicator (fires once per real value change) */}

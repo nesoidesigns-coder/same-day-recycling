@@ -74,7 +74,7 @@ export default function SignalGauge({
         <text x="80" y="78" textAnchor="middle" fontSize="30" fontWeight="700" className="font-plex fill-ri-forest">
           {center}
         </text>
-        {unit && <text x="80" y="97" textAnchor="middle" fontSize="10" fontWeight="600" className="fill-ri-slate">{unit}</text>}
+        {unit && <text x="80" y="97" textAnchor="middle" fontSize="11.5" fontWeight="600" className="fill-ri-slate">{unit}</text>}
       </svg>
       <div className="mt-2 text-sm font-bold text-ri-forest">{unavailableReason ? "Not available" : label}</div>
       {(unavailableReason || sub) && <div className="mt-1 text-xs text-ri-slate max-w-[280px]">{unavailableReason || sub}</div>}
@@ -92,7 +92,7 @@ export default function SignalGauge({
         size={pulse && usable ? "xs" : "sm"}
       />
       {unavailableReason && (
-        <div className="mt-1 font-plex text-[10px] text-ri-slate/80">Insufficient verified data</div>
+        <div className="mt-1 font-plex text-xs text-ri-slate">Insufficient verified data</div>
       )}
     </div>
   );
