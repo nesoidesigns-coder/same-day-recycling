@@ -97,6 +97,52 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     undefined,
     () => textureLoader.load("/earth-blue-marble.jpg", applyEarthTexture, undefined, () => { /* stylized matte globe stays */ })
   );
+
+  // Google-Earth-style deep zoom: closing in on a city fades a
+  // high-resolution aerial patch (ESRI World Imagery, free public service)
+  // over the Blue Marble surface for that region.
+  let patch = null, patchNode = null, pendingAerial = null;
+  const patchCache = new Map(); // city key -> texture, or "failed"
+  const removePatch = () => { if (patch) patch.visible = false; patchNode = null; };
+  const applyPatch = (node, tex) => {
+    if (failed) return;
+    const lngW = node.lng - 1.4, lngE = node.lng + 1.4, latS = node.lat - 0.9, latN = node.lat + 0.9;
+    if (patch) { globeGroup.remove(patch); patch.geometry.dispose(); patch.material.dispose(); }
+    patch = new THREE.Mesh(
+      new THREE.SphereGeometry(
+        R * 1.003, 48, 32,
+        THREE.MathUtils.degToRad(lngW + 186), THREE.MathUtils.degToRad(lngE - lngW),
+        THREE.MathUtils.degToRad(90 - latN), THREE.MathUtils.degToRad(latN - latS)
+      ),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0 })
+    );
+    globeGroup.add(patch);
+    patchNode = node;
+    dirty = true;
+  };
+  const setAerial = (node) => {
+    if (!node || failed) { pendingAerial = null; removePatch(); return; }
+    pendingAerial = node.key;
+    if (patchNode?.key === node.key) return;
+    const cached = patchCache.get(node.key);
+    if (cached === "failed") { removePatch(); return; }
+    if (cached) { applyPatch(node, cached); return; }
+    const lngW = node.lng - 1.4, lngE = node.lng + 1.4, latS = node.lat - 0.9, latN = node.lat + 0.9;
+    const url = `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${lngW.toFixed(4)},${latS.toFixed(4)},${lngE.toFixed(4)},${latN.toFixed(4)}&bboxSR=4326&imageSR=4326&size=1024,660&format=jpg&f=image`;
+    textureLoader.load(
+      url,
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy?.() || 1;
+        patchCache.set(node.key, tex);
+        if (pendingAerial === node.key) applyPatch(node, tex);
+      },
+      undefined,
+      () => { patchCache.set(node.key, "failed"); if (patchNode?.key === node.key) removePatch(); }
+    );
+    removePatch();
+  };
+
   const graticuleMat = new THREE.LineBasicMaterial({ color: 0x3b6a72, transparent: true, opacity: 0.45 });
   const graticulePos = [];
   for (let lat = -60; lat <= 75; lat += 15) {
@@ -274,6 +320,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     const target = camDist < homeDist * 0.68 ? findCityAtCenter() : null;
     if ((target?.key || null) !== (autoCity?.key || null)) {
       autoCity = target;
+      setAerial(target);
       onZoomCity?.(autoCity);
     }
   };
@@ -356,6 +403,16 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       if (Math.abs(velX) <= 0.02 && Math.abs(velY) <= 0.02) { velX = velY = 0; baseQuat.copy(globeGroup.quaternion); }
     }
     maybeAutoZoomCity();
+    // Aerial patch fades in as the camera closes past the wide view
+    if (patch && patchNode) {
+      const start = homeDist * 0.68, full = homeDist * 0.42;
+      if (camDist >= start) patch.visible = false;
+      else {
+        patch.visible = true;
+        patch.material.opacity = Math.min(1, Math.max(0, (start - camDist) / (start - full)));
+      }
+      dirty = true;
+    }
     renderer.render(scene, camera);
   };
   tick();
@@ -391,12 +448,15 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     focusOn: (lat, lng, instant) => {
       dirty = true;
       setCamDist(FOCUS_DIST); // glide in to the selected region
+      const nearest = [...nodeMap.values()].find((n) => Math.abs(n.node.lat - lat) < 0.35 && Math.abs(n.node.lng - lng) < 0.35)?.node;
+      if (nearest) setAerial(nearest);
       applyFocus(lat, lng, instant);
     },
     resetFocus: () => {
       dirty = true;
       setCamDist(homeDist);
       focus.active = false;
+      setAerial(null);
       applyFocus(VIEW_LAT, VIEW_LNG, reduced);
     },
     updateData: (nextNodes) => setData(nextNodes),

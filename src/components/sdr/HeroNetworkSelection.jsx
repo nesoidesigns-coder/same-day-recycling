@@ -1,5 +1,6 @@
 import { X, Sparkles } from "lucide-react";
 import HeroMapCityTooltip from "@/components/sdr/HeroMapCityTooltip";
+import HeroStreetView from "@/components/sdr/HeroStreetView";
 import { networkCopy, networkRexQuestion } from "@/components/sdr/heroNetworkCopy";
 
 export default function HeroNetworkSelection({ node, onClose, lang = "en" }) {
@@ -16,6 +17,9 @@ export default function HeroNetworkSelection({ node, onClose, lang = "en" }) {
       <div className="mt-3 flex flex-wrap gap-2">
         <button onClick={useCity} className="min-h-11 rounded-full bg-market-accent px-4 text-sm font-bold text-market-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-market-ink">{t.useCity}</button>
         <button onClick={() => window.dispatchEvent(new CustomEvent("rex:open", { detail: { question } }))} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-market-line px-4 text-sm font-bold text-market-ink"><Sparkles className="h-4 w-4" /> {t.askRex}</button>
+      </div>
+      <div className="mt-3">
+        <HeroStreetView node={node} lang={lang} />
       </div>
     </section>
   );
