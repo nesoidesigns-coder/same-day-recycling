@@ -31,9 +31,9 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --font-heading: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-heading: "Manrope", "Archivo", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-    --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Manrope", "Archivo", ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --brand-gold: 43 88% 55%;
     --brand-gold-dark: 32 82% 33%;
@@ -75,7 +75,7 @@
     --li-btn-hover: 165 58% 30%;
     --font-plex: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     /* Service Intelligence homepage prototype — light consumer palette */
-    --si-bg: 150 17% 98%;
+    --si-bg: 80 19% 97%;         /* warm ivory page canvas */
     --si-bg2: 150 23% 95%;
     --si-forest: 165 54% 16%;
     --si-mint: 166 72% 47%;
@@ -105,6 +105,7 @@
     --ri-amber: 39 100% 48%;     /* #F6A000 premium amber — conversion CTA */
     --ri-charcoal: 170 27% 13%;  /* #182A27 main text */
     --ri-slate: 159 8% 43%;      /* #657670 supporting text */
+    --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
   }
 
   .dark {

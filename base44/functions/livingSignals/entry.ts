@@ -95,6 +95,7 @@ export default async function (req: Request): Promise<Response> {
     const user = userP.status === 'fulfilled' ? userP.value : null;
 
     let signals = items(signalsP);
+    const allSignals = signals;
     const partners = items(partnersP).filter((p) => !isTestPartner(p));
 
     // Scope filtering — exact city match only (never proximity or substring).
@@ -164,6 +165,40 @@ export default async function (req: Request): Promise<Response> {
       verification: 'verified',
     };
 
+    // Canada Signal — the documented National Signal Index. A single basis
+    // only: relative search-interest indices from search-intelligence
+    // records. Requests, bookings, traffic and contractor availability are
+    // separate layers and are never blended into this number.
+    const indexedSearch = allSignals.filter(
+      (s) => s.demand_type === 'search_interest' && s.metric_context?.trend_index != null
+    );
+    const signalCategories = MARKET_CATEGORIES.map((key) => {
+      const recs = indexedSearch.filter((s) => (s.market_categories || []).includes(key));
+      const mean = recs.length
+        ? Math.round(recs.reduce((a, s) => a + Number(s.metric_context.trend_index || 0), 0) / recs.length)
+        : null;
+      return { key, value: mean, record_count: recs.length, available: recs.length > 0 };
+    });
+    const indexValue = indexedSearch.length
+      ? Math.round(
+          indexedSearch.reduce((a, s) => a + Number(s.metric_context.trend_index || 0), 0) / indexedSearch.length
+        )
+      : null;
+    const signal = {
+      name: 'National Signal Index',
+      available: indexValue != null,
+      value: indexValue,
+      scale: '0-100',
+      period: `last ${days} days`,
+      coverage: 'Canada — every search-intelligence record in the window, regardless of geographic filter',
+      methodology:
+        'Equal-weight mean of relative search-interest indices (scale 0-100) taken from search-intelligence records (Google Search Console syncs and keyword datasets). Search interest only — never a count of requests, bookings or contractor availability.',
+      source: 'search intelligence records (Google Search Console syncs and keyword datasets)',
+      verification: 'verified',
+      categories: signalCategories,
+      updated_at: new Date().toISOString(),
+    };
+
     const findings = signals
       .filter((s) => FINDING_TYPES.includes(s.demand_type))
       .sort((a, b) => String(b.source_published_at || b.created_date || '').localeCompare(String(a.source_published_at || a.created_date || '')))
@@ -183,6 +218,7 @@ export default async function (req: Request): Promise<Response> {
       coverage_cities: Object.keys(capacity).sort((a, b) => a.localeCompare(b)),
       partners: { total: cityPartners.length, available: availableContractors.length, same_day: cityPartners.filter((p) => p.same_day_capable).length },
       findings,
+      signal,
       insufficient: {
         recorded_activity: activityRecords.length === 0 ? 'No recorded demand for this selection in the window yet.' : null,
         search_interest: searchRecords.length === 0 ? 'No search-intelligence records for this selection yet.' : null,
