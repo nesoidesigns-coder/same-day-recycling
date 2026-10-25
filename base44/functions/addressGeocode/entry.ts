@@ -122,13 +122,13 @@ export default async function(req) {
     if (typed) {
       const GENERIC = new Set(['street', 'st', 'avenue', 'ave', 'road', 'rd', 'drive', 'dr', 'boulevard', 'blvd', 'crescent', 'way', 'court', 'place', 'pl', 'lane', 'ln', 'north', 'south', 'east', 'west', 'nord', 'sud', 'est', 'ouest']);
       const coreWords = query.toLowerCase().replace(/^\s*\d+\b/, '').split(/[\s,]+/).filter((w) => w.length > 2 && !GENERIC.has(w));
-      const exact = candidates.filter((c) => c.label.startsWith(`${typed} `));
-      if (exact.length) {
-        const inNamedCity = exact.filter((c) => qlc.includes(c.city.toLowerCase()));
-        if (inNamedCity.length && inNamedCity.length < exact.length) candidates = inNamedCity;
-        else if (!inNamedCity.length && via === 'photon') {
-          // The number matched a municipality the query does not name — try
-          // the failover geocoder for the named city before trusting it.
+      const streetIn = (c) => coreWords.some((w) => c.label.toLowerCase().includes(w));
+      let exact = candidates.filter((c) => c.label.startsWith(`${typed} `) && streetIn(c));
+      if (!exact.length) {
+        // The number appears only on streets the query does not name (or the
+        // named street is missing from open data) — try the failover geocoder
+        // before trusting a wrong-street or wrong-city match.
+        if (via === 'photon') {
           const extra = await nominatimGeocode(query).catch(() => []);
           candidates = [...candidates, ...extra]
             .filter((c) => c.lat !== null && c.lng !== null && c.city && c.province)
@@ -136,10 +136,17 @@ export default async function(req) {
               const key = `${c.label.toLowerCase()}|${c.lat.toFixed(4)},${c.lng.toFixed(4)}`;
               return !seen.has(key) && (seen.add(key), true);
             });
+          exact = candidates.filter((c) => c.label.startsWith(`${typed} `) && streetIn(c));
         }
       }
-      const exact2 = candidates.filter((c) => c.label.startsWith(`${typed} `));
-      const namedExact = exact2.filter((c) => qlc.includes(c.city.toLowerCase()));
+      if (exact.length) {
+        const inNamedCity = exact.filter((c) => qlc.includes(c.city.toLowerCase()));
+        if (inNamedCity.length && inNamedCity.length < exact.length) candidates = inNamedCity;
+        else candidates = exact;
+      } else {
+        exact = candidates.filter((c) => c.label.startsWith(`${typed} `));
+      }
+      const namedExact = exact.filter((c) => qlc.includes(c.city.toLowerCase()));
       if (namedExact.length) {
         candidates = namedExact;
       } else {
@@ -150,8 +157,8 @@ export default async function(req) {
         if (sameStreet.length) {
           // The label must never show a number the customer did not type.
           candidates = sameStreet.map((c) => ({ ...c, label: c.label.replace(/^\d+\s+/, ''), street_level: true }));
-        } else if (exact2.length) {
-          candidates = exact2; // nothing in the named city — manual confirmation
+        } else if (exact.length) {
+          candidates = exact; // nothing on the queried street — manual confirmation
         } else candidates = [];
       }
     }
