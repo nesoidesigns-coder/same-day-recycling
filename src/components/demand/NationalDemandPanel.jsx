@@ -5,6 +5,7 @@ import { ArrowLeft, Compass, RefreshCw, Search, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import IndustryGauge from "@/components/demand/IndustryGauge";
 import GaugeNodeDetail from "@/components/demand/GaugeNodeDetail";
+import IndustryDetailCard from "@/components/demand/IndustryDetailCard";
 
 // Consumer-facing national demand intelligence: one interactive gauge of
 // Canadian industries → subdivisions → search topics, backed only by real
@@ -108,6 +109,10 @@ export default function NationalDemandPanel() {
                 {topic ? (
                   <div className="mt-4">
                     <GaugeNodeDetail industry={industry} subdivision={subdivision} topic={topic} onClose={back} />
+                  </div>
+                ) : industry && !subdivision ? (
+                  <div className="mt-4">
+                    <IndustryDetailCard industry={industry} onClose={back} />
                   </div>
                 ) : (
                   <div className="mt-4 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-emerald-100/70">
