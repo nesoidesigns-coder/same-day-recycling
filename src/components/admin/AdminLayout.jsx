@@ -72,7 +72,7 @@ const ADVANCED = [
 function NavList({ pathname, onNavigate }) {
   const group = (title, items) => (
     <div className="mb-6">
-      <div className="px-3 mb-2 font-plex text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-100/40">{title}</div>
+      <div className="px-3 mb-2 font-plex text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-100/60">{title}</div>
       <nav className="space-y-0.5">
         {items.map((n) => {
           const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
@@ -81,11 +81,11 @@ function NavList({ pathname, onNavigate }) {
               key={n.to}
               to={n.to}
               onClick={onNavigate}
-              className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 min-h-[44px] text-sm font-semibold transition-colors ${
-                active ? "bg-li-infra text-white shadow-sm" : "text-emerald-100/70 hover:bg-white/5 hover:text-white"
+              className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 min-h-[44px] text-sm font-bold transition-colors ${
+                active ? "bg-li-infra text-white shadow-sm" : "text-emerald-100/90 hover:bg-white/5 hover:text-white"
               }`}
             >
-              <n.icon className={`w-4 h-4 ${active ? "text-li-mint" : "text-emerald-100/40"}`} />
+              <n.icon className={`w-4 h-4 ${active ? "text-li-mint" : "text-emerald-100/60"}`} />
               {n.label}
             </Link>
           );
