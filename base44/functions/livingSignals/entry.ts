@@ -177,6 +177,9 @@ export default async function (req: Request): Promise<Response> {
     // bookings or contractor availability.
     let gscQueries: Array<{ query: string; clicks: number; impressions: number }> | null = null;
     let gscError = '';
+    let gscDataStart: string | null = null;
+    let gscDataDays = 0;
+    let gscWindowStart = '';
     try {
       const { accessToken } = await base44.asServiceRole.connectors.getConnection('google_search_console');
       const sitesRes = await fetch('https://www.googleapis.com/webmasters/v3/sites', {
@@ -197,6 +200,7 @@ export default async function (req: Request): Promise<Response> {
           endD.setUTCDate(endD.getUTCDate() - 2);
           const startD = new Date(endD);
           startD.setUTCDate(startD.getUTCDate() - (days - 1));
+          gscWindowStart = fmtDate(startD);
           const analyticsRes = await fetch(
             `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(target)}/searchAnalytics/query`,
             {
@@ -211,6 +215,23 @@ export default async function (req: Request): Promise<Response> {
           } else {
             const rows = (await analyticsRes.json()).rows || [];
             gscQueries = rows.map((r) => ({ query: String(r.keys[0] || ''), clicks: r.clicks || 0, impressions: r.impressions || 0 }));
+            // Day-by-day coverage in the same window: Search Console properties
+            // can begin reporting mid-window (e.g. recently verified domains),
+            // and the counts must never be read as a full-period total then.
+            const coverageRes = await fetch(
+              `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(target)}/searchAnalytics/query`,
+              {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ startDate: fmtDate(startD), endDate: fmtDate(endD), dimensions: ['date'], rowLimit: 250 }),
+                signal: AbortSignal.timeout(10000),
+              }
+            );
+            if (coverageRes.ok) {
+              const coverageRows = (await coverageRes.json()).rows || [];
+              gscDataDays = coverageRows.length;
+              gscDataStart = coverageRows.length ? String(coverageRows[0].keys[0]) : null;
+            }
           }
         }
       }
@@ -238,6 +259,7 @@ export default async function (req: Request): Promise<Response> {
       };
     });
 
+    const partialWindow = gscDataStart != null && gscWindowStart !== '' && gscDataStart > gscWindowStart;
     const signal = {
       name: 'Customer Search Demand',
       available: gscQueries != null,
@@ -245,7 +267,12 @@ export default async function (req: Request): Promise<Response> {
       clicks: totalClicks,
       unit: 'searches',
       scale: 'actual count',
-      period: `last ${days} days`,
+      period: partialWindow ? `last ${days} days (Search Console data begins ${gscDataStart})` : `last ${days} days`,
+      data_start: gscDataStart,
+      data_days: gscDataDays,
+      window_note: partialWindow
+        ? `Google Search Console only reports data for this property since ${gscDataStart} — the ${days}-day window contains ${gscDataDays} day${gscDataDays === 1 ? '' : 's'} of recorded data, so these counts cover a shorter period than the label suggests.`
+        : null,
       coverage: 'Google Search Console queries for this site, matched to service categories by keyword rules',
       methodology:
         'Actual counts of customer searches (impressions) recorded in Google Search Console for this site, with roughly a 2-day reporting lag. Each search query is matched to service categories by deterministic keyword rules; the total counts each search once, and a search may appear in more than one matching category. Never a score or index, and never blended with requests, bookings or contractor availability.',

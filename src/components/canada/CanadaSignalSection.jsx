@@ -26,6 +26,9 @@ export default function CanadaSignalSection() {
     label: SIGNAL_CATEGORY_LABEL[c.key] || c.key,
   }));
   const selectedCat = categories.find((c) => c.key === category);
+  const shortPeriod = signal?.data_start
+    ? `since ${new Date(signal.data_start).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}`
+    : `last ${days} days`;
 
   const layerChips = [
     {
@@ -85,6 +88,7 @@ export default function CanadaSignalSection() {
             coverageCount={(data?.coverage_cities || []).length}
             updatedAt={data?.generated_at}
             isLoading={feed.isLoading}
+            periodOverride={shortPeriod}
           />
           <div className="mt-4 flex flex-wrap justify-center gap-1.5">
             <button
@@ -133,6 +137,9 @@ export default function CanadaSignalSection() {
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span className="font-plex leading-snug">{signal?.methodology || "Documented methodology: actual customer search counts (impressions) from Google Search Console, matched to service categories by keyword rules."}</span>
             </div>
+            {signal?.window_note && (
+              <p className="mt-2 rounded-lg bg-ri-amber/10 px-3 py-2 text-xs leading-snug text-ri-amber-ink">{signal.window_note}</p>
+            )}
           </div>
 
           {/* Separate layers — never blended into the index */}

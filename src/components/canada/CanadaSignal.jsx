@@ -31,6 +31,7 @@ const MEASURE_TICKS = Array.from({ length: 72 }, (_, i) => {
 export default function CanadaSignal({
   value,
   period,
+  periodOverride,
   categories = [],
   selected = "",
   onSelect,
@@ -121,7 +122,7 @@ export default function CanadaSignal({
               {display}
             </span>
             <span className="mt-1 text-xs font-bold tracking-wide text-ri-forest">Customer searches</span>
-            <span className="mt-0.5 font-plex text-xs text-ri-slate">actual count · {period || "28-day window"}</span>
+            <span className="mt-0.5 font-plex text-xs text-ri-slate">actual count · {periodOverride || period || "28-day window"}</span>
           </>
         ) : (
           <>
