@@ -1,0 +1,368 @@
+{
+  "name": "MoveAssistProject",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "Customer full name."
+    },
+    "email": {
+      "type": "string",
+      "default": "",
+      "maxLength": 200
+    },
+    "phone": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "reference_code": {
+      "type": "string",
+      "maxLength": 12,
+      "description": "Random lookup code the customer uses to open their MoveAssist dashboard. The code is the check for public access."
+    },
+    "move_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Customer-stated move or cleanout deadline. Empty when flexible."
+    },
+    "move_flexible": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when the customer said the date is flexible or not fixed."
+    },
+    "situation": {
+      "type": "string",
+      "enum": [
+        "moving_out",
+        "moving_in",
+        "downsizing"
+      ],
+      "default": "moving_out"
+    },
+    "property_type": {
+      "type": "string",
+      "enum": [
+        "apartment",
+        "condo",
+        "house",
+        "townhouse",
+        "other"
+      ],
+      "default": "apartment"
+    },
+    "city": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "province_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 10
+    },
+    "address": {
+      "type": "string",
+      "default": "",
+      "maxLength": 300
+    },
+    "postal_code": {
+      "type": "string",
+      "default": "",
+      "maxLength": 10
+    },
+    "pickup_lat": {
+      "type": "number",
+      "description": "Verified latitude of the confirmed pickup location, from the shared pickup location store only."
+    },
+    "pickup_lng": {
+      "type": "number",
+      "description": "Verified longitude of the confirmed pickup location."
+    },
+    "pickup_unit": {
+      "type": "string",
+      "default": "",
+      "maxLength": 40
+    },
+    "pickup_location_source": {
+      "type": "string",
+      "enum": [
+        "verified_geocode",
+        "customer_adjusted"
+      ],
+      "default": "",
+      "description": "How the pickup coordinates were established. Empty = coordinates not captured."
+    },
+    "access_instructions": {
+      "type": "object",
+      "default": {},
+      "description": "Customer-provided access facts (inside/outside items, stairs, elevator, parking, note). Never inferred from imagery."
+    },
+    "inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "quantity": {
+            "type": "number",
+            "default": 1
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "checked": {
+            "type": "boolean",
+            "default": false,
+            "description": "Customer has confirmed this item still needs removal."
+          }
+        }
+      },
+      "default": [],
+      "description": "Moving cleanout item inventory, built from customer answers and photo review."
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "file_uri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "added_date": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Customer-uploaded photos of items (stored privately)."
+    },
+    "pickup_count": {
+      "type": "string",
+      "enum": [
+        "one",
+        "several",
+        "unsure"
+      ],
+      "default": "one",
+      "description": "Customer expectation: one pickup, several coordinated pickups, or not sure yet."
+    },
+    "arrangement": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "project",
+        "membership"
+      ],
+      "default": "project",
+      "description": "Recommended or chosen service arrangement. Membership pricing requires owner approval before anything is published."
+    },
+    "recommendation": {
+      "type": "object",
+      "default": {},
+      "description": "Rex arrangement recommendation: {arrangement, reason, basis}. Estimates and AI reasoning are labelled, never presented as verified."
+    },
+    "rex_timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "when": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "what": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "stage_id": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "default": [],
+      "description": "Rex's moving cleanout timeline (AI planning guidance, labelled as planning advice)."
+    },
+    "missing_info": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Job information Rex identified as still missing (access details, item sizes, dates)."
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable stage id within the project."
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Customer-readable stage name, e.g. 'Pre-move clearout' or 'Final cleanout'."
+          },
+          "preferred_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "items_description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "quote_estimate": {
+            "type": "string",
+            "maxLength": 60,
+            "description": "Labeled preliminary estimate text from the existing pricing engine."
+          },
+          "quote_eighths": {
+            "type": "number",
+            "default": 0
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "none",
+              "estimated",
+              "approved",
+              "declined"
+            ],
+            "default": "none",
+            "description": "estimated = preliminary estimate shown; approved = customer approved the estimate and a pickup request was submitted."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "estimated",
+              "requested",
+              "scheduled",
+              "completed",
+              "cancelled"
+            ],
+            "default": "draft",
+            "description": "Contractor confirmation is required before a stage is represented as scheduled or confirmed."
+          },
+          "request_reference": {
+            "type": "string",
+            "default": "",
+            "description": "Reference code of the NationalRequest created when this stage's pickup was requested."
+          },
+          "dispatch_status": {
+            "type": "string",
+            "default": "",
+            "description": "Latest contractor-matching status synced from the request record."
+          },
+          "partner_name": {
+            "type": "string",
+            "default": "",
+            "maxLength": 120
+          },
+          "booking_id": {
+            "type": "string",
+            "default": ""
+          },
+          "payment_status": {
+            "type": "string",
+            "default": "",
+            "description": "Settled by the existing booking payment records; never estimated."
+          },
+          "completion_note": {
+            "type": "string",
+            "default": "",
+            "maxLength": 500
+          }
+        }
+      },
+      "default": [],
+      "description": "Pickup stages of this project. Each stage is individually identifiable, quoted, approved, dispatched and auditable."
+    },
+    "contractor_brief": {
+      "type": "object",
+      "default": {},
+      "description": "Rex-prepared contractor-ready job package per stage id."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "default": "planning"
+    },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      },
+      "default": [],
+      "description": "Auditable history: created, advised, stage requested, stage completed."
+    },
+    "consent_followups": {
+      "type": "boolean",
+      "default": false,
+      "description": "Customer permission for Rex follow-up reminders (photos, access info, upcoming pickups)."
+    },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "service",
+        "internal_test"
+      ],
+      "default": "service"
+    }
+  },
+  "required": [
+    "name",
+    "phone",
+    "city"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -127,6 +127,8 @@ const AdminBI = lazyPage(() => import('./pages/AdminBI'));
 const AdminOps = lazyPage(() => import('./pages/AdminOps'));
 const AdminGauges = lazyPage(() => import('./pages/AdminGauges'));
 const Track = lazyPage(() => import('./pages/Track'));
+const MoveAssist = lazyPage(() => import('./pages/MoveAssist'));
+const MoveAssistDashboard = lazyPage(() => import('./pages/MoveAssistDashboard'));
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
@@ -199,6 +201,8 @@ const AuthenticatedApp = () => {
       <Route path="/electronics-recycling" element={<ElectronicsRecycling />} />
       <Route path="/commercial-recycling" element={<CommercialRecycling />} />
       <Route path="/same-day-pickup" element={<SameDayPickup />} />
+      <Route path="/move-assist" element={<MoveAssist />} />
+      <Route path="/move-assist/dashboard" element={<MoveAssistDashboard />} />
       <Route path="/services" element={<ExploreServices />} />
       <Route path="/service-finder" element={<ServiceFinder />} />
       <Route path="/request-service" element={<RequestService />} />
