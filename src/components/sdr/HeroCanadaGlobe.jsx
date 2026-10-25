@@ -9,7 +9,7 @@ const R = 10;
 const DEG = Math.PI / 180;
 const VIEW_LAT = 58, VIEW_LNG = -96;
 const ROT = 0.0055;
-const CAM_MIN = 11.5, FOCUS_DIST = 13;
+const CAM_MIN = R + 0.004, FOCUS_DIST = 13;
 
 const spherePoint = (lat, lng, radius = R) => {
   const phi = (90 - lat) * DEG, theta = (lng + 96) * DEG;
@@ -29,7 +29,7 @@ const targetQuaternion = (lat, lng) => {
 
 
 
-export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], onSelect, onHover, onZoomCity, onFailure, mobile = false }) {
+export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], onSelect, onHover, onZoomCity, onFailure, onCameraChange, mobile = false }) {
   if (!mount) return null;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -53,12 +53,14 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   let homeDist = 34, camDist = homeDist, camTarget = homeDist;
   const setCamDist = (d) => {
     camTarget = Math.min(homeDist * 2.2, Math.max(CAM_MIN, d));
-    if (reduced) camDist = camTarget;
+    if (reduced) { camDist = camTarget; updateCamera(); }
     dirty = true;
   };
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   const updateCamera = () => {
     camera.position.copy(camDir).multiplyScalar(camDist);
+    camera.near = Math.max(0.00002, Math.min(0.1, (camDist - R) * 0.02));
+    camera.updateProjectionMatrix();
     camera.lookAt(TARGET);
   };
   updateCamera();
@@ -106,11 +108,11 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const removePatch = () => { if (patch) patch.visible = false; patchNode = null; };
   const applyPatch = (node, tex) => {
     if (failed) return;
-    const lngW = node.lng - 1.4, lngE = node.lng + 1.4, latS = node.lat - 0.9, latN = node.lat + 0.9;
+    const lngW = node.lng - (node.spanLng || 1.4), lngE = node.lng + (node.spanLng || 1.4), latS = node.lat - (node.spanLat || 0.9), latN = node.lat + (node.spanLat || 0.9);
     if (patch) { globeGroup.remove(patch); patch.geometry.dispose(); patch.material.dispose(); }
     patch = new THREE.Mesh(
       new THREE.SphereGeometry(
-        R * 1.003, 48, 32,
+        R * 1.00001, 48, 32,
         THREE.MathUtils.degToRad(lngW + 186), THREE.MathUtils.degToRad(lngE - lngW),
         THREE.MathUtils.degToRad(90 - latN), THREE.MathUtils.degToRad(latN - latS)
       ),
@@ -127,7 +129,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     const cached = patchCache.get(node.key);
     if (cached === "failed") { removePatch(); return; }
     if (cached) { applyPatch(node, cached); return; }
-    const lngW = node.lng - 1.4, lngE = node.lng + 1.4, latS = node.lat - 0.9, latN = node.lat + 0.9;
+    const lngW = node.lng - (node.spanLng || 1.4), lngE = node.lng + (node.spanLng || 1.4), latS = node.lat - (node.spanLat || 0.9), latN = node.lat + (node.spanLat || 0.9);
     const url = `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${lngW.toFixed(4)},${latS.toFixed(4)},${lngE.toFixed(4)},${latN.toFixed(4)}&bboxSR=4326&imageSR=4326&size=1024,660&format=jpg&f=image`;
     textureLoader.load(
       url,
@@ -314,7 +316,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   };
   // Zoomed-in auto-detection: the municipality closest to the view centre
   // (front-facing only) becomes the "zoomed city" the wrapper reports on.
-  let autoCity = null;
+  let autoCity = null, addressFocus = false;
   const findCityAtCenter = () => {
     const halfW = renderer.domElement.clientWidth / 2, halfH = renderer.domElement.clientHeight / 2;
     const maxDist = Math.min(halfW, halfH) * 0.3;
@@ -329,6 +331,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     return best;
   };
   const maybeAutoZoomCity = () => {
+    if (addressFocus) return; // Never replace the address aerial patch with a city-center patch.
     const target = camDist < homeDist * 0.68 ? findCityAtCenter() : null;
     if ((target?.key || null) !== (autoCity?.key || null)) {
       autoCity = target;
@@ -386,6 +389,15 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
   const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; dirty = true; });
   observer.observe(mount);
   const clock = new THREE.Clock();
+  let lastCamera = "", lastCameraReport = 0;
+  const reportCamera = () => {
+    if (!onCameraChange || performance.now() - lastCameraReport < 250) return;
+    const center = new THREE.Vector3(0, 0, 1).applyQuaternion(globeGroup.quaternion.clone().invert());
+    const snapshot = { lat: Math.asin(center.y) / DEG, lng: ((Math.atan2(center.x, center.z) / DEG - 96 + 540) % 360) - 180,
+      distance: camDist, quaternion: globeGroup.quaternion.toArray(), settled: !focus.active && Math.abs(camDist - camTarget) < (addressFocus ? 0.00003 : 0.03) };
+    const signature = JSON.stringify(snapshot);
+    if (signature !== lastCamera) { lastCamera = signature; lastCameraReport = performance.now(); onCameraChange(snapshot); }
+  };
   const tick = () => {
     raf = requestAnimationFrame(tick);
     const dt = Math.min(clock.getDelta(), 0.05);
@@ -395,8 +407,12 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     lastFrame = performance.now();
     dirty = false;
     // Smooth cinematic camera glide toward the target distance
-    if (Math.abs(camDist - camTarget) > 0.02) {
+    if (Math.abs(camDist - camTarget) > (addressFocus ? 0.00002 : 0.02)) {
       camDist += (camTarget - camDist) * Math.min(1, dt * 4);
+      updateCamera();
+      dirty = true;
+    } else if (camDist !== camTarget) {
+      camDist = camTarget;
       updateCamera();
       dirty = true;
     }
@@ -426,10 +442,12 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       dirty = true;
     }
     if (pickupMarker.visible) {
+      pickupMarker.scale.setScalar(Math.max(0.0002, Math.min(1, (camDist - R) * 0.04)));
       markerGlow.scale.setScalar(1 + 0.18 * Math.sin(clock.elapsedTime * 3));
       dirty = true;
     }
     renderer.render(scene, camera);
+    reportCamera();
   };
   tick();
 
@@ -462,6 +480,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       }
     },
     focusOn: (lat, lng, instant) => {
+      addressFocus = false;
       dirty = true;
       setCamDist(FOCUS_DIST); // glide in to the selected region
       const nearest = [...nodeMap.values()].find((n) => Math.abs(n.node.lat - lat) < 0.35 && Math.abs(n.node.lng - lng) < 0.35)?.node;
@@ -469,6 +488,7 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
       applyFocus(lat, lng, instant);
     },
     resetFocus: () => {
+      addressFocus = false;
       dirty = true;
       setCamDist(homeDist);
       focus.active = false;
@@ -479,15 +499,19 @@ export default function mountHeroCanadaGlobe(mount, { nodes = [], links = [], on
     setPickup: (lat, lng) => {
       dirty = true;
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) { pickupMarker.visible = false; return; }
-      pickupMarker.position.copy(spherePoint(lat, lng, R * 1.02));
+      pickupMarker.position.copy(spherePoint(lat, lng, R * 1.00002));
       pickupMarker.visible = true;
     },
     focusAddress: (lat, lng, instant) => {
+      addressFocus = true;
+      pickupMarker.position.copy(spherePoint(lat, lng, R * 1.00002));
+      pickupMarker.visible = true;
       dirty = true;
       // Glide deeper than a city selection so the high-detail aerial patch
       // fades fully in at the verified coordinates.
-      setCamDist(Math.max(FOCUS_DIST * 0.92, CAM_MIN));
-      setAerial({ key: `addr:${lat.toFixed(3)}:${lng.toFixed(3)}`, lat, lng });
+      setCamDist(CAM_MIN);
+      if (instant || reduced) { camDist = camTarget; updateCamera(); }
+      setAerial({ key: `addr:${lat.toFixed(6)}:${lng.toFixed(6)}`, lat, lng, spanLng: 0.025, spanLat: 0.015 });
       applyFocus(lat, lng, instant);
     },
     updateData: (nextNodes) => setData(nextNodes),

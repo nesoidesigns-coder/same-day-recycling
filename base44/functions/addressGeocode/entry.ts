@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
+import { matchCanadianAddresses } from '../../shared/addressMatching.ts';
 
 // Canadian address intelligence for the pickup booking flow: typeahead
 // suggestions and verified coordinates. Geocoding runs server-side through
@@ -28,6 +29,8 @@ function toCandidate(p, lat, lng) {
   const province = PROVINCE_CODES[String(p.state || '').toLowerCase()] || '';
   return {
     label: [p.housenumber, p.street].filter(Boolean).join(' '),
+    house_number: p.housenumber || '',
+    street: p.street || '',
     city,
     province,
     province_name: p.state || '',
@@ -101,69 +104,14 @@ export default async function(req) {
       raw = await nominatimGeocode(query).catch(() => []);
     }
 
-    // Precision: when the customer typed a street number, keep it authoritative.
-    // Exact-number matches win; if none exists, street-level candidates for the
-    // same street are returned flagged, and off-street noise is dropped.
-    const numMatch = query.match(/^\s*(\d{1,6})\b/);
-    const typed = numMatch ? numMatch[1] : '';
-    const seen = new Set();
-    let candidates = raw
-      .filter((c) => c.lat !== null && c.lng !== null && c.city && c.province)
-      .filter((c) => {
-        const key = `${c.label.toLowerCase()}|${c.lat.toFixed(4)},${c.lng.toFixed(4)}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-    // City precision: a generic street name matches many municipalities, so
-    // rank candidates whose municipality the query actually names first.
-    const qlc = query.toLowerCase();
-    candidates.sort((a, b) => Number(qlc.includes(b.city.toLowerCase())) - Number(qlc.includes(a.city.toLowerCase())));
-    if (typed) {
-      const GENERIC = new Set(['street', 'st', 'avenue', 'ave', 'road', 'rd', 'drive', 'dr', 'boulevard', 'blvd', 'crescent', 'way', 'court', 'place', 'pl', 'lane', 'ln', 'north', 'south', 'east', 'west', 'nord', 'sud', 'est', 'ouest']);
-      const coreWords = query.toLowerCase().replace(/^\s*\d+\b/, '').split(/[\s,]+/).filter((w) => w.length > 2 && !GENERIC.has(w));
-      const streetIn = (c) => coreWords.some((w) => c.label.toLowerCase().includes(w));
-      let exact = candidates.filter((c) => c.label.startsWith(`${typed} `) && streetIn(c));
-      if (!exact.length) {
-        // The number appears only on streets the query does not name (or the
-        // named street is missing from open data) — try the failover geocoder
-        // before trusting a wrong-street or wrong-city match.
-        if (via === 'photon') {
-          const extra = await nominatimGeocode(query).catch(() => []);
-          candidates = [...candidates, ...extra]
-            .filter((c) => c.lat !== null && c.lng !== null && c.city && c.province)
-            .filter((c) => {
-              const key = `${c.label.toLowerCase()}|${c.lat.toFixed(4)},${c.lng.toFixed(4)}`;
-              return !seen.has(key) && (seen.add(key), true);
-            });
-          exact = candidates.filter((c) => c.label.startsWith(`${typed} `) && streetIn(c));
-        }
-      }
-      if (exact.length) {
-        const inNamedCity = exact.filter((c) => qlc.includes(c.city.toLowerCase()));
-        if (inNamedCity.length && inNamedCity.length < exact.length) candidates = inNamedCity;
-        else candidates = exact;
-      } else {
-        exact = candidates.filter((c) => c.label.startsWith(`${typed} `));
-      }
-      const namedExact = exact.filter((c) => qlc.includes(c.city.toLowerCase()));
-      if (namedExact.length) {
-        candidates = namedExact;
-      } else {
-        // No OSM house number for the query's street: keep street-level
-        // matches on the queried street, flagged for confirmation on the map.
-        const pool = candidates.filter((c) => qlc.includes(c.city.toLowerCase()));
-        const sameStreet = (pool.length ? pool : candidates).filter((c) => coreWords.some((w) => c.label.toLowerCase().includes(w)));
-        if (sameStreet.length) {
-          // The label must never show a number the customer did not type.
-          candidates = sameStreet.map((c) => ({ ...c, label: c.label.replace(/^\d+\s+/, ''), street_level: true }));
-        } else if (exact.length) {
-          candidates = exact; // nothing on the queried street — manual confirmation
-        } else candidates = [];
-      }
+    let candidates = matchCanadianAddresses(raw, query);
+    if (via === 'photon' && !candidates.some((c) => c.confidence === 'address')) {
+      // This endpoint is user-initiated search, never Nominatim autocomplete.
+      const extra = await nominatimGeocode(query).catch(() => []);
+      candidates = matchCanadianAddresses([...raw, ...extra], query);
+      if (extra.length) via = 'photon+nominatim';
     }
-
-    return Response.json({ candidates: candidates.slice(0, 5), via });
+    return Response.json({ candidates, via });
   } catch (error) {
     return Response.json({ error: error.message || 'Unexpected error' }, { status: 500 });
   }

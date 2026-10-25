@@ -14,6 +14,9 @@ import HeroCanadaBackground from "@/components/sdr/HeroCanadaBackground";
 import AddressSearch from "@/components/sdr/AddressSearch";
 import PickupHeroHeading from "@/components/sdr/PickupHeroHeading";
 import { networkRegionName } from "@/components/sdr/heroNetworkCopy";
+import usePickupLocation from "@/hooks/usePickupLocation";
+import PickupSessionSummary from "@/components/sdr/PickupSessionSummary";
+import { pickupLocationActions, pickupBookingFields, getPickupLocation } from "@/lib/pickupLocationStore";
 
 // Canada-first guided booking experience: postal code → materials → labeled
 // estimate → pickup request. Bilingual (EN/FR), CAD, province-level tax shown
@@ -132,15 +135,27 @@ export default function InstantQuoteFlow() {
   const [lang, setLang] = useState("en");
   const [step, setStep] = useState(0); // 0 postal, 1 materials, 2 estimate+contact, 3 done
   const [fsa, setFsa] = useState("");
-  const [postalRaw, setPostalRaw] = useState("");
-  const [city, setCity] = useState("");
+  const [manualPostal, setPostalRaw] = useState("");
+  const [manualCity, setCity] = useState("");
   const [territory, setTerritory] = useState(""); // for X-prefix: "NT" | "NU"
   const [qty, setQty] = useState({});
   const [estimate, setEstimate] = useState(null);
   const [form, setForm] = useState({ name: "", phone: "", email: "", preferred_date: "" });
-  const [location, setLocation] = useState(null); // verified address + coordinates
-  const [accessTags, setAccessTags] = useState([]);
-  const [accessNote, setAccessNote] = useState("");
+  const location = usePickupLocation();
+  const city = location?.city || manualCity;
+  const postalRaw = location?.postal_code || manualPostal;
+  const [manualAccessTags, setManualAccessTags] = useState([]);
+  const [manualAccessNote, setManualAccessNote] = useState("");
+  const accessTags = location?.preparation?.tags || manualAccessTags;
+  const accessNote = location?.preparation?.note ?? manualAccessNote;
+  const setAccessTags = (value) => {
+    const nextTags = typeof value === "function" ? value(accessTags) : value;
+    const tags = nextTags.includes("inside") ? nextTags.filter((tag) => tag !== "outside") : nextTags;
+    if (location) pickupLocationActions.setPreparation({ ...location.preparation, tags }); else setManualAccessTags(tags);
+  };
+  const setAccessNote = (note) => {
+    if (location) pickupLocationActions.setPreparation({ ...location.preparation, note }); else setManualAccessNote(note);
+  };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
@@ -148,8 +163,8 @@ export default function InstantQuoteFlow() {
   const t = T[lang];
   const province = useMemo(() => {
     const p = provinceFromFsa(fsa);
-    return p || territory;
-  }, [fsa, territory]);
+    return location?.province || p || territory;
+  }, [fsa, territory, location?.province]);
 
   const validFsa = isValidPostal(postalRaw) && !territoryNeeded(normalizePostal(postalRaw));
   const validTerritory = territoryNeeded(normalizePostal(postalRaw)) && !!territory;
@@ -168,6 +183,7 @@ export default function InstantQuoteFlow() {
     const selectCity = (event) => {
       const location = event.detail || {};
       if (!location.city) return;
+      pickupLocationActions.clear();
       setCity(location.city);
       const postalProvince = provinceFromFsa(normalizePostal(postalRaw)) || territory;
       if (postalProvince && location.province && postalProvince !== location.province) {
@@ -179,40 +195,28 @@ export default function InstantQuoteFlow() {
     return () => window.removeEventListener("pickup:location", selectCity);
   }, [postalRaw, territory, step]);
 
-  // The customer adjusted the pickup pin on the local map — the stored
-  // location follows, and the booking records it as customer_adjusted.
-  useEffect(() => {
-    const onAdjust = (event) => {
-      const d = event.detail || {};
-      if (!Number.isFinite(d.lat) || !Number.isFinite(d.lng)) return;
-      setLocation((loc) => (loc ? { ...loc, lat: d.lat, lng: d.lng, adjusted: true } : loc));
-    };
-    window.addEventListener("pickup:adjust", onAdjust);
-    return () => window.removeEventListener("pickup:adjust", onAdjust);
-  }, []);
-
-  // Address confirmation: a verified geocoded address fills the city and
-  // postal fields, stores the exact coordinates and rotates the globe.
   const onAddressSelect = (candidate) => {
-    if (!candidate) return;
-    setLocation({ ...candidate, unit: "", adjusted: false });
-    setCity(candidate.city || "");
-    if (candidate.postal_code) setPostalRaw(String(candidate.postal_code).toUpperCase().slice(0, 7));
-    try {
-      window.dispatchEvent(new CustomEvent("pickup:address", {
-        detail: { address: candidate.label, unit: "", lat: candidate.lat, lng: candidate.lng, city: candidate.city, province: candidate.province, province_name: candidate.province_name, postal: candidate.postal_code },
-      }));
-      base44.analytics.track({ eventName: "pickup_address_selected", properties: { city: candidate.city || "", province: candidate.province || "" } });
-    } catch { /* the map must never block the booking flow */ }
+    setCity(candidate.city);
+    setPostalRaw(candidate.postal_code || "");
+    setTerritory(["NT", "NU"].includes(candidate.province) ? candidate.province : "");
+    setFsa(normalizePostal(candidate.postal_code));
+    setEstimate(null); setError("");
+    base44.analytics.track({ eventName: "pickup_address_selected", properties: { city: candidate.city, province: candidate.province } });
+    requestAnimationFrame(() => document.getElementById("pickup-map-experience")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
   };
 
   const goPostal = () => {
     const norm = normalizePostal(postalRaw);
-    if (!isValidPostal(norm)) { setError(t.errors.postal); return; }
+    if (location && !getPickupLocation()?.pinConfirmed) {
+      setError(lang === "fr" ? "Confirmez ou ajustez l'épingle sur la carte." : "Confirm or adjust your pickup pin on the map first.");
+      document.getElementById("pickup-location-details")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    if (!location && !isValidPostal(norm)) { setError(t.errors.postal); return; }
     if (!city.trim()) { setError(lang === "fr" ? "Entrez votre ville ou municipalité." : "Enter your city or municipality."); return; }
-    if (territoryNeeded(norm) && !territory) { setError(t.pickTerritory); return; }
-    const knownCity = CITIES.find((c) => c.name.toLowerCase() === city.trim().toLowerCase());
-    const postalProvince = provinceFromFsa(norm) || territory;
+    if (!location && territoryNeeded(norm) && !territory) { setError(t.pickTerritory); return; }
+    const knownCity = location ? null : CITIES.find((c) => c.name.toLowerCase() === city.trim().toLowerCase());
+    const postalProvince = location?.province || provinceFromFsa(norm) || territory;
     if (knownCity && knownCity.province !== postalProvince) { setError(lang === "fr" ? "La ville et le code postal doivent être dans la même province." : "Your city and postal code must be in the same province or territory."); return; }
     setCity(knownCity?.name || city.trim());
     setError("");
@@ -227,6 +231,12 @@ export default function InstantQuoteFlow() {
       }
     } catch { /* the map must never block the booking flow */ }
   };
+
+  useEffect(() => {
+    const continuePickup = () => { goPostal(); document.getElementById("book")?.scrollIntoView({ behavior: "smooth" }); };
+    window.addEventListener("pickup:continue", continuePickup);
+    return () => window.removeEventListener("pickup:continue", continuePickup);
+  }, [location?.pinConfirmed, location?.selectionId, postalRaw, city, territory, lang]);
 
   const getEstimate = async () => {
     if (!selected.length) { setError(t.errors.estimate); return; }
@@ -252,6 +262,7 @@ export default function InstantQuoteFlow() {
   const submit = async (e) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim() || !selected.length) { setError(t.errors.missing); return; }
+    if (location && !location.pinConfirmed) { setError(lang === "fr" ? "Confirmez la nouvelle épingle avant d'envoyer." : "Confirm the current pickup pin before submitting."); return; }
     setError("");
     setLoading(true);
     try {
@@ -268,13 +279,7 @@ export default function InstantQuoteFlow() {
         preferred_date: form.preferred_date,
         // One authoritative location record: the verified geocode (or the
         // customer's adjusted pin) travels with the request into dispatch.
-        ...(location ? {
-          address: [location.label, location.unit ? `Unit ${location.unit}` : ""].filter(Boolean).join(", "),
-          pickup_lat: location.lat,
-          pickup_lng: location.lng,
-          pickup_unit: location.unit || "",
-          pickup_location_source: location.adjusted ? "customer_adjusted" : "verified_geocode",
-        } : {}),
+        ...pickupBookingFields(location),
         ...(accessTags.length || accessNote.trim() ? { access_notes: { tags: accessTags, note: accessNote.trim() } } : {}),
       });
       if (!res.data?.ok || !res.data?.reference_code) throw new Error("Request confirmation unavailable");
@@ -299,28 +304,14 @@ export default function InstantQuoteFlow() {
           {step === 0 && (
             <div className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
               <AddressSearch lang={lang} onSelect={onAddressSelect} />
-              {location && (
-                <div className="mb-3 rounded-xl border border-[#187B65]/40 bg-[#187B65]/10 p-3">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#54D9AE]" />
-                    <p className="min-w-0 text-sm">
-                      <span className="font-bold">{location.street_level ? "≈ " : ""}{location.label}{location.unit ? `, ${lang === "fr" ? "unité" : "unit"} ${location.unit}` : ""}</span>
-                      <span className="block text-xs text-market-muted">{[location.city, location.province_name, location.postal_code].filter(Boolean).join(", ")}</span>
-                      {location.street_level && <span className="block text-[11px] font-semibold text-[#FBBF24]">{lang === "fr" ? "Point approximatif — ajustez l'épingle sur la carte." : "Approximate point — adjust the pin on the map."}</span>}
-                    </p>
-                  </div>
-                  <label className="mt-2 block max-w-xs">
-                    <span className="mb-1 block text-xs font-semibold">{lang === "fr" ? "Unité / appartement (facultatif)" : "Unit / apartment (optional)"}</span>
-                    <input value={location.unit} onChange={(e) => setLocation({ ...location, unit: e.target.value })} maxLength={40} className="input bg-white/95" placeholder={lang === "fr" ? "p. ex. 304" : "e.g. 304"} autoComplete="address-line2" />
-                  </label>
-                </div>
-              )}
+              <PickupSessionSummary lang={lang} editable />
               <div className="grid grid-cols-2 gap-3">
               <label className="block">
                 <span className="block text-sm font-semibold mb-1.5">{t.postal}</span>
                 <input
                   value={postalRaw}
                   onChange={(e) => setPostalRaw(e.target.value.toUpperCase())}
+                  readOnly={!!location?.postal_code}
                   onKeyDown={(e) => e.key === "Enter" && goPostal()}
                   maxLength={7}
                   className="input bg-white/95 font-mono tracking-[0.25em] uppercase"
@@ -342,7 +333,7 @@ export default function InstantQuoteFlow() {
               )}
               <label className="block">
                 <span className="mb-1.5 block text-sm font-semibold">{lang === "fr" ? "Ville / municipalité" : "City / municipality"}</span>
-                <input value={city} onChange={(e) => setCity(e.target.value)} list="instant-pickup-cities" maxLength={120} className="input bg-white/95" autoComplete="address-level2" placeholder={lang === "fr" ? "Votre ville" : "City name"} />
+                <input value={city} readOnly={!!location} onChange={(e) => setCity(e.target.value)} list="instant-pickup-cities" maxLength={120} className="input bg-white/95" autoComplete="address-level2" placeholder={lang === "fr" ? "Votre ville" : "City name"} />
                 <datalist id="instant-pickup-cities">{CITIES.map((c) => <option key={c.name} value={c.name} />)}</datalist>
               </label>
               </div>
@@ -362,6 +353,7 @@ export default function InstantQuoteFlow() {
                   <MapPin className="w-3.5 h-3.5" /> {postalRaw || fsa} · {networkRegionName({ code: province, name: provinceName(province) || province }, lang)}
                 </span>
               </div>
+              <PickupSessionSummary lang={lang} />
               <p className="text-xs text-market-muted mb-4">{t.materialsSub}</p>
               <PickupCoverageNotice city={city} lang={lang} dark />
               <div className="grid sm:grid-cols-2 gap-2">
@@ -396,6 +388,7 @@ export default function InstantQuoteFlow() {
           {step === 2 && estimate && (
             <form onSubmit={submit} className="rounded-2xl border border-market-line bg-market-surface p-4 sm:p-5">
               <h3 className="text-lg font-bold">{t.estimate}</h3>
+              <PickupSessionSummary lang={lang} />
               <div className="mt-4 rounded-2xl bg-[#102B2A]/60 border border-[#187B65]/25 p-5">
                 <div className="text-4xl md:text-5xl font-bold tracking-tight">{estimate.range}</div>
                 <div className="mt-2 inline-block rounded-full border border-market-line bg-market-bg text-market-accent font-semibold px-4 py-1.5 text-sm">{estimate.label}</div>

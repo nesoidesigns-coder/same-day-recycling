@@ -6,6 +6,8 @@ import AiMascot from "./AiMascot";
 import AiMascotFull from "./AiMascotFull";
 import ChatMedia from "./ChatMedia";
 import RexOrb from "@/components/rex/RexOrb";
+import usePickupLocation from "@/hooks/usePickupLocation";
+import { pickupRexContext, getPickupLocation, pickupLocationActions } from "@/lib/pickupLocationStore";
 
 const AGENT_NAME = "receptionist";
 
@@ -24,6 +26,7 @@ function ChatAttachment({ url }) {
 // The full Rex chat — loaded only when a visitor opens the launcher, keeping
 // markdown/attachment/agent code out of the initial page bundle.
 export default function ChatPanel({ onClose, preset }) {
+  const pickup = usePickupLocation();
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -67,11 +70,18 @@ export default function ChatPanel({ onClose, preset }) {
   const presetSentRef = useRef(null);
   useEffect(() => {
     if (!preset || !conversation?.id || starting || sending) return;
-    if (messages.some((m) => m.role === "user")) return;
     if (presetSentRef.current === preset) return;
     presetSentRef.current = preset;
     send(preset);
   }, [preset, conversation?.id, starting, sending, messages.length]);
+
+  const locationSentRef = useRef("");
+  const locationKey = pickup ? `${pickup.selectionId}:${pickup.lat}:${pickup.lng}:${pickup.pinConfirmed}:${pickup.unit}` : "none";
+  useEffect(() => {
+    if (!pickup || !conversation?.id || starting || sending || (preset && presetSentRef.current !== preset) || locationSentRef.current === locationKey) return;
+    locationSentRef.current = locationKey;
+    send("Use my current pickup location and begin job preparation. Ask me whether the items are inside or outside.");
+  }, [locationKey, conversation?.id, starting, sending, preset]);
 
   const pickFiles = () => fileInputRef.current?.click();
 
@@ -105,13 +115,20 @@ export default function ChatPanel({ onClose, preset }) {
     const text = (typeof preset === "string" ? preset : input).trim();
     if ((!text && !attached.length) || !conversation || sending || uploading) return;
     const file_urls = attached;
+    const currentPickup = getPickupLocation();
+    const customerTyped = typeof preset !== "string";
+    if (customerTyped && currentPickup?.pinConfirmed && text) {
+      const note = [currentPickup.preparation.note, `Customer told Rex: ${text}`].filter(Boolean).join("\n").slice(-1000);
+      pickupLocationActions.setPreparation({ ...currentPickup.preparation, note });
+    }
+    locationSentRef.current = currentPickup ? `${currentPickup.selectionId}:${currentPickup.lat}:${currentPickup.lng}:${currentPickup.pinConfirmed}:${currentPickup.unit}` : "none";
     setAttached([]);
     setInput("");
     setSending(true);
     try {
       await base44.agents.addMessage(conversation, {
         role: "user",
-        content: text || "Here are photos of the junk.",
+        content: `${text || "Here are photos of the junk."}\n\n[Current booking-form context]\n${pickupRexContext(currentPickup)}`,
         ...(file_urls.length ? { file_urls } : {}),
       });
     } finally {
@@ -142,6 +159,7 @@ export default function ChatPanel({ onClose, preset }) {
           <Send className="w-3.5 h-3.5 text-[#187B65]" /> Telegram
         </a>
       </div>
+      {pickup && <div className="border-b border-border bg-muted px-4 py-2 text-xs text-foreground"><strong>{pickup.pinConfirmed ? "Confirmed pickup" : "Pickup pin needs confirmation"}:</strong> {pickup.formattedAddress}</div>}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {!messages.some((m) => m.role === "assistant") && (
           <div className="flex justify-start items-end gap-2">

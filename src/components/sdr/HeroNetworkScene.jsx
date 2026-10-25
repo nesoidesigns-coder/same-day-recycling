@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Minus, Plus, RotateCcw } from "lucide-react";
+import usePickupLocation from "@/hooks/usePickupLocation";
+import { pickupLocationActions } from "@/lib/pickupLocationStore";
 
-export default function HeroNetworkScene({ nodes, links, focus, pickupFocus, selectedKey, onSelect, onHover, onZoomCity, lang = "en" }) {
+export default function HeroNetworkScene({ nodes, links, focus, selectedKey, onSelect, onHover, onZoomCity, lang = "en" }) {
+  const pickup = usePickupLocation();
   const mount = useRef(null), scene = useRef(null), data = useRef({ nodes, links });
   const callbacks = useRef({ onSelect, onHover, onZoomCity });
   callbacks.current = { onSelect, onHover, onZoomCity };
@@ -17,7 +20,7 @@ export default function HeroNetworkScene({ nodes, links, focus, pickupFocus, sel
       try {
         const { default: createScene } = await import("@/components/sdr/HeroCanadaGlobe");
         if (cancelled || !mount.current) return;
-        instance = createScene(mount.current, { nodes: data.current.nodes, links: data.current.links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onZoomCity: (n) => callbacks.current.onZoomCity?.(n), onFailure: unavailable });
+        instance = createScene(mount.current, { nodes: data.current.nodes, links: data.current.links, mobile: window.innerWidth < 640, onSelect: (n) => callbacks.current.onSelect(n), onHover: (n) => callbacks.current.onHover(n), onZoomCity: (n) => callbacks.current.onZoomCity?.(n), onFailure: unavailable, onCameraChange: (camera) => pickupLocationActions.setCamera("globe", camera) });
         if (!instance) { unavailable(); return; }
         scene.current = instance;
         setReady(true);
@@ -37,9 +40,8 @@ export default function HeroNetworkScene({ nodes, links, focus, pickupFocus, sel
       else scene.current?.focusOn(focusLat, focusLng);
     } else scene.current?.resetFocus();
   }, [focusLat, focusLng, focusIsAddress, focusInstant, ready]);
-  // Pin adjustment from the local map moves only the marker — no refocus.
-  const adjustMode = pickupFocus?.mode === "adjust", adjustLat = pickupFocus?.lat, adjustLng = pickupFocus?.lng;
-  useEffect(() => { if (ready && adjustMode && Number.isFinite(adjustLat) && Number.isFinite(adjustLng)) scene.current?.setPickup(adjustLat, adjustLng); }, [adjustMode, adjustLat, adjustLng, ready]);
+  const pickupLat = pickup?.lat, pickupLng = pickup?.lng;
+  useEffect(() => { if (ready) scene.current?.setPickup(pickupLat, pickupLng); }, [pickupLat, pickupLng, ready]);
   useEffect(() => { if (ready) scene.current?.highlight(selectedKey); }, [selectedKey, ready]);
   return (
     <div className="relative h-60 w-full sm:h-72 lg:h-[24rem] xl:h-[26rem]" data-map-mode={ready ? "3d" : failed ? "unavailable" : "loading"} onPointerDownCapture={() => setTouched(true)}>
@@ -53,7 +55,7 @@ export default function HeroNetworkScene({ nodes, links, focus, pickupFocus, sel
           <button onClick={() => scene.current?.zoomBy(1.22)} aria-label={lang === "fr" ? "Dézoomer" : "Zoom out"} className="flex h-9 w-9 items-center justify-center rounded-xl border border-market-line bg-market-bg text-market-ink shadow-sm hover:bg-market-surface active:scale-95 transition">
             <Minus className="h-4 w-4" />
           </button>
-          <button onClick={() => { scene.current?.resetFocus(); setTouched(true); }} aria-label={lang === "fr" ? "Recentrer le globe" : "Reset view"} className="flex h-9 w-9 items-center justify-center rounded-xl border border-market-line bg-market-bg text-market-ink shadow-sm hover:bg-market-surface active:scale-95 transition">
+          <button onClick={() => { if (pickup) scene.current?.focusAddress(pickup.lat, pickup.lng); else scene.current?.resetFocus(); setTouched(true); }} aria-label={lang === "fr" ? "Recentrer le globe" : "Reset view"} className="flex h-9 w-9 items-center justify-center rounded-xl border border-market-line bg-market-bg text-market-ink shadow-sm hover:bg-market-surface active:scale-95 transition">
             <RotateCcw className="h-4 w-4" />
           </button>
         </div>

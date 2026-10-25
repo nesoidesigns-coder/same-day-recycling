@@ -1,42 +1,20 @@
 import { useState } from "react";
-import { MapPinned, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import usePickupLocation from "@/hooks/usePickupLocation";
 
-// Google Earth-style chain, step 2: true Street View of the selected city,
-// embedded from Google's public Street View embed (pan/zoom inside the frame).
-export default function HeroStreetView({ node, lang = "en" }) {
-  const [open, setOpen] = useState(false);
-  const t = {
-    button: lang === "fr" ? "Voir Street View" : "See Street View",
-    close: lang === "fr" ? "Fermer Street View" : "Close Street View",
-    heading: lang === "fr" ? "Vue au niveau de la rue" : "Street-level view",
-    credit: lang === "fr" ? "Imagerie de rue © Google" : "Street imagery © Google",
-    hint: lang === "fr" ? "Faites glisser pour regarder autour · Pincez pour zoomer" : "Drag to look around · Pinch to zoom",
-  };
-  const src = `https://maps.google.com/maps?q=&layer=c&cbll=${node.lat},${node.lng}&cbp=12,0,0,0,0&output=svembed`;
-  if (!open) {
-    return (
-      <button onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-market-line px-4 text-sm font-bold text-market-ink">
-        <MapPinned className="h-4 w-4" /> {t.button}
-      </button>
-    );
-  }
-  return (
-    <div className="rounded-2xl border border-market-line bg-market-bg p-2" role="region" aria-label={`${t.heading} · ${node.name}`}>
-      <div className="mb-2 flex items-center justify-between px-1">
-        <span className="text-xs font-semibold uppercase tracking-wide text-market-muted">{t.heading}</span>
-        <button onClick={() => setOpen(false)} aria-label={t.close} className="flex h-9 w-9 items-center justify-center rounded-full text-market-ink hover:bg-market-surface"><X className="h-4 w-4" /></button>
-      </div>
-      <div className="overflow-hidden rounded-xl border border-market-line" style={{ aspectRatio: "16 / 9" }}>
-        <iframe
-          title={`${t.heading} · ${node.name}`}
-          src={src}
-          loading="lazy"
-          className="h-full w-full border-0"
-          referrerPolicy="no-referrer-when-downgrade"
-          allowFullScreen
-        />
-      </div>
-      <p className="mt-2 px-1 text-xs text-market-muted">{t.hint} · {t.credit}</p>
+// Open only a provider-verified photograph, never a guessed city-center embed.
+export default function HeroStreetView({ lang = "en" }) {
+  const pickup = usePickupLocation(), fr = lang === "fr";
+  const [loaded, setLoaded] = useState(false), [failed, setFailed] = useState(false);
+  const imagery = pickup?.imagery;
+  if (imagery?.status !== "available") return null;
+  return <div className="rounded-xl border border-market-line bg-market-bg p-2">
+    <div className="relative h-72 overflow-hidden rounded-lg">
+      {!loaded && !failed && <div className="absolute inset-0 flex items-center justify-center" role="status"><Loader2 className="h-5 w-5 animate-spin" /></div>}
+      {!failed && <iframe title={`${fr ? "Photographie de rue près de" : "Street photograph near"} ${pickup.formattedAddress}`} src={imagery.viewer_url} className="relative h-full w-full border-0" allowFullScreen loading="lazy" referrerPolicy="no-referrer" onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />}
+      {failed && <p role="status" className="p-4 text-sm">{fr ? "Le panorama n'a pas pu être chargé. Utilisez la carte ou le satellite." : "The street scene could not load. Use Map or Satellite instead."}</p>}
     </div>
-  );
+    <p className="mt-2 text-xs text-market-muted">{imagery.credit} · {imagery.license} · {imagery.captured_at?.slice(0, 10)} · {imagery.distance_m} m {fr ? "de l'épingle. Photo à proximité, pas une confirmation de l'accès à la propriété." : "from your pin. Nearby photography, not confirmation of property access."}</p>
+    <a href={imagery.viewer_url} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center text-xs text-market-accent underline">{fr ? "Ouvrir la photo Panoramax" : "Open this Panoramax photograph"}</a>
+  </div>;
 }
