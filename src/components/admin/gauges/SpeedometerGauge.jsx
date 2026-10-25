@@ -17,7 +17,7 @@ export function speedoStatus(value, target, warning) {
   return "bad";
 }
 
-const COLORS = { ok: "#21C997", warn: "#DDA448", bad: "#C9584F" };
+const COLORS = { ok: "hsl(var(--li-btn))", warn: "hsl(var(--li-amber))", bad: "hsl(var(--li-red))" };
 const STATUS_TEXT = { ok: "On target", warn: "Needs attention", bad: "Critical" };
 
 export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%", target, warning, display }) {
@@ -41,23 +41,23 @@ export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%"
     const innerR = 62;
     const inner = { x: CX - innerR * Math.cos((tDeg * Math.PI) / 180), y: CY - innerR * Math.sin((tDeg * Math.PI) / 180) };
     marker = (
-      <line x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y} stroke="#172623" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y} strokeWidth="2.5" strokeLinecap="round" style={{ stroke: "hsl(var(--li-graphite))" }} />
     );
   }
 
   return (
     <div>
       <svg viewBox="0 0 220 132" className="w-full" role="img" aria-label={`${STATUS_TEXT[status]}: ${display || clamped} ${unit}`}>
-        <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`} fill="none" stroke="#E2EDE8" strokeWidth="14" strokeLinecap="round" />
+        <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`} fill="none" strokeWidth="14" strokeLinecap="round" style={{ stroke: "hsl(var(--li-steel))" }} />
         <path
           d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`}
           fill="none"
-          stroke={color}
           strokeWidth="14"
           strokeLinecap="round"
           strokeDasharray={L}
           strokeDashoffset={L * (1 - frac)}
           className="transition-[stroke-dashoffset] duration-700 ease-out motion-reduce:transition-none"
+          style={{ stroke: color }}
         />
         {marker}
         <text x={CX} y={CY - 14} textAnchor="middle" fontSize="30" fontWeight="700" className="fill-li-carbon">

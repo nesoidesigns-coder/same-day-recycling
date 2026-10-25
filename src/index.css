@@ -519,9 +519,13 @@ h1, h2, h3, h4, p, a, span, li, button {
 .admin-li [class*="text-[#051511]"],
 .admin-li [class*="text-[#0f5c3f]"] { color: hsl(var(--li-carbon)); }
 
-/* Legacy emerald surfaces, borders and focus states */
-.admin-li [class*="bg-[#187B65]"]:not([class*=":bg-[#187B65]"]) { background-color: hsl(var(--li-infra)); }
-.admin-li [class*=":bg-[#187B65]"]:hover { background-color: hsl(var(--li-infra)); }
+/* Legacy emerald surfaces, borders and focus states.
+   Solid emerald = the unified bright action emerald (buttons, filled bars);
+   alpha emerald = light mint tints (badges, hover rows). */
+.admin-li [class*="bg-[#187B65]"]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--li-btn)); }
+.admin-li [class*=":bg-[#187B65]"]:hover { background-color: hsl(var(--li-btn-hover)); }
+.admin-li [class*="bg-[#187B65]/"]:not([class*=":bg-"]) { background-color: hsl(var(--li-mint) / 0.15); }
+.admin-li [class*=":bg-[#187B65]/"]:hover { background-color: hsl(var(--li-mint) / 0.25); }
 .admin-li [class*="bg-[#125C4E]"]:hover,
 .admin-li [class*="bg-[#125c4c]"]:hover,
 .admin-li [class*="bg-[#1FA184]"]:hover { background-color: hsl(var(--li-infra)); }
@@ -534,6 +538,23 @@ h1, h2, h3, h4, p, a, span, li, button {
 .admin-li [class*="bg-[#102B2A]"]:not([class*=":bg-[#102B2A]"]) { background-color: hsl(var(--li-graphite)); }
 .admin-li [class*=":bg-[#102B2A]"]:hover { background-color: hsl(var(--li-graphite)); }
 .admin-li [class*="border-[#102B2A]"] { border-color: hsl(var(--li-carbon)); }
+
+/* Primary navy action buttons & selected tabs (solid navy + white text, no
+   panel padding, no outline style) → the unified bright action emerald. */
+.admin-li [class*="bg-[#102B2A]"][class*="text-white"]:not([class*=":bg-"]):not([class*="p-5"]):not([class*="p-6"]):not([class*="p-7"]):not([class*="border-2"]) {
+  background-color: hsl(var(--li-btn));
+  color: hsl(0 0% 100%);
+}
+.admin-li [class*=":bg-[#0a3020]"]:hover { background-color: hsl(var(--li-btn-hover)); }
+
+/* Tailwind-palette emerald buttons, links and gauge segments (Analytics-era
+   pages) → the same unified action emerald. */
+.admin-li .bg-emerald-500 { background-color: hsl(var(--li-btn)); }
+.admin-li .hover\:bg-emerald-600:hover { background-color: hsl(var(--li-btn-hover)); }
+.admin-li .text-emerald-500 { color: hsl(var(--li-btn)); }
+.admin-li .text-emerald-600 { color: hsl(var(--li-infra)); }
+.admin-li .hover\:text-emerald-600:hover { color: hsl(var(--li-infra)); }
+.admin-li .border-emerald-500 { border-color: hsl(var(--li-btn)); }
 
 /* Legacy dark panel backgrounds */
 .admin-li [class*="bg-[#051511]"],

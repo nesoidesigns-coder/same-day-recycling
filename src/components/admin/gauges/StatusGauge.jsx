@@ -4,7 +4,7 @@ export default function StatusGauge({ max, segments, unit = "" }) {
 
   return (
     <div>
-      <div className="flex h-3.5 rounded-full overflow-hidden bg-slate-100 border border-slate-200" role="img" aria-label={segments.map((s) => `${s.label}: ${s.value}`).join(", ")}>
+      <div className="flex h-3.5 rounded-full overflow-hidden bg-li-steel/40 border border-li-steel" role="img" aria-label={segments.map((s) => `${s.label}: ${s.value}`).join(", ")}>
         {segments.map((s) => (
           <div
             key={s.label}
@@ -13,18 +13,18 @@ export default function StatusGauge({ max, segments, unit = "" }) {
           />
         ))}
       </div>
-      <div className="flex justify-between mt-1.5 text-[9px] font-semibold text-slate-400">
+      <div className="flex justify-between mt-1.5 text-[9px] font-semibold text-li-slate">
         <span>0{unit}</span>
         <span>{safeMax}{unit}</span>
       </div>
       <ul className="mt-3 space-y-1.5">
         {segments.map((s) => (
           <li key={s.label} className="flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-slate-600">
+            <span className="flex items-center gap-2 text-li-slate">
               <span className={`w-2.5 h-2.5 rounded-full ${s.color}`} />
               {s.label}
             </span>
-            <span className="font-bold text-slate-800 tabular-nums">{s.value}{unit}</span>
+            <span className="font-bold text-li-carbon tabular-nums">{s.value}{unit}</span>
           </li>
         ))}
       </ul>

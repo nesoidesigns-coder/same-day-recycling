@@ -208,7 +208,7 @@ export default function AdminAnalytics() {
             <button
               key={p.key}
               onClick={() => setPeriod(p.key)}
-              className={`rounded-full px-4 py-2 text-sm font-bold border transition-colors ${period === p.key ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
+              className={`rounded-full px-4 py-2 text-sm font-bold border transition-colors ${period === p.key ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
             >
               {p.label}
             </button>
