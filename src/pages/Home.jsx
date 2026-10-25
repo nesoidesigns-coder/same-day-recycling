@@ -2,6 +2,7 @@ import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
 import HeroBooking from "@/components/home/HeroBooking";
+import RexDiscover from "@/components/home/RexDiscover";
 import InstantQuoteFlow from "@/components/sdr/InstantQuoteFlow";
 import Services from "@/components/sdr/Services";
 import HowItWorks from "@/components/sdr/HowItWorks";
@@ -35,6 +36,7 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroBooking />
+        <RexDiscover />
         <InstantQuoteFlow />
         <Services />
         <HowItWorks />
