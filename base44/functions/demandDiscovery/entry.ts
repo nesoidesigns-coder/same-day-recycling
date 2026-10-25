@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
-import { appToken, redditHealth } from '../../shared/reddit.ts';
+import { appToken, redditConfig, redditHealth } from '../../shared/reddit.ts';
 
 // National AI demand discovery: retrieves genuinely public posts seeking
 // removal / hauling / recycling services from authorized public sources,
@@ -137,8 +137,34 @@ async function runDiscovery(base44) {
 
   // Official Reddit OAuth when credentials exist; otherwise the public read
   // endpoint is attempted and its failure is reported honestly.
+  // Official Reddit OAuth read access only: without credentials the run
+  // records itself honestly as blocked instead of hammering the blocked
+  // public endpoint and logging cryptic failures.
   const tokenResult = await appToken();
   const token = tokenResult.token;
+  if (!token) {
+    const now = new Date().toISOString();
+    await base44.asServiceRole.entities.DiscoveryRun.create({
+      source: 'reddit',
+      run_date: now.slice(0, 10),
+      status: 'skipped',
+      started_at: startedAt,
+      finished_at: now,
+      queries_run: 0,
+      posts_fetched: 0,
+      opportunities_saved: 0,
+      error: 'Reddit OAuth credentials missing — add REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET in the app Secrets page. The official feed cannot run without them.',
+      notes: 'Official Reddit API (read-only client-credentials grant) is the only authorized public discovery source; the unauthenticated public endpoint is bot-blocked (403) and is never used.',
+    });
+    await base44.asServiceRole.entities.PublicDiscoverySettings.update(settings.id, { last_run_at: now });
+    return Response.json({
+      ok: false,
+      blocked: 'reddit_credentials_missing',
+      message: 'Add REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET in the app Secrets page to activate the official discovery feed.',
+      posts_fetched: 0,
+      opportunities_saved: 0,
+    });
+  }
   // Source fetch: batches of 6 parallel, bounded, 10s timeout each.
   const batches = [];
   for (let i = 0; i < SUBREDDITS.length; i += 6) batches.push(SUBREDDITS.slice(i, i + 6));
