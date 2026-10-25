@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useSEO, useStructuredData } from "@/lib/seo";
 import TopBar from "@/components/sdr/TopBar";
 import Navbar from "@/components/sdr/Navbar";
@@ -41,6 +43,18 @@ export default function Home() {
         <RexDiscover />
         <Services />
         <CoverageStrip />
+        <section className="bg-[#102B2A] text-white">
+          <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 flex flex-col md:flex-row md:items-center gap-6 justify-between">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-300 uppercase">Same Day Recycling LIVE</span>
+              <h2 className="mt-3 text-2xl md:text-3xl font-bold tracking-tight">Explore What's Happening Across Canada.</h2>
+              <p className="mt-2 text-emerald-100/80">Discover local service demand, compare pickup options, explore recycling information, and find help when you need it.</p>
+            </div>
+            <Link to="/live" className="shrink-0 inline-flex items-center gap-2 rounded-2xl bg-[#187B65] text-white font-bold px-6 py-3.5 hover:bg-[#116553]">
+              Explore LIVE <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
         <HowItWorks />
         <TransparentPricing />
         <Reviews />
