@@ -158,17 +158,25 @@ function buildDrafts(base44, settings, cities, provinces): Promise<{ drafts: Dra
 
     // C) Internal platform inquiries (ServiceQuery / QuoteLead) — anonymized.
     const queries = await load('ServiceQuery', {}, 200);
+    // ServiceQuery holds two very different things: questions asked on our own
+    // site (a real platform inquiry) and public posts harvested from the web by
+    // queryHunter (someone else's post, never our inquiry). They must not share
+    // a demand type. The signal_key prefix is left unchanged so existing records
+    // keep deduplicating correctly.
+    const PUBLIC_HARVEST = ['web_hunt', 'reddit', 'kijiji', 'facebook_group', 'forum', 'craigslist'];
     for (const q of queries) {
       const isSearch = q.source === 'search_console';
+      const isPublicPost = PUBLIC_HARVEST.includes(String(q.source || ''));
       drafts.push({
         signal_key: `internal_platform:service_query:${q.id}`, source_platform: 'recycling_os',
-        source_type: 'internal_platform', source_ref: `service_query:${q.id}`, source_url: '',
+        source_type: isPublicPost ? 'public_discovery' : 'internal_platform', source_ref: `service_query:${q.id}`, source_url: '',
         source_published_at: q.captured_date || null, title: String(q.query_text || '').slice(0, 200),
         customer_need: String(q.description || '').slice(0, 600),
-        demand_type: isSearch ? 'search_interest' : 'platform_inquiry', service_category: q.service || 'other',
+        demand_type: isSearch ? 'search_interest' : (isPublicPost ? 'observed_public_request' : 'platform_inquiry'),
+        service_category: q.service || 'other',
         city: q.city || '', province_code: '', text: `${q.query_text || ''} ${q.service || ''}`,
         metric_context: { source_kind: q.source, intent: q.intent || '' },
-        source_reliability: isSearch ? 'aggregate_data' : 'internal_record',
+        source_reliability: isSearch ? 'aggregate_data' : (isPublicPost ? 'public_source' : 'internal_record'),
       });
     }
     const leads = await load('QuoteLead', {}, 200);

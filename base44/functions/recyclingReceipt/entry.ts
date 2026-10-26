@@ -86,30 +86,50 @@ export default async function (req) {
 
     // A rate-limited or refused email must not break documentation — the
     // record is already persisted; report the email outcome separately.
-    let emailSent = true;
-    let emailError = '';
-    try {
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: booking.email,
-        template_name: 'RecyclingReceipt',
-        attachments: [
-          {
-            filename: 'Same-Day-Recycling-Impact-Report.pdf',
-            content: pdfBase64,
-          },
-        ],
-        variables: {
-          customer_name: booking.name || 'there',
-          city,
-          pickup_date: pickupDate,
-          items,
+    const sendOnce = () => base44.asServiceRole.integrations.Core.SendEmail({
+      to: booking.email,
+      template_name: 'RecyclingReceipt',
+      attachments: [
+        {
+          filename: 'Same-Day-Recycling-Impact-Report.pdf',
+          content: pdfBase64,
         },
-      });
-    } catch (e) {
-      emailSent = false;
-      emailError = e.message || 'email send failed';
-      console.error('Impact report email failed:', emailError);
+      ],
+      variables: {
+        customer_name: booking.name || 'there',
+        city,
+        pickup_date: pickupDate,
+        items,
+      },
+    });
+
+    // One guarded retry (the failure seen was a daily email rate limit), then
+    // the outcome is recorded on the booking. The receipt itself is never lost:
+    // the RecyclingRecord is already stored and can be re-sent.
+    let emailSent = false;
+    let emailError = '';
+    for (let attempt = 1; attempt <= 2 && !emailSent; attempt += 1) {
+      try {
+        await sendOnce();
+        emailSent = true;
+      } catch (e) {
+        emailError = e.message || 'email send failed';
+        if (attempt === 1) await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
     }
+    if (!emailSent) console.error('Impact report email failed:', emailError);
+
+    // Delivery state is recorded separately from documentation, and a receipt is
+    // only marked delivered when the provider confirmed the send.
+    await base44.asServiceRole.entities.Booking.update(
+      booking.id,
+      emailSent
+        ? { receipt_sent: true, receipt_sent_date: new Date().toISOString().slice(0, 10) }
+        : {
+            receipt_sent: false,
+            description: `${booking.description || ''} | Impact report email failed ${new Date().toISOString().slice(0, 10)}: ${emailError}. PDF generated and stored — resend when email is available.`.trim().slice(0, 1000),
+          },
+    ).catch(() => null);
 
     return Response.json({
       sent: emailSent,

@@ -367,6 +367,10 @@
       "description": "Live national coverage status per city: verified contractor capacity, open contractor-matching activity and recruitment. Call it BEFORE any availability claim - Rex never assumes a city is covered or not covered. Pass {}."
     },
     {
+      "function_name": "liveIntelligence",
+      "description": "Verified Canadian service-demand intelligence for explaining market activity to a customer: pass {action:'gauge', days, province?, city?, category?} for aggregate observed-signal counts by type, city and service category, with their reporting period. Aggregated records only - it returns no customer data. Search interest is aggregate keyword data and is NEVER an individual customer, lead or booking; state which signal type you are citing."
+    },
+    {
       "function_name": "requestLookup",
       "description": "Customer request or booking status by 8-character reference code, read from the actual stored record: pass {reference_code}. Returns the real status, contractor state and dates - never invented. PII is withheld by design."
     },

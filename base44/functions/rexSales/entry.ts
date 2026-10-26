@@ -63,6 +63,13 @@ export default async function (req) {
           code: 'pay_on_arrival',
         }, { status: 422 });
       }
+      // One live payment request per booking: any earlier unpaid order for this
+      // booking is superseded before a new link is issued, so a customer can
+      // never be left holding two payable links for the same job.
+      await svc.entities.PaypalTransaction.updateMany(
+        { ref_id: b.id, purpose: 'booking_quote', status: 'created' },
+        { $set: { status: 'superseded' } },
+      );
       const order = await paypal('/v2/checkout/orders', 'POST', {
         intent: 'CAPTURE',
         purchase_units: [{
