@@ -78,6 +78,7 @@ const CompanyDashboard = lazyPage(() => import('./pages/CompanyDashboard'));
 const AdminSoftware = lazyPage(() => import('./pages/AdminSoftware'));
 const SoftwareOnboarding = lazyPage(() => import('./pages/SoftwareOnboarding'));
 const LicenseAgreement = lazyPage(() => import('./pages/LicenseAgreement'));
+const ImpactCalculator = lazyPage(() => import('./pages/ImpactCalculator'));
 const Gallery = lazyPage(() => import('./pages/Gallery'));
 const FurnitureRemoval = lazyPage(() => import('./pages/FurnitureRemoval'));
 const ApplianceRemoval = lazyPage(() => import('./pages/ApplianceRemoval'));
@@ -232,6 +233,7 @@ const AuthenticatedApp = () => {
       <Route path="/prototype" element={<CanadaConnectedPrototype />} />
       <Route path="/prototype-observatory" element={<CanadaServiceObservatory />} />
       <Route path="/prototype-service-intelligence" element={<ServiceIntelligencePrototype />} />
+      <Route path="/impact-calculator" element={<ImpactCalculator />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/recycling" element={<RecyclingDirectory />} />
       <Route path="/recycling-assistant" element={<RecyclingAssistant />} />

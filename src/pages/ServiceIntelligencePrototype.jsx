@@ -3,6 +3,7 @@ import { useSEO } from "@/lib/seo";
 import Footer from "@/components/sdr/Footer";
 import SiHeader from "@/components/si/SiHeader";
 import ServiceHero from "@/components/home/ServiceHero";
+import ImpactEstimator from "@/components/home/ImpactEstimator";
 import CanadaSignalSection from "@/components/canada/CanadaSignalSection";
 import ServiceCards from "@/components/si/ServiceCards";
 import BookingSteps from "@/components/home/BookingSteps";
@@ -46,6 +47,9 @@ export default function ServiceIntelligencePrototype() {
       <TrustStrip />
 
       <main className="mx-auto flex max-w-[1280px] flex-col gap-10 px-4 py-10 md:px-8 md:py-14">
+        {/* Signature tool — instant, shareable impact estimate */}
+        <ImpactEstimator />
+
         {/* Signature technology — one coherent, interactive gauge */}
         <CanadaSignalSection />
 

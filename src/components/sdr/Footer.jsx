@@ -23,6 +23,7 @@ const links = [
   { label: "Recycling Centers", to: "/recycling-centers" },
   { label: "Blog", to: "/blog" },
   { label: "Community Forum", to: "/community" },
+  { label: "Impact Calculator", to: "/impact-calculator" },
   { label: "Fleet Gallery", to: "/gallery" },
   { label: "Pricing", to: "/pricing" },
   { label: "Software OS", to: "/software" },
