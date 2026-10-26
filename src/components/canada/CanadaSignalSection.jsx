@@ -62,7 +62,7 @@ export default function CanadaSignalSection() {
             The Canada <span className="text-ri-amber-ink">Signal</span>
           </h2>
           <p className="mt-1 text-sm text-si-muted md:text-base">
-            Canada's Service Intelligence — Powered by Recycling OS. Actual customer search counts for our services (Google Search Console), explained in plain language.
+            Canada's Service Intelligence — Powered by Recycling OS. Actual customer search counts for our services (Google Search Console), plus whole-market online interest for all of Canada — every layer labelled, never merged.
           </p>
         </div>
         <select
@@ -90,6 +90,7 @@ export default function CanadaSignalSection() {
             categories={categories}
             selected={category}
             onSelect={setCategory}
+            marketInterest={mi}
             geoLabel={city || "Canada"}
             coverageCount={(data?.coverage_cities || []).length}
             updatedAt={data?.generated_at}
@@ -135,7 +136,7 @@ export default function CanadaSignalSection() {
               <>
                 <h3 className="text-base font-bold text-si-ink">Real searches, one honest basis</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-si-muted">
-                  The Canada Signal counts actual customer searches for our services — verified Google Search Console records, grouped by service category. Requests, contractor availability and pricing are shown as separate layers below — never merged into one number.
+                  The Canada Signal counts actual customer searches for our services — verified Google Search Console records, grouped by service category. The amber inner arcs show whole-market online interest — everyone searching Canada-wide, including searches that never reach this site — as a relative index, never a count. Requests, contractor availability and pricing stay as separate layers below — never merged into one number.
                 </p>
               </>
             )}
@@ -167,7 +168,7 @@ export default function CanadaSignalSection() {
             {mi?.available ? (
               <>
                 <p className="mt-1 text-sm leading-relaxed text-si-muted">
-                  Whole-market search interest from public Google Trends — everyone searching, including searches that never reach this site. A relative index, never a count.
+                  Whole-market search interest from public Google Trends — everyone searching, including searches that never reach this site. A relative index, never a count — the same interest also drawn as the amber inner arcs on the gauge.
                 </p>
                 <ul className="mt-3 space-y-2">
                   {mi.categories.slice(0, 5).map((c) => (
