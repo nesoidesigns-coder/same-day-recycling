@@ -18,6 +18,7 @@ import LiveCommunityFeed from "@/components/live/LiveCommunityFeed";
 import RexPriceCompare from "@/components/home/RexPriceCompare";
 import ServiceSearch from "@/components/live/ServiceSearch";
 import InsightPanel from "@/components/live/InsightPanel";
+import TrendStrip from "@/components/live/TrendStrip";
 import HowItWorks from "@/components/live/HowItWorks";
 
 // Same Day Recycling LIVE — the Canadian Service Radar. The first viewport is
@@ -134,6 +135,7 @@ export default function LiveCentre() {
             cities={gauge?.cities || []}
             coverageCities={verifiedCities}
             province={filters.province}
+            selectedCity={filters.city}
             onProvince={focusProvince}
             onCity={focusCity}
           />
@@ -143,6 +145,13 @@ export default function LiveCentre() {
       {/* Category intelligence — plain-language guidance beside the records */}
       <div className="relative mx-auto max-w-6xl px-4 pt-8">
         <InsightPanel data={gauge} selectedRow={selectedRow} cov={cov} />
+      </div>
+
+      {/* Demand trends — verified records by month, same filters as the radar */}
+      <div className="relative mx-auto max-w-6xl px-4 pt-8">
+        <CineCard title="Demand trend" note="Verified records by month across the observed period. Every evidence type is counted separately — never merged into a single demand score.">
+          <TrendStrip data={gauge} days={filters.days} />
+        </CineCard>
       </div>
 
       {/* Consumer-first service search + actions */}

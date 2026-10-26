@@ -56,6 +56,8 @@ const SOURCE_LABEL = {
   unlabelled: "other recorded sources",
 };
 
+// Category intelligence beside the radar — rendered on the same midnight
+// environment as the instrument, with one transparent glass surface.
 export default function InsightPanel({ data, selectedRow, cov }) {
   const label = selectedRow ? LIVE_CATEGORIES[selectedRow.key] : null;
   const guide = selectedRow ? CATEGORY_GUIDE[selectedRow.key] : null;
@@ -68,40 +70,40 @@ export default function InsightPanel({ data, selectedRow, cov }) {
   };
 
   return (
-    <div className="rounded-2xl bg-white border border-si-line p-5">
+    <div className="cine-fade-up cine-glass rounded-[24px] p-5">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-base font-bold text-ri-charcoal">{label || "What the radar shows"}</h3>
-          <p className="mt-1 text-sm leading-relaxed text-ri-slate">
+        <div className="min-w-0">
+          <h3 className="text-base font-bold text-cine-ink">{label || "What the radar shows"}</h3>
+          <p className="mt-1 text-sm leading-relaxed text-cine-muted">
             {guide
               ? guide.expl
               : "Each segment is a real service category. The segment's reach shows verified demand records for that category in your selected window — never estimates, and never blended across record types."}
           </p>
         </div>
-        <button onClick={askRex} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-si-line bg-ri-ivory px-3 py-1.5 text-xs font-bold text-ri-forest hover:border-ri-emerald transition-colors">
-          <Sparkles className="w-3.5 h-3.5" /> Ask Rex
+        <button onClick={askRex} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-cine-line/70 bg-cine-bg/60 px-3 py-1.5 text-xs font-bold text-cine-ink hover:border-cine-cyan/60 hover:text-cine-cyan transition-colors">
+          <Sparkles className="w-3.5 h-3.5 text-cine-violet" /> Ask Rex
         </button>
       </div>
 
       {guide && (
         <div className="mt-3 space-y-2 text-sm">
-          <div className="rounded-xl bg-ri-mint/40 border border-si-line px-3.5 py-2.5">
-            <span className="text-xs font-bold uppercase tracking-wide text-ri-emerald-ink">What affects the price</span>
-            <p className="mt-1 text-ri-charcoal leading-relaxed">{guide.cost}</p>
+          <div className="rounded-xl bg-cine-surface/60 border border-cine-line/60 px-3.5 py-2.5">
+            <span className="text-xs font-bold uppercase tracking-wide text-cine-cyan">What affects the price</span>
+            <p className="mt-1 text-cine-ink leading-relaxed">{guide.cost}</p>
           </div>
-          <div className="rounded-xl bg-ri-ivory border border-si-line px-3.5 py-2.5">
-            <span className="text-xs font-bold uppercase tracking-wide text-ri-slate">Good to know</span>
-            <p className="mt-1 text-ri-charcoal leading-relaxed">{guide.tip}</p>
+          <div className="rounded-xl bg-cine-bg/50 border border-cine-line/50 px-3.5 py-2.5">
+            <span className="text-xs font-bold uppercase tracking-wide text-cine-muted">Good to know</span>
+            <p className="mt-1 text-cine-ink leading-relaxed">{guide.tip}</p>
           </div>
         </div>
       )}
 
       {selectedRow?.demand_types && (
         <div className="mt-4">
-          <span className="text-xs font-bold uppercase tracking-wide text-ri-slate">Record types, kept separate</span>
+          <span className="text-xs font-bold uppercase tracking-wide text-cine-muted">Record types, kept separate</span>
           <ul className="mt-1.5 grid grid-cols-2 gap-1.5">
             {Object.entries(selectedRow.demand_types).map(([type, n]) => (
-              <li key={type} className="flex items-baseline justify-between gap-2 rounded-lg bg-ri-ivory px-2.5 py-1.5 text-xs text-ri-charcoal">
+              <li key={type} className="flex items-baseline justify-between gap-2 rounded-lg bg-cine-bg/60 border border-cine-line/40 px-2.5 py-1.5 text-xs text-cine-ink">
                 <span className="truncate">{DEMAND_TYPE_LABELS[type] || type}</span>
                 <span className="tabular-nums font-bold">{n}</span>
               </li>
@@ -112,10 +114,10 @@ export default function InsightPanel({ data, selectedRow, cov }) {
 
       {!selectedRow && data?.by_source && Object.keys(data.by_source).length > 0 && (
         <div className="mt-4">
-          <span className="text-xs font-bold uppercase tracking-wide text-ri-slate">Where records come from</span>
+          <span className="text-xs font-bold uppercase tracking-wide text-cine-muted">Where records come from</span>
           <ul className="mt-1.5 space-y-1">
             {Object.entries(data.by_source).map(([src, n]) => (
-              <li key={src} className="flex items-baseline justify-between gap-2 text-xs text-ri-charcoal">
+              <li key={src} className="flex items-baseline justify-between gap-2 text-xs text-cine-ink">
                 <span>{SOURCE_LABEL[src] || src}</span>
                 <span className="tabular-nums font-bold">{n}</span>
               </li>
@@ -125,21 +127,21 @@ export default function InsightPanel({ data, selectedRow, cov }) {
       )}
 
       {verifiedCount != null && (
-        <div className="mt-4 flex items-start gap-1.5 text-xs text-ri-slate">
-          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ri-emerald-ink" />
+        <div className="mt-4 flex items-start gap-1.5 text-xs text-cine-muted">
+          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cine-green" />
           <span>{verifiedCount} cit{verifiedCount === 1 ? "y" : "ies"} currently have a verified contractor on file. Bookings are confirmed per job, after a contractor accepts.</span>
         </div>
       )}
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link to="/request-service" className="inline-flex items-center gap-1.5 rounded-full bg-ri-amber px-4 py-2 text-xs font-bold text-ri-charcoal hover:brightness-95 transition-all">
+        <Link to="/request-service" className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-4 py-2 text-xs font-bold text-[#0a1220] hover:brightness-95 transition-all">
           Get a quote <ArrowRight className="w-3.5 h-3.5" />
         </Link>
-        <Link to="/pricing" className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-4 py-2 text-xs font-bold text-ri-forest hover:border-ri-emerald transition-colors">
+        <Link to="/pricing" className="inline-flex items-center gap-1.5 rounded-full border border-cine-line/70 bg-cine-bg/60 px-4 py-2 text-xs font-bold text-cine-ink hover:border-cine-cyan/60 hover:text-cine-cyan transition-colors">
           See pricing
         </Link>
       </div>
-      <p className="mt-3 flex items-start gap-1.5 text-[11px] text-ri-slate">
+      <p className="mt-3 flex items-start gap-1.5 text-[11px] text-cine-muted">
         <Info className="mt-0.5 h-3 w-3 shrink-0" />
         Guidance here explains how the service works. It never invents prices, availability or demand counts — those come from the verified records beside it.
       </p>

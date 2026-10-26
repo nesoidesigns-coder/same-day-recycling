@@ -5,7 +5,7 @@ export function CineSectionLabel({ children }) {
 
 export function CineCard({ id, title, note, children, className = "" }) {
   return (
-    <section id={id} className={`cine-glass rounded-[24px] p-5 sm:p-6 ${className}`}>
+    <section id={id} className={`cine-fade-up cine-glass rounded-[24px] p-5 sm:p-6 ${className}`}>
       {title && <CineSectionLabel>{title}</CineSectionLabel>}
       {note && <p className="mt-1.5 text-xs leading-relaxed text-cine-muted">{note}</p>}
       {title && <div className="mt-4" aria-hidden="true" />}

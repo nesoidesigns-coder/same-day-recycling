@@ -25,34 +25,34 @@ const LAYERS = [
 export default function HowItWorks() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl bg-white border border-si-line">
+    <div className="rounded-2xl bg-cine-bg/60 border border-cine-line/50">
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
       >
-        <span className="flex items-center gap-2 text-sm font-bold text-ri-charcoal">
-          <ShieldCheck className="w-4 h-4 text-ri-emerald-ink" /> How this intelligence works
+        <span className="flex items-center gap-2 text-sm font-bold text-cine-ink">
+          <ShieldCheck className="w-4 h-4 text-cine-green" /> How this intelligence works
         </span>
-        <ChevronDown className={`w-4 h-4 text-ri-slate transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-cine-muted transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="border-t border-si-line px-4 py-4">
-          <p className="text-xs leading-relaxed text-ri-slate">
+        <div className="border-t border-cine-line/50 px-4 py-4">
+          <p className="text-xs leading-relaxed text-cine-muted">
             Every number on this page is a count of real records with a named source and a reporting window. Four kinds of evidence are always kept separate:
           </p>
           <ul className="mt-3 space-y-2.5">
             {LAYERS.map((l) => (
               <li key={l.t} className="flex gap-2.5">
-                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-ri-emerald" aria-hidden="true" />
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-cine-green" aria-hidden="true" />
                 <div>
-                  <div className="text-sm font-bold text-ri-charcoal">{l.t}</div>
-                  <div className="text-xs leading-relaxed text-ri-slate">{l.d}</div>
+                  <div className="text-sm font-bold text-cine-ink">{l.t}</div>
+                  <div className="text-xs leading-relaxed text-cine-muted">{l.d}</div>
                 </div>
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs leading-relaxed text-ri-slate">
+          <p className="mt-3 text-xs leading-relaxed text-cine-muted">
             When data is missing, displays show an honest empty state rather than an estimate. No platform traffic, search interest and contractor coverage are ever merged into one score.
           </p>
         </div>

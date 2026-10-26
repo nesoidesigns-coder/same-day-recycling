@@ -14,6 +14,7 @@ export default function CinematicCanadaMap({
   cities = [],
   coverageCities = [],
   province,
+  selectedCity = "",
   onProvince,
   onCity,
 }) {
@@ -82,6 +83,9 @@ export default function CinematicCanadaMap({
           const r = 4 + (m.count / maxCount) * 7;
           return (
             <g key={"obs-" + m.city} className="cursor-pointer" onClick={() => onCity?.(m.city)}>
+              {selectedCity && m.city.toLowerCase() === selectedCity.toLowerCase() && (
+                <circle cx={p.x} cy={p.y} r={r + 4} fill="none" stroke="#32C7D5" strokeWidth="1.6" strokeOpacity="0.9" pointerEvents="none" />
+              )}
               <circle cx={p.x} cy={p.y} r={r} fill="#32C7D5" fillOpacity="0.2" />
               <circle cx={p.x} cy={p.y} r={Math.max(3, r / 2.4)} fill="#32C7D5" fillOpacity="0.95">
                 <title>{`${m.city}${m.province_code ? `, ${m.province_code}` : ""}: ${m.count} observed record${m.count === 1 ? "" : "s"}`}</title>
