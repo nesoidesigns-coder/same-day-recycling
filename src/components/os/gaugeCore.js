@@ -44,9 +44,11 @@ export const GAUGE_SIZES = {
 
 // Centralized motion tokens (mirrored as CSS vars in src/index.css).
 export const MOTION = {
-  micro: 150,        // micro feedback
-  standard: 280,     // standard transitions
-  gauge: 600,        // complex gauge transitions
+  micro: 150,        // fast interaction
+  standard: 250,     // standard transition
+  panel: 400,        // panel transition
+  gauge: 1200,       // gauge entrance (arcs draw, number settles)
+  geo: 700,          // geographic transition
   reveal: 1200,      // initial cinematic reveal
   ease: "cubic-bezier(0.22, 1, 0.36, 1)",
 };

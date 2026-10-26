@@ -71,6 +71,7 @@ module.exports = {
 			os: { core: 'hsl(var(--os-core))', deep: 'hsl(var(--os-deep))', surface: 'hsl(var(--os-surface))', ink: 'hsl(var(--os-ink))', silver: 'hsl(var(--os-silver))', cyan: 'hsl(var(--os-cyan))', blue: 'hsl(var(--os-blue))', violet: 'hsl(var(--os-violet))', green: 'hsl(var(--os-green))', amber: 'hsl(var(--os-amber))', coral: 'hsl(var(--os-coral))', frost: 'hsl(var(--os-frost))', cloud: 'hsl(var(--os-cloud))', pale: 'hsl(var(--os-pale))', navy: 'hsl(var(--os-navy))' },
 			si: { bg: 'hsl(var(--si-bg))', bg2: 'hsl(var(--si-bg2))', forest: 'hsl(var(--si-forest))', mint: 'hsl(var(--si-mint))', mint2: 'hsl(var(--si-mint2))', ink: 'hsl(var(--si-ink))', muted: 'hsl(var(--si-muted))', line: 'hsl(var(--si-line))', amber: 'hsl(var(--si-amber))', blue: 'hsl(var(--si-blue))' },
 			ri: { forest: 'hsl(var(--ri-forest))', emerald: 'hsl(var(--ri-emerald))', 'emerald-ink': 'hsl(var(--ri-emerald-ink))', mint: 'hsl(var(--ri-mint))', ivory: 'hsl(var(--ri-ivory))', sky: 'hsl(var(--ri-sky))', amber: 'hsl(var(--ri-amber))', 'amber-ink': 'hsl(var(--ri-amber-ink))', charcoal: 'hsl(var(--ri-charcoal))', slate: 'hsl(var(--ri-slate))' },
+			na: { navy: 'hsl(var(--na-navy))', deep: 'hsl(var(--na-deep))', ocean: 'hsl(var(--na-ocean))', teal: 'hsl(var(--na-teal))', cyan: 'hsl(var(--na-cyan))', green: 'hsl(var(--na-green))', warm: 'hsl(var(--na-warm))', cloud: 'hsl(var(--na-cloud))', slate: 'hsl(var(--na-slate))', amber: 'hsl(var(--na-amber))' },
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',

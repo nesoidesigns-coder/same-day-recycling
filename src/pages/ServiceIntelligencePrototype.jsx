@@ -3,7 +3,6 @@ import { useSEO } from "@/lib/seo";
 import Footer from "@/components/sdr/Footer";
 import SiHeader from "@/components/si/SiHeader";
 import ServiceHero from "@/components/home/ServiceHero";
-import LiveGaugePreview from "@/components/home/LiveGaugePreview";
 import TransparencyPanel from "@/components/home/TransparencyPanel";
 import ImpactEstimator from "@/components/home/ImpactEstimator";
 import CanadaSignalSection from "@/components/canada/CanadaSignalSection";
@@ -47,9 +46,6 @@ export default function ServiceIntelligencePrototype() {
 
       {/* Customer trust and proof — verified reviews and promises only */}
       <TrustStrip />
-
-      {/* Compact master Live Intelligence gauge — one verified metric */}
-      <LiveGaugePreview />
 
       <main className="mx-auto flex max-w-[1280px] flex-col gap-10 px-4 py-10 md:px-8 md:py-14">
         {/* Signature tool — instant, shareable impact estimate */}
