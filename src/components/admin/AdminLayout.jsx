@@ -82,10 +82,10 @@ function NavList({ pathname, onNavigate }) {
               to={n.to}
               onClick={onNavigate}
               className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 min-h-[44px] text-sm font-bold transition-colors ${
-                active ? "bg-os-surface text-os-ink ring-1 ring-os-cyan/25" : "text-os-silver hover:bg-os-surface/60 hover:text-os-ink"
+                active ? "bg-li-mint/15 text-li-infra ring-1 ring-li-infra/25" : "text-li-slate hover:bg-li-mint/10 hover:text-li-infra"
               }`}
             >
-              <n.icon className={`w-4 h-4 ${active ? "text-os-cyan" : "text-os-silver"}`} />
+              <n.icon className={`w-4 h-4 ${active ? "text-li-infra" : "text-li-slate"}`} />
               {n.label}
             </Link>
           );
@@ -106,12 +106,12 @@ function NavList({ pathname, onNavigate }) {
 function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5 px-3">
-      <span className="w-9 h-9 rounded-xl bg-os-surface text-os-cyan flex items-center justify-center">
+      <span className="w-9 h-9 rounded-xl bg-li-forest text-white flex items-center justify-center">
         <Recycle className="w-5 h-5" />
       </span>
       <span>
-        <span className="block text-sm font-bold text-white leading-tight">Same Day Recycling</span>
-        <span className="font-plex block text-[10px] font-semibold uppercase tracking-[0.16em] text-os-cyan">Recycling OS Command Centre</span>
+        <span className="block text-sm font-bold text-li-carbon leading-tight">Same Day Recycling</span>
+        <span className="font-plex block text-[10px] font-semibold uppercase tracking-[0.16em] text-li-infra">Recycling OS Command Centre</span>
       </span>
     </Link>
   );
@@ -154,21 +154,21 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-li min-h-screen bg-li-cloud">
-      <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col bg-os-core border-r border-white/5 z-40">
-        <div className="h-16 flex items-center border-b border-white/5 shrink-0">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col bg-white border-r border-li-steel z-40">
+        <div className="h-16 flex items-center border-b border-li-steel shrink-0">
           <Brand />
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-5">
           <NavList pathname={location.pathname} />
         </div>
-        <div className="border-t border-white/5 p-3">
-          <Link to="/" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-os-silver hover:text-os-ink hover:bg-os-surface/60 transition-colors">
+        <div className="border-t border-li-steel p-3">
+          <Link to="/" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-li-slate hover:text-li-infra hover:bg-li-mint/10 transition-colors">
             <ExternalLink className="w-4 h-4" /> View live site
           </Link>
         </div>
       </aside>
 
-      <header className="md:hidden sticky top-0 z-40 h-14 bg-os-core border-b border-white/5 flex items-center justify-between px-4">
+      <header className="md:hidden sticky top-0 z-40 h-14 bg-white border-b border-li-steel flex items-center justify-between px-4">
         <Brand />
         <button onClick={() => setOpen(true)} className="p-2 -mr-2 text-white" aria-label="Open menu">
           <Menu className="w-6 h-6" />
@@ -178,8 +178,8 @@ export default function AdminLayout() {
       {open && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
-          <div className="relative w-72 max-w-[85vw] bg-os-core h-full flex flex-col shadow-xl">
-            <div className="h-16 flex items-center justify-between border-b border-white/5 px-3 pr-4 shrink-0">
+          <div className="relative w-72 max-w-[85vw] bg-white h-full flex flex-col shadow-xl">
+            <div className="h-16 flex items-center justify-between border-b border-li-steel px-3 pr-4 shrink-0">
               <Brand />
               <button onClick={() => setOpen(false)} className="p-1 text-os-silver" aria-label="Close menu">
                 <X className="w-5 h-5" />
