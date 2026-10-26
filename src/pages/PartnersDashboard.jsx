@@ -29,8 +29,8 @@ const jobNet = (b) => {
   return Math.max(0, v - fee - (Number(b.refund_amount) || 0));
 };
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm";
-const label = "text-[10px] font-bold uppercase tracking-[0.25em] text-[#187B65]/90";
+const panel = "surface-dark relative overflow-hidden";
+const label = "data-label text-os-silver";
 
 export default function PartnersDashboard() {
   const [stage, setStage] = useState("loading");
@@ -117,7 +117,7 @@ export default function PartnersDashboard() {
   const paid = history.filter((h) => h.payout_paid).reduce((s, h) => s + jobNet(h), 0);
 
   return (
-    <div className="min-h-screen bg-[#051511] text-emerald-50">
+    <div className="min-h-screen bg-os-core text-os-ink">
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="flex flex-wrap items-start justify-between gap-4 mb-10">
           <div>

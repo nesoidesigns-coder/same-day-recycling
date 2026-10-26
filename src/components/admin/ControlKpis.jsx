@@ -1,10 +1,9 @@
-import { base44 } from "@/api/base44Client";
 import { Gauge, DollarSign, BellRing, MapPinned, CalendarClock, Quote } from "lucide-react";
 
 const money = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-CA");
 
-const panel = "relative overflow-hidden rounded-2xl border border-[#187B65]/25 holo-panel-deep backdrop-blur-sm p-5";
-const label = "text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-100/60";
+const panel = "surface-dark relative overflow-hidden p-5";
+const label = "data-label text-os-silver";
 
 export default function ControlKpis({ bookings, quoteNew, clients }) {
   const todayKey = new Date().toLocaleDateString("en-CA");
@@ -35,7 +34,7 @@ export default function ControlKpis({ bookings, quoteNew, clients }) {
             <g.icon className="w-4 h-4 text-[#187B65]" />
             <div className={label}>{g.label}</div>
           </div>
-          <div className={`text-3xl font-bold tracking-tight mt-3 tabular-nums ${g.glow ? "text-[#187B65] holo-glow-text" : "text-white"}`}>{g.value}</div>
+          <div className={`metric text-3xl mt-3 ${g.glow ? "text-os-green" : "text-os-ink"}`}>{g.value}</div>
           <div className="text-xs text-emerald-100/50 mt-1.5">{g.sub}</div>
         </div>
       ))}

@@ -4,22 +4,14 @@
 // these primitives so ring thickness, ticks, spacing, typography and motion
 // stay identical everywhere.
 
-// Master palette (hex for SVG rendering; the same values exist as HSL
-// tokens in src/index.css / tailwind.config.js for Tailwind classes).
+// Master SVG palette resolves the design tokens on its actual surface;
+// light and midnight gauges share geometry without copying colour values.
 export const OS_COLORS = {
-  core: "#081421",      // Midnight Core — main intelligence background
-  deep: "#0E2030",      // Deep Ocean — secondary background
-  surface: "#142B3D",   // Elevated Surface — raised panels
-  ink: "#EAF3F8",       // Arctic White — primary text on dark
-  silver: "#9FB5C4",    // Mist Silver — secondary text
-  cyan: "#32C7D5",      // Signal Cyan — observed activity & instrumentation
-  blue: "#6C9DF1",      // Intelligence Blue — analytical information
-  violet: "#9A82E6",    // Forecast Violet — forecasts & modeled info ONLY
-  green: "#55C7A1",     // Verified Green — verified availability & success
-  amber: "#E8B66A",     // Amber — caution & pending states
-  coral: "#E77B83",     // Coral — critical conditions & errors
-  line: "#3D5A73",      // hairline strokes on midnight
-  hairline: "#4A76A5",  // dial hairlines
+  core: "hsl(var(--os-core))", deep: "hsl(var(--os-deep))", surface: "hsl(var(--os-surface))",
+  ink: "hsl(var(--os-ink))", silver: "hsl(var(--os-silver))", cyan: "hsl(var(--os-cyan))",
+  blue: "hsl(var(--os-blue))", violet: "hsl(var(--os-violet))", green: "hsl(var(--os-green))",
+  amber: "hsl(var(--os-amber))", coral: "hsl(var(--os-coral))",
+  line: "hsl(var(--os-line, var(--cine-line)))", hairline: "hsl(var(--os-hairline, var(--cine-line)))",
 };
 
 // Categorical sector palette: tints of the four semantic accents, ordered so
@@ -67,11 +59,12 @@ export const polar = (r, deg) => {
 };
 
 export const ringSector = (r0, r1, a0, a1) => {
-  const [x0, y0] = polar(r1, a0);
-  const [x1, y1] = polar(r1, a1);
-  const [x2, y2] = polar(r0, a1);
-  const [x3, y3] = polar(r0, a0);
-  return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r1} ${r1} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} L ${x2.toFixed(2)} ${y2.toFixed(2)} A ${r0} ${r0} 0 0 0 ${x3.toFixed(2)} ${y3.toFixed(2)} Z`;
+  const span = Math.min(359.999, Math.max(0, a1 - a0));
+  if (!span) return "";
+  const end = a0 + span, large = span > 180 ? 1 : 0;
+  const [x0, y0] = polar(r1, a0), [x1, y1] = polar(r1, end);
+  const [x2, y2] = polar(r0, end), [x3, y3] = polar(r0, a0);
+  return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r1} ${r1} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} L ${x2.toFixed(2)} ${y2.toFixed(2)} A ${r0} ${r0} 0 ${large} 0 ${x3.toFixed(2)} ${y3.toFixed(2)} Z`;
 };
 
 // Open arc (stroke path) for proportional metrics with a defined share.

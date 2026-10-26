@@ -16,7 +16,7 @@ const NAV = [
 export default function SiHeader() {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="sticky top-0 z-50 border-b border-si-line bg-white/95 backdrop-blur">
+    <nav data-os-nav="public" className="sticky top-0 z-50 border-b border-si-line bg-card/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 md:px-8">
         <Link to="/" className="flex items-center gap-2.5">
           <span className="flex size-9 items-center justify-center rounded-xl bg-si-forest text-si-mint2">
@@ -29,9 +29,9 @@ export default function SiHeader() {
             </span>
           </span>
         </Link>
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="hidden items-center gap-1 xl:flex">
           {NAV.map((n) => (
-            <a key={n.label} href={n.to} className="text-sm font-medium text-si-muted transition-colors hover:text-si-forest">
+            <a key={n.label} href={n.to} className="rounded-full px-3 py-2 text-sm font-semibold text-si-muted transition-colors hover:bg-ri-mint/50 hover:text-si-forest">
               {n.label}
             </a>
           ))}
@@ -42,18 +42,18 @@ export default function SiHeader() {
             Get a Free Quote
           </Link>
         </div>
-        <button className="p-2 text-si-ink md:hidden" onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>
+        <button className="p-2 text-si-ink xl:hidden" onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
       </div>
       {open && (
-        <div className="menu-drop flex flex-col gap-1 border-t border-si-line bg-white px-4 py-3 md:hidden">
+        <div className="menu-drop flex flex-col gap-1 border-t border-si-line bg-white px-4 py-3 xl:hidden">
           {NAV.map((n) => (
             <a key={n.label} href={n.to} onClick={() => setOpen(false)} className="rounded-lg px-2 py-2.5 text-sm font-bold text-si-ink hover:bg-si-bg2">
               {n.label}
             </a>
           ))}
-          <Link to="/request-service" onClick={() => setOpen(false)} className="mt-1 rounded-full bg-si-forest px-5 py-3 text-center text-sm font-bold text-white">
+          <Link to="/request-service" onClick={() => setOpen(false)} className="mt-1 rounded-full bg-ri-amber px-5 py-3 text-center text-sm font-bold text-ri-charcoal">
             Get a Free Quote
           </Link>
         </div>

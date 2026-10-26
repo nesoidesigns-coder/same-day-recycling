@@ -1,4 +1,4 @@
-import OSIntelligenceGauge from "@/components/os/OSIntelligenceGauge";
+import MetricGauge from "@/components/os/MetricGauge";
 import { OS_COLORS } from "@/components/os/gaugeCore";
 
 // Contractor operations instruments — the shared OSIntelligenceGauge family,
@@ -76,22 +76,12 @@ export default function OperationsGauges({ jobs = [], history = [], offers = [] 
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {gauges.map((g) => (
-        <div key={g.key} className="rounded-2xl border border-[#187B65]/25 bg-[#102B2A]/50 backdrop-blur-sm p-4 text-center">
-          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#187B65]/90">{g.label}</div>
+        <div key={g.key} className="surface-dark p-4 text-center">
+          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-os-silver">{g.label}</div>
           <div className="mt-2">
-            <OSIntelligenceGauge
-              size="compact"
-              ariaLabel={g.label}
-              center={{ value: g.value }}
-              layers={[
-                { type: "ring", radius: 0.92, opacity: 0.14 },
-                ...(g.span != null
-                  ? [{ type: "arc", r0: 0.74, r1: 0.9, spanDeg: Math.max(10, (g.span / 100) * 340), color: g.color, title: `${g.label}: ${g.span}%` }]
-                  : []),
-              ]}
-            />
+            <MetricGauge value={g.span} display={g.value} label={g.label} color={g.color} appearance="dark" size={150} />
           </div>
-          <p className="mt-1 text-[10px] leading-snug text-emerald-100/40">{g.caption}</p>
+          <p className="mt-1 text-[10px] leading-snug text-os-silver">{g.caption}</p>
         </div>
       ))}
     </div>

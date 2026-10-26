@@ -7,6 +7,7 @@ import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
 import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
 import { CATEGORY_PALETTE } from "./gaugeCore";
+import CompositionGauge from "@/components/os/CompositionGauge";
 
 // Recycling OS LIVE — the signature circular intelligence visualization.
 // One living system view: drill Canada → Province → City, tap a category
@@ -14,9 +15,6 @@ import { CATEGORY_PALETTE } from "./gaugeCore";
 // states; counts only, never blended demand scores.
 
 const PALETTE = CATEGORY_PALETTE;
-const R = 100;
-const CIRC = 2 * Math.PI * R;
-const GAP = 2.5;
 
 export default function LiveRing({ compact = false }) {
   const [province, setProvince] = useState("");
@@ -95,32 +93,7 @@ export default function LiveRing({ compact = false }) {
             </div>
           ) : (
             <>
-              <svg viewBox="0 0 260 260" className="w-full h-full -rotate-90" role="img" aria-label="Service category demand ring">
-                <circle cx="130" cy="130" r={R} fill="none" stroke="#eef2f0" strokeWidth="26" />
-                {segments.map((s) => {
-                  const len = Math.max(4, s.frac * CIRC - GAP);
-                  const isSel = category === s.key;
-                  const dim = category && !isSel;
-                  return (
-                    <circle
-                      key={s.key}
-                      cx="130" cy="130" r={R}
-                      fill="none"
-                      stroke={s.color}
-                      strokeWidth={isSel ? 30 : 24}
-                      strokeDasharray={`${len} ${CIRC - len}`}
-                      transform={`rotate(${s.start * 360} 130 130)`}
-                      className="cursor-pointer transition-all duration-500"
-                      style={{ opacity: dim ? 0.28 : 1 }}
-                      onClick={() => pick(s.key)}
-                      role="button"
-                      aria-label={`${LIVE_CATEGORIES[s.key]}: ${s.count} records`}
-                    >
-                      <title>{LIVE_CATEGORIES[s.key]} — {s.count} records</title>
-                    </circle>
-                  );
-                })}
-              </svg>
+              <CompositionGauge label="Service category demand ring" total={total} segments={segments.map((segment) => ({ key: segment.key, label: LIVE_CATEGORIES[segment.key] || segment.key, value: segment.count, color: segment.color }))} selectedKey={category} onSelect={pick} primary="" secondary="" />
               <button onClick={() => setCategory(null)} className="absolute inset-0 m-auto w-36 h-36 rounded-full grid place-items-center text-center hover:scale-105 transition-transform" aria-label="Reset selection">
                 <div>
                   <div className="text-4xl font-bold text-[#102B2A] tabular-nums">{total}</div>

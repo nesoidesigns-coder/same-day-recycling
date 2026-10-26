@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2, MousePointerClick } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import DataSourceLabel from "@/components/li/DataSourceLabel";
+import MetricGauge from "@/components/os/MetricGauge";
 
 const SECTORS = [
   { key: "furniture_appliance_removal", label: "Furniture & Appliances", short: "Furniture" },
@@ -29,8 +30,6 @@ const PROVINCES = [
   ["NS", "Nova Scotia"], ["PE", "Prince Edward Island"], ["NL", "Newfoundland"],
 ];
 
-const R = 118;
-const CIRC = 2 * Math.PI * R;
 
 export default function NationalPulse() {
   const [national, setNational] = useState(null);
@@ -110,28 +109,8 @@ export default function NationalPulse() {
         <div className="grid lg:grid-cols-[380px_1fr] gap-6 items-stretch">
           {/* Central pulse gauge */}
           <div className="rounded-3xl bg-li-forest text-white p-6 flex flex-col items-center justify-center text-center">
-            <svg viewBox="0 0 280 280" className="w-56 h-56 md:w-64 md:h-64 -rotate-90" role="img" aria-label="National demand pulse gauge">
-              <circle cx="140" cy="140" r={R} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="14" />
-              <circle
-                cx="140" cy="140" r={R} fill="none" stroke="hsl(162, 72%, 46%)" strokeWidth="14" strokeLinecap="round"
-                strokeDasharray={CIRC}
-                strokeDashoffset={CIRC * (1 - Math.min(1, (counts[selected] || 0) / Math.max(1, total)))}
-                style={{ transition: "stroke-dashoffset 700ms cubic-bezier(0.4, 0, 0.2, 1)" }}
-              />
-            </svg>
-            <div className="-mt-40 md:-mt-44 mb-16 md:mb-[4.5rem]">
-              {loadingDetail ? (
-                <Loader2 className="w-6 h-6 animate-spin text-li-mint mx-auto" />
-              ) : (
-                <>
-                  <div className="text-5xl font-bold tracking-tight">{detailRow ? detailRow.count : counts[selected] || 0}</div>
-                  <div className="mt-1 text-xs font-semibold text-li-mint uppercase tracking-wider">
-                    {selectedSector ? selectedSector.short : "All sectors"} signals
-                  </div>
-                </>
-              )}
-            </div>
-            <div className="font-plex text-[11px] text-white/60 leading-relaxed">
+            <MetricGauge value={counts[selected] || 0} max={total} display={detailRow ? detailRow.count : counts[selected] || 0} loading={loadingDetail} label="National demand pulse" unit={`${selectedSector ? selectedSector.short : "All sectors"} signals`} appearance="dark" size={260} />
+            <div className="mt-4 font-plex text-[11px] text-white/60 leading-relaxed">
               {province ? `${PROVINCES.find(([c]) => c === province)?.[1] || province} · ` : "Canada · "}
               last 30 days · {total} total signals
             </div>

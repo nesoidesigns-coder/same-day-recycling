@@ -4,7 +4,7 @@ export default function StatusGauge({ max, segments, unit = "" }) {
 
   return (
     <div>
-      <div className="flex h-3.5 rounded-full overflow-hidden bg-li-steel/40 border border-li-steel" role="img" aria-label={segments.map((s) => `${s.label}: ${s.value}`).join(", ")}>
+      <div className="flex h-2 rounded-full overflow-hidden bg-li-steel/40 border border-li-steel" role="img" aria-label={segments.map((s) => `${s.label}: ${s.value}`).join(", ")}>
         {segments.map((s) => (
           <div
             key={s.label}

@@ -1,4 +1,6 @@
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import RingSvg from "@/components/os/DemandRing";
+import { CATEGORY_PALETTE } from "@/components/os/gaugeCore";
 
 // Unified Recycling OS demand gauge system.
 // One visual language for every demand, capacity and performance metric across
@@ -8,7 +10,7 @@ import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 // verified, estimated, or not yet available. Nothing decorative, nothing
 // invented: a gauge with no verified data says so instead of showing zero.
 
-export const DEMAND_PALETTE = ["#176B52", "#21C997", "#103D32", "#D99636", "#64736E", "#0A4A3C", "#8FB8AC", "#3A5B52"];
+export const DEMAND_PALETTE = CATEGORY_PALETTE;
 
 const STATUS_STYLES = {
   verified: { label: "Verified", cls: "border-li-mint bg-li-mint/10 text-li-forest" },
@@ -54,74 +56,6 @@ export function GaugeMeta({ period, source, updatedAt, methodology, status = "ve
   );
 }
 
-function RingCenter({ value, unit, centerSub, empty, loading }) {
-  if (loading) {
-    return <text x="100" y="103" textAnchor="middle" fontSize="11" fontFamily="'IBM Plex Mono', monospace" fill="#64736E">Loading…</text>;
-  }
-  if (empty) {
-    return (
-      <>
-        <text x="100" y="97" textAnchor="middle" fontSize="9" fontFamily="'IBM Plex Mono', monospace" fill="#64736E">No verified</text>
-        <text x="100" y="111" textAnchor="middle" fontSize="9" fontFamily="'IBM Plex Mono', monospace" fill="#64736E">data yet</text>
-      </>
-    );
-  }
-  const shown = String(value ?? "—").slice(0, 9);
-  return (
-    <>
-      <text x="100" y="104" textAnchor="middle" fontSize="30" fontWeight="700" fontFamily="'IBM Plex Mono', monospace" fill="#103D32">{shown}</text>
-      {unit && <text x="100" y="122" textAnchor="middle" fontSize="10" fontFamily="'IBM Plex Mono', monospace" fill="#64736E">{unit}</text>}
-      {centerSub && <text x="100" y="139" textAnchor="middle" fontSize="9" fontFamily="'IBM Plex Mono', monospace" fill="#64736E">{centerSub}</text>}
-    </>
-  );
-}
-
-function RingSvg({ value, max, segments = [], selected, onSelect, empty, loading, unit, centerSub, label }) {
-  const C = 2 * Math.PI * 84;
-  const total = segments.reduce((s, x) => s + (Number(x.value) || 0), 0);
-  let arcs = null;
-  if (!empty && !max && total > 0) {
-    let cum = 0;
-    arcs = segments.map((s, i) => {
-      const f = (Number(s.value) || 0) / total;
-      const start = cum;
-      cum += f;
-      return { key: s.key ?? s.label, label: s.label, value: s.value, f, start, color: s.color || DEMAND_PALETTE[i % DEMAND_PALETTE.length] };
-    });
-  }
-  return (
-    <svg viewBox="0 0 200 200" className="w-full h-full" role="img" aria-label={label || "Demand gauge"}>
-      <circle cx="100" cy="100" r="84" fill="none" stroke="#E4EAE7" strokeWidth="14" />
-      {empty || loading ? (
-        <RingCenter empty={empty} loading={loading} />
-      ) : arcs ? (
-        arcs.map((a) => {
-          const len = Math.max(2, a.f * C - 2);
-          return (
-            <circle key={a.key} cx="100" cy="100" r="84" fill="none" stroke={a.color}
-              strokeWidth={selected === a.key ? 18 : 13}
-              strokeOpacity={selected && selected !== a.key ? 0.3 : 1}
-              strokeLinecap="round"
-              strokeDasharray={`${len} ${C - len}`}
-              transform={`rotate(${a.start * 360 - 90} 100 100)`}
-              className={onSelect ? "cursor-pointer transition-all duration-200" : "transition-all duration-200"}
-              onClick={onSelect ? () => onSelect(a.key) : undefined}>
-              <title>{a.label}: {a.value}</title>
-            </circle>
-          );
-        })
-      ) : (() => {
-        const frac = max ? Math.min(1, (Number(value) || 0) / max) : 0;
-        const len = Math.max(2, frac * C - 2);
-        return (
-          <circle cx="100" cy="100" r="84" fill="none" stroke="#176B52" strokeWidth="14" strokeLinecap="round"
-            strokeDasharray={`${len} ${C - len}`} transform="rotate(-90 100 100)" className="transition-all duration-700" />
-        );
-      })()}
-      {!empty && !loading && <RingCenter value={value} unit={unit} centerSub={centerSub} />}
-    </svg>
-  );
-}
 
 function GaugeBars({ segments = [], selected, onSelect, unit }) {
   const total = segments.reduce((s, x) => s + (Number(x.value) || 0), 0);

@@ -1,4 +1,5 @@
 import { ChevronDown, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import MetricGauge from "@/components/os/MetricGauge";
 
 // Coordinated circular pulse gauge — the single visual language for both
 // homepage gauges. Shows a normalized 0-100 index, trend direction and data
@@ -6,8 +7,6 @@ import { ChevronDown, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 // Arc animates only when the value changes (CSS transition); honours
 // prefers-reduced-motion via the motion-reduce variant.
 
-const R = 84;
-const C = 2 * Math.PI * R;
 
 const TONES = {
   dark: {
@@ -63,31 +62,9 @@ export default function PulseRing({
       {subtitle && <p className={`mt-1 text-sm ${t.sub}`}>{subtitle}</p>}
 
       <div className="relative mx-auto mt-5 w-full max-w-[240px]">
-        <svg viewBox="0 0 200 200" className="w-full h-auto" role="img" aria-label={title}>
-          <circle cx="100" cy="100" r={R} fill="none" stroke={t.track} strokeWidth="13" />
-          {!empty && !loading && (
-            <circle
-              cx="100" cy="100" r={R} fill="none" stroke={t.arc} strokeWidth="13" strokeLinecap="round"
-              strokeDasharray={`${Math.max(2, (shown / 100) * C - 2)} ${C}`}
-              transform="rotate(-90 100 100)"
-              className="transition-all duration-700 motion-reduce:transition-none"
-            />
-          )}
-          {loading ? (
-            <text x="100" y="106" textAnchor="middle" fontSize="13" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>Loading…</text>
-          ) : empty ? (
-            <>
-              <text x="100" y="94" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>Awaiting</text>
-              <text x="100" y="110" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>verified</text>
-              <text x="100" y="126" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>signals</text>
-            </>
-          ) : (
-            <>
-              <text x="100" y="108" textAnchor="middle" fontSize="42" fontWeight="700" fontFamily="'IBM Plex Mono', monospace" fill={t.center}>{shown}</text>
-              <text x="100" y="130" textAnchor="middle" fontSize="12" fontFamily="'IBM Plex Mono', monospace" fill={t.dim}>of 100</text>
-            </>
-          )}
-        </svg>
+        <MetricGauge value={shown} display={shown} max={100} unit={empty ? "" : "of 100"} label={title} appearance={tone === "dark" ? "dark" : "light"} loading={loading} unavailable={empty} size={240}>
+          {empty && <span className="text-xs font-semibold text-muted-foreground">Awaiting verified signals</span>}
+        </MetricGauge>
       </div>
 
       <div className={`mt-4 flex flex-wrap items-center justify-center gap-2 text-xs`}>

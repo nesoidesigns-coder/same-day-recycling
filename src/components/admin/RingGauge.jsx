@@ -12,11 +12,12 @@ export default function RingGauge({ value, max = 100, label, sub, unavailableRea
     <div className="rounded-[14px] bg-white border border-li-steel shadow-sm p-5 flex items-center gap-4">
       <OSIntelligenceGauge
         size="micro"
+        appearance="light"
         className="w-16 h-16 shrink-0"
         ariaLabel={label}
         layers={[
           ...(frac !== null
-            ? [{ type: "arc", r0: 0.72, r1: 0.9, spanDeg: Math.max(12, frac * 340), color, title: `${label}: ${value}` }]
+            ? [{ type: "arc", r0: 0.72, r1: 0.9, spanDeg: frac * 340, color, title: `${label}: ${value}` }]
             : []),
         ]}
       />

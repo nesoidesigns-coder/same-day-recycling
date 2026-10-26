@@ -19,6 +19,7 @@ export default function OSGaugeSegment({
   value = null,
   onSelect,
   interactive = true,
+  onMouseEnter, onMouseLeave, onFocus, onBlur,
 }) {
   const R0 = r0 * R;
   const R1 = r1 * R;
@@ -54,8 +55,9 @@ export default function OSGaugeSegment({
               role: "button",
               tabIndex: 0,
               "aria-label": title,
-              onClick: onSelect,
-              onKeyDown: (e) => (e.key === "Enter" || e.key === " ") && onSelect(),
+              "aria-pressed": selected,
+              onClick: onSelect, onMouseEnter, onMouseLeave, onFocus, onBlur,
+              onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(); } },
             }
           : {})}
       >

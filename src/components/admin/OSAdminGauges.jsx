@@ -1,4 +1,4 @@
-import OSIntelligenceGauge from "@/components/os/OSIntelligenceGauge";
+import MetricGauge from "@/components/os/MetricGauge";
 import { OS_COLORS } from "@/components/os/gaugeCore";
 
 // Master admin gauges — the shared OSIntelligenceGauge family. Percentage
@@ -63,17 +63,7 @@ export default function OSAdminGauges({
         <div key={g.key} className="rounded-2xl border border-slate-200/70 bg-white shadow-sm p-4 text-center">
           <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-li-slate">{g.label}</div>
           <div className="mt-1">
-            <OSIntelligenceGauge
-              size="compact"
-              ariaLabel={g.label}
-              center={{ value: g.span != null ? `${g.span}%` : "" }}
-              layers={[
-                { type: "ring", radius: 0.92, opacity: 0.14 },
-                ...(g.span != null
-                  ? [{ type: "arc", r0: 0.74, r1: 0.9, spanDeg: Math.max(10, (g.span / 100) * 340), color: g.color, title: `${g.label}: ${g.span}%` }]
-                  : []),
-              ]}
-            />
+            <MetricGauge value={g.span} display={g.span != null ? `${g.span}%` : undefined} label={g.label} color={g.color} appearance="light" size={150} />
           </div>
           <p className="mt-1 text-[10px] leading-snug text-li-slate">{g.caption}</p>
         </div>

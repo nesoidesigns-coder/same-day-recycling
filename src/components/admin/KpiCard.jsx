@@ -8,9 +8,9 @@ export default function KpiCard({ label, value, sub, delta, tone = "forest", hre
     red: "text-li-red",
   };
   const body = (
-    <div className="rounded-[14px] bg-white border border-li-steel shadow-sm p-5 h-full hover:border-li-mint/60 transition-colors">
+    <div className="surface surface-hover p-5 h-full">
       <div className="font-plex text-[11px] font-semibold uppercase tracking-[0.15em] text-li-slate">{label}</div>
-      <div className={`font-plex mt-2 text-2xl font-semibold tracking-tight tabular-nums ${tones[tone]}`}>{value}</div>
+      <div className={`metric mt-2 text-2xl ${tones[tone]}`}>{value}</div>
       {sub && <div className="mt-1 text-xs text-li-slate">{sub}</div>}
       {delta !== null && delta !== undefined && (
         <div className={`font-plex mt-2 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold ${delta >= 0 ? "bg-li-mint/15 text-li-forest" : "bg-li-red/10 text-li-red"}`}>

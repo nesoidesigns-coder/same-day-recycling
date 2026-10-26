@@ -29,6 +29,7 @@ const CENTER_SCALE = {
 
 export default function OSIntelligenceGauge({
   size = "feature",
+  appearance = "dark",
   loading = false,
   error = false,
   center = null,
@@ -42,32 +43,32 @@ export default function OSIntelligenceGauge({
 
   if (size === "micro") {
     const arcLayer = layers.find((l) => l.type === "arc");
-    const share = arcLayer && arcLayer.spanDeg != null ? Math.min(340, arcLayer.spanDeg) / 360 : null;
+    const span = arcLayer?.spanDeg == null ? null : Math.max(0, Math.min(359.999, arcLayer.spanDeg));
     return (
-      <svg viewBox="0 0 60 60" className={className} width="40" height="40" role="img" aria-label={ariaLabel}>
+      <svg viewBox="0 0 60 60" className={`os-gauge ${className}`} data-appearance={appearance} width="40" height="40" role="img" aria-label={ariaLabel}>
         <circle cx="30" cy="30" r="23" fill="none" stroke={OS_COLORS.line} strokeOpacity="0.4" strokeWidth="4" />
         {loading ? (
           <circle cx="30" cy="30" r="23" fill="none" stroke={OS_COLORS.silver} strokeOpacity="0.3" strokeWidth="4" strokeDasharray="3 6" />
-        ) : share != null ? (
-          <path d={arcPath(23, 90, 90 + Math.max(12, share * 340), 30, 30)} fill="none" stroke={arcLayer.color || OS_COLORS.cyan} strokeWidth="4" strokeLinecap="round" />
+        ) : span > 0 ? (
+          <path d={arcPath(23, 90, 90 + span, 30, 30)} fill="none" stroke={arcLayer.color || OS_COLORS.cyan} strokeWidth="4" strokeLinecap="round" />
         ) : null}
-        <circle cx="30" cy="30" r="3" fill={error ? OS_COLORS.coral : share != null ? arcLayer?.color || OS_COLORS.cyan : OS_COLORS.silver} fillOpacity="0.9" />
+        <circle cx="30" cy="30" r="3" fill={error ? OS_COLORS.coral : span != null ? arcLayer?.color || OS_COLORS.cyan : OS_COLORS.silver} fillOpacity="0.9" />
       </svg>
     );
   }
 
   return (
-    <div className={`relative mx-auto w-full ${className}`} style={{ maxWidth: spec.max }}>
+    <div className={`os-gauge relative mx-auto w-full ${className}`} data-appearance={appearance} style={{ maxWidth: spec.max }}>
       <svg viewBox="0 0 520 520" className="block w-full" role="group" aria-label={ariaLabel}>
         <defs>
           <radialGradient id={`os-amb-${uid}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#32C7D5" stopOpacity="0.12" />
-            <stop offset="45%" stopColor="#1E5F86" stopOpacity="0.05" />
-            <stop offset="100%" stopColor="#32C7D5" stopOpacity="0" />
+            <stop offset="0%" stopColor={OS_COLORS.cyan} stopOpacity="0.12" />
+            <stop offset="45%" stopColor={OS_COLORS.blue} stopOpacity="0.05" />
+            <stop offset="100%" stopColor={OS_COLORS.cyan} stopOpacity="0" />
           </radialGradient>
           <radialGradient id={`os-core-${uid}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#142B3D" stopOpacity="0.92" />
-            <stop offset="100%" stopColor="#0E2030" stopOpacity="0.96" />
+            <stop offset="0%" stopColor={OS_COLORS.surface} stopOpacity="0.92" />
+            <stop offset="100%" stopColor={OS_COLORS.deep} stopOpacity="0.96" />
           </radialGradient>
         </defs>
 
@@ -91,12 +92,12 @@ export default function OSIntelligenceGauge({
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
           <div className="relative text-center">
             {pulseKey > 0 && <span key={pulseKey} className="cine-pulse-ring absolute -inset-6 rounded-full" aria-hidden="true" />}
-            <div className={`font-plex font-bold uppercase text-cine-cyan/90 ${CENTER_SCALE[size].title}`}>{center.title}</div>
-            <div className={`mt-1.5 font-extrabold ${CENTER_SCALE[size].value} ${center.value ? "tabular-nums text-cine-ink" : "text-cine-muted"}`}>
-              {center.value || "—"}
+            <div className={`font-plex font-bold uppercase text-os-cyan ${CENTER_SCALE[size].title}`}>{center.title}</div>
+            <div className={`metric mt-1.5 ${CENTER_SCALE[size].value} ${center.value != null && center.value !== "" ? "text-os-ink" : "text-os-silver"}`}>
+              {center.value != null && center.value !== "" ? center.value : "—"}
             </div>
-            <div className={`mt-1 font-plex uppercase tracking-[0.18em] text-cine-muted ${CENTER_SCALE[size].status}`}>{center.status}</div>
-            <div className={`text-cine-muted/70 ${CENTER_SCALE[size].note}`}>{center.note}</div>
+            <div className={`os-gauge-status mt-1 font-plex uppercase tracking-[0.08em] text-os-silver ${CENTER_SCALE[size].status}`}>{center.status}</div>
+            <div className={`text-os-silver ${CENTER_SCALE[size].note}`}>{center.note}</div>
           </div>
         </div>
       )}

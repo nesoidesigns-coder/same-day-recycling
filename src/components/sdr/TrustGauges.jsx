@@ -1,34 +1,13 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { ShieldCheck, Star, Clock, Recycle, ClipboardCheck, Info } from "lucide-react";
+import Ring from "@/components/os/TrustMetricRing";
 
 const NEUTRAL = [
   { key: "response", icon: Clock, name: "Average response time", def: "Time from a quote request to our first reply, averaged over the trailing 30 days." },
   { key: "diversion", icon: Recycle, name: "Recycling & reuse diversion", def: "Share of collected material diverted from landfill, reported once disposal records are compiled." },
   { key: "completion", icon: ClipboardCheck, name: "Quote completion rate", def: "Share of quote requests that finish the form, over the trailing 30 days." },
 ];
-
-function Ring({ pct, neutral }) {
-  const r = 34;
-  const c = 2 * Math.PI * r;
-  return (
-    <svg viewBox="0 0 84 84" className="w-20 h-20" role="img" aria-hidden="true">
-      <circle cx="42" cy="42" r={r} fill="none" stroke="#e5e7eb" strokeWidth="8" />
-      {!neutral && (
-        <circle
-          cx="42" cy="42" r={r} fill="none" stroke="#187B65" strokeWidth="8" strokeLinecap="round"
-          strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)} transform="rotate(-90 42 42)"
-        />
-      )}
-      <text x="42" y="40" textAnchor="middle" className="fill-[#102B2A] font-bold" style={{ fontSize: 15 }}>
-        {neutral ? "—" : `${Math.round(pct)}%`}
-      </text>
-      <text x="42" y="55" textAnchor="middle" className="fill-slate-400" style={{ fontSize: 9 }}>
-        {neutral ? "pending data" : "verified"}
-      </text>
-    </svg>
-  );
-}
 
 export default function TrustGauges() {
   const [data, setData] = useState(null);

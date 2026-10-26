@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, MapPin } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import OSIntelligenceGauge from "@/components/os/OSIntelligenceGauge";
+import { OS_COLORS } from "@/components/os/gaugeCore";
 
 // Compact homepage preview of the master Live Intelligence gauge — the same
 // circular geometry, midnight palette, lighting and honest empty states as the
@@ -48,11 +49,11 @@ export default function LiveGaugePreview() {
       ? [
           {
             type: "arc",
-            r0: 0.78,
-            r1: 0.9,
+            r0: 0.77,
+            r1: 0.82,
             a0: 60,
-            spanDeg: Math.max(12, Math.round(340 * (bookings / total))),
-            color: "#55C7A1",
+            spanDeg: 340 * (bookings / total),
+            color: OS_COLORS.green,
             title: `Confirmed bookings: ${bookings} of ${total} records`,
           },
         ]
@@ -60,11 +61,11 @@ export default function LiveGaugePreview() {
         ? [
             {
               type: "arc",
-              r0: 0.78,
-              r1: 0.9,
+              r0: 0.77,
+              r1: 0.82,
               a0: 60,
               spanDeg: 16,
-              color: "#32C7D5",
+              color: OS_COLORS.cyan,
               title: "Observed service records",
             },
           ]

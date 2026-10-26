@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import CompositionGauge from "@/components/os/CompositionGauge";
+import { CATEGORY_PALETTE } from "@/components/os/gaugeCore";
 import { Loader2 } from "lucide-react";
 import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
 
-const COLORS = ["#187B65", "#2FA07E", "#54C39A", "#7ED9B4", "#A7E8CC", "#3E9C82", "#67CFA5", "#90DDBF"];
+const COLORS = CATEGORY_PALETTE;
 
 // Interactive composition gauge for the LIVE Centre. Shows percentages and
 // underlying counts of real demand records, with demand types kept separate.
@@ -40,26 +40,8 @@ export default function ActivityGauge({ data, loading, selected, onSelectCategor
   return (
     <div>
       <div className="grid md:grid-cols-2 gap-6 items-start">
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={rows}
-                dataKey="count"
-                nameKey="label"
-                innerRadius="55%"
-                outerRadius="88%"
-                stroke="#ffffff"
-                strokeWidth={2}
-                onClick={(entry) => onSelectCategory && onSelectCategory(entry.key)}
-              >
-                {rows.map((r) => (
-                  <Cell key={r.key} fill={r.fill} cursor="pointer" opacity={selectedRow && selectedRow.key !== r.key ? 0.45 : 1} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value, name) => [`${value} observation${value === 1 ? "" : "s"}`, name]} />
-            </PieChart>
-          </ResponsiveContainer>
+        <div>
+          <CompositionGauge label="Service demand composition" total={data.total} segments={rows.map((row) => ({ key: row.key, label: row.label, value: row.count, color: row.fill }))} selectedKey={selectedRow?.key} onSelect={onSelectCategory} primary={data.total} secondary="Matching observations" />
           <p className="text-center text-sm font-bold text-[#102B2A]">
             {data.total} observation{data.total === 1 ? "" : "s"} matching filters
           </p>

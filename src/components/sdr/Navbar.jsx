@@ -15,10 +15,10 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-si-line">
+    <nav data-os-nav="public" className="sticky top-0 z-50 bg-card/95 backdrop-blur border-b border-si-line">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/#top" className="flex items-center gap-2 font-bold text-ri-forest">
-          <span className="w-9 h-9 rounded-xl bg-ri-forest text-ri-mint2 flex items-center justify-center">
+          <span className="w-9 h-9 rounded-xl bg-ri-forest text-ri-mint flex items-center justify-center">
             <Recycle className="w-5 h-5" />
           </span>
           <span className="leading-tight">
@@ -26,9 +26,9 @@ export default function Navbar() {
             <span className="hidden sm:block text-[9px] font-bold tracking-[0.16em] uppercase text-ri-slate">Friendly junk removal & recycling across Canada</span>
           </span>
         </Link>
-        <div className="hidden md:flex items-center gap-7">
+        <div className="hidden xl:flex items-center gap-1">
           {primaryLinks.map((l) => (
-            <Link key={l.to} to={l.to} className="text-sm font-medium text-ri-charcoal/80 hover:text-ri-emerald transition-colors">
+            <Link key={l.to} to={l.to} className="rounded-full px-3 py-2 text-sm font-semibold text-ri-slate hover:bg-ri-mint/50 hover:text-ri-forest transition-colors">
               {l.label}
             </Link>
           ))}
@@ -36,12 +36,12 @@ export default function Navbar() {
             Get a Free Quote
           </Link>
         </div>
-        <button className="md:hidden p-2 text-ri-forest" onClick={() => setOpen(!open)} aria-label="Menu">
+        <button className="xl:hidden p-2 text-ri-forest" onClick={() => setOpen(!open)} aria-label="Menu">
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
       {open && (
-        <div className="menu-drop md:hidden border-t border-si-line bg-white px-4 py-4 flex flex-col gap-3">
+        <div className="menu-drop xl:hidden border-t border-si-line bg-white px-4 py-4 flex flex-col gap-3">
           {primaryLinks.map((l) => (
             <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-bold text-ri-forest py-1">
               {l.label}

@@ -1,0 +1,97 @@
+/* One presentation layer for every route, including legacy dashboards.
+   Native controls, status colours, maps, charts and interaction geometry stay intact. */
+:root, .dark {
+  --experience-panel-radius: 1.5rem;
+  --experience-control-radius: 9999px;
+  --experience-panel-shadow: 0 4px 20px hsl(var(--ri-forest) / 0.045);
+}
+.os-experience {
+  --experience-ink: var(--ri-charcoal);
+  --experience-muted: var(--ri-slate);
+  --experience-accent: var(--ri-emerald-ink);
+  --experience-line: var(--si-line);
+  --experience-field: var(--card);
+  --market-bg: var(--os-core);
+  --market-surface: var(--os-deep);
+  --market-ink: var(--os-ink);
+  --market-muted: var(--os-silver);
+  --market-line: var(--cine-line);
+  --market-accent: var(--os-cyan);
+  background: hsl(var(--ri-ivory));
+  color: hsl(var(--experience-ink));
+  font-variant-numeric: lining-nums;
+}
+.os-experience[data-experience="contractor"] {
+  --experience-ink: var(--os-ink);
+  --experience-muted: var(--os-silver);
+  --experience-accent: var(--os-green);
+  --experience-line: var(--cine-line);
+  --experience-field: var(--os-surface);
+  background: hsl(var(--os-core));
+}
+/* Local surface tokens keep nested light cards and midnight panels readable. */
+.os-experience :is(.surface, .bg-white, .bg-card, .bg-si-bg, .bg-si-bg2, .bg-ri-ivory, .bg-li-cloud, .bg-slate-50, .bg-slate-100) {
+  --experience-ink: var(--ri-charcoal);
+  --experience-muted: var(--ri-slate);
+  --experience-accent: var(--ri-emerald-ink);
+  --experience-line: var(--si-line);
+  --experience-field: var(--card);
+}
+.os-experience :is(.bg-os-core, .bg-os-deep, .bg-os-surface, .bg-cine-bg, .bg-cine-surface, .bg-market-bg, .bg-market-surface, .bg-obs-bg, .bg-obs-surface, .surface-dark, .bg-ri-forest, .bg-si-forest, .bg-li-graphite, .admin-console, .holo-panel-deep, [class~="bg-[#102B2A]"], [class~="bg-[#102B2A]/50"], [class~="bg-[#102B2A]/40"], [class~="bg-[#102B2A]/60"], [class~="bg-[#051511]"], [class~="bg-[#051511]/95"], [class~="bg-[#06251b]"], [class~="bg-[#0a2b1e]/50"], [class~="bg-[#0c3b24]/60"], [class~="bg-[#0a3020]"]) {
+  --experience-ink: var(--os-ink);
+  --experience-muted: var(--os-silver);
+  --experience-accent: var(--os-green);
+  --experience-line: var(--cine-line);
+  --experience-field: var(--os-surface);
+}
+.os-experience :is(.admin-console, [class~="bg-[#051511]"], [class~="bg-[#06251b]"], [class~="bg-[#0a3020]"]) { background: hsl(var(--os-core)); }
+.os-experience :is(.holo-panel-deep, [class~="bg-[#102B2A]/50"], [class~="bg-[#102B2A]/40"], [class~="bg-[#102B2A]/60"], [class~="bg-[#0a2b1e]/50"], [class~="bg-[#0c3b24]/60"]) { background: hsl(var(--os-deep)); }
+.os-experience :is(.bg-white, .bg-card) { background-color: hsl(var(--card)); }
+.os-experience .min-h-screen:is(.bg-white, .bg-li-cloud, [class~="bg-[#f4f7f5]"]) { background-color: hsl(var(--ri-ivory)); }
+.os-experience :is(div, article, section, aside, form, details):is(.p-4, .p-5, .p-6, .p-7, .p-8, .p-10)[class*="rounded"][class~="border"] {
+  border-radius: var(--experience-panel-radius);
+  box-shadow: var(--experience-panel-shadow);
+}
+.os-experience :is(.surface, .surface-dark, .obs-panel) { border-radius: var(--experience-panel-radius); }
+.os-experience :is([class~="border-slate-100"], [class~="border-slate-200"], [class~="border-slate-200/70"], [class~="border-li-steel"]) { border-color: hsl(var(--experience-line)); }
+.os-experience :is([class~="text-[#102B2A]"], [class~="text-[#123C32]"], .text-li-carbon, .text-slate-800, .text-slate-900) { color: hsl(var(--experience-ink)); }
+.os-experience :is(.text-slate-400, .text-slate-500, .text-slate-600, .text-slate-700, .text-li-slate) { color: hsl(var(--experience-muted)); }
+.os-experience :is([class~="text-[#187B65]"], [class~="text-[#187B65]/90"], [class~="text-[#54D9AE]"], [class~="text-[#2FD9C8]"]) { color: hsl(var(--experience-accent)); }
+.os-experience[data-experience="contractor"] [class*="text-emerald-100/"] { color: hsl(var(--experience-muted)); }
+.os-experience[data-experience="contractor"] :is([class~="border-[#187B65]/25"], [class~="border-[#187B65]/40"], [class~="border-[#187B65]/50"]) { border-color: hsl(var(--cine-line)); }
+.os-experience :is(h1, h2, h3, .metric) { font-family: var(--font-heading); }
+.os-experience :is(.tabular-nums, .metric, .tabular) { font-variant-numeric: tabular-nums lining-nums; }
+.os-experience :is(button, a)[class*="px-"][class*="py-"] { border-radius: var(--experience-control-radius); }
+.os-experience :is(button, a)[class~="bg-[#187B65]"] { background-color: hsl(var(--ri-emerald-ink)); color: hsl(var(--ri-ivory)); }
+.os-experience :is(button, a)[class~="bg-[#187B65]"]:hover { background-color: hsl(var(--ri-forest)); }
+.os-experience[data-experience="customer"] a:is([href="/#book"], [href="/request-service"], [href^="/request-service?"])[class*="bg-"][class*="px-"] {
+  background-color: hsl(var(--ri-amber)); color: hsl(var(--ri-charcoal)); border-color: hsl(var(--ri-amber));
+}
+.os-experience :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):is(.input, .bg-white, .bg-transparent) {
+  background-color: hsl(var(--experience-field)); color: hsl(var(--experience-ink)); border-color: hsl(var(--experience-line));
+}
+.os-experience :is(input, select):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"])[class*="rounded"] { border-radius: var(--experience-control-radius); }
+.os-experience :is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid hsl(var(--experience-accent)); outline-offset: 3px;
+}
+.os-experience[data-experience="contractor"] .holo-glow-text { text-shadow: none; }
+.os-experience[data-experience="contractor"] :is(.holo-scan, .holo-flicker) { animation: none; }
+/* The master gauge adapts its palette, never its geometry, to its surface. */
+.os-gauge[data-appearance="light"] {
+  --os-core: var(--ri-ivory); --os-deep: var(--ri-ivory); --os-surface: var(--ri-mint);
+  --os-ink: var(--ri-charcoal); --os-silver: var(--ri-slate);
+  --os-line: var(--ri-slate); --os-hairline: var(--ri-slate);
+}
+.os-metric-gauge[data-appearance="light"] { color: hsl(var(--ri-charcoal)); }
+.os-metric-gauge[data-appearance="dark"] { color: hsl(var(--os-ink)); }
+.os-metric-gauge[data-appearance="light"] .os-metric-unit { color: hsl(var(--ri-slate)); }
+.os-metric-gauge[data-appearance="dark"] .os-metric-unit { color: hsl(var(--os-silver)); }
+.os-gauge [role="button"]:focus-visible { outline: none; stroke: hsl(var(--os-ink)); stroke-width: 3; }
+.os-gauge .os-gauge-status { max-width: 11rem; margin-inline: auto; }
+@media (max-width: 480px) {
+  .os-metric-gauge .os-metric-value { font-size: 1.125rem; }
+  .os-experience :is(input, select, textarea) { scroll-margin-top: 5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .os-gauge *, .os-metric-gauge * { animation: none !important; transition: none !important; }
+}

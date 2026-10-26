@@ -1,79 +1,23 @@
-import { useEffect, useRef, useState } from "react";
-
-const R = 80;
-const CX = 110;
-const CY = 110;
-const L = Math.PI * R;
-
-const pointAt = (deg) => {
-  const rad = (deg * Math.PI) / 180;
-  return { x: CX - R * Math.cos(rad), y: CY - R * Math.sin(rad) };
-};
+import MetricGauge from "@/components/os/MetricGauge";
+import { OS_COLORS } from "@/components/os/gaugeCore";
 
 export function speedoStatus(value, target, warning) {
-  if (target == null) return "ok";
-  if (value >= target) return "ok";
+  if (target == null || value >= target) return "ok";
   if (warning != null && value >= warning) return "warn";
   return "bad";
 }
-
-const COLORS = { ok: "hsl(var(--li-btn))", warn: "hsl(var(--li-amber))", bad: "hsl(var(--li-red))" };
+const COLORS = { ok: OS_COLORS.green, warn: OS_COLORS.amber, bad: OS_COLORS.coral };
 const STATUS_TEXT = { ok: "On target", warn: "Needs attention", bad: "Critical" };
 
 export default function SpeedometerGauge({ value, min = 0, max = 100, unit = "%", target, warning, display }) {
-  const [drawn, setDrawn] = useState(min);
-  const raf = useRef(null);
-
-  useEffect(() => {
-    raf.current = requestAnimationFrame(() => setDrawn(Number(value) || 0));
-    return () => cancelAnimationFrame(raf.current);
-  }, [value]);
-
+  const present = value != null && Number.isFinite(Number(value));
   const clamped = Math.max(min, Math.min(max, Number(value) || 0));
-  const frac = Math.max(0, Math.min(1, (drawn - min) / (max - min || 1)));
   const status = speedoStatus(clamped, target, warning);
-  const color = COLORS[status];
-
-  let marker = null;
-  if (target != null) {
-    const tDeg = (180 * (target - min)) / (max - min || 1);
-    const outer = pointAt(tDeg);
-    const innerR = 62;
-    const inner = { x: CX - innerR * Math.cos((tDeg * Math.PI) / 180), y: CY - innerR * Math.sin((tDeg * Math.PI) / 180) };
-    marker = (
-      <line x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y} strokeWidth="2.5" strokeLinecap="round" style={{ stroke: "hsl(var(--li-graphite))" }} />
-    );
-  }
-
-  return (
-    <div>
-      <svg viewBox="0 0 220 132" className="w-full" role="img" aria-label={`${STATUS_TEXT[status]}: ${display || clamped} ${unit}`}>
-        <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`} fill="none" strokeWidth="14" strokeLinecap="round" style={{ stroke: "hsl(var(--li-steel))" }} />
-        <path
-          d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`}
-          fill="none"
-          strokeWidth="14"
-          strokeLinecap="round"
-          strokeDasharray={L}
-          strokeDashoffset={L * (1 - frac)}
-          className="transition-[stroke-dashoffset] duration-700 ease-out motion-reduce:transition-none"
-          style={{ stroke: color }}
-        />
-        {marker}
-        <text x={CX} y={CY - 14} textAnchor="middle" fontSize="30" fontWeight="700" className="fill-li-carbon">
-          {display != null ? display : Math.round(clamped)}
-        </text>
-        <text x={CX} y={CY + 4} textAnchor="middle" fontSize="11" className="fill-li-slate" fontWeight="600">{unit}</text>
-        <text x={CX - R} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-li-slate">{min}{unit}</text>
-        <text x={CX + R} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-li-slate">{max}{unit}</text>
-        {target != null && (
-          <text x={CX} y={CY + 20} textAnchor="middle" fontSize="9" className="fill-li-carbon" fontWeight="700">target {target}{unit}</text>
-        )}
-      </svg>
-      <div className="mt-1 text-center text-[11px] font-semibold" style={{ color }}>
-        <span className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style={{ background: color }} />
-        {target == null ? "No target set" : STATUS_TEXT[status]}
-      </div>
+  return <div>
+    <MetricGauge value={present ? clamped : null} min={min} max={max} display={display ?? Math.round(clamped)} unit={unit} label="Performance" target={target} color={COLORS[status]} size={190} />
+    <div className="mt-1 flex flex-wrap justify-between gap-2 text-[10px] text-li-slate tabular">
+      <span>{min}{unit}</span>{target != null && <span>Target {target}{unit}</span>}<span>{max}{unit}</span>
     </div>
-  );
+    <div className="mt-2 text-center text-[11px] font-semibold text-li-slate">{!present ? "Awaiting data" : target == null ? "No target set" : STATUS_TEXT[status]}</div>
+  </div>;
 }

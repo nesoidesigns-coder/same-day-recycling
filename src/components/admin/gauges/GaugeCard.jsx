@@ -7,7 +7,7 @@ export default function GaugeCard({ title, tooltip, updated, onOpen, status, chi
   const [tipOpen, setTipOpen] = useState(false);
 
   return (
-    <div className={`relative rounded-[14px] border border-li-steel bg-white p-5 shadow-sm hover:shadow-md hover:border-li-mint/60 transition-all flex flex-col ${wide ? "sm:col-span-2 lg:col-span-1" : ""}`}>
+    <div className={`surface surface-hover relative p-5 flex flex-col ${wide ? "sm:col-span-2 lg:col-span-1" : ""}`}>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="text-sm font-bold text-li-carbon leading-snug">{title}</div>
         <div className="flex items-center gap-1 shrink-0">

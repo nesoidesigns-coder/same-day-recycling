@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import MetricGauge from "@/components/os/MetricGauge";
+import { OS_COLORS } from "@/components/os/gaugeCore";
 
 // One Growth Intelligence gauge: big ring score plus an expandable card that
 // documents the methodology, shows the supporting evidence, the identified
@@ -7,28 +9,14 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 // (never estimated).
 export default function GrowthGauge({ label, value, loading, trend, formula, evidence, problems, actions }) {
   const [open, setOpen] = useState(false);
-  const tone = value === null ? "#94a3b8" : value >= 70 ? "#187B65" : value >= 40 ? "#d97706" : "#dc2626";
-  const circumference = 2 * Math.PI * 54;
-  const filled = value === null ? 0 : Math.max(0, Math.min(100, value)) / 100;
+  const tone = value == null ? OS_COLORS.silver : value >= 70 ? OS_COLORS.green : value >= 40 ? OS_COLORS.amber : OS_COLORS.coral;
 
   return (
     <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 flex flex-col">
       <div className="flex items-center gap-4">
         <div className="relative w-28 h-28 shrink-0">
-          <svg viewBox="0 0 120 120" className="w-28 h-28 -rotate-90">
-            <circle cx="60" cy="60" r="54" fill="none" stroke="#eef2f1" strokeWidth="10" />
-            <circle
-              cx="60" cy="60" r="54" fill="none" stroke={tone} strokeWidth="10" strokeLinecap="round"
-              strokeDasharray={circumference} strokeDashoffset={circumference * (1 - filled)}
-              style={{ transition: "stroke-dashoffset 0.8s ease" }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-slate-200 border-t-[#187B65] rounded-full animate-spin" />
-            ) : (
-              <span className="text-2xl font-extrabold text-[#102B2A] tabular-nums">{value === null ? "—" : value}</span>
-            )}
+          <MetricGauge value={value} loading={loading} label={label} color={tone} size={112} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-4 flex flex-col items-center justify-center">
             {trend !== null && trend !== undefined && value !== null && (
               <span className={`text-[10px] font-bold ${trend >= 0 ? "text-[#187B65]" : "text-red-500"}`}>
                 {trend >= 0 ? "▲" : "▼"} {Math.abs(trend)}
