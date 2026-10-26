@@ -748,6 +748,22 @@ h1, h2, h3, h4, p, a, span, li, button {
 .hover\:bg-emerald-600:hover { background-color: hsl(var(--ri-forest)); }
 .border-emerald-500 { border-color: hsl(var(--ri-emerald)); }
 
+/* ---- Command 4: light premium text colours & weights ----
+   Remaining off-palette ink tones map onto the established tokens. Bright
+   mint/cyan text on dark cinematic surfaces (#27D5B0, #22d3ee) is
+   intentional and stays. */
+[class*="text-[#0d5c4b]"],
+[class*="text-[#0f5f4d]"] { color: hsl(var(--ri-emerald-ink)); }
+[class*="text-[#243b2f]"] { color: hsl(var(--ri-forest)); }
+[class*="text-[#051511]"] { color: hsl(var(--ri-charcoal)); }
+[class*="text-[#3b2303]"],
+[class*="text-[#92400e]"],
+[class*="text-[#8a6410]"],
+[class*="text-[#b45309]"] { color: hsl(var(--ri-amber-ink)); }
+
+/* The master theme caps display weight at 800 — premium, not poster-black. */
+.font-black { font-weight: 800; }
+
 /* ---- Command 3: unified surfaces, typography, lighting ---- */
 
 /* Standard light panel: one radius, one border weight, one shadow depth */
