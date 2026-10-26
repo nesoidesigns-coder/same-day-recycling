@@ -94,9 +94,9 @@ export const totalActivity = (segments) => (segments || []).reduce((s, x) => s +
 // Gauge B: distribution of verified coverage statuses across monitored cities.
 export const COVERAGE_STATUS = {
   same_day: { label: "Provider available", color: SI_COLORS.mint, note: "A verified provider serves this city. The exact job, price and time window are still confirmed per request." },
-  matching: { label: "Matching underway", color: SI_COLORS.amber, note: "An open request is being matched with a provider. No provider is confirmed yet." },
-  recruiting: { label: "Requests open", color: SI_COLORS.blue, note: "Requests are accepted here; a local provider is not yet verified. Fulfillment depends on matching." },
-  currently_unavailable: { label: "No verified coverage", color: SI_COLORS.other, note: "No verified coverage information for this location yet. You can still submit a request." },
+  matching: { label: "Contractor matching", color: SI_COLORS.amber, note: "An open request is being matched with a provider. No provider is confirmed yet." },
+  recruiting: { label: "Recruiting", color: SI_COLORS.blue, note: "Requests are accepted here; a local provider is not yet verified. Fulfillment depends on matching." },
+  currently_unavailable: { label: "Temporarily unavailable", color: SI_COLORS.other, note: "No verified coverage information for this location yet. You can still submit a request." },
 };
 
 export function buildCoverageSegments(coverage) {

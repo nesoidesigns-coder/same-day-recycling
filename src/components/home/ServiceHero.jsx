@@ -5,8 +5,10 @@ import { ArrowRight, Armchair, Building2, Clock, Home, Phone, Recycle, Refrigera
 import { Image } from "@/components/ui/image";
 import { setRexContext } from "@/lib/rexSession";
 
-// Service-first hero: bright, welcoming, immediately actionable. Customers
-// describe their need in natural language — no Recycling OS knowledge needed.
+// Service-first hero: one clear message — same-day junk removal and recycling
+// across Canada. Customers enter their location, describe their need, and get
+// an estimate; availability is always shown from verified coverage records,
+// never implied where no provider is verified.
 const SERVICE_CHIPS = [
   { label: "Junk Removal", to: "/request-service", Icon: Trash2 },
   { label: "Furniture Removal", to: "/furniture-removal", Icon: Armchair },
@@ -23,6 +25,13 @@ const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transi
 export default function ServiceHero() {
   const navigate = useNavigate();
   const [need, setNeed] = useState("");
+  const [place, setPlace] = useState("");
+
+  const checkAvailability = () => {
+    const q = place.trim() ? `?city=${encodeURIComponent(place.trim())}` : "";
+    setRexContext({ page: "homepage", ...(place.trim() ? { city: place.trim() } : {}) });
+    navigate(`/request-service${q}`);
+  };
 
   const estimate = () => {
     if (need.trim()) {
@@ -44,16 +53,39 @@ export default function ServiceHero() {
       <div className="mx-auto grid max-w-[1280px] items-center gap-8 px-4 py-8 md:px-8 md:py-20 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <motion.div initial="hidden" animate="show" variants={stagger}>
           <motion.h1 variants={fadeUp} className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[46px] lg:text-[50px]">
-            Same-day junk removal.
+            Same-day junk removal &amp; recycling across Canada.
             <br />
             <span className="text-ri-forest">Know your price first.</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="mt-3 max-w-xl text-[15px] leading-relaxed text-ri-slate md:mt-5 md:text-lg">
-            One couch or a full cleanout — clear pricing up front, and nothing leaves without your approval.
+            One couch or a full cleanout — enter your location, describe your items, get an estimate up front, and nothing leaves without your approval.
           </motion.p>
 
-          {/* Natural-language service selector */}
+          {/* Location + service selector — the two things a customer needs first */}
           <motion.div variants={fadeUp} className="mt-7 max-w-xl rounded-[20px] border border-si-line bg-white p-4 shadow-sm">
+            <label htmlFor="hero-place" className="text-xs font-bold text-si-muted">Where do you need service?</label>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+              <input
+                id="hero-place"
+                value={place}
+                onChange={(e) => setPlace(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && checkAvailability()}
+                placeholder="City or postal code — e.g. Vancouver"
+                className="input flex-1 !rounded-full py-3 text-sm"
+              />
+              <button
+                onClick={checkAvailability}
+                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-ri-forest/30 px-5 py-3 text-sm font-bold text-ri-forest transition-colors hover:bg-ri-forest hover:text-white"
+              >
+                Check availability
+              </button>
+            </div>
+            <p className="mt-1.5 text-[11px] leading-snug text-si-muted">
+              We show verified provider coverage for your location before anything is scheduled — same-day pickup only where a provider is confirmed.
+            </p>
+
+            <div className="my-3 border-t border-si-line" />
+
             <label htmlFor="hero-need" className="text-xs font-bold text-si-muted">Tell us what needs to go</label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row">
               <input
@@ -61,14 +93,14 @@ export default function ServiceHero() {
                 value={need}
                 onChange={(e) => setNeed(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && estimate()}
-                placeholder="e.g. Two couches and a fridge, second-floor apartment in Vancouver"
+                placeholder="e.g. Two couches and a fridge, second-floor apartment"
                 className="input flex-1 !rounded-full py-3 text-sm"
               />
               <button
                 onClick={estimate}
                 className="btn-float inline-flex items-center justify-center gap-1.5 rounded-full bg-ri-amber px-6 py-3 text-sm font-bold text-ri-charcoal transition-all hover:brightness-95"
               >
-                Get My Pickup Estimate <ArrowRight className="h-4 w-4" />
+                Get My Estimate <ArrowRight className="h-4 w-4" />
               </button>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -88,16 +120,18 @@ export default function ServiceHero() {
           {/* Trust proof at the decision point — promises and phone, next to the quote action */}
           <motion.div variants={fadeUp} className="mt-4 flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-ri-mint px-3 py-1.5 text-xs font-bold text-ri-forest">
-              <Clock className="h-3.5 w-3.5" /> Book before noon for same-day pickup
+              <Clock className="h-3.5 w-3.5" /> Book before noon for same-day pickup where available
             </span>
             <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest transition-colors hover:border-ri-emerald">
               <Phone className="h-3.5 w-3.5" /> (604) 849-1745
             </a>
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest transition-colors hover:border-ri-emerald"
+            >
+              Explore Services <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </motion.div>
-
-          <Link to="/services" className="mt-4 inline-flex text-sm font-bold text-ri-forest underline-offset-4 hover:underline">
-            Explore Services <ArrowRight className="ml-1 inline h-4 w-4" />
-          </Link>
         </motion.div>
 
         {/* Real service imagery — relief and transformation, not dashboards */}

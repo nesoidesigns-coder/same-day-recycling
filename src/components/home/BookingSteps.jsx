@@ -8,6 +8,8 @@ const STEPS = [
   { n: "3", title: "We pick up, sort and recycle", desc: "A verified crew does all the carrying. Every load is sorted for donation, recycling, or responsible disposal — and you get the receipt." },
 ];
 
+const JOURNEY = ["Discover a service", "Enter your location", "Describe your items", "Review your estimate", "Request pickup", "Provider confirms"];
+
 export default function BookingSteps() {
   return (
     <section id="how-it-works" className="py-4">
@@ -15,6 +17,23 @@ export default function BookingSteps() {
         <h2 className="text-[26px] font-bold tracking-tight text-si-ink md:text-[32px]">How it works</h2>
         <p className="mt-2 text-sm text-si-muted md:text-base">From description to cleared space — usually in a single visit.</p>
       </div>
+
+      {/* The customer journey — the last step is confirmed by a verified provider */}
+      <ol className="mt-6 flex flex-wrap items-center gap-2" aria-label="Customer journey">
+        {JOURNEY.map((stage, i) => (
+          <li key={stage} className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest">
+              <span className="inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-ri-forest text-[10px] font-bold text-white">{i + 1}</span>
+              {stage}
+            </span>
+            {i < JOURNEY.length - 1 && <ArrowRight className="size-3.5 shrink-0 text-si-muted" aria-hidden="true" />}
+          </li>
+        ))}
+      </ol>
+      <p className="mt-2 text-xs text-si-muted">
+        The final step is confirmed by a verified provider — until then, your request is in matching and we never call it scheduled.
+      </p>
+
       <div className="mt-7 grid gap-4 md:grid-cols-3">
         {STEPS.map((s) => (
           <div key={s.n} className="rounded-[20px] border border-si-line bg-ri-mint/50 p-6 shadow-sm">

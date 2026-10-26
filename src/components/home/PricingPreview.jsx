@@ -31,7 +31,23 @@ export default function PricingPreview({ prices }) {
           </div>
         ))}
       </div>
-      <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-si-muted">
+      {/* What each number means — starting rates vs. regional, extras, discounts, taxes, approval */}
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {[
+          { label: "Starting rates", text: "The published platform rates above — the lowest price for each truck tier." },
+          { label: "Regional pricing", text: "Some cities publish adjusted rates; your location always shows the price that applies to it." },
+          { label: "Additional charges", text: "Items beyond the quoted scope are quoted separately and only added if you approve them." },
+          { label: "Discounts", text: "Curbside discounts apply when items are already outside — shown during quoting." },
+          { label: "Taxes", text: "Applicable sales tax (GST/PST/HST) is calculated on the approved price — never buried in it." },
+          { label: "Final approved quote", text: "The only number that matters — you approve the final price before anything is loaded." },
+        ].map((d) => (
+          <div key={d.label} className="rounded-xl border border-si-line bg-white p-4">
+            <div className="text-xs font-bold text-ri-forest">{d.label}</div>
+            <div className="mt-1 text-xs leading-relaxed text-si-muted">{d.text}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-si-muted">
         <span className="inline-flex items-center gap-1.5 font-semibold text-ri-forest">
           <ShieldCheck className="h-4 w-4" /> Recycling and donation always included — never an eco surcharge
         </span>
