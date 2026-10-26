@@ -22,10 +22,10 @@ import { CITIES } from "@/lib/cities";
 // transparent pricing → verified local coverage → contractor entrance.
 export default function ServiceIntelligencePrototype() {
   useSEO({
-    title: "What Can We Help You Remove? | Same Day Recycling",
-    description: "Search pickup services by city, see transparent published pricing, verified local coverage and live service intelligence — powered by Recycling OS.",
-    path: "/prototype-service-intelligence",
-    robots: "noindex, nofollow",
+    title: "Same Day Junk Removal & Recycling Services Across Canada | Same Day Recycling",
+    description: "Same-day junk removal, furniture and appliance pickup across Canada. Transparent published pricing, verified local coverage and live service intelligence — powered by Recycling OS.",
+    path: "/",
+    robots: "index, follow",
   });
 
   const REPORTING_DAYS = 90;

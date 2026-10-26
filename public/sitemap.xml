@@ -91,4 +91,8 @@
   <url><loc>https://samedayrecycling.ca/privacy</loc><lastmod>2026-10-23</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://samedayrecycling.ca/terms</loc><lastmod>2026-10-23</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://samedayrecycling.ca/license-agreement</loc><lastmod>2026-10-23</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://samedayrecycling.ca/request-service</loc><lastmod>2026-10-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://samedayrecycling.ca/move-assist</loc><lastmod>2026-10-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://samedayrecycling.ca/impact-calculator</loc><lastmod>2026-10-26</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://samedayrecycling.ca/live</loc><lastmod>2026-10-26</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>
