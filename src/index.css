@@ -107,6 +107,18 @@
     --ri-slate: 159 8% 43%;      /* #657670 supporting text */
     --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
     --ri-amber-ink: 35 100% 28%;    /* #8F5D00 — dark amber for text on light tints (AA) */
+  /* Canadian Service Radar — cinematic intelligence tokens (midnight navy) */
+  --cine-bg: 223 55% 6%;
+  --cine-surface: 224 48% 11%;
+  --cine-ink: 210 40% 96%;
+  --cine-muted: 214 28% 68%;
+  --cine-line: 222 32% 24%;
+  --cine-cyan: 187 92% 56%;
+  --cine-arctic: 205 88% 64%;
+  --cine-blue: 217 88% 64%;
+  --cine-violet: 258 70% 72%;
+  --cine-land: 222 45% 13%;
+  --cine-land-hover: 221 45% 20%;
     --ri-emerald-ink: 172 79% 24%;  /* #126A5F — dark emerald for text on light tints (AA) */
   }
 
@@ -636,3 +648,96 @@ h1, h2, h3, h4, p, a, span, li, button {
 .admin-li [class*="border-[#54D9AE]"]:not([class*=":border-[#54D9AE]"]) { border-color: hsl(var(--li-mint)); }
 .admin-li [class*="focus:border-[#54D9AE]"]:focus { border-color: hsl(var(--li-mint)); }
 .admin-li [class*="text-[#e2b04a]"] { color: hsl(var(--li-amber)); }
+
+/* ---- Canadian Service Radar — cinematic intelligence surfaces ---- */
+
+.cine-glass {
+  background: rgba(12, 19, 37, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(74, 118, 165, 0.22);
+}
+
+.cine-glow {
+  background: radial-gradient(closest-side, hsl(var(--cine-cyan) / 0.14), transparent 72%);
+}
+
+.cine-input {
+  width: 100%;
+  border-radius: 9999px;
+  background: rgba(12, 19, 37, 0.6);
+  border: 1px solid rgba(74, 118, 165, 0.3);
+  color: hsl(var(--cine-ink));
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: border-color 0.15s ease;
+}
+
+.cine-input:focus {
+  border-color: hsl(var(--cine-cyan) / 0.6);
+  outline: none;
+}
+
+.cine-input option { color: #0a1220; }
+
+.cine-province {
+  fill: hsl(var(--cine-land));
+  stroke: hsl(var(--cine-line));
+  stroke-width: 0.6;
+  cursor: pointer;
+  transition: fill 0.15s ease;
+}
+
+.cine-province:hover { fill: hsl(var(--cine-land-hover)); }
+
+.cine-province-selected {
+  fill: hsl(var(--cine-land-hover));
+  stroke: hsl(var(--cine-cyan) / 0.7);
+  stroke-width: 1;
+}
+
+/* Cinematic motion system — assembly, idle halo, update pulse */
+@keyframes radar-halo-spin { to { transform: rotate(360deg); } }
+
+.radar-halo {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+  animation: radar-halo-spin 120s linear infinite;
+}
+
+@keyframes cine-assemble {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.radar-in {
+  animation: cine-assemble 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cine-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.cine-fade-up {
+  animation: cine-fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cine-pulse-ring {
+  from { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
+  to { box-shadow: 0 0 0 14px rgba(34, 211, 238, 0); }
+}
+
+.cine-pulse-ring {
+  animation: cine-pulse-ring 1.2s ease-out 1 both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-halo,
+  .radar-in,
+  .cine-fade-up,
+  .cine-pulse-ring {
+    animation: none !important;
+  }
+}
