@@ -46,7 +46,7 @@ export default function ServiceHero() {
           <motion.h1 variants={fadeUp} className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[56px]">
             Same-day junk removal.
             <br />
-            <span className="text-ri-forest">Know your price before we book.</span>
+            <span className="text-ri-forest">Know your price first.</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="mt-3 max-w-xl text-[15px] leading-relaxed text-ri-slate md:mt-5 md:text-lg">
             One couch or a full cleanout — clear pricing up front, and nothing leaves without your approval.
