@@ -562,11 +562,37 @@ h1, h2, h3, h4, p, a, span, li, button {
   animation: btn-float 3.2s ease-in-out infinite;
 }
 
+/* ---- Live map: incoming service-request dots ---- */
+@keyframes live-dot-arrive {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.live-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: live-dot-arrive 500ms var(--ease-cine) both;
+}
+
+@keyframes live-dot-ripple {
+  0% { transform: scale(0.35); opacity: 0.85; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.live-dot-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: live-dot-ripple 1.6s var(--ease-cine) 1 both;
+  animation-delay: 500ms;
+}
+
 /* ---- Reduced motion: calm every ambient animation at once ---- */
 
 @media (prefers-reduced-motion: reduce) {
   .signal-pulse-dot,
   .signal-pulse-ring,
+  .live-dot,
+  .live-dot-ripple,
   .geo-signal-fade,
   .holo-scan,
   .holo-flicker,

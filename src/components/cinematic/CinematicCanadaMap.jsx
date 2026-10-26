@@ -4,15 +4,42 @@ import { CITIES } from "@/lib/cities";
 // Lightweight 2D Canadian geographic intelligence. Province shapes from the
 // platform's own boundary file; city markers only where real observed records
 // resolved to a city, coverage rings only from verified partner records.
-// When the boundary file can't load, a city list keeps the interaction honest.
+// Individual incoming service requests render as live dots: one dot per real
+// record, arriving in real time as requests are created, clickable to focus
+// the instrument. When the boundary file can't load, a city list keeps the
+// interaction honest.
 const norm = (s) => String(s || "").trim().replace(/\s+/g, " ").toLowerCase();
 const CITY_COORD = new Map(CITIES.map((c) => [norm(c.name), c]));
+
+const KIND_LABEL = {
+  service_request: "Pickup request",
+  quote_request: "Quote request",
+  platform_inquiry: "Platform inquiry",
+  qualified_opportunity: "Qualified opportunity",
+  confirmed_booking: "Confirmed booking",
+  observed_public_request: "Public request",
+};
+
+// Presentation offset only — dots for several requests in one city stay
+// distinguishable while every tooltip states the real city and time.
+const OFFSETS = [[0, 0], [7, -5], [-7, 4], [5, 6], [-6, -6], [8, 3], [-4, 7], [2, -8]];
+
+function agoLabel(iso) {
+  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (!Number.isFinite(mins) || mins < 0) return "";
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const h = Math.floor(mins / 60);
+  if (h < 24) return `${h} h ago`;
+  return `${Math.floor(h / 24)} d ago`;
+}
 
 export default function CinematicCanadaMap({
   geography,
   geoError,
   cities = [],
   coverageCities = [],
+  requests = [],
   province,
   selectedCity = "",
   onProvince,
@@ -32,6 +59,14 @@ export default function CinematicCanadaMap({
     })
     .filter(Boolean);
   const maxCount = Math.max(1, ...pins.map((m) => m.count));
+  const requestDots = requests
+    .map((r, i) => {
+      const meta = CITY_COORD.get(norm(r.city));
+      if (!meta) return null;
+      const p = projectPoint(meta.lng, meta.lat);
+      return { ...r, ...meta, x: p.x + OFFSETS[i % OFFSETS.length][0], y: p.y + OFFSETS[i % OFFSETS.length][1], ago: agoLabel(r.at) };
+    })
+    .filter(Boolean);
 
   if (geoError || !geography) {
     return (
@@ -48,6 +83,22 @@ export default function CinematicCanadaMap({
             </button>
           ))}
         </div>
+        {requestDots.length > 0 && (
+          <div className="mt-4">
+            <CineSectionLabel>Incoming service requests (live)</CineSectionLabel>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {requestDots.slice(0, 12).map((d) => (
+                <button
+                  key={d.key}
+                  onClick={() => onCity?.(d.city)}
+                  className="rounded-full border border-[#E8B66A]/40 bg-[#E8B66A]/10 px-3.5 py-2 text-xs font-semibold text-[#E8B66A] transition-colors hover:border-[#E8B66A]"
+                >
+                  {d.city} · {KIND_LABEL[d.kind] || "Service request"}{d.ago ? ` · ${d.ago}` : ""}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <p className="mt-3 text-[11px] text-cine-muted">
           {geoError
             ? "The detailed map layer is unavailable right now — city selection still works from this list."
@@ -93,10 +144,25 @@ export default function CinematicCanadaMap({
             </g>
           );
         })}
+        {/* Live incoming service requests — one dot per real record, newest first */}
+        {requestDots.map((d, i) => (
+          <g key={d.key} className="live-dot cursor-pointer" style={{ animationDelay: `${Math.min(i * 60, 600)}ms` }} onClick={() => onCity?.(d.city)}>
+            <circle className="live-dot-ripple" cx={d.x} cy={d.y} r="9" fill="none" stroke="#E8B66A" strokeWidth="1.4" pointerEvents="none" />
+            <circle cx={d.x} cy={d.y} r="3.2" fill="#E8B66A" fillOpacity="0.95">
+              <title>{`${d.city}${d.province_code ? `, ${d.province_code}` : ""} — ${KIND_LABEL[d.kind] || "Service request"}${d.ago ? `, ${d.ago}` : ""}`}</title>
+            </circle>
+          </g>
+        ))}
       </svg>
       <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] text-cine-muted">
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-[#32C7D5]" /> Observed demand (record count)</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full border-2 border-[#55C7A1]" /> Verified contractor coverage</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="relative inline-flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8B66A] opacity-60" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E8B66A]" />
+          </span>
+          Incoming service requests (live)</span>
         <span>Select a province or a lit city to focus the instrument and panels.</span>
       </div>
     </div>

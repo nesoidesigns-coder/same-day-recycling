@@ -138,6 +138,32 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
     by_source[k] = (by_source[k] || 0) + 1;
   });
 
+  // Individual recent service requests for the live map — city-level only,
+  // no personal data. Same three feeds the realtime refresh watches, so a new
+  // dot appears the moment a request is created. Cancelled/expired intake is
+  // never shown. City coordinates resolve client-side from the city registry.
+  const reqQuery: any = { created_date: query.created_date };
+  if (f.province) reqQuery.province_code = f.province;
+  if (f.city) reqQuery.city = f.city;
+  const [requestsP, leadsP] = await Promise.allSettled([
+    base44.asServiceRole.entities.NationalRequest.filter(reqQuery, { limit: 500 }),
+    base44.asServiceRole.entities.QuoteLead.filter(reqQuery, { limit: 500 }),
+  ]);
+  const requestFeed: any[] = [
+    ...valueOf(requestsP)
+      .filter((r: any) => (r.record_type || 'service') === 'service' && r.status !== 'cancelled' && r.city)
+      .map((r: any) => ({ key: `nr:${r.id}`, city: r.city, province_code: r.province_code || '', kind: 'service_request', at: r.created_date })),
+    ...valueOf(leadsP)
+      .filter((r: any) => r.status !== 'lost' && r.city)
+      .map((r: any) => ({ key: `ql:${r.id}`, city: r.city, province_code: r.province_code || '', kind: 'quote_request', at: r.created_date })),
+    ...signals
+      .filter((s: any) => ['platform_inquiry', 'qualified_opportunity', 'confirmed_booking', 'observed_public_request'].includes(s.demand_type) && s.city && s.geo_confidence !== 'unresolved' && s.processing_status !== 'expired')
+      .map((s: any) => ({ key: `ds:${s.id}`, city: s.city, province_code: s.province_code || '', kind: s.demand_type, at: s.created_date })),
+  ]
+    .filter((r: any) => r.at)
+    .sort((a: any, b: any) => String(b.at).localeCompare(String(a.at)))
+    .slice(0, 40);
+
   return {
     filters: { province: f.province || 'all', city: f.city || 'all', category: f.category || 'all', window_days: f.days },
     total: signals.length,
@@ -146,6 +172,7 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
     cities,
     trend,
     by_source,
+    recent: requestFeed,
     basis_note:
       'Counts of real demand records. Observed public requests, platform inquiries and confirmed bookings are each labelled. Search interest appears only as its own labelled record type — it is never blended into request or booking counts, and never shown as a live national score.',
     empty_note: 'Insufficient observations for this selection.',

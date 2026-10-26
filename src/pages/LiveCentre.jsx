@@ -104,6 +104,7 @@ export default function LiveCentre() {
             geoError={geo.error}
             cities={gauge?.cities || []}
             coverageCities={verifiedCities}
+            requests={gauge?.recent || []}
             province={filters.province}
             selectedCity={filters.city}
             onProvince={focusProvince}
