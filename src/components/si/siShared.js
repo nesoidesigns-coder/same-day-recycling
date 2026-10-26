@@ -95,8 +95,8 @@ export const totalActivity = (segments) => (segments || []).reduce((s, x) => s +
 export const COVERAGE_STATUS = {
   same_day: { label: "Provider available", color: SI_COLORS.mint, note: "A verified provider serves this city. The exact job, price and time window are still confirmed per request." },
   matching: { label: "Contractor matching", color: SI_COLORS.amber, note: "An open request is being matched with a provider. No provider is confirmed yet." },
-  recruiting: { label: "Recruiting", color: SI_COLORS.blue, note: "Requests are accepted here; a local provider is not yet verified. Fulfillment depends on matching." },
-  currently_unavailable: { label: "Temporarily unavailable", color: SI_COLORS.other, note: "No verified coverage information for this location yet. You can still submit a request." },
+  recruiting: { label: "Provider Matching Available", color: SI_COLORS.blue, note: "Requests are accepted here; a provider is sourced for each request. Fulfillment is confirmed after matching." },
+  currently_unavailable: { label: "Request Service", color: SI_COLORS.other, note: "No provider on file for this location yet — submit your request and provider sourcing starts immediately." },
 };
 
 export function buildCoverageSegments(coverage) {

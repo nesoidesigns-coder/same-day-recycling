@@ -52,7 +52,7 @@ export default function ServiceSearch({ cov, onPickCity }) {
     const map = {
       same_day: { label: "Verified contractor coverage", cls: "bg-cine-green/15 text-cine-green" },
       matching: { label: "Requests open — contractor matching", cls: "bg-amber-400/10 text-amber-300" },
-      recruiting: { label: "Requests open — recruiting a provider", cls: "bg-cine-arctic/15 text-cine-arctic" },
+      recruiting: { label: "Provider matching available", cls: "bg-cine-arctic/15 text-cine-arctic" },
       currently_unavailable: { label: "No current dispatch availability", cls: "bg-cine-bg/60 text-cine-muted border border-cine-line/50" },
       unknown: { label: "Open for requests — status not yet verified", cls: "bg-cine-bg/60 text-cine-muted border border-cine-line/50" },
     };

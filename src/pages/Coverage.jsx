@@ -13,7 +13,8 @@ import SignalGauge from "@/components/signals/SignalGauge";
 // data-backed states, applied with the same labels on every public surface:
 //   Provider Available                   — active, verified provider serves city
 //   Requests Open — Contractor Matching  — open requests are being matched
-//   Provider Recruitment                 — requests accepted, capacity recruiting
+//   Provider Matching Available          — requests accepted, providers sourced per request
+//   Request Service                      — requests accepted, sourcing required (never "Unavailable")
 export default function Coverage() {
   useSEO({
     title: "Pickup Coverage & Network Expansion | Same Day Recycling",
@@ -53,20 +54,20 @@ export default function Coverage() {
     },
     {
       key: "recruiting",
-      title: "Provider Recruitment",
-      icon: <Hourglass className="w-5 h-5 text-slate-400" />,
+      title: "Provider Matching Available",
+      icon: <UserSearch className="w-5 h-5 text-slate-400" />,
       dot: "bg-slate-300",
-      intro: "Requests are open in these territories, but no verified contractor is active yet — customer demand here drives contractor recruitment. Requests are still accepted nationwide and no same-day service is promised.",
-      cardLabel: "Requests open — recruiting provider",
+      intro: "Requests are accepted in these territories right now. No provider is on file yet, so every request here initiates live provider sourcing — the system searches the verified network and dispatch sources a qualified local provider. No contractor is secured in advance and no same-day service is promised.",
+      cardLabel: "Requests open — provider matching available",
       cities: recruitingList,
       bg: "bg-white",
       empty: "Every registry territory currently has verified capacity or active matching.",
     },
     {
-      key: "currently_unavailable", title: "Unavailable",
-      icon: <Hourglass className="w-5 h-5 text-muted-foreground" />, dot: "bg-muted-foreground",
-      intro: "Verified territory records exist, but no current dispatch availability is confirmed. Requests remain open for review; no pickup is promised.",
-      cardLabel: "No current dispatch availability confirmed", cities: unavailableList,
+      key: "currently_unavailable", title: "Request Service",
+      icon: <UserSearch className="w-5 h-5 text-muted-foreground" />, dot: "bg-muted-foreground",
+      intro: "Requests are accepted here. No provider is currently on file, so each request initiates provider sourcing and dispatch follows up directly — no pickup is promised before a provider accepts.",
+      cardLabel: "Requests accepted — provider sourcing required", cities: unavailableList,
       bg: "bg-ri-ivory", empty: "No listed verified territories are currently marked unavailable.",
     },
   ];

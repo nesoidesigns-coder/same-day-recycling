@@ -4,7 +4,7 @@ const COPY = {
     region: "Province or territory", canada: "All Canada", city: "Explore a city", chooseCity: "Select a city",
     network3d: "3D globe", network2d: "Interactive 2D map", mapLabel: "Canadian geography and municipal service nodes", explore: "Explore",
     legend: "Network colour key", noRecords: "no observations", notConnected: "not connected", selectRegion: "select a region",
-    verified: "Verified territory", demand: "Public service posts", ai: "AI findings", matching: "Contractor matching", selected: "Selected region", recruiting: "Recruitment / unverified",
+    verified: "Verified territory", demand: "Public service posts", ai: "AI findings", matching: "Contractor matching", selected: "Selected region", recruiting: "Provider sourcing",
     contractors: "Verified contractors", territories: "Municipal territories", posts: "Open public posts",
     provenance: "Sources, freshness and map meaning", territoriesSource: "Source: verified contractor territory records · Canada", postsSource: "Source: available public service posts · Canada",
     checking: "Checking contractor territories…", coverageError: "Coverage unavailable; no capacity assumed.", postsError: "Public-post source unavailable; no demand count assumed.",

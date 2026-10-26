@@ -68,3 +68,37 @@ The platform was reconciled against the four canonical truths: **one coverage mo
 - Publishing: metadata and copy changes require a **Publish** in the platform UI to reach the live site.
 
 **Success criterion status:** one coverage truth ✅ · one pricing truth ✅ (floor copy pending approval) · one Rex architecture ✅ · one design language ✅ · one booking lifecycle ✅ · one verified analytics foundation ✅.
+
+---
+
+# Addendum — Nationwide Provider Sourcing Correction (2026-10-26, later pass)
+
+The model is now explicit platform-wide: a nationwide service-coordination agency that sources qualified providers in response to demand — not a directory of pre-registered contractors. Built entirely inside the EXISTING dispatch architecture (no second matching engine).
+
+## Changes
+
+1. **Customer labels (never imply a secured contractor).** "Recruiting" → "Provider Matching Available" and "Unavailable" → "Request Service" on every customer surface: Coverage page sections & card labels, CoverageMap legend, Live Centre regional panel, ServiceSearch badges, homepage (siShared, coveragePresentation, heroNetworkCopy). Hiring language ("Recruitment Open") survives only as an internal network-development concept.
+2. **Real-capacity coverage logic** (`base44/shared/nationalInquiry.ts`): `coverage_status: 'verified'` is now set ONLY when an actual verified partner or verified recruit covers the city — registry membership alone no longer marks a city verified. Requests in uncovered cities are never rejected: they keep the customer, auto-create the sourcing task, open a network-development recruitment task, and escalate to dispatch by admin alert. Unmatched requests now enter the `provider_matching` queue (the historical `recruiting` status remains valid on old records and in all admin filters).
+3. **Rex initiates real sourcing.** New agent tool grant: `nationalRequest` — Rex submits the actual nationwide request (auto-creates the sourcing task, triggers the contractor offer wave, escalates unfilled requests) instead of merely saying matching is happening; new instruction frames it with the approved line: "Tell me what you need removed and where. We'll look for a qualified local provider and confirm your pickup options." Rex may never say a contractor is secured, never issue a guaranteed window before acceptance, never imply a charge for an unconfirmed appointment.
+4. **Integrity preserved.** Same-day remains the operational target; guaranteed windows only after provider acceptance (`respondToOffer` → booking creation); no charge before confirmation (payments exist only on created bookings).
+
+## Live verification (actual run, records cleaned up afterward)
+
+Test: request submitted for **Moose Jaw, SK** — a city with zero registered contractors.
+
+| Step | Result |
+|---|---|
+| Request accepted nationwide | ✅ not rejected |
+| Sourcing task auto-created | ✅ DispatchTask `awaiting_contractor` for Moose Jaw |
+| Verified-network search | ✅ ran; 0 eligible contractors (honest, none fabricated) |
+| Network development opened | ✅ ProviderRecruit recruitment task created, separated from customer availability |
+| Customer status | ✅ `provider_matching`, `coverage_status: unverified`, lookup by reference code found |
+| Customer message | ✅ "dispatch team is sourcing your local contractor… Nothing is scheduled or charged before a contractor accepts" |
+| Progression to acceptance | ✅ path exists in code (`respondToOffer` → booking) but requires a real contractor's acceptance — cannot be simulated without a provider account |
+| Records left behind | ✅ none (test NationalRequest, DispatchTask and recruitment task deleted) |
+
+## What is automated / human / unimplemented
+
+- **Automated:** nationwide intake (all cities), sourcing-task creation, verified-network search & deterministic candidate ranking (subscriber priority 40 · performance 30 · equipment 15 · readiness 15), outreach waves via approved email channel with fee disclosure, response recording (LeadOffer), wave expiry → next wave, final escalation alert to dispatch, per-job dispatch contact log.
+- **Human dispatch:** sourcing providers in markets with zero network coverage (the admin alert → recruit or manually assign in /admin/national), final appointment confirmation calls to the customer, and any manual assignment (always overrides automation).
+- **Unimplemented:** automated outbound calling/SMS outreach to newly sourced (non-registered) businesses — candidate identification beyond the existing verified Partner/ProviderRecruit records would require an authorized business-data source, which is not yet connected; SMS outreach remains deferred per the owner's standing decision.

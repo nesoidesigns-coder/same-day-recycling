@@ -1,5 +1,4 @@
 import { normalizePostal, provinceFromFsa } from './geo.ts';
-import { isActiveCity } from './coverageStatus.ts';
 import { startMatching } from './dispatchEngine.ts';
 
 const SERVICE_TYPES = ['junk_removal', 'furniture', 'appliances', 'electronics', 'metal_pickup', 'cleanouts', 'other'];
@@ -56,13 +55,13 @@ export async function submitNationalInquiry(base44, input) {
     }
   }
 
-  // Service-verification state (never blocks the inquiry): operator cities
-  // have guaranteed same-day capacity; everyone else is matched or recruited.
+  // Service-verification state (never blocks the inquiry): coverage_status is
+  // finalized below from REAL verified contractor records — registry cities
+  // without a verified provider are sourced, never marked verified.
   const cityNorm = city.toLowerCase().replace(/,\s*(bc|b\.c\.|on|qc|ab|sk|mb|ns|nb|pe|nl|yt|nt|nu).*$/, '').trim();
   let coverage_status = 'unverified';
-  if (isActiveCity(city)) coverage_status = 'verified';
 
-  let status = 'recruiting';
+  let status = 'provider_matching';
   let quote_status = 'none';
   let partner_id = '';
   let partner_name = '';
@@ -70,67 +69,59 @@ export async function submitNationalInquiry(base44, input) {
   let message = '';
 
   let needsRecruitAlert = false;
-  if (coverage_status === 'verified') {
-    // Operator-run city: warn admins when the verified contractor network is
-    // empty, so dispatch still has people to assign when the window opens.
-    try {
-      const [pc, rc] = await Promise.all([
-        srole.entities.Partner.count({ active: true }),
-        srole.entities.ProviderRecruit.count({ verified: true }),
-      ]);
-      if (((pc || 0) + (rc || 0)) === 0) needsRecruitAlert = true;
-    } catch { /* counts are best-effort */ }
-    // Confirmed operational capacity — dispatch confirms the same-day window.
-    status = 'provider_matching';
-    message = `Request received for ${city}. We operate nationwide — our dispatch team is arranging your local contractor and will call you at ${phone} to confirm pricing and your arrival window before the appointment is guaranteed.`;
+  // Real-capacity check FIRST: coverage_status becomes 'verified' only when
+  // an actual verified contractor (partner or recruit) covers this city.
+  // Registry membership alone never verifies coverage and no contractor
+  // relationship is ever fabricated — uncovered markets get live sourcing.
+  const [partnerPage, recruitPage] = await Promise.all([
+    srole.entities.Partner.filter({ active: true }, { limit: 200 }),
+    srole.entities.ProviderRecruit.filter({ verified: true }, { limit: 500 }),
+  ]);
+  const partner = (partnerPage.items || []).find((p) => String(p.city || '').toLowerCase().trim() === cityNorm) || null;
+  const recruit = (recruitPage.items || []).find((r) => String(r.territory || '').toLowerCase().trim() === cityNorm) || null;
+  const matched = partner || recruit;
+  if (matched) {
+    coverage_status = 'verified';
+    partner_id = matched.id;
+    partner_name = matched.name || matched.company;
+    status = 'matched';
+    quote_status = 'pending_provider';
+    message = `Your request is saved. We operate nationwide — our dispatch team is confirming your local contractor in ${city}. Pricing, pickup availability and your arrival window are confirmed before any appointment is guaranteed. We'll contact you at ${phone}.`;
   } else {
-    // Match against verified partners (city) and verified recruits (territory).
-    const [partnerPage, recruitPage] = await Promise.all([
-      srole.entities.Partner.filter({ active: true }, { limit: 200 }),
-      srole.entities.ProviderRecruit.filter({ verified: true }, { limit: 500 }),
-    ]);
-    const partner = (partnerPage.items || []).find((p) => String(p.city || '').toLowerCase().trim() === cityNorm) || null;
-    const recruit = (recruitPage.items || []).find((r) => String(r.territory || '').toLowerCase().trim() === cityNorm) || null;
-    const matched = partner || recruit;
-    if (matched) {
-      partner_id = matched.id;
-      partner_name = matched.name || matched.company;
-      status = 'matched';
-      quote_status = 'pending_provider';
-      message = `Your request is saved. We operate nationwide — our dispatch team is confirming your local contractor in ${city}. Pricing, pickup availability and your arrival window are confirmed before any appointment is guaranteed. We'll contact you at ${phone}.`;
+    // No verified contractor in this market yet. The inquiry is never
+    // rejected: the auto-created sourcing task below drives fulfillment, and
+    // a recruitment task opens network development — demand here drives
+    // contractor recruitment. Nothing is promised, scheduled or charged
+    // before a contractor accepts.
+    const taskPage = await srole.entities.ProviderRecruit.filter({ source: 'recruitment_task' }, { limit: 200 });
+    const existing = (taskPage.items || []).find(
+      (r) => (r.territory || '').toLowerCase().trim() === cityNorm
+        && (!province_code || r.province_code === province_code)
+        && r.partnership_status !== 'declined'
+    );
+    if (existing) {
+      recruitment_id = existing.id;
+      await srole.entities.ProviderRecruit.update(existing.id, {
+        assigned_lead_count: (existing.assigned_lead_count || 0) + 1,
+      });
     } else {
-      // No contractor in this market yet — keep the inquiry and open a
-      // recruitment task: demand here drives contractor recruitment.
-      const taskPage = await srole.entities.ProviderRecruit.filter({ source: 'recruitment_task' }, { limit: 200 });
-      const existing = (taskPage.items || []).find(
-        (r) => (r.territory || '').toLowerCase().trim() === cityNorm
-          && (!province_code || r.province_code === province_code)
-          && r.partnership_status !== 'declined'
-      );
-      if (existing) {
-        recruitment_id = existing.id;
-        await srole.entities.ProviderRecruit.update(existing.id, {
-          assigned_lead_count: (existing.assigned_lead_count || 0) + 1,
-        });
-      } else {
-        const rec = await srole.entities.ProviderRecruit.create({
-          company: `Contractor opportunity — ${city}${province_code ? ', ' + province_code : ''}`,
-          province_code,
-          territory: city,
-          services: [service_type],
-          outreach_status: 'not_contacted',
-          partnership_status: 'prospect',
-          source: 'recruitment_task',
-          assigned_lead_count: 1,
-          notes: 'Auto-created from a national customer inquiry. Contact the customer and recruit a local contractor for this demand.',
-        });
-        recruitment_id = rec.id;
-      }
-      // No contractor available in this market — admins must recruit or
-      // manually assign one before anything is promised to the customer.
-      needsRecruitAlert = true;
-      message = `Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
+      const rec = await srole.entities.ProviderRecruit.create({
+        company: `Contractor opportunity — ${city}${province_code ? ', ' + province_code : ''}`,
+        province_code,
+        territory: city,
+        services: [service_type],
+        outreach_status: 'not_contacted',
+        partnership_status: 'prospect',
+        source: 'recruitment_task',
+        assigned_lead_count: 1,
+        notes: 'Auto-created from a national customer inquiry. Contact the customer and recruit a local contractor for this demand.',
+      });
+      recruitment_id = rec.id;
     }
+    // Escalate unfilled requests to dispatch — admins must recruit, source
+    // or manually assign before anything is promised to the customer.
+    needsRecruitAlert = true;
+    message = `Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
   }
 
   const reference_code = crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase();

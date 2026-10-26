@@ -168,7 +168,7 @@ export default function LiveCentre() {
 
           <section className="cine-glass rounded-[24px] p-5">
             <h2 className="flex items-center gap-2 font-bold text-cine-ink"><MapPin className="h-4 w-4 text-cine-cyan" /> Regional Service Opportunities</h2>
-            <p className="mt-1 text-sm text-cine-muted">Cities actively matching requests or welcoming new contractors — from verified coverage records.</p>
+            <p className="mt-1 text-sm text-cine-muted">Permanent network coverage vs active, job-specific provider sourcing — from verified coverage records. Requests stay open in every city.</p>
             <div className="mt-3 space-y-3 text-sm">
               <div>
                 <div className="font-plex text-[10px] font-bold uppercase tracking-[0.18em] text-cine-muted">Open matching activity</div>
@@ -177,9 +177,9 @@ export default function LiveCentre() {
                 ) : <LoadingLine />}
               </div>
               <div>
-                <div className="font-plex text-[10px] font-bold uppercase tracking-[0.18em] text-cine-muted">Recruiting new contractors</div>
+                <div className="font-plex text-[10px] font-bold uppercase tracking-[0.18em] text-cine-muted">Providers being sourced</div>
                 {cov.loaded ? (
-                  recruitingCities.length ? <p className="mt-1 text-cine-ink">{recruitingCities.join(", ")}</p> : <p className="mt-1 text-cine-muted">Every active registry city already has verified coverage.</p>
+                  recruitingCities.length ? <p className="mt-1 text-cine-ink">{recruitingCities.join(", ")}</p> : <p className="mt-1 text-cine-muted">Every city with demand already has verified coverage or active matching.</p>
                 ) : <LoadingLine />}
               </div>
             </div>
