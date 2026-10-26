@@ -24,7 +24,7 @@ export default function SiHeader() {
           </span>
           <span className="leading-tight">
             <span className="block text-[17px] font-bold tracking-tight text-si-ink">Same Day Recycling</span>
-            <span className="hidden text-[9px] font-bold uppercase tracking-[0.16em] text-si-muted sm:block">
+            <span className="hidden text-[11px] font-bold uppercase tracking-[0.16em] text-si-muted sm:block">
               Service Intelligence · Powered by Recycling OS
             </span>
           </span>

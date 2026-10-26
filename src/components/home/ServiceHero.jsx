@@ -80,7 +80,7 @@ export default function ServiceHero() {
                 Check availability
               </button>
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-si-muted">
+            <p className="mt-1.5 text-xs leading-snug text-si-muted">
               We show verified provider coverage for your location before anything is scheduled — same-day pickup only where a provider is confirmed.
             </p>
 
@@ -104,7 +104,7 @@ export default function ServiceHero() {
               </button>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-si-muted">Or choose:</span>
+              <span className="text-xs font-semibold text-si-muted">Or choose:</span>
               {SERVICE_CHIPS.map(({ label, to, Icon }) => (
                 <Link
                   key={label}

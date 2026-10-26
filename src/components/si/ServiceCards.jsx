@@ -64,7 +64,7 @@ export default function ServiceCards({ city, prices, coverage, cities }) {
                 {startingAt && <span className="text-si-muted/70">· published platform rate</span>}
               </div>
               {availability ? (
-                <div className="mt-1.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-si-bg2 px-2.5 py-1 text-[11px] font-semibold text-si-muted">
+                <div className="mt-1.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-si-bg2 px-2.5 py-1 text-xs font-semibold text-si-muted">
                   <MapPin className="size-3" /> {availability}
                 </div>
               ) : null}
@@ -88,7 +88,7 @@ export default function ServiceCards({ city, prices, coverage, cities }) {
         ))}
       </div>
       {cities && (
-        <p className="mt-5 font-plex text-[11px] text-si-muted">
+        <p className="mt-5 font-plex text-xs text-si-muted">
           Monitored cities: {cities.slice(0, 12).join(" · ")}{cities.length > 12 ? " and more" : ""} — see all locations on the <Link to="/coverage" className="font-bold text-si-forest underline-offset-4 hover:underline">Locations page</Link>.
         </p>
       )}

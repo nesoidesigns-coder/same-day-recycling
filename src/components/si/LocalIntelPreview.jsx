@@ -36,7 +36,7 @@ export default function LocalIntelPreview({ city, locations, coverage, prices, r
             </h3>
             {meta && (
               <span
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
                 style={{ background: `${meta.color}1A`, color: "hsl(var(--ri-forest))" }}
               >
                 <span className="inline-block size-2 rounded-full" style={{ background: meta.color }} />
@@ -61,7 +61,7 @@ export default function LocalIntelPreview({ city, locations, coverage, prices, r
               <dd className="mt-1 text-xl font-bold text-si-ink">
                 {cityObservations ? `${cityObservations.count} observations` : "None recorded"}
               </dd>
-              <dd className="text-[11px] text-si-muted/70">in the current reporting window</dd>
+              <dd className="text-xs text-si-muted">in the current reporting window</dd>
             </div>
             <div>
               <dt className="text-xs font-semibold text-si-muted">Nearby recycling resources</dt>
@@ -84,7 +84,7 @@ export default function LocalIntelPreview({ city, locations, coverage, prices, r
               Explore Full Local Intelligence <ArrowRight className="size-3.5" />
             </Link>
             {coverage.generatedAt && (
-              <span className="font-plex text-[11px] text-si-muted">Coverage snapshot {timestamp(coverage.generatedAt)}</span>
+              <span className="font-plex text-xs text-si-muted">Coverage snapshot {timestamp(coverage.generatedAt)}</span>
             )}
           </div>
         </div>

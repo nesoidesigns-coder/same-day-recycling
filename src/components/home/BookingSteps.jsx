@@ -23,7 +23,7 @@ export default function BookingSteps() {
         {JOURNEY.map((stage, i) => (
           <li key={stage} className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest">
-              <span className="inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-ri-forest text-[10px] font-bold text-white">{i + 1}</span>
+              <span className="inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-ri-forest text-xs font-bold text-white">{i + 1}</span>
               {stage}
             </span>
             {i < JOURNEY.length - 1 && <ArrowRight className="size-3.5 shrink-0 text-si-muted" aria-hidden="true" />}

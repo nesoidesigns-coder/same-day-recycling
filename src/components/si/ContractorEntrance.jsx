@@ -16,7 +16,7 @@ export default function ContractorEntrance() {
     <section id="contractors" className="py-12 md:py-16">
       <div className="rounded-[24px] bg-si-ink px-6 py-10 text-white md:px-10 md:py-12">
         <div className="max-w-2xl">
-          <span className="font-plex text-[11px] font-semibold tracking-[0.14em] text-si-mint2">FOR CONTRACTORS · RECYCLING OS</span>
+          <span className="font-plex text-xs font-semibold tracking-[0.14em] text-si-mint2">FOR CONTRACTORS · RECYCLING OS</span>
           <h2 className="mt-3 text-[24px] font-bold tracking-tight md:text-[30px]">The Intelligence Behind Every Pickup.</h2>
           <p className="mt-2 text-sm leading-relaxed text-white/70 md:text-base">
             Recycling OS connects service discovery, customer requests, dispatch, pricing, and business operations.
@@ -34,7 +34,7 @@ export default function ContractorEntrance() {
             </div>
           ))}
         </div>
-        <p className="mt-3 font-plex text-[10px] tracking-wide text-white/45">
+        <p className="mt-3 font-plex text-[10px] tracking-wide text-white/70">
           FEATURE PREVIEW — ILLUSTRATION ONLY. NOT LIVE DATA. AUTHORIZED CONTRACTORS SEE THEIR OWN ACCOUNT NUMBERS AFTER SIGN-IN.
         </p>
 

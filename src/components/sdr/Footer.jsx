@@ -57,7 +57,7 @@ export default function Footer() {
             <Recycle className="w-4 h-4" />
           </span>
           <span>© 2026 Same Day Recycling — samedayrecycling.ca</span>
-          <span className="block text-xs font-semibold tracking-wide text-ri-ivory/60">Powered by Recycling OS — connecting customers, contractors, and intelligent service operations through one accountable platform.</span>
+          <span className="block text-xs font-semibold tracking-wide text-ri-ivory/80">Powered by Recycling OS — connecting customers, contractors, and intelligent service operations through one accountable platform.</span>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           {isAdmin && (

@@ -89,7 +89,7 @@ export default function ImpactEstimator({ className = "" }) {
               </span>
               <span className="min-w-0 flex-1 leading-tight">
                 <span className="block truncate text-[13px] font-bold text-ri-charcoal">{label}</span>
-                <span className="block text-[11px] text-ri-slate">{note}</span>
+                <span className="block text-xs text-ri-slate">{note}</span>
               </span>
               <div className="flex shrink-0 items-center gap-1.5">
                 <button onClick={() => bump(key, -1)} aria-label={`Remove one ${label}`} className="flex size-7 items-center justify-center rounded-full border border-si-line bg-white text-ri-forest transition-colors hover:bg-ri-mint">
@@ -107,7 +107,7 @@ export default function ImpactEstimator({ className = "" }) {
 
       {/* Live impact readout */}
       <div className="rounded-[24px] border border-si-line bg-ri-forest p-6 text-ri-ivory shadow-sm">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-ri-ivory/70">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-ri-ivory/90">
           <Leaf className="size-4" /> Your estimated impact
         </div>
         {count ? (
@@ -126,7 +126,7 @@ export default function ImpactEstimator({ className = "" }) {
           </p>
         )}
         <div className="mt-4 rounded-xl bg-ri-ivory/10 px-3 py-2.5">
-          <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-ri-ivory/70">Preliminary price estimate</div>
+          <div className="text-xs font-bold uppercase tracking-[0.12em] text-ri-ivory/90">Preliminary price estimate</div>
           {loadingQuote ? (
             <div className="mt-1.5 flex items-center gap-2 text-sm text-ri-ivory/80">
               <span className="size-3.5 animate-spin rounded-full border-2 border-ri-ivory/40 border-t-ri-ivory" /> Calculating…
@@ -134,15 +134,15 @@ export default function ImpactEstimator({ className = "" }) {
           ) : quote ? (
             <>
               <div className="mt-1 font-plex text-2xl font-extrabold tracking-tight">{quote.range}</div>
-              <p className="mt-0.5 text-[11px] leading-snug text-ri-ivory/75">{quote.label} — {quote.eighths}/8 of a truck. Final price approved by you before any work.</p>
+              <p className="mt-0.5 text-xs leading-snug text-ri-ivory/90">{quote.label} — {quote.eighths}/8 of a truck. Final price approved by you before any work.</p>
             </>
           ) : (
-            <p className="mt-1 text-[11px] leading-snug text-ri-ivory/75">
+            <p className="mt-1 text-xs leading-snug text-ri-ivory/90">
               {count ? "Price estimate unavailable right now — you still get a free quote before any booking." : "Add items to see a preliminary price range for the truck space they'd fill."}
             </p>
           )}
         </div>
-        <p className="mt-3 rounded-xl bg-ri-ivory/10 px-3 py-2 text-[11px] leading-snug text-ri-ivory/75">
+        <p className="mt-3 rounded-xl bg-ri-ivory/10 px-3 py-2 text-xs leading-snug text-ri-ivory/90">
           Item weights are published averages and an estimate only — your load is measured at pickup, and recycling outcomes are reported in your receipt.
         </p>
         <div className="mt-4 flex flex-col gap-2">
