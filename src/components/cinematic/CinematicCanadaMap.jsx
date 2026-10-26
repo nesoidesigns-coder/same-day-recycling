@@ -74,7 +74,7 @@ export default function CinematicCanadaMap({
         {covRings.map((m) => {
           const p = projectPoint(m.lng, m.lat);
           return (
-            <circle key={"cov-" + m.name} cx={p.x} cy={p.y} r="9" fill="none" stroke="#F6A000" strokeWidth="1.6" strokeOpacity="0.85" pointerEvents="none" />
+            <circle key={"cov-" + m.name} cx={p.x} cy={p.y} r="9" fill="none" stroke="#55C7A1" strokeWidth="1.6" strokeOpacity="0.85" pointerEvents="none" />
           );
         })}
         {pins.map((m) => {
@@ -82,8 +82,8 @@ export default function CinematicCanadaMap({
           const r = 4 + (m.count / maxCount) * 7;
           return (
             <g key={"obs-" + m.city} className="cursor-pointer" onClick={() => onCity?.(m.city)}>
-              <circle cx={p.x} cy={p.y} r={r} fill="#22D3EE" fillOpacity="0.2" />
-              <circle cx={p.x} cy={p.y} r={Math.max(3, r / 2.4)} fill="#22D3EE" fillOpacity="0.95">
+              <circle cx={p.x} cy={p.y} r={r} fill="#32C7D5" fillOpacity="0.2" />
+              <circle cx={p.x} cy={p.y} r={Math.max(3, r / 2.4)} fill="#32C7D5" fillOpacity="0.95">
                 <title>{`${m.city}${m.province_code ? `, ${m.province_code}` : ""}: ${m.count} observed record${m.count === 1 ? "" : "s"}`}</title>
               </circle>
             </g>
@@ -91,8 +91,8 @@ export default function CinematicCanadaMap({
         })}
       </svg>
       <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] text-cine-muted">
-        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-[#22D3EE]" /> Observed demand (record count)</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full border-2 border-[#F6A000]" /> Verified contractor coverage</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-[#32C7D5]" /> Observed demand (record count)</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full border-2 border-[#55C7A1]" /> Verified contractor coverage</span>
         <span>Select a province or a lit city to focus the instrument and panels.</span>
       </div>
     </div>
