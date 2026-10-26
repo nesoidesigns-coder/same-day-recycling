@@ -38,6 +38,11 @@ export default function LeadOffers({ offers, onChanged }) {
                         Territory priority
                       </span>
                     )}
+                    {o.city && (
+                      <span className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] bg-white/10 text-emerald-100/80">
+                        {o.city}
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-emerald-100/70 mt-3">{o.items_description}</p>
                   <p className="text-[11px] text-emerald-100/40 mt-1 tabular-nums flex items-center gap-1.5">

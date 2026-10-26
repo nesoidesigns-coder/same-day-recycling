@@ -14,6 +14,7 @@ import BusinessHQ from "@/components/partner/BusinessHQ";
 import CustodyRecorder from "@/components/partner/CustodyRecorder";
 import EarningsRecords from "@/components/partner/EarningsRecords";
 import EarningsSimulator from "@/components/partner/EarningsSimulator";
+import OperationsGauges from "@/components/partner/OperationsGauges";
 
 const money = (n) => "$" + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString("en-CA");
 
@@ -128,9 +129,17 @@ export default function PartnersDashboard() {
               <MapPin className="w-4 h-4 text-[#187B65]" /> {partner.city}
             </p>
           </div>
-          <button onClick={() => base44.auth.logout("/login")} className="flex items-center gap-2 rounded-full border border-[#187B65]/40 bg-[#102B2A]/40 px-5 py-2.5 text-sm font-bold text-emerald-50 hover:border-[#187B65] transition-colors">
-            <LogOut className="w-4 h-4 text-[#187B65]" /> Log out
-          </button>
+          <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("rex:open", { detail: { question: "Summarize my assigned jobs, dispatch status and payouts." } }))}
+              className="flex items-center gap-2 rounded-full border border-[#187B65]/40 bg-[#102B2A]/40 px-5 py-2.5 text-sm font-bold text-emerald-50 hover:border-[#187B65] transition-colors"
+            >
+              <Radio className="w-4 h-4 text-[#187B65]" /> Ask Rex
+            </button>
+            <button onClick={() => base44.auth.logout("/login")} className="flex items-center gap-2 rounded-full border border-[#187B65]/40 bg-[#102B2A]/40 px-5 py-2.5 text-sm font-bold text-emerald-50 hover:border-[#187B65] transition-colors">
+              <LogOut className="w-4 h-4 text-[#187B65]" /> Log out
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-10">
@@ -150,6 +159,8 @@ export default function PartnersDashboard() {
             <p className="text-xs text-emerald-100/40 mt-2">Payouts already marked paid</p>
           </div>
         </div>
+
+        <div className="mb-10"><OperationsGauges jobs={jobs} history={history} offers={offers} /></div>
 
         <div className="mb-10"><BusinessHQ /></div>
 
