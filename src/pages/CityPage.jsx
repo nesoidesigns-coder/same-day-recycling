@@ -112,7 +112,7 @@ export default function CityPage() {
       try {
         const s = await base44.entities.CitySeo.filter({ city: city.name }, { limit: 1 });
         const row = (Array.isArray(s) ? s : s.items || [])[0];
-        if (!cancelled && row) setSeoMeta({ title: row.seo_title, description: row.seo_description });
+        if (!cancelled && row?.seo_title && row?.seo_description) setSeoMeta({ title: row.seo_title, description: row.seo_description });
       } catch { /* generated fallback stays */ }
     })();
     return () => { cancelled = true; };

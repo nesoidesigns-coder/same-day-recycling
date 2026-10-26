@@ -85,8 +85,9 @@ export default function AIBookingCenter() {
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#102B2A] tracking-tight">AI Booking Center</h1>
           <p className="mt-2 text-slate-600 max-w-xl mx-auto">
             Book your pickup in one conversation. Rex collects the details and schedules the job — no forms, no
-            waiting. Confirmed same-day booking in our five operator cities; every other Canadian city submits an
-            inquiry — local service availability and scheduling are confirmed after your request.
+            waiting. Same-day pickup is confirmed only where a verified local provider is on file (see the coverage
+            page); in every other Canadian city your request is submitted as an inquiry — service availability and
+            scheduling are confirmed after your request.
           </p>
         </div>
 
