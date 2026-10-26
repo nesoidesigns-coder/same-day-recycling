@@ -130,9 +130,17 @@ function buildDrafts(base44, settings, cities, provinces): Promise<{ drafts: Dra
     // B) Search intelligence — aggregate observations; NEVER individual leads.
     const obs = await loadAll('DemandObservation');
     skipped.search_stale = 0;
+    skipped.search_offmarket = 0;
     for (const o of obs) {
       const periodEnd = o.period_end || (o.period ? `${o.period}-28` : '');
       if (periodEnd && periodEnd < staleCutoff.slice(0, 10)) { skipped.search_stale++; continue; }
+      // Market-relevance gate. The observations table samples every industry
+      // group we track (insurance, dental, software, trades...). Only keywords
+      // that resolve to one of the eight removal/recycling markets are this
+      // platform's service demand; the rest belong to other industries and must
+      // never be counted as recycling demand on any gauge.
+      const markets = detectMarkets(`${o.keyword || ''} ${o.close_variants || ''}`, o.service_category || '');
+      if (!markets.length) { skipped.search_offmarket++; continue; }
       drafts.push({
         signal_key: `search_intelligence:${o.keyword}|${o.geo_key || o.province_code || ''}|${o.period || ''}`,
         source_platform: o.provider || 'licensed_import', source_type: 'search_intelligence',
@@ -432,6 +440,21 @@ async function handleFeed(base44) {
     )],
     bookings_by_city: bookingsByCity,
     sources: [...sourceMap.values()].sort((a, b) => b.count - a.count),
+    // Collection health for the admin view only. Every figure is counted from
+    // stored records — nothing is estimated, and excluded records are reported
+    // rather than silently dropped.
+    health: {
+      total_live: live.length,
+      expired_excluded: signals.length - live.length,
+      unique_signal_keys: new Set(signals.map((s: any) => s.signal_key || s.id)).size,
+      duplicate_keys_excluded: signals.length - new Set(signals.map((s: any) => s.signal_key || s.id)).size,
+      last_collected_at: signals.reduce((m: string, s: any) => (s.collected_at > m ? s.collected_at : m), ''),
+      last_sync_at: settings.last_run_at || '',
+      genuine_public_requests: live.filter((s: any) => s.demand_type === 'observed_public_request').length,
+      platform_inquiries: live.filter((s: any) => s.demand_type === 'platform_inquiry').length,
+      confirmed_bookings: live.filter((s: any) => s.demand_type === 'confirmed_booking').length,
+      basis: 'Counted from the most recent stored signals loaded for this view.',
+    },
     settings,
     type_labels: TYPE_LABEL,
     notes: [

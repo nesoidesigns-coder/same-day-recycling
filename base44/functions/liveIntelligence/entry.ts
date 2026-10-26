@@ -96,7 +96,19 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
   if (f.city) query.city = f.city;
   if (f.category) query.market_categories = f.category;
 
-  const signals = items(await base44.asServiceRole.entities.DemandSignal.filter(query, { limit: 1000 }));
+  // Expired signals (source window passed, or reclassified as outside the
+  // removal/recycling markets) are not live demand. Excluding them here — the
+  // same rule the admin observatory applies — keeps the homepage and the
+  // Command Centre on one reconciled total for the same reporting period.
+  const signals = items(await base44.asServiceRole.entities.DemandSignal.filter(query, { limit: 1000 }))
+    .filter((s: any) => s.processing_status !== 'expired');
+
+  const by_type: Record<string, number> = {};
+  signals.forEach((s: any) => {
+    const t = s.demand_type || 'unknown';
+    by_type[t] = (by_type[t] || 0) + 1;
+  });
+  const latestCollected = signals.reduce((m: string, s: any) => (s.collected_at && s.collected_at > m ? s.collected_at : m), '');
 
   const rows: any[] = [];
   for (const key of MARKET_CATEGORIES) {
@@ -167,6 +179,13 @@ async function gauge(base44: any, f: { days: number; province: string; city: str
   return {
     filters: { province: f.province || 'all', city: f.city || 'all', category: f.category || 'all', window_days: f.days },
     total: signals.length,
+    by_type,
+    latest_collected_at: latestCollected || null,
+    reporting_period: {
+      days: f.days,
+      from: new Date(Date.now() - f.days * DAY_MS).toISOString().slice(0, 10),
+      to: new Date().toISOString().slice(0, 10),
+    },
     rows,
     uncategorised,
     cities,

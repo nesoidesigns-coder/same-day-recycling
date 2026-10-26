@@ -46,6 +46,21 @@ export default function SourcesTab({ feed, onRefresh }) {
     <div className="grid gap-7 lg:grid-cols-2">
       <section>
         <h2 className="mb-3 flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-slate-500"><Database className="h-4 w-4 text-[#187B65]" /> Source health & coverage</h2>
+        {feed.health && (
+          <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {[
+              ["Live signals", feed.health.total_live],
+              ["Excluded", feed.health.expired_excluded],
+              ["Duplicate keys", feed.health.duplicate_keys_excluded],
+              ["Last sync", fmt(feed.health.last_sync_at)],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-xl border border-slate-100 bg-[#f6f9f8] p-2.5">
+                <div className="text-[10px] font-bold uppercase tracking-wide text-slate-500">{label}</div>
+                <div className="text-sm font-extrabold text-[#102B2A]">{value}</div>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="overflow-hidden rounded-2xl border border-slate-100">
           <table className="w-full text-sm">
             <thead><tr className="bg-[#f6f9f8] text-left text-xs uppercase tracking-wide text-slate-500"><th className="p-3">Source</th><th className="p-3">Signals</th><th className="p-3">Last collected</th><th className="p-3">State</th></tr></thead>

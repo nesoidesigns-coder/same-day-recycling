@@ -15,6 +15,18 @@ import { useIntelligence } from "@/lib/intelligenceContext";
 // counts; nothing is estimated or simulated.
 
 const EASE = [0.22, 1, 0.36, 1];
+
+// The six intelligence classifications, in the order they are reported. Only
+// types present in the feed are shown, each with its own count — search
+// interest is never blended into request or booking figures.
+const SIGNAL_TYPES = [
+  ["search_interest", "Search interest"],
+  ["observed_public_request", "Observed public requests"],
+  ["market_indicator", "Market indicators"],
+  ["platform_inquiry", "Platform inquiries"],
+  ["qualified_opportunity", "Qualified opportunities"],
+  ["confirmed_booking", "Confirmed bookings"],
+];
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.04 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } } };
 
@@ -43,7 +55,9 @@ export default function ServiceHero() {
   const rows = (g30?.rows || []).slice().sort((a, b) => b.count - a.count);
   const topCity = (g30?.cities || [])[0];
   const topCategory = rows[0];
-  const updatedAt = g30?.generated_at ? fmtTime(g30.generated_at) : null;
+  // The reference time is when the underlying records were actually collected,
+  // not when this page asked for them.
+  const updatedAt = g30?.latest_collected_at ? fmtTime(g30.latest_collected_at) : null;
 
   // Outer arc: last-30-day activity as a share of the trailing 90-day window.
   const arcShare = total30 != null && total90 > 0 ? total30 / total90 : 0;
@@ -51,12 +65,13 @@ export default function ServiceHero() {
   // Momentum: last 30 days vs the average of the prior 30-day periods inside
   // the 90-day window. Only computed from real counts — otherwise withheld.
   const priorAvg = total90 > 0 && total30 != null ? (total90 - total30) / 2 : null;
+  // Momentum needs a real prior baseline. With no earlier records in the
+  // window there is nothing to compare against, so the reading is withheld
+  // rather than shown as a misleading 100% rise.
   const momentum =
     total30 != null && priorAvg != null && priorAvg > 0
       ? { pct: Math.round(((total30 - priorAvg) / priorAvg) * 100), label: `Momentum vs prior 30-day average (${priorAvg.toFixed(1)} avg)` }
-      : total30 != null && total30 > 0 && total90 > 0
-        ? { pct: 100, label: "Momentum: no prior-period records in the 90-day window yet" }
-        : null;
+      : null;
 
   const regionalReading = topCity ? `${topCity.city} · ${topCity.count}` : "Awaiting data";
   const interestReading = topCategory ? `${LIVE_CATEGORIES[topCategory.key] || topCategory.key} · ${topCategory.count}` : "Awaiting data";
@@ -155,7 +170,7 @@ export default function ServiceHero() {
               loading={l30 || !g90}
               error={e30}
               value={total30}
-              valueLabel="Observed records · last 30 days"
+              valueLabel="Observed signals · last 30 days"
               arcShare={arcShare}
               arcTitle="Last 30 days as a share of the trailing 90-day window"
               categories={rows.slice(0, 5).map((r) => ({ key: r.key, label: LIVE_CATEGORIES[r.key] || r.key, value: r.count }))}
@@ -163,6 +178,36 @@ export default function ServiceHero() {
               updatedAt={updatedAt}
               ariaLabel="Canadian service demand: observed records, category distribution and momentum"
             />
+            {/* Canadian Service Demand — Observed Signals. Same records, same
+                reporting period and same exclusion rules as the Command Centre,
+                broken out by signal type so the total is never misread as a
+                count of individual customers. */}
+            <div className="mt-4 rounded-2xl border border-na-cyan/15 bg-na-cyan/5 p-3">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="data-label text-na-cyan/80">Canadian service demand</span>
+                <span className="text-[10px] font-semibold text-na-warm/60">
+                  {g30?.reporting_period
+                    ? `${g30.reporting_period.from} → ${g30.reporting_period.to}`
+                    : "last 30 days"}
+                </span>
+              </div>
+              <ul className="mt-1.5 space-y-1">
+                {SIGNAL_TYPES.map(([key, label]) => {
+                  const n = g30?.by_type?.[key] || 0;
+                  if (!n) return null;
+                  return (
+                    <li key={key} className="flex items-center justify-between gap-2 text-[11px]">
+                      <span className="text-na-warm/70">{label}</span>
+                      <span className="metric text-na-warm">{n}</span>
+                    </li>
+                  );
+                })}
+                {!g30?.by_type && (
+                  <li className="text-[11px] text-na-warm/60">Awaiting verified signals</li>
+                )}
+              </ul>
+            </div>
+
             <div className="mt-4 grid grid-cols-3 gap-2 border-t border-na-cyan/15 pt-3 text-center">
               <div>
                 <div className="data-label text-na-cyan/80">Regional demand</div>
