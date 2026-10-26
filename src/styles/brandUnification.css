@@ -1,0 +1,35 @@
+/* ---- Command 6: unified typography & contrast ----
+   Imported after index.css so these rules cascade last across the whole site.
+   One brand voice for type everywhere, and AA-contrast floors on the
+   deep-forest dark surfaces. Pure presentation — no logic touched. */
+
+/* Brand type floor: nothing below 12px, anywhere (covers all prefixed
+   variants like md:text-[10px] via substring matching) */
+[class*="text-[9px]"],
+[class*="text-[10px]"],
+[class*="text-[11px]"],
+[class*="text-[0.5rem]"],
+[class*="text-[0.6rem]"],
+[class*="text-[0.65rem]"],
+[class*="text-[0.7rem]"] { font-size: 12px; }
+
+/* Heading family extended below h3 so every heading level shares one voice */
+h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Bold weight cap: extrabold and black both resolve to the brand's 800 cap */
+.font-extrabold { font-weight: 800; }
+
+/* Contrast floors on dark green surfaces: the faintest emerald/ivory text
+   tints are lifted so every line clears readable contrast against the
+   deep forest panel */
+.text-emerald-100\/20,
+.text-emerald-100\/30 { color: hsl(var(--ri-mint) / 0.55); }
+.text-emerald-100\/40 { color: hsl(var(--ri-mint) / 0.58); }
+.text-emerald-100\/50 { color: hsl(var(--ri-mint) / 0.64); }
+.text-ri-ivory\/50,
+.text-ri-ivory\/60 { color: hsl(var(--ri-ivory) / 0.72); }
+.text-ri-ivory\/70 { color: hsl(var(--ri-ivory) / 0.78); }
