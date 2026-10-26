@@ -12,6 +12,7 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 import ReceptionistChat from '@/components/sdr/ReceptionistChat';
 import SearchIndexing from '@/components/seo/SearchIndexing';
 import ExperienceTheme from '@/components/os/ExperienceTheme';
+import { IntelligenceProvider } from '@/lib/intelligenceContext';
 // Add page imports here.
 // Route-level code splitting: only the home page (LCP target) and auth pages
 // load upfront; every other page is fetched on demand.
@@ -327,7 +328,7 @@ function App() {
           <ScrollToTop />
           <GoogleAnalytics />
           <ReceptionistChat />
-          <ExperienceTheme><AuthenticatedApp /></ExperienceTheme>
+          <ExperienceTheme><IntelligenceProvider><AuthenticatedApp /></IntelligenceProvider></ExperienceTheme>
         </Router>
         <Toaster />
       </QueryClientProvider>

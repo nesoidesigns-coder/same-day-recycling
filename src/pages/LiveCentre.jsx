@@ -9,6 +9,7 @@ import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
 import { LIVE_CATEGORIES } from "@/lib/liveCategories";
 import { setRexContext } from "@/lib/rexSession";
+import { useIntelligence } from "@/lib/intelligenceContext";
 import LiveHero from "@/components/cinematic/LiveHero";
 import CinematicCanadaMap from "@/components/cinematic/CinematicCanadaMap";
 import useCanadaGeography from "@/components/cinematic/useCanadaGeography";
@@ -35,10 +36,20 @@ export default function LiveCentre() {
   });
   const cov = useCoverageStatus();
   const geo = useCanadaGeography();
-  const [filters, setFilters] = useState({ province: "", city: "", category: "", days: 30 });
+  // Shared intelligence state: a location selected on the homepage (or in the
+  // booking flow) opens Live Intelligence already focused on it.
+  const intel = useIntelligence();
+  const [filters, setFilters] = useState(() => {
+    const city = intel.selection.city || "";
+    const match = city ? CITIES.find((c) => c.name.toLowerCase() === city.toLowerCase()) : null;
+    const code = match ? REGIONS.find((r) => r.name === match.province)?.code || "" : "";
+    return { province: code, city, category: "", days: 30 };
+  });
 
   // The one live radar connection: verified feed + realtime refresh as activity happens.
   const { data: gauge, loading, error, pulseKey } = useLiveGauge(filters);
+  // Trailing 90-day basis for the outer activity arc (same shared filters).
+  const { data: g90 } = useLiveGauge({ days: 90, province: filters.province, city: filters.city, category: filters.category });
 
   const provinceCityOptions = useMemo(() => {
     const target = REGIONS.find((r) => r.code === filters.province)?.name || "";
@@ -55,13 +66,19 @@ export default function LiveCentre() {
     const city = CITIES.find((c) => c.name.toLowerCase() === String(name).toLowerCase());
     const code = city ? REGIONS.find((r) => r.name === city.province)?.code || "" : filters.province;
     setRexContext({ page: "live", city: name });
+    intel.setSelection({ city: name });
     setFilters((f) => ({ ...f, province: code, city: name }));
   };
 
   const applyFilter = (key, value) => {
     if (key === "province") setFilters((f) => ({ ...f, province: value, city: "" }));
-    else if (key === "city") setFilters((f) => ({ ...f, city: value }));
-    else if (key === "days") setFilters((f) => ({ ...f, days: Number(value) }));
+    else if (key === "city") {
+      if (value) {
+        setRexContext({ page: "live", city: value });
+        intel.setSelection({ city: value });
+      }
+      setFilters((f) => ({ ...f, city: value }));
+    } else if (key === "days") setFilters((f) => ({ ...f, days: Number(value) }));
   };
 
   const matchingCities = cov.matchingCityNames || [];
@@ -88,7 +105,7 @@ export default function LiveCentre() {
         pickCategory={pickCategory}
         focusCity={focusCity}
         cov={cov}
-        pulseKey={pulseKey}
+        baseTotal={g90?.total ?? 0}
       />
 
       {/* Rex as invisible intelligence — a quiet contextual strip */}
@@ -132,6 +149,7 @@ export default function LiveCentre() {
           onPickCity={(city) => {
             const code = REGIONS.find((r) => r.name === city.province)?.code || "";
             setRexContext({ page: "live", city: city.name });
+            intel.setSelection({ city: city.name });
             setFilters((f) => ({ ...f, province: code, city: city.name }));
           }}
         />

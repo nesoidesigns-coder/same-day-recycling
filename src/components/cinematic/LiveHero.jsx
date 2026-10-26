@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Recycle } from "lucide-react";
 import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
 import { setRexContext } from "@/lib/rexSession";
-import RadarInstrument, { deriveModel, periodLabel } from "@/components/cinematic/RadarInstrument";
+import NationalDemandGauge from "@/components/os/NationalDemandGauge";
+import { deriveModel, periodLabel } from "@/components/cinematic/RadarInstrument";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
 
@@ -42,7 +43,7 @@ function Indicator({ label, value, note, side = "right", pending = false }) {
 // Canadian Service Radar at centre with floating indicators on both flanks,
 // and category navigation plus the pricing/booking pathway at the bottom.
 // Advanced filters and methodology live in discreet expandables.
-export default function LiveHero({ data, loading, error, filters, onFilter, pickCategory, focusCity, cov, pulseKey }) {
+export default function LiveHero({ data, loading, error, filters, onFilter, pickCategory, focusCity, cov, baseTotal = 0 }) {
   const m = deriveModel(data);
   const monitored = (cov.verifiedCityNames?.length || 0) + (cov.matchingCityNames?.length || 0) + (cov.recruitingCityNames?.length || 0);
   const refreshedAt = data?.generated_at
@@ -50,6 +51,14 @@ export default function LiveHero({ data, loading, error, filters, onFilter, pick
     : null;
   const topType = Object.entries(m.typeAgg).sort((a, b) => b[1] - a[1])[0];
   const topCity = m.cityList[0];
+
+  // The master gauge readings — every arc from real, labelled records only.
+  const prevRow = m.change ? (data?.trend || []).find((t) => t.month === m.change.prev) : null;
+  const momentum =
+    m.change && prevRow && prevRow.count > 0
+      ? { pct: Math.round((m.change.delta / prevRow.count) * 100), label: `Momentum: ${m.change.last} vs ${m.change.prev} complete months` }
+      : null;
+  const arcShare = baseTotal > 0 && m.total > 0 && filters.days <= 90 ? m.total / baseTotal : null;
 
   const cityOptions = CITIES.filter((c) => !filters.province || String(c.province || "") === (REGIONS.find((r) => r.code === filters.province)?.name || ""));
 
@@ -111,16 +120,19 @@ export default function LiveHero({ data, loading, error, filters, onFilter, pick
         </div>
 
         <div className="order-1 lg:order-2">
-          <RadarInstrument
-            data={data}
+          <NationalDemandGauge
+            size="hero"
+            appearance="dark"
             loading={loading}
-            error={error}
-            selected={filters.category}
-            onSelect={pickCategory}
-            days={filters.days}
-            coverage={cov.loaded ? { verified: cov.verifiedCityNames.length, monitored } : null}
-            onCityClick={focusCity}
-            pulseKey={pulseKey}
+            value={error ? null : m.total}
+            valueLabel={`Observed records · ${periodLabel(filters.days)}`}
+            arcShare={arcShare}
+            arcTitle="Selected window as a share of the trailing 90-day window"
+            categories={m.rows.map((r) => ({ key: r.key, label: r.fullLabel, value: r.count }))}
+            momentum={momentum}
+            updatedAt={refreshedAt}
+            onSelectCategory={pickCategory}
+            ariaLabel="Canadian service demand instrument"
           />
         </div>
 

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Armchair, ArrowRight, Building2, HardHat, Home, KeyRound, Leaf, MapPin, Refrigerator, Trash2 } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { setRexContext } from "@/lib/rexSession";
+import { useIntelligence } from "@/lib/intelligenceContext";
 import { COVERAGE_STATUS, money } from "./siShared";
 
 const PHOTOS = {
@@ -30,6 +31,7 @@ const CARDS = [
 // plain-language copy, a published starting rate, and live availability from
 // verified coverage records. Availability is never overstated.
 export default function ServiceCards({ city, prices, coverage, cities }) {
+  const { setSelection } = useIntelligence();
   const startingAt = money(Number(prices?.minimum_pickup));
   const cityStatus = city ? coverage.statusFor(city) : null;
   const availability = city
@@ -71,7 +73,12 @@ export default function ServiceCards({ city, prices, coverage, cities }) {
               <div className="mt-4 flex flex-wrap gap-2.5">
                 <Link
                   to={card.to}
-                  onClick={() => card.serviceType && setRexContext({ service_type: card.serviceType, page: "homepage-services" })}
+                  onClick={() => {
+                    if (card.serviceType) {
+                      setRexContext({ service_type: card.serviceType, page: "homepage-services" });
+                      setSelection({ service: card.serviceType });
+                    }
+                  }}
                   className="inline-flex items-center gap-1.5 rounded-full bg-si-forest px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-si-mint hover:text-si-forest"
                 >
                   Explore Service <ArrowRight className="size-3.5" />

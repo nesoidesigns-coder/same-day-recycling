@@ -7,6 +7,7 @@ import RequestIntake from "@/components/ri/RequestIntake";
 import JourneyProgress from "@/components/ri/JourneyProgress";
 import LocalIntelligencePanel from "@/components/ri/LocalIntelligencePanel";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
+import { useIntelligence } from "@/lib/intelligenceContext";
 
 export default function RequestService() {
   useSEO({
@@ -16,8 +17,12 @@ export default function RequestService() {
   });
 
   const params = new URLSearchParams(window.location.search);
-  const [city] = useState((params.get("city") || "").slice(0, 120));
-  const [handoff, setHandoff] = useState({});
+  // Shared intelligence state: a city or service selected on the homepage or
+  // in Live Intelligence opens the request flow already filled (never asked
+  // again unless the customer needs to correct it). URL params win.
+  const intel = useIntelligence();
+  const [city] = useState(((params.get("city") || "").slice(0, 120)) || intel.selection.city || "");
+  const [handoff, setHandoff] = useState(intel.selection.service ? { service_type: intel.selection.service } : {});
   const [estimate, setEstimate] = useState(null);
   const [formSnapshot, setFormSnapshot] = useState({});
   const [submitted, setSubmitted] = useState(false);

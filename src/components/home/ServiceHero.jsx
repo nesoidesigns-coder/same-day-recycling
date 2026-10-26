@@ -5,7 +5,7 @@ import { ArrowRight, Clock, MapPin, Phone } from "lucide-react";
 import NationalDemandGauge from "@/components/os/NationalDemandGauge";
 import { LIVE_CATEGORIES } from "@/lib/liveCategories";
 import useLiveGauge from "@/hooks/useLiveGauge";
-import { setRexContext } from "@/lib/rexSession";
+import { useIntelligence } from "@/lib/intelligenceContext";
 
 // Homepage hero — "Canada in Motion". Booking action first and most prominent;
 // the National Demand Gauge sits beside it as a premium intelligence
@@ -32,7 +32,8 @@ const fmtTime = (iso) => {
 
 export default function ServiceHero() {
   const navigate = useNavigate();
-  const [place, setPlace] = useState("");
+  const { selection, setSelection } = useIntelligence();
+  const [place, setPlace] = useState(selection.city || "");
 
   const { data: g30, loading: l30, error: e30 } = useLiveGauge({ days: 30 });
   const { data: g90 } = useLiveGauge({ days: 90 });
@@ -62,7 +63,7 @@ export default function ServiceHero() {
 
   const startService = () => {
     const q = place.trim() ? `?city=${encodeURIComponent(place.trim())}` : "";
-    setRexContext({ page: "homepage", ...(place.trim() ? { city: place.trim() } : {}) });
+    setSelection(place.trim() ? { city: place.trim() } : {});
     navigate(`/request-service${q}`);
   };
 
