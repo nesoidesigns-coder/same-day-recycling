@@ -37,10 +37,12 @@ export function useCountUp(target, { duration = 1400, animate = true } = {}) {
   return display;
 }
 
+// Master palette mapping: emerald = verified (green), mint = observed activity
+// (cyan), gold = pending/caution (amber). No ad-hoc colours.
 const PALETTES = {
-  emerald: ["#54D9AE", "#187B65"],
-  mint: ["#A7F3D0", "#34D399"],
-  gold: ["#F2D48A", "#B48A2F"],
+  emerald: ["#55C7A1", "#32C7D5"],
+  mint: ["#7ED4BC", "#32C7D5"],
+  gold: ["#E8B66A", "#B48A2F"],
 };
 
 const fmt = (n) => Number(n || 0).toLocaleString("en-CA");
@@ -86,7 +88,7 @@ export default function PulseRing({
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         className={doSpin && kind === "activity" ? "pulse-arc-spin" : ""}
-        style={{ filter: `drop-shadow(0 0 ${Math.round(size / 22)}px rgba(24, 123, 101, 0.45))` }}
+        style={{ filter: `drop-shadow(0 0 ${Math.round(size / 22)}px rgba(50, 199, 213, 0.45))` }}
         aria-hidden="true"
       >
         <defs>
@@ -100,7 +102,7 @@ export default function PulseRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="rgba(24, 123, 101, 0.18)"
+          stroke="rgba(50, 199, 213, 0.18)"
           strokeWidth={thickness}
         />
         <circle

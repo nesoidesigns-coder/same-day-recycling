@@ -12,6 +12,7 @@ export default function RingGauge({ value, max = 100, label, sub, unavailableRea
             <circle
               cx="60" cy="60" r={R} fill="none" strokeWidth="10" strokeLinecap="round"
               strokeDasharray={C} strokeDashoffset={C * (1 - frac)}
+              className="transition-[stroke-dashoffset] duration-500 ease-out motion-reduce:transition-none"
               style={{ stroke: "hsl(var(--li-btn))" }}
             />
           )}

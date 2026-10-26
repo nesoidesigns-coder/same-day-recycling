@@ -48,8 +48,8 @@ export default function PriceIntelligenceGauge({ prices, cityLabel, generatedAt,
       <svg viewBox="0 0 320 250" className="w-full" role="img" aria-label={`Published price scale${cityLabel ? ` for ${cityLabel}` : ""}`}>
         <defs>
           <linearGradient id={`si-price-${gradientId}`} x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="#8DDFCA" />
-            <stop offset="100%" stopColor="#22CFA7" />
+            <stop offset="0%" stopColor="#7ED4BC" />
+            <stop offset="100%" stopColor="#55C7A1" />
           </linearGradient>
         </defs>
         {available ? (
@@ -71,9 +71,9 @@ export default function PriceIntelligenceGauge({ prices, cityLabel, generatedAt,
               const isStart = i === 0;
               return (
                 <g key={t.key}>
-                  <circle cx={p.x} cy={p.y} r={isStart ? 8 : 4.5} fill={isStart ? "#22CFA7" : "#123D32"} stroke="#F8FAF9" strokeWidth="2" />
+                  <circle cx={p.x} cy={p.y} r={isStart ? 8 : 4.5} fill={isStart ? "#55C7A1" : "#102333"} stroke="#F8FAF9" strokeWidth="2" />
                   <title>{`${t.label} · ${money(t.price)}`}</title>
-                  {isStart && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="#22CFA7" strokeWidth="1.5" opacity="0.5" />}
+                  {isStart && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="#55C7A1" strokeWidth="1.5" opacity="0.5" />}
                 </g>
               );
             })}

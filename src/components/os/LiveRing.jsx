@@ -6,13 +6,14 @@ import { base44 } from "@/api/base44Client";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
 import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
+import { CATEGORY_PALETTE } from "./gaugeCore";
 
 // Recycling OS LIVE — the signature circular intelligence visualization.
 // One living system view: drill Canada → Province → City, tap a category
 // segment, and every panel updates from real demand records. Honest empty
 // states; counts only, never blended demand scores.
 
-const PALETTE = ["#187B65", "#2FA98C", "#54D9AE", "#0F5C4A", "#7CCDB4", "#116553", "#A7E3D2", "#0A3D31"];
+const PALETTE = CATEGORY_PALETTE;
 const R = 100;
 const CIRC = 2 * Math.PI * R;
 const GAP = 2.5;

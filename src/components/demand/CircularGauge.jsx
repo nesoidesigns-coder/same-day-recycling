@@ -26,9 +26,8 @@ export default function CircularGauge({
       <svg width="100%" viewBox={`0 0 ${size} ${size}`} role="img" aria-label={ariaLabel}>
         <defs>
           <linearGradient id={`gauge-${gid}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#54D9AE" />
-            <stop offset="60%" stopColor="#2fd4a0" />
-            <stop offset="100%" stopColor="#22d3ee" />
+            <stop offset="0%" stopColor="#32C7D5" />
+            <stop offset="100%" stopColor="#55C7A1" />
           </linearGradient>
         </defs>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
@@ -43,7 +42,7 @@ export default function CircularGauge({
           strokeDasharray={C}
           strokeDashoffset={offset}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ transition: 'stroke-dashoffset 900ms ease', filter: 'drop-shadow(0 0 6px rgba(84, 217, 174, 0.45))' }}
+          style={{ transition: 'stroke-dashoffset 900ms cubic-bezier(0.22, 1, 0.36, 1)', filter: 'drop-shadow(0 0 6px rgba(50, 199, 213, 0.45))' }}
         />
         <circle cx={size / 2} cy={size / 2} r={r - stroke / 2 - 4} fill="rgba(5, 21, 17, 0.35)" stroke="rgba(24, 123, 101, 0.25)" strokeWidth="1" />
       </svg>

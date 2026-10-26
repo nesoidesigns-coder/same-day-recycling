@@ -60,8 +60,8 @@ export default function ConsumerIntelligenceGauge({
       <svg viewBox="0 0 320 320" className="w-full" role="img" aria-label={label}>
         <defs>
           <linearGradient id={`si-accent-${gradientId}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8DDFCA" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#22CFA7" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#7ED4BC" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#32C7D5" stopOpacity="0.3" />
           </linearGradient>
         </defs>
 
