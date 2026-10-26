@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { GAUGE_SIZES, OS_COLORS, polar, ringSector, arcPath } from "./gaugeCore";
+import { useLivePulse } from "@/lib/liveActivity";
 import OSGaugeRing from "./OSGaugeRing";
 import OSGaugeSegment from "./OSGaugeSegment";
 import OSGaugeIndicator from "./OSGaugeIndicator";
@@ -40,6 +41,9 @@ export default function OSIntelligenceGauge({
 }) {
   const spec = GAUGE_SIZES[size] || GAUGE_SIZES.feature;
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  // Every gauge pulses live on its own when no explicit pulseKey is passed.
+  const liveKey = useLivePulse();
+  const livePulse = pulseKey > 0 ? pulseKey : liveKey;
 
   if (size === "micro") {
     const arcLayer = layers.find((l) => l.type === "arc");
@@ -91,7 +95,7 @@ export default function OSIntelligenceGauge({
       {center && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
           <div className="relative text-center">
-            {pulseKey > 0 && <span key={pulseKey} className="cine-pulse-ring absolute -inset-6 rounded-full" aria-hidden="true" />}
+            {livePulse > 0 && <span key={livePulse} className="cine-pulse-ring absolute -inset-6 rounded-full" aria-hidden="true" />}
             <div className={`font-plex font-bold uppercase text-os-cyan ${CENTER_SCALE[size].title}`}>{center.title}</div>
             <div className={`metric mt-1.5 ${CENTER_SCALE[size].value} ${center.value != null && center.value !== "" ? "text-os-ink" : "text-os-silver"}`}>
               {center.value != null && center.value !== "" ? center.value : "—"}
