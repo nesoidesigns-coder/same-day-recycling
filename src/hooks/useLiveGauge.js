@@ -61,4 +61,6 @@ export default function useLiveGauge({ days = 30, province = "", city = "", cate
       unsubs.forEach((u) => u && u());
     };
   }, []);
+
+  return { data, loading, error, pulseKey };
 }
