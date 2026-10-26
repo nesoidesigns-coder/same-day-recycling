@@ -692,6 +692,17 @@ h1, h2, h3, h4, p, a, span, li, button {
 .admin-li [class*=":bg-[#f4f7f5]"]:hover,
 .admin-li [class*=":bg-[#eef4f0]"]:hover { background-color: hsl(var(--li-cloud)); }
 
+/* Legibility pass: slate greys on light admin/dashboard surfaces are too
+   faint — remap the Tailwind slate text scale to much darker ink tokens.
+   Ordering preserves hierarchy (300 still lighter than 600). */
+.admin-li .text-slate-300 { color: hsl(156 12% 38%); }
+.admin-li .text-slate-400 { color: hsl(156 12% 33%); }
+.admin-li .text-slate-500 { color: hsl(156 12% 30%); }
+.admin-li .text-slate-600 { color: hsl(165 30% 16%); }
+.admin-li .text-slate-700 { color: hsl(var(--li-carbon)); }
+.admin-li .hover\:text-slate-600:hover { color: hsl(165 30% 16%); }
+.admin-li .hover\:text-slate-700:hover { color: hsl(var(--li-carbon)); }
+
 /* Legacy mint & gold accents */
 .admin-li [class*="text-[#54D9AE]"]:not([class*=":text-[#54D9AE]"]) { color: hsl(var(--li-mint)); }
 .admin-li [class*=":text-[#54D9AE]"]:hover { color: hsl(var(--li-mint)); }

@@ -304,9 +304,9 @@ const AuthenticatedApp = () => {
         <Route path="/admin/national" element={<AdminShell><AdminNational /></AdminShell>} />
         <Route path="/company" element={<AdminShell><CompanyDashboard /></AdminShell>} />
         <Route path="/finance" element={<AdminShell><FinanceDashboard /></AdminShell>} />
-        <Route path="/partners" element={<PartnersDashboard />} />
+        <Route path="/partners" element={<AdminShell><PartnersDashboard /></AdminShell>} />
         <Route path="/partner-register" element={<PartnerRegister />} />
-        <Route path="/realtor-dashboard" element={<RealtorDashboard />} />
+        <Route path="/realtor-dashboard" element={<AdminShell><RealtorDashboard /></AdminShell>} />
       </Route>
       <Route path="/city/:cityName" element={<CityRedirect />} />
       <Route path="/:pageSlug" element={<CityPage />} />
