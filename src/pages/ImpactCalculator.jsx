@@ -21,7 +21,7 @@ export default function ImpactCalculator() {
             What happens to <span className="text-ri-forest">your stuff?</span>
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-ri-slate md:text-lg">
-            Every load we take is sorted for donation first and recycling second. Estimate your impact below — then share it, or turn it into a free pickup quote.
+            Every load we take is sorted for donation first and recycling second. Add your items to see the potential recycling impact and a preliminary price — before you book.
           </p>
         </div>
         <ImpactEstimator className="mt-8" />
