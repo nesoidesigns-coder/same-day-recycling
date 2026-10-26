@@ -107,18 +107,43 @@
     --ri-slate: 159 8% 43%;      /* #657670 supporting text */
     --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
     --ri-amber-ink: 35 100% 28%;    /* #8F5D00 — dark amber for text on light tints (AA) */
-  /* Canadian Service Radar — cinematic intelligence tokens (midnight navy) */
-  --cine-bg: 223 55% 6%;
-  --cine-surface: 224 48% 11%;
-  --cine-ink: 210 40% 96%;
-  --cine-muted: 214 28% 68%;
-  --cine-line: 222 32% 24%;
-  --cine-cyan: 187 92% 56%;
-  --cine-arctic: 205 88% 64%;
-  --cine-blue: 217 88% 64%;
-  --cine-violet: 258 70% 72%;
-  --cine-land: 222 45% 13%;
-  --cine-land-hover: 221 45% 20%;
+  /* Recycling OS master intelligence palette (midnight system) */
+  --cine-bg: 211 61% 8%;        /* Midnight Core #081421 */
+  --cine-surface: 208 55% 12%;  /* Deep Ocean #0E2030 */
+  --cine-ink: 201 50% 95%;      /* Arctic White #EAF3F8 */
+  --cine-muted: 204 24% 70%;    /* Mist Silver #9FB5C4 */
+  --cine-line: 209 40% 25%;
+  --cine-cyan: 185 66% 52%;     /* Signal Cyan #32C7D5 */
+  --cine-arctic: 218 83% 68%;   /* Intelligence Blue #6C9DF1 */
+  --cine-blue: 214 70% 60%;
+  --cine-violet: 254 79% 75%;   /* Forecast Violet #9A82E6 */
+  --cine-green: 160 50% 56%;    /* Verified Green #55C7A1 */
+  --cine-amber: 36 73% 66%;     /* #E8B66A */
+  --cine-coral: 356 69% 69%;    /* #E77B83 */
+  --cine-land: 208 45% 13%;
+  --cine-land-hover: 207 45% 20%;
+  /* Recycling OS master tokens — canonical names for the gauge family */
+  --os-core: 211 61% 8%;
+  --os-deep: 208 55% 12%;
+  --os-surface: 206 51% 16%;    /* Elevated Surface #142B3D */
+  --os-ink: 201 50% 95%;
+  --os-silver: 204 24% 70%;
+  --os-cyan: 185 66% 52%;
+  --os-blue: 218 83% 68%;
+  --os-violet: 254 79% 75%;
+  --os-green: 160 50% 56%;
+  --os-amber: 36 73% 66%;
+  --os-coral: 356 69% 69%;
+  --os-frost: 204 45% 98%;      /* Frost White #F7FAFC */
+  --os-cloud: 200 33% 95%;      /* Cloud Silver #EDF3F6 */
+  --os-pale: 195 40% 90%;       /* Pale Ocean #DCEBF0 */
+  --os-navy: 207 52% 13%;       /* Dark Navy Text #102333 */
+  /* Centralized motion tokens */
+  --motion-micro: 150ms;
+  --motion-standard: 280ms;
+  --motion-gauge: 600ms;
+  --motion-reveal: 1200ms;
+  --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
     --ri-emerald-ink: 172 79% 24%;  /* #126A5F — dark emerald for text on light tints (AA) */
   }
 
@@ -652,7 +677,7 @@ h1, h2, h3, h4, p, a, span, li, button {
 /* ---- Canadian Service Radar — cinematic intelligence surfaces ---- */
 
 .cine-glass {
-  background: rgba(12, 19, 37, 0.55);
+  background: rgba(14, 32, 48, 0.55);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(74, 118, 165, 0.22);
@@ -725,8 +750,8 @@ h1, h2, h3, h4, p, a, span, li, button {
 }
 
 @keyframes cine-pulse-ring {
-  from { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
-  to { box-shadow: 0 0 0 14px rgba(34, 211, 238, 0); }
+  from { box-shadow: 0 0 0 0 rgba(50, 199, 213, 0.4); }
+  to { box-shadow: 0 0 0 14px rgba(50, 199, 213, 0); }
 }
 
 .cine-pulse-ring {
