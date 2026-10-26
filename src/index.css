@@ -982,3 +982,233 @@ h1, h2, h3, h4, p, a, span, li, button {
     animation: none !important;
   }
 }
+
+/* ---- Command 5: full-spectrum unification ----
+   1) Legacy brand hexes in ANY letter case → tokens (the earlier layers only
+      matched uppercase spellings like #187B65; lowercase #187b65 classes and
+      inline styles were missed). Pure presentation.
+   2) Raw Tailwind palette classes used on customer pages → the unified
+      token palette. Unlayered rules intentionally override the utilities. */
+
+/* --- 1a) Ink & brand text (any case) --- */
+[class*="text-[#102b2a]" i]:not([class*=":text-"]) { color: hsl(var(--ri-charcoal)); }
+[class*=":text-[#102b2a]" i]:hover { color: hsl(var(--ri-charcoal)); }
+[class*="text-[#187b65]" i]:not([class*=":text-"]):not([class*="/"]) { color: hsl(var(--ri-emerald)); }
+[class*=":text-[#187b65]" i]:hover { color: hsl(var(--ri-emerald)); }
+[class*="text-[#187b65]/90" i] { color: hsl(var(--ri-emerald) / 0.9); }
+[class*="text-[#187b65]/80" i] { color: hsl(var(--ri-emerald) / 0.8); }
+[class*="text-[#187b65]/70" i] { color: hsl(var(--ri-emerald) / 0.7); }
+[class*="text-[#187b65]/40" i] { color: hsl(var(--ri-emerald) / 0.4); }
+[class*="text-[#54d9ae]" i]:not([class*=":text-"]) { color: hsl(var(--li-mint)); }
+[class*=":text-[#54d9ae]" i]:hover { color: hsl(var(--li-mint)); }
+[class*="text-[#125c4e]" i], [class*="text-[#123c32]" i] { color: hsl(var(--ri-forest)); }
+[class*="text-[#123c32]/" i] { color: hsl(var(--ri-forest) / 0.6); }
+[class*="text-[#1fa184]" i] { color: hsl(var(--ri-emerald)); }
+[class*="text-[#0d5c4b]" i], [class*="text-[#0f5f4d]" i], [class*="text-[#0e6b52]" i] { color: hsl(var(--ri-emerald-ink)); }
+[class*="text-[#032015]" i], [class*="text-[#051511]" i], [class*="text-[#243b2f]" i] { color: hsl(var(--ri-charcoal)); }
+[class*="text-[#0f5c3f]" i] { color: hsl(var(--ri-forest)); }
+
+/* --- 1b) Amber text (any case) --- */
+[class*="text-[#e2b04a]" i], [class*="text-[#f2d48a]" i], [class*="text-[#e8b66a]" i], [class*="text-[#d99636]" i] { color: hsl(var(--li-amber)); }
+[class*="text-[#b45309]" i], [class*="text-[#92400e]" i], [class*="text-[#8a6410]" i], [class*="text-[#3b2303]" i] { color: hsl(var(--ri-amber-ink)); }
+
+/* --- 1c) Emerald surfaces (any case) --- */
+[class*="bg-[#187b65]" i]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--ri-emerald)); }
+[class*=":bg-[#187b65]" i]:hover:not([class*="/"]) { background-color: hsl(var(--ri-forest)); }
+[class*=":bg-[#187b65]/" i]:hover { background-color: hsl(var(--ri-emerald) / 0.25); }
+[class*="bg-[#187b65]/5" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.05); }
+[class*="bg-[#187b65]/10" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.1); }
+[class*="bg-[#187b65]/15" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.15); }
+[class*="bg-[#187b65]/20" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.2); }
+[class*="bg-[#187b65]/25" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.25); }
+[class*="bg-[#187b65]/30" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.3); }
+[class*="bg-[#187b65]/40" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.4); }
+[class*="bg-[#187b65]/50" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-emerald) / 0.5); }
+
+[class*="border-[#187b65]" i]:not([class*=":border-"]):not([class*="/"]) { border-color: hsl(var(--ri-emerald)); }
+[class*=":border-[#187b65]" i]:hover { border-color: hsl(var(--ri-emerald)); }
+[class*="focus:border-[#187b65]" i]:focus { border-color: hsl(var(--ri-emerald)); }
+[class*="focus:ring-[#187b65]" i]:focus { --tw-ring-color: hsl(var(--ri-emerald)); }
+[class*="border-[#187b65]/10" i] { border-color: hsl(var(--ri-emerald) / 0.1); }
+[class*="border-[#187b65]/15" i] { border-color: hsl(var(--ri-emerald) / 0.15); }
+[class*="border-[#187b65]/20" i] { border-color: hsl(var(--ri-emerald) / 0.2); }
+[class*="border-[#187b65]/25" i] { border-color: hsl(var(--ri-emerald) / 0.25); }
+[class*="border-[#187b65]/30" i] { border-color: hsl(var(--ri-emerald) / 0.3); }
+[class*="border-[#187b65]/40" i] { border-color: hsl(var(--ri-emerald) / 0.4); }
+[class*="border-[#187b65]/50" i] { border-color: hsl(var(--ri-emerald) / 0.5); }
+[class*="border-[#187b65]/60" i] { border-color: hsl(var(--ri-emerald) / 0.6); }
+
+/* --- 1d) Forest & navy surfaces (any case) --- */
+[class*="bg-[#102b2a]" i]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--ri-forest)); }
+[class*=":bg-[#102b2a]" i]:hover { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#102b2a]/10" i] { background-color: hsl(var(--ri-charcoal) / 0.1); }
+[class*="bg-[#102b2a]/30" i] { background-color: hsl(var(--ri-charcoal) / 0.3); }
+[class*="bg-[#102b2a]/40" i] { background-color: hsl(var(--ri-charcoal) / 0.4); }
+[class*="bg-[#102b2a]/50" i] { background-color: hsl(var(--ri-charcoal) / 0.5); }
+[class*="bg-[#102b2a]/60" i] { background-color: hsl(var(--ri-charcoal) / 0.6); }
+[class*="bg-[#102b2a]/70" i] { background-color: hsl(var(--ri-charcoal) / 0.7); }
+[class*="bg-[#102b2a]/80" i] { background-color: hsl(var(--ri-charcoal) / 0.8); }
+[class*="bg-[#102b2a]/85" i] { background-color: hsl(var(--ri-charcoal) / 0.85); }
+[class*="border-[#102b2a]" i]:not([class*="/"]):not([class*=":border-"]) { border-color: hsl(var(--ri-forest)); }
+[class*="border-[#102b2a]/20" i] { border-color: hsl(var(--ri-charcoal) / 0.2); }
+[class*="border-[#102b2a]/40" i] { border-color: hsl(var(--ri-charcoal) / 0.4); }
+
+[class*="bg-[#125c4e]" i]:not([class*=":bg-"]) { background-color: hsl(var(--ri-forest)); }
+[class*=":bg-[#125c4e]" i]:hover, [class*=":bg-[#125c4c]" i]:hover { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#1fa184]" i], [class*="bg-[#116553]" i], [class*="bg-[#126a56]" i], [class*="bg-[#176b52]" i], [class*="bg-[#1e9678]" i] { background-color: hsl(var(--ri-emerald)); }
+[class*="bg-[#0f5c3f]" i] { background-color: hsl(var(--ri-forest)); }
+
+/* Dark panel tints (any case) */
+[class*="bg-[#051511]" i]:not([class*="/"]), [class*="bg-[#0a2b1e]" i]:not([class*="/"]),
+[class*="bg-[#0a3020]" i]:not([class*="/"]), [class*="bg-[#0c3b24]" i]:not([class*="/"]),
+[class*="bg-[#06251b]" i], [class*="bg-[#041a10]" i], [class*="bg-[#0d211f]" i],
+[class*="bg-[#0d201f]" i], [class*="bg-[#0c2a22]" i], [class*="bg-[#0a2e25]" i],
+[class*="bg-[#0f1f16]" i], [class*="bg-[#172b28]" i], [class*="bg-[#0a3d31]" i] { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#051511]/60" i] { background-color: hsl(var(--ri-forest) / 0.6); }
+[class*="bg-[#0a2b1e]/40" i] { background-color: hsl(var(--ri-forest) / 0.4); }
+[class*="bg-[#0a2b1e]/50" i] { background-color: hsl(var(--ri-forest) / 0.5); }
+[class*="bg-[#0a2b1e]/60" i] { background-color: hsl(var(--ri-forest) / 0.6); }
+[class*="bg-[#0a3020]/50" i] { background-color: hsl(var(--ri-forest) / 0.5); }
+[class*="bg-[#0a3020]/70" i] { background-color: hsl(var(--ri-forest) / 0.7); }
+[class*="bg-[#032015]/60" i] { background-color: hsl(var(--ri-forest) / 0.6); }
+
+/* --- 1e) Light surfaces (any case) --- */
+[class*="bg-[#f4f7f5]" i]:not([class*=":bg-"]):not([class*="/"]),
+[class*="bg-[#f6f9f8]" i], [class*="bg-[#f6f8f7]" i]:not([class*="/"]),
+[class*="bg-[#eef4f0]" i]:not([class*=":bg-"]):not([class*="/"]),
+[class*="bg-[#eef6f2]" i], [class*="bg-[#fafcfb]" i], [class*="bg-[#f7faf8]" i],
+[class*="bg-[#f8faf9]" i], [class*="bg-[#faf8f4]" i], [class*="bg-[#f3f7f5]" i],
+[class*="bg-[#eef5f2]" i], [class*="bg-[#eef4f1]" i], [class*="bg-[#e8f2ec]" i],
+[class*="bg-[#e7f6ee]" i], [class*="bg-[#e6efe9]" i], [class*="bg-[#f8f5ec]" i] { background-color: hsl(var(--ri-ivory)); }
+[class*="bg-[#f4f7f5]/50" i], [class*="bg-[#f6f8f7]/60" i], [class*="bg-[#eef4f0]/60" i] { background-color: hsl(var(--ri-ivory) / 0.6); }
+
+/* --- 1f) Mint accents (any case) --- */
+[class*="bg-[#54d9ae]" i]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--li-mint)); }
+[class*=":bg-[#54d9ae]" i]:hover { background-color: hsl(var(--li-mint)); }
+[class*="bg-[#54d9ae]/10" i] { background-color: hsl(var(--li-mint) / 0.1); }
+[class*="bg-[#54d9ae]/15" i] { background-color: hsl(var(--li-mint) / 0.15); }
+[class*="border-[#54d9ae]" i]:not([class*=":border-"]):not([class*="/"]) { border-color: hsl(var(--li-mint)); }
+[class*="border-[#54d9ae]/10" i] { border-color: hsl(var(--li-mint) / 0.1); }
+[class*="border-[#54d9ae]/15" i] { border-color: hsl(var(--li-mint) / 0.15); }
+[class*="border-[#54d9ae]/30" i] { border-color: hsl(var(--li-mint) / 0.3); }
+[class*="border-[#54d9ae]/40" i] { border-color: hsl(var(--li-mint) / 0.4); }
+[class*="border-[#54d9ae]/50" i] { border-color: hsl(var(--li-mint) / 0.5); }
+[class*="border-[#54d9ae]/60" i] { border-color: hsl(var(--li-mint) / 0.6); }
+[class*="border-[#d9e5e0]" i] { border-color: hsl(var(--si-line)); }
+
+/* --- 1g) Amber surfaces (any case) --- */
+[class*="bg-[#e8b66a]" i]:not([class*="/"]), [class*="bg-[#d99636]" i], [class*="bg-[#e2b04a]" i] { background-color: hsl(var(--li-amber)); }
+[class*="bg-[#e8b66a]/10" i] { background-color: hsl(var(--li-amber) / 0.1); }
+[class*="bg-[#fcd34d]" i] { background-color: hsl(var(--ri-amber)); }
+[class*="bg-[#b45309]" i] { background-color: hsl(var(--ri-amber-ink)); }
+[class*="border-[#e8b66a]" i]:not([class*="/"]) { border-color: hsl(var(--li-amber)); }
+[class*="border-[#e8b66a]/40" i] { border-color: hsl(var(--li-amber) / 0.4); }
+[class*="border-[#f2d48a]/25" i] { border-color: hsl(var(--li-amber) / 0.25); }
+[class*="border-[#f2d48a]/40" i] { border-color: hsl(var(--li-amber) / 0.4); }
+[class*="border-[#b45309]" i] { border-color: hsl(var(--ri-amber-ink)); }
+[class*="bg-[#64736e]" i] { background-color: hsl(156 12% 30%); }
+
+/* --- 2) Raw Tailwind palette → tokens --- */
+/* Slate → brand ink & line scale (matches the admin remap values) */
+.text-slate-300 { color: hsl(156 12% 38%); }
+.text-slate-400 { color: hsl(156 12% 33%); }
+.text-slate-500 { color: hsl(156 12% 30%); }
+.text-slate-600 { color: hsl(165 30% 16%); }
+.text-slate-700 { color: hsl(var(--ri-charcoal)); }
+.hover\:text-slate-600:hover { color: hsl(165 30% 16%); }
+.hover\:text-slate-700:hover { color: hsl(var(--ri-charcoal)); }
+.border-slate-100 { border-color: hsl(var(--si-line)); }
+.border-slate-200 { border-color: hsl(var(--si-line)); }
+.border-slate-200\/70 { border-color: hsl(var(--si-line) / 0.7); }
+.border-slate-200\/80 { border-color: hsl(var(--si-line) / 0.8); }
+.border-slate-300 { border-color: hsl(var(--si-line)); }
+.bg-slate-50 { background-color: hsl(var(--ri-ivory)); }
+.bg-slate-100 { background-color: hsl(var(--li-pale)); }
+.bg-slate-200 { background-color: hsl(var(--li-steel)); }
+
+/* Red → the unified red token */
+.text-red-600 { color: hsl(5 55% 42%); }
+.text-red-700 { color: hsl(5 60% 35%); }
+.text-red-300 { color: hsl(5 80% 68%); }
+.bg-red-50 { background-color: hsl(5 51% 51% / 0.08); }
+.bg-red-100 { background-color: hsl(5 51% 51% / 0.12); }
+.border-red-200 { border-color: hsl(5 51% 51% / 0.3); }
+.border-red-300 { border-color: hsl(5 51% 51% / 0.3); }
+.border-red-400 { border-color: hsl(5 51% 51% / 0.5); }
+.border-red-400\/40 { border-color: hsl(5 51% 51% / 0.4); }
+.bg-red-500\/10 { background-color: hsl(5 51% 51% / 0.1); }
+
+/* Amber scale (400/500 already unified above) */
+.text-amber-600 { color: hsl(var(--ri-amber-ink)); }
+.text-amber-700 { color: hsl(var(--ri-amber-ink)); }
+.text-amber-800 { color: hsl(var(--ri-amber-ink)); }
+.text-amber-300 { color: hsl(var(--li-amber)); }
+.bg-amber-50 { background-color: hsl(var(--ri-amber) / 0.12); }
+.bg-amber-100 { background-color: hsl(var(--ri-amber) / 0.12); }
+.bg-amber-400\/10 { background-color: hsl(var(--ri-amber) / 0.1); }
+.border-amber-400\/30 { border-color: hsl(var(--ri-amber) / 0.3); }
+.border-amber-400\/40 { border-color: hsl(var(--ri-amber) / 0.4); }
+.border-amber-100 { border-color: hsl(var(--ri-amber) / 0.35); }
+.border-amber-200 { border-color: hsl(var(--ri-amber) / 0.35); }
+.border-amber-300 { border-color: hsl(var(--ri-amber) / 0.35); }
+
+/* Emerald scale (500/600 already unified) */
+.text-emerald-50 { color: hsl(var(--ri-mint)); }
+.text-emerald-100 { color: hsl(var(--ri-mint)); }
+.text-emerald-100\/90 { color: hsl(var(--ri-mint) / 0.9); }
+.text-emerald-100\/80 { color: hsl(var(--ri-mint) / 0.8); }
+.text-emerald-100\/70 { color: hsl(var(--ri-mint) / 0.7); }
+.text-emerald-100\/60 { color: hsl(var(--ri-mint) / 0.6); }
+.text-emerald-100\/50 { color: hsl(var(--ri-mint) / 0.5); }
+.text-emerald-100\/40 { color: hsl(var(--ri-mint) / 0.4); }
+.text-emerald-100\/30 { color: hsl(var(--ri-mint) / 0.3); }
+.text-emerald-700 { color: hsl(var(--ri-forest)); }
+.bg-emerald-50 { background-color: hsl(var(--ri-emerald) / 0.1); }
+.bg-emerald-100 { background-color: hsl(var(--ri-emerald) / 0.1); }
+.border-emerald-200 { border-color: hsl(var(--ri-emerald) / 0.35); }
+.border-emerald-300 { border-color: hsl(var(--ri-emerald) / 0.35); }
+
+/* Blue & sky → the single blue token */
+.text-sky-600 { color: hsl(var(--si-blue)); }
+.text-sky-700 { color: hsl(201 60% 32%); }
+.text-sky-800 { color: hsl(201 60% 32%); }
+.text-sky-900 { color: hsl(201 60% 32%); }
+.text-sky-300 { color: hsl(200 80% 70%); }
+.text-blue-700 { color: hsl(201 60% 32%); }
+.text-blue-800 { color: hsl(201 60% 32%); }
+.bg-sky-50 { background-color: hsl(var(--si-blue) / 0.1); }
+.bg-sky-100 { background-color: hsl(var(--si-blue) / 0.1); }
+.bg-sky-500 { background-color: hsl(var(--si-blue)); }
+.bg-blue-50 { background-color: hsl(var(--si-blue) / 0.1); }
+.bg-blue-100 { background-color: hsl(var(--si-blue) / 0.1); }
+.bg-cyan-500 { background-color: hsl(var(--si-blue)); }
+.border-sky-200 { border-color: hsl(var(--si-blue) / 0.35); }
+.border-sky-400 { border-color: hsl(var(--si-blue) / 0.5); }
+.border-blue-200 { border-color: hsl(var(--si-blue) / 0.35); }
+.border-blue-300 { border-color: hsl(var(--si-blue) / 0.35); }
+
+/* Orange → the master amber */
+.text-orange-300 { color: hsl(var(--li-amber)); }
+.text-orange-600 { color: hsl(var(--ri-amber-ink)); }
+.text-orange-700 { color: hsl(var(--ri-amber-ink)); }
+.text-orange-800 { color: hsl(var(--ri-amber-ink)); }
+.bg-orange-100 { background-color: hsl(var(--ri-amber) / 0.12); }
+.bg-orange-400 { background-color: hsl(var(--ri-amber)); }
+.bg-orange-900 { background-color: hsl(var(--li-amber)); }
+.border-orange-700 { border-color: hsl(var(--ri-amber-ink)); }
+
+/* Indigo / violet / purple → the violet accent */
+.text-indigo-700 { color: hsl(254 55% 38%); }
+.text-indigo-800 { color: hsl(254 55% 38%); }
+.text-violet-700 { color: hsl(254 55% 38%); }
+.text-purple-700 { color: hsl(254 55% 38%); }
+.bg-indigo-100 { background-color: hsl(var(--cine-violet) / 0.15); }
+.bg-violet-50 { background-color: hsl(var(--cine-violet) / 0.15); }
+.bg-purple-50 { background-color: hsl(var(--cine-violet) / 0.15); }
+.border-violet-200 { border-color: hsl(var(--cine-violet) / 0.35); }
+.border-purple-200 { border-color: hsl(var(--cine-violet) / 0.35); }
+.border-indigo-300 { border-color: hsl(var(--cine-violet) / 0.35); }
+
+/* Yellow strays → amber */
+.text-yellow-700 { color: hsl(var(--ri-amber-ink)); }
+.bg-yellow-100 { background-color: hsl(var(--ri-amber) / 0.12); }

@@ -102,3 +102,27 @@ Test: request submitted for **Moose Jaw, SK** — a city with zero registered co
 - **Automated:** nationwide intake (all cities), sourcing-task creation, verified-network search & deterministic candidate ranking (subscriber priority 40 · performance 30 · equipment 15 · readiness 15), outreach waves via approved email channel with fee disclosure, response recording (LeadOffer), wave expiry → next wave, final escalation alert to dispatch, per-job dispatch contact log.
 - **Human dispatch:** sourcing providers in markets with zero network coverage (the admin alert → recruit or manually assign in /admin/national), final appointment confirmation calls to the customer, and any manual assignment (always overrides automation).
 - **Unimplemented:** automated outbound calling/SMS outreach to newly sourced (non-registered) businesses — candidate identification beyond the existing verified Partner/ProviderRecruit records would require an authorized business-data source, which is not yet connected; SMS outreach remains deferred per the owner's standing decision.
+
+---
+
+# Addendum — Design Audit & Command 5 Unification (2026-10-26, design pass)
+
+Full-frontend audit of colour and typography consistency (123 pages, production build).
+
+## Audit findings
+
+1. **Case-sensitivity gap in the harmonization layer.** The Command 3/4 CSS remaps only matched uppercase legacy hexes (`#187B65`); lowercase spellings (`bg-[#187b65]`, `text-[#102b2a]`, `border-[#54D9AE]/40`, …) rendered as the raw legacy colour instead of the token. Thousands of class usages were affected.
+2. **Raw Tailwind palette classes on customer pages.** ~4,700 off-token usages: slate text/border/background scale (largest), red status scale, amber mid-tones (600–800, 50/100 tints), emerald-100 light text, plus small counts of sky/blue/orange/indigo/violet/purple/yellow/cyan.
+3. **Two fidelity bugs in the previous layer:** `bg-amber-400/10` and `border-amber-400/30-40` were being solidified (the substring rules matched the alpha variants and painted them opaque).
+4. **Typography.** Body/heading font tokens are applied app-wide; `font-mono` resolved to the system monospace stack on 43 usages instead of the brand IBM Plex Mono; `font-serif` survives only in the intentionally newspaper-styled Facebook Newspaper component.
+
+## Fix (Command 5 — pure presentation, no logic touched)
+
+- **Any-case legacy hexes → tokens:** case-insensitive attribute selectors now cover both `#187B65` and `#187b65` spellings, with per-value alpha fidelity for tint/border variants (e.g. `bg-[#187b65]/15` → emerald at exactly 0.15 opacity). Covers ink, forest, emerald, mint, amber, dark-panel and light-surface families.
+- **Raw palette → tokens:** slate → brand ink/line scale (hierarchy preserved: 300 lightest → 700 charcoal); red → unified red token; amber 600–800 → dark amber ink, 300 → amber accent, 50/100 → amber tint; emerald-50/100 (light text on dark panels) → soft mint with per-alpha fidelity; sky/blue/cyan → the single blue token; orange/yellow → the master amber; indigo/violet/purple → the violet accent.
+- **Alpha-fidelity fixes:** `bg-amber-400/10`, `border-amber-400/30-40`, `bg-red-500/10`, `border-red-400/40` now render as true tints, not solid fills.
+- **Typography unification:** `font-mono` now resolves to IBM Plex Mono (brand technical typeface) app-wide.
+
+## Verification
+
+Production build passes with zero errors; all 123 pages compile. Bright mint/cyan accents on cinematic dark surfaces remain intentionally unchanged per the Command 4 standard.
