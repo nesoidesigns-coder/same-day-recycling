@@ -17,7 +17,7 @@
     --secondary: 150 23% 95%;    /* si-bg2 */
     --secondary-foreground: 165 30% 13%;
     --muted: 150 23% 95%;
-    --muted-foreground: 156 9% 42%;  /* si-muted */
+    --muted-foreground: 156 12% 27%;  /* si-muted */
     --accent: 150 23% 95%;
     --accent-foreground: 165 30% 13%;
     --destructive: 0 84.2% 60.2%;
@@ -66,7 +66,7 @@
     --li-mint: 166 72% 47%;      /* si-mint */
     --li-graphite: 165 30% 13%;  /* si-ink */
     --li-carbon: 165 30% 13%;
-    --li-slate: 156 9% 42%;      /* si-muted */
+    --li-slate: 156 12% 27%;      /* si-muted */
     --li-steel: 150 21% 89%;     /* si-line */
     --li-pale: 150 23% 95%;      /* si-bg2 */
     --li-amber: 35 68% 53%;
@@ -81,7 +81,7 @@
     --si-mint: 166 72% 47%;
     --si-mint2: 165 56% 71%;
     --si-ink: 165 30% 13%;
-    --si-muted: 156 10% 35%;
+    --si-muted: 156 12% 27%;
     --si-line: 150 21% 89%;
     --si-amber: 39 100% 48%;     /* harmonized with ri-amber */
     --si-blue: 200 43% 54%;
@@ -104,7 +104,7 @@
     --ri-ivory: 80 19% 97%;      /* #F7F8F5 warm ivory */
     --ri-amber: 39 100% 48%;     /* #F6A000 premium amber — conversion CTA */
     --ri-charcoal: 170 27% 13%;  /* #182A27 main text */
-    --ri-slate: 159 9% 36%;      /* #57665F supporting text */
+    --ri-slate: 159 10% 27%;     /* #4C5B54 supporting text */
     --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
     --ri-amber-ink: 35 100% 28%;    /* #8F5D00 — dark amber for text on light tints (AA) */
   /* Recycling OS master intelligence palette (midnight system) */
@@ -206,7 +206,7 @@
   }
 
   .input {
-    @apply w-full rounded-xl border border-si-line bg-white px-4 py-3 text-si-ink placeholder:text-si-muted/60 focus:border-si-mint focus:outline-none focus:ring-2 focus:ring-si-mint/30 transition-colors;
+    @apply w-full rounded-xl border border-si-line bg-white px-4 py-3 text-si-ink placeholder:text-si-muted/80 focus:border-si-mint focus:outline-none focus:ring-2 focus:ring-si-mint/30 transition-colors;
   }
 }
 
