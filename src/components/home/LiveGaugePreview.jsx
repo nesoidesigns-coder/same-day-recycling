@@ -75,33 +75,32 @@ export default function LiveGaugePreview() {
   return (
     <section
       aria-label="Live intelligence preview"
-      className="surface-dark overflow-hidden p-5 md:p-8"
-      style={{ background: "linear-gradient(135deg, hsl(var(--os-core)), hsl(var(--os-surface)))" }}
+      className="surface overflow-hidden p-5 md:p-8"
     >
       <div className="grid items-center gap-6 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div>
-          <div className="data-label text-cine-cyan">Recycling OS · Live Intelligence</div>
-          <h2 className="mt-1.5 text-xl font-bold tracking-tight text-cine-ink md:text-2xl">
+          <div className="data-label text-ri-emerald-ink">Recycling OS · Live Intelligence</div>
+          <h2 className="mt-1.5 text-xl font-bold tracking-tight text-si-ink md:text-2xl">
             The Canadian Service Radar — at a glance
           </h2>
 
           {/* One verified metric, honestly labelled */}
           {total == null ? (
-            <p className="mt-2 flex items-center gap-2 text-sm text-cine-muted">
+            <p className="mt-2 flex items-center gap-2 text-sm text-si-muted">
               {loading ? "Measuring recent service records…" : "Live intelligence is unavailable right now — check back shortly."}
             </p>
           ) : total === 0 ? (
-            <p className="mt-2 text-sm leading-relaxed text-cine-muted">
+            <p className="mt-2 text-sm leading-relaxed text-si-muted">
               Awaiting data — no service records in the last 30 days yet. Collection continues; nothing is estimated or animated.
             </p>
           ) : (
             <>
-              <p className="mt-2 text-sm leading-relaxed text-cine-muted">
-                <span className="metric text-xl text-cine-ink">{total}</span>{" "}
+              <p className="mt-2 text-sm leading-relaxed text-si-muted">
+                <span className="metric text-xl text-si-ink">{total}</span>{" "}
                 observed service record{total === 1 ? "" : "s"} in the last 30 days — real requests, inquiries and bookings, never estimates.
               </p>
               {bookings > 0 && (
-                <p className="mt-1 flex items-center gap-1.5 text-sm text-cine-green">
+                <p className="mt-1 flex items-center gap-1.5 text-sm text-ri-emerald-ink">
                   <MapPin className="h-3.5 w-3.5" /> {bookings} confirmed booking{bookings === 1 ? "" : "s"} included
                 </p>
               )}
@@ -111,11 +110,11 @@ export default function LiveGaugePreview() {
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
               to="/live"
-              className="inline-flex items-center gap-1.5 rounded-full bg-cine-cyan px-5 py-2.5 text-sm font-bold text-[#081421] transition-colors hover:brightness-110"
+              className="inline-flex items-center gap-1.5 rounded-full bg-ri-forest px-5 py-2.5 text-sm font-bold text-ri-ivory transition-colors hover:bg-ri-emerald-ink"
             >
               Explore Live Intelligence <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/coverage" className="text-sm font-bold text-cine-ink underline-offset-4 hover:underline">
+            <Link to="/coverage" className="text-sm font-bold text-ri-forest underline-offset-4 hover:underline">
               Verified coverage
             </Link>
           </div>
@@ -123,6 +122,7 @@ export default function LiveGaugePreview() {
 
         <OSIntelligenceGauge
           size="standard"
+          appearance="light"
           loading={loading}
           error={error}
           center={{
