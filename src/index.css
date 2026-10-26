@@ -723,6 +723,23 @@ h1, h2, h3, h4, p, a, span, li, button {
 [class*="bg-[#f6f8f7]"] { background-color: hsl(var(--ri-ivory)); }
 [class*=":bg-[#f4f7f5]"]:hover { background-color: hsl(var(--ri-mint) / 0.4); }
 
+/* Off-family yellow/orange/gold → the single master amber (Step 4):
+   backgrounds use ri-amber, hovers deepen to li-amber, accents follow. */
+[class*="bg-amber-400"]:not([class*=":bg-"]),
+[class*="bg-amber-500"]:not([class*=":bg-"]),
+[class*="bg-yellow-400"]:not([class*=":bg-"]),
+[class*="bg-yellow-500"]:not([class*=":bg-"]),
+.bg-gold { background-color: hsl(var(--ri-amber)); }
+[class*=":bg-amber-400"]:hover, [class*=":bg-amber-500"]:hover,
+[class*=":bg-yellow-400"]:hover, [class*=":bg-yellow-500"]:hover { background-color: hsl(var(--li-amber)); }
+[class*="text-amber-400"]:not([class*=":text-"]),
+[class*="text-amber-500"]:not([class*=":text-"]),
+[class*="text-yellow-400"]:not([class*=":text-"]),
+[class*="text-yellow-500"]:not([class*=":text-"]),
+.text-gold { color: hsl(var(--li-amber)); }
+[class*="border-amber-400"]:not([class*=":border-"]),
+[class*="border-amber-500"]:not([class*=":border-"]) { border-color: hsl(var(--ri-amber)); }
+
 /* Tailwind-palette emeralds on consumer pages → tokens */
 .text-emerald-500 { color: hsl(var(--ri-emerald)); }
 .text-emerald-600 { color: hsl(var(--ri-forest)); }

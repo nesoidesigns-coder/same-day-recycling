@@ -40,6 +40,10 @@ export default function LiveGaugePreview() {
     (s, r) => s + (r.demand_types?.confirmed_booking || 0),
     0
   );
+  const inquiries = (data?.rows || []).reduce(
+    (s, r) => s + (r.demand_types?.platform_inquiry || 0),
+    0
+  );
 
   const layers = [
     { type: "dial", ticks: 24, tickMajorEvery: 6 },
@@ -97,7 +101,7 @@ export default function LiveGaugePreview() {
             <>
               <p className="mt-2 text-sm leading-relaxed text-si-muted">
                 <span className="metric text-xl text-si-ink">{total}</span>{" "}
-                observed service record{total === 1 ? "" : "s"} in the last 30 days — real requests, inquiries and bookings, never estimates.
+                intelligence records in the last 30 days — {inquiries} customer inquiries and {bookings} confirmed booking{bookings === 1 ? "" : "s"}; the rest are labelled evidence items such as keyword-level search counts. Unique records — never presented as individual customers.
               </p>
               {bookings > 0 && (
                 <p className="mt-1 flex items-center gap-1.5 text-sm text-ri-emerald-ink">
