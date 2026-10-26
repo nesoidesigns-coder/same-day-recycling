@@ -6,7 +6,7 @@ import { Menu, X, Recycle } from "lucide-react";
 // Advanced intelligence (Recycling OS LIVE) is reachable from here without
 // cluttering the main nav with every platform feature.
 const NAV = [
-  { label: "Services", to: "#services" },
+  { label: "Services", to: "/#services" },
   { label: "Pricing", to: "/pricing" },
   { label: "Locations", to: "/coverage" },
   { label: "LIVE Intelligence", to: "/live" },
@@ -31,9 +31,9 @@ export default function SiHeader() {
         </Link>
         <div className="hidden items-center gap-1 xl:flex">
           {NAV.map((n) => (
-            <a key={n.label} href={n.to} className="rounded-full px-3 py-2 text-sm font-semibold text-si-muted transition-colors hover:bg-ri-mint/50 hover:text-si-forest">
+            <Link key={n.label} to={n.to} className="rounded-full px-3 py-2 text-sm font-semibold text-si-muted transition-colors hover:bg-ri-mint/50 hover:text-si-forest">
               {n.label}
-            </a>
+            </Link>
           ))}
           <Link
             to="/request-service"
@@ -49,9 +49,9 @@ export default function SiHeader() {
       {open && (
         <div className="menu-drop flex flex-col gap-1 border-t border-si-line bg-white px-4 py-3 xl:hidden">
           {NAV.map((n) => (
-            <a key={n.label} href={n.to} onClick={() => setOpen(false)} className="rounded-lg px-2 py-2.5 text-sm font-bold text-si-ink hover:bg-si-bg2">
+            <Link key={n.label} to={n.to} onClick={() => setOpen(false)} className="rounded-lg px-2 py-2.5 text-sm font-bold text-si-ink hover:bg-si-bg2">
               {n.label}
-            </a>
+            </Link>
           ))}
           <Link to="/request-service" onClick={() => setOpen(false)} className="mt-1 rounded-full bg-ri-amber px-5 py-3 text-center text-sm font-bold text-ri-charcoal">
             Get a Free Quote

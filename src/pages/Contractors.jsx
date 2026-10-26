@@ -115,7 +115,7 @@ export default function Contractors() {
             <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
               Your truck. Our machine. Your city fills up.
             </h1>
-            <p className="mt-6 text-lg text-slate-300 max-w-lg leading-relaxed">
+            <p className="mt-6 text-lg text-white/85 max-w-lg leading-relaxed">
               You didn't get into hauling to answer phones, chase quotes, and beg Google for attention.
               That's our job. Same Day Recycling is Canada's booking engine for junk and recycling
               contractors — we build the pages, run the ads, answer every call and message 24/7 in five
@@ -157,7 +157,7 @@ export default function Contractors() {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-sm text-slate-500 max-w-2xl mx-auto">
+          <p className="mt-8 text-sm text-slate-600 max-w-2xl mx-auto">
             Network access provides opportunities, not guarantees: we do not promise a number of jobs, specific earnings,
             exclusive territories, or any particular operational result. All applicable fees are disclosed in writing before
             you accept any agreement.
@@ -223,7 +223,7 @@ export default function Contractors() {
                 </div>
               ))}
             </div>
-            <p className="mt-5 text-sm text-slate-500 text-center">Every service page, built and maintained for your city.</p>
+            <p className="mt-5 text-sm text-slate-600 text-center">Every service page, built and maintained for your city.</p>
           </div>
         </div>
       </section>
@@ -242,9 +242,9 @@ export default function Contractors() {
                 key={t.name}
                 className={`rounded-3xl p-8 border ${t.featured ? "border-[#187B65] bg-[#f4f7f5] shadow-lg" : "border-slate-100 bg-white shadow-sm"}`}
               >
-                <div className="text-sm font-bold uppercase tracking-wide text-slate-500">{t.name}</div>
+                <div className="text-sm font-bold uppercase tracking-wide text-slate-600">{t.name}</div>
                 <div className="mt-3 text-4xl font-bold text-[#102B2A]">
-                  {t.price}<span className="text-lg font-semibold text-slate-500">/mo</span>
+                  {t.price}<span className="text-lg font-semibold text-slate-600">/mo</span>
                 </div>
                 <p className="mt-3 text-sm text-slate-600">{t.note}</p>
               </div>

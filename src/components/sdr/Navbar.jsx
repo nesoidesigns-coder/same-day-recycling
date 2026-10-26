@@ -33,7 +33,7 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link to="/#book" className="rounded-full bg-ri-amber text-ri-charcoal font-bold px-5 py-2.5 text-sm shadow-sm hover:brightness-95 transition-all">
+          <Link to="/request-service" className="rounded-full bg-ri-amber text-ri-charcoal font-bold px-5 py-2.5 text-sm shadow-sm hover:brightness-95 transition-all">
             Get a Free Quote
           </Link>
         </div>
@@ -51,7 +51,7 @@ export default function Navbar() {
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col">
             <span className="px-1 pb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ri-slate">Menu</span>
             {primaryLinks.map((l) => {
-              const active = l.to === pathname;
+              const active = l.to.split("#")[0] === pathname;
               return (
                 <Link
                   key={l.to}
@@ -67,7 +67,7 @@ export default function Navbar() {
               );
             })}
             <Link
-              to="/#book"
+              to="/request-service"
               onClick={() => setOpen(false)}
               className="mt-3 flex min-h-[52px] items-center justify-center rounded-full bg-ri-amber px-5 py-3.5 text-sm font-bold text-ri-charcoal shadow-sm transition-all hover:brightness-95"
             >
