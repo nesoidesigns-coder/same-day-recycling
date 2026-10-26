@@ -18,9 +18,10 @@ const AGENT_NAME = "receptionist";
 // the old [Current page context] / [Current booking-form context] blocks.
 const CONTEXT_MARKER = "[REX INTERNAL CONTEXT]";
 
+// Applies to EVERY role: the internal context block is stripped from customer
+// messages and from anything Rex echoes back, so metadata can never render.
 function customerVisibleContent(message) {
   const content = message?.content || "";
-  if (message?.role !== "user") return content;
   const cuts = [content.indexOf(CONTEXT_MARKER), content.search(/\n+\[Current (page|booking-form) context\]/)]
     .filter((i) => i >= 0);
   cuts.push(content.length);
@@ -65,21 +66,28 @@ export default function ChatPanel({ onClose, preset }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
 
+  const [startFailed, setStartFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setStarting(true);
+      setStartFailed(false);
       try {
         const conv = await base44.agents.createConversation({ agent_name: AGENT_NAME, metadata: { name: "Website visitor" } });
         if (cancelled) return;
         setConversation(conv);
         setMessages(conv.messages || []);
+      } catch {
+        // A failed start must never leave the visitor on a silent spinner.
+        if (!cancelled) setStartFailed(true);
       } finally {
         if (!cancelled) setStarting(false);
       }
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [attempt]);
 
   // Contextual assist: when a page opens Rex with a preset question, Rex
   // answers it first (only on a fresh conversation, and only once).
@@ -201,6 +209,14 @@ export default function ChatPanel({ onClose, preset }) {
         )}
         {messages.length === 0 && starting && (
           <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 text-[#187B65] animate-spin" /></div>
+        )}
+        {startFailed && !starting && (
+          <div className="rounded-2xl bg-[#f4f7f5] p-3 text-sm text-slate-700">
+            I couldn't connect just now. Try again, or call or text (604) 849-1745 and the team will help right away.
+            <button onClick={() => setAttempt((a) => a + 1)} className="mt-2 block rounded-full bg-[#187B65] px-4 py-2 text-xs font-bold text-white">
+              Try again
+            </button>
+          </div>
         )}
         {messages.map((m, i) => (
           <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
