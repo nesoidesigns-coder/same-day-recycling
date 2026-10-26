@@ -216,6 +216,11 @@
   h1, h2, h3 {
     font-family: var(--font-heading);
     letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  h4, p {
+    text-wrap: pretty;
   }
 
   .input {
@@ -447,11 +452,11 @@ h1, h2, h3, h4, p, a, span, li, button {
 @keyframes gauge-pulse-glow {
   0%, 100% {
     opacity: 1;
-    filter: drop-shadow(0 0 2px rgba(24, 123, 101, 0.35));
+    filter: drop-shadow(0 0 2px rgba(24, 123, 101, 0.3));
   }
   50% {
-    opacity: 0.72;
-    filter: drop-shadow(0 0 10px rgba(64, 240, 180, 0.85));
+    opacity: 0.78;
+    filter: drop-shadow(0 0 7px rgba(64, 240, 180, 0.5));
   }
 }
 

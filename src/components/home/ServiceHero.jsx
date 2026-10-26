@@ -93,7 +93,7 @@ export default function ServiceHero() {
             <motion.div variants={fadeUp} className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 onClick={startService}
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-na-teal px-7 py-3.5 text-sm font-bold text-na-navy shadow-md transition-all hover:brightness-110"
+                className="btn-float inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-ri-amber px-7 py-3.5 text-sm font-bold text-ri-charcoal transition-all hover:brightness-105"
               >
                 Get My Pickup Quote <ArrowRight className="h-4 w-4" />
               </button>
