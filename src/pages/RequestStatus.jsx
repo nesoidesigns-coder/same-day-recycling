@@ -81,7 +81,7 @@ export default function RequestStatus() {
     ? (Number(result.approved_quote_amount) > 0 ? "Price approved by you" : "Estimate — the final price is confirmed on arrival")
     : (APPROVAL_TEXT[result?.quote_status] || "");
   const providerAccepted = Boolean(
-    (result?.kind === "booking"
+    result && (result.kind === "booking"
       ? ["accepted", "scheduled", "completed", "paid"].includes(result.assignment_status)
       : ["contractor_accepted", "pickup_scheduled", "job_completed"].includes(result.dispatch_status))
   );
