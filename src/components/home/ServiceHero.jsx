@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Armchair, Building2, Home, Recycle, Refrigerator, Trash2 } from "lucide-react";
+import { ArrowRight, Armchair, Building2, Clock, Home, Phone, Recycle, Refrigerator, Trash2 } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { setRexContext } from "@/lib/rexSession";
 
@@ -35,15 +35,15 @@ export default function ServiceHero() {
         className="pointer-events-none absolute -right-32 -top-24 h-80 w-80 rounded-full"
         style={{ background: "radial-gradient(circle, hsl(var(--ri-emerald) / 0.12), transparent 70%)" }}
       />
-      <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-4 py-12 md:px-8 md:py-20 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="mx-auto grid max-w-[1280px] items-center gap-8 px-4 py-8 md:px-8 md:py-20 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div>
-          <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-ri-charcoal md:text-[56px]">
-            Clear your space.
+          <h1 className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[56px]">
+            Same-day junk removal.
             <br />
-            <span className="text-ri-forest">We'll handle the rest.</span>
+            <span className="text-ri-forest">Priced before we book.</span>
           </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-ri-slate md:text-lg">
-            Smart junk removal, furniture pickup, appliance recycling, and property cleanouts across Canada. Explore your options, get clear pricing, and request local service.
+          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ri-slate md:mt-5 md:text-lg">
+            One couch or a full cleanout — clear pricing up front, and nothing leaves without your approval.
           </p>
 
           {/* Natural-language service selector */}
@@ -79,7 +79,17 @@ export default function ServiceHero() {
             </div>
           </div>
 
-          <Link to="/services" className="mt-5 inline-flex text-sm font-bold text-ri-forest underline-offset-4 hover:underline">
+          {/* Trust proof at the decision point — promises and phone, next to the quote action */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-ri-mint px-3 py-1.5 text-xs font-bold text-ri-forest">
+              <Clock className="h-3.5 w-3.5" /> Book before noon for same-day pickup
+            </span>
+            <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest transition-colors hover:border-ri-emerald">
+              <Phone className="h-3.5 w-3.5" /> (604) 849-1745
+            </a>
+          </div>
+
+          <Link to="/services" className="mt-4 inline-flex text-sm font-bold text-ri-forest underline-offset-4 hover:underline">
             Explore Services <ArrowRight className="ml-1 inline h-4 w-4" />
           </Link>
         </div>
@@ -90,7 +100,7 @@ export default function ServiceHero() {
             <Image
               src="https://media.base44.com/images/public/6ac93990cde830898b8dbc65/27e2d989f_generated_image.png"
               alt="A Same Day Recycling crew loading a couch for donation and recycling"
-              className="w-full aspect-[4/3]"
+              className="w-full aspect-[16/10] sm:aspect-[4/3]"
               fittingType="fill"
             />
           </div>
