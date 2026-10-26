@@ -35,7 +35,7 @@ export default function GaugeNodeDetail({ industry, subdivision, topic, onClose 
   const openRex = () => {
     window.dispatchEvent(new CustomEvent("rex:open", {
       detail: {
-        question: `A visitor is exploring "${topic.name}" under ${subdivision.name} (${industry.name}) in Canada. Interpret what they are actually trying to accomplish and suggest only the relevant services that fit that goal — for example, a move can involve movers, junk removal, cleaning, storage, packing or furniture help, but never assume they need everything. Do not confirm availability, pricing or same-day service; those are confirmed later by real contractors.`,
+        question: `I'm exploring "${topic.name}" (${subdivision.name}, under ${industry.name}) in Canada. Help me figure out what I'm actually trying to accomplish and suggest only the services that fit — don't assume I need everything, and hold off on availability or pricing until those are confirmed.`,
       },
     }));
   };

@@ -1,7 +1,8 @@
 // Shared Rex session context — one small, non-sensitive snapshot of the
 // customer's current interface state (page, service, city, items, estimate).
-// Rex receives it automatically with every message, so the customer never
-// repeats themselves. Sensitive details (addresses, phone numbers, contact
+// It is passed to Rex as a separate internal application-context payload with
+// every message — never appended to the customer's typed text and never
+// rendered in the chat. Sensitive details (addresses, phone numbers, contact
 // fields) are never stored here — those belong to the booking flow only.
 const KEY = "sdr-rex-context";
 
@@ -23,15 +24,19 @@ export function getRexContext() {
   }
 }
 
-// Compact plain-language line Rex receives alongside each message.
-export function rexContextText() {
+// APPLICATION CONTEXT layer (structured): the interface snapshot Rex receives
+// alongside each message. The customer's typed words stay untouched; this is
+// metadata only. Pickup-address state is contributed by pickupRexContext() in
+// pickupLocationStore.js — including an explicit null when no address is
+// selected, so a previous address is never assumed to remain valid.
+export function rexAppContext() {
   const c = getRexContext();
-  const parts = [];
-  if (c.page) parts.push(`page: ${c.page}`);
-  if (c.service_type) parts.push(`service: ${c.service_type}`);
-  if (c.city) parts.push(`city: ${c.city}`);
-  if (c.intent) parts.push(`customer need: ${c.intent}`);
-  if (c.items_description) parts.push(`items: ${c.items_description}`);
-  if (c.estimate_range) parts.push(`preliminary estimate shown: ${c.estimate_range} (${c.load_eighths || "?"}/8 of a truck)`);
-  return parts.join("; ");
+  const ctx = {};
+  if (c.page) ctx.page = c.page;
+  if (c.service_type) ctx.service = c.service_type;
+  if (c.city) ctx.city = c.city;
+  if (c.intent) ctx.customer_need = c.intent;
+  if (c.items_description) ctx.items = c.items_description;
+  if (c.estimate_range) ctx.estimate_shown = `${c.estimate_range} (${c.load_eighths || "?"}/8 of a truck)`;
+  return ctx;
 }

@@ -1,12 +1,14 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import usePickupLocation from "@/hooks/usePickupLocation";
-import { pickupLocationActions, pickupRexContext } from "@/lib/pickupLocationStore";
+import { pickupLocationActions } from "@/lib/pickupLocationStore";
 import PickupJobPreparation from "@/components/sdr/PickupJobPreparation";
 
 export default function PickupLocationActions({ lang = "en" }) {
   const pickup = usePickupLocation();
   const fr = lang === "fr";
-  const askRex = () => window.dispatchEvent(new CustomEvent("rex:open", { detail: { question: `${pickupRexContext()} ${fr ? "Réponds en français. Où se trouvent les objets, à l'intérieur ou à l'extérieur ?" : "Begin job preparation by asking me whether the items are inside or outside."}` } }));
+  // Only the customer-readable question goes in the message — the pickup
+  // session itself travels to Rex as the internal application-context payload.
+  const askRex = () => window.dispatchEvent(new CustomEvent("rex:open", { detail: { question: fr ? "Réponds en français. Où se trouvent les objets, à l'intérieur ou à l'extérieur ?" : "Begin job preparation by asking me whether the items are inside or outside." } }));
   const continuePickup = () => {
     pickupLocationActions.confirmPin();
     window.dispatchEvent(new CustomEvent("pickup:continue"));

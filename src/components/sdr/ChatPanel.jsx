@@ -8,9 +8,24 @@ import ChatMedia from "./ChatMedia";
 import RexOrb from "@/components/rex/RexOrb";
 import usePickupLocation from "@/hooks/usePickupLocation";
 import { pickupRexContext, getPickupLocation, pickupLocationActions } from "@/lib/pickupLocationStore";
-import { rexContextText } from "@/lib/rexSession";
+import { rexAppContext } from "@/lib/rexSession";
 
 const AGENT_NAME = "receptionist";
+
+// Internal application-context marker. Everything from this marker onward in
+// a user message is metadata for Rex, not words the customer typed — it is
+// stripped before any message renders, including legacy messages that carried
+// the old [Current page context] / [Current booking-form context] blocks.
+const CONTEXT_MARKER = "[REX INTERNAL CONTEXT]";
+
+function customerVisibleContent(message) {
+  const content = message?.content || "";
+  if (message?.role !== "user") return content;
+  const cuts = [content.indexOf(CONTEXT_MARKER), content.search(/\n+\[Current (page|booking-form) context\]/)]
+    .filter((i) => i >= 0);
+  cuts.push(content.length);
+  return content.slice(0, Math.min(...cuts)).trim();
+}
 
 function ChatAttachment({ url }) {
   const [failed, setFailed] = useState(false);
@@ -127,9 +142,14 @@ export default function ChatPanel({ onClose, preset }) {
     setInput("");
     setSending(true);
     try {
+      // Three separated layers: (1) the customer's exact words, (2) an
+      // internal application-context payload Rex reads as metadata, never
+      // merged into what the customer said, (3) Rex's reply — which never
+      // sees the customer's typed words polluted by internal state.
+      const context = { ...rexAppContext(), ...pickupRexContext(currentPickup) };
       await base44.agents.addMessage(conversation, {
         role: "user",
-        content: `${text || "Here are photos of the junk."}\n\n[Current page context] ${rexContextText() || "none"}\n\n[Current booking-form context]\n${pickupRexContext(currentPickup)}`,
+        content: `${text || "Here are photos of the junk."}\n\n${CONTEXT_MARKER} ${JSON.stringify(context)}`,
         ...(file_urls.length ? { file_urls } : {}),
       });
     } finally {
@@ -193,7 +213,7 @@ export default function ChatPanel({ onClose, preset }) {
                       ))}
                     </div>
                   ) : null}
-                  {m.content && <div className="whitespace-pre-wrap">{m.content}</div>}
+                  {customerVisibleContent(m) && <div className="whitespace-pre-wrap">{customerVisibleContent(m)}</div>}
                 </div>
               : <div className="bg-[#f4f7f5] rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-slate-700 max-w-[85%] prose prose-sm">
                   <ChatMedia content={m.content} />

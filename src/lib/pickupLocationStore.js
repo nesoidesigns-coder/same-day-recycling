@@ -52,7 +52,25 @@ export function pickupBookingFields(p = location) {
   return { address: p.formattedAddress, pickup_lat: p.lat, pickup_lng: p.lng, pickup_unit: p.unit,
     pickup_location_source: p.adjusted || p.confidence !== "address" ? "customer_adjusted" : "verified_geocode" };
 }
+// APPLICATION CONTEXT layer for the pickup session — structured data only,
+// no prose instructions. Absence of a selection is an explicit
+// pickup_address: null, which invalidates any previously mentioned address;
+// a detected postal code is never a confirmed pickup location here.
 export function pickupRexContext(p = location) {
-  if (!p) return "No pickup address is selected in the booking form. Do not assume a previous address is still current.";
-  return `Current pickup session: ${JSON.stringify({ address: p.formattedAddress, city: p.city, province_code: p.province, lat: p.lat, lng: p.lng, confidence: p.confidence, pin_confirmed: p.pinConfirmed, ...pickupBookingFields(p), access_notes: p.preparation, street_imagery: p.imagery.status })}. This replaces all earlier pickup-location context. If I mention a different address, ask me to select a validated result in address search; do not invent or substitute coordinates. Never infer parking, access restrictions or property conditions from imagery. Ask the customer about inside/outside items, stairs, elevator, loading entrance and heavy items, one question at a time. Do not create a booking until the customer explicitly requests submission; never duplicate a request already submitted in the form.`;
+  if (!p) return { pickup_address: null };
+  const confirmed = !!p.pinConfirmed && validPickupPoint(p.lat, p.lng);
+  return {
+    pickup_address: {
+      state: confirmed ? "confirmed" : "pending_pin_confirmation",
+      address: p.formattedAddress || "",
+      city: p.city || "",
+      province_code: p.province || "",
+      unit: p.unit || "",
+      lat: p.lat,
+      lng: p.lng,
+      location_source: pickupBookingFields(p).pickup_location_source || "",
+      access_notes: p.preparation || {},
+      imagery_status: p.imagery?.status || "unchecked",
+    },
+  };
 }
