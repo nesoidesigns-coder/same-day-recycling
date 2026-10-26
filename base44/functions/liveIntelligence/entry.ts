@@ -2,7 +2,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 import { capacityByCity } from '../../shared/territory.ts';
-import { provinceForCity } from '../../shared/canadaTax.ts';
 
 // Same Day Recycling LIVE: public, aggregated intelligence feed.
 // Every number is computed from real platform records and labelled with its
@@ -93,16 +92,11 @@ async function overview(base44: any, days: number) {
 // Filtered intelligence for the LIVE Centre gauge, map and trend.
 async function gauge(base44: any, f: { days: number; province: string; city: string; category: string }) {
   const query: any = { created_date: { $gte: new Date(Date.now() - f.days * DAY_MS).toISOString() } };
+  if (f.province) query.province_code = f.province;
   if (f.city) query.city = f.city;
   if (f.category) query.market_categories = f.category;
 
-  let signals: any[] = items(await base44.asServiceRole.entities.DemandSignal.filter(query, { limit: 1000 }));
-  // Province filter matches the stored province OR the record's city: many
-  // observation records carry a city but no province code, and filtering on
-  // the stored field alone hid every one of them.
-  if (f.province) {
-    signals = signals.filter((s: any) => String(s.province_code || provinceForCity(s.city) || '').toUpperCase() === f.province);
-  }
+  const signals = items(await base44.asServiceRole.entities.DemandSignal.filter(query, { limit: 1000 }));
 
   const rows: any[] = [];
   for (const key of MARKET_CATEGORIES) {
