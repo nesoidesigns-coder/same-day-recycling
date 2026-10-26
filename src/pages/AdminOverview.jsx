@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import KpiCard from "@/components/admin/KpiCard";
-import RingGauge from "@/components/admin/RingGauge";
+import CommandAreas from "@/components/admin/CommandAreas";
+import OSAdminGauges from "@/components/admin/OSAdminGauges";
+import SystemHealthStrip from "@/components/admin/SystemHealthStrip";
+import NationalOpsMap from "@/components/admin/NationalOpsMap";
 import AlertCentre from "@/components/admin/AlertCentre";
 import AdminTrendChart from "@/components/admin/AdminTrendChart";
 import StatusBar from "@/components/admin/StatusBar";
@@ -41,6 +44,7 @@ export default function AdminOverview() {
         pendingPayouts: (unpaidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0) * PARTNER_SHARE, 0),
         paidPayouts: (paidAgg.rows || []).reduce((s, r) => s + (r.sum_job_value || 0) * PARTNER_SHARE, 0),
         aiReferrals: ((visits?.data || {}).visits_30d || {}).ai_search || 0,
+        visitsReport: visits?.data || visits || null,
       });
     })().catch(() => setFailed(true));
   }, []);
@@ -52,7 +56,7 @@ export default function AdminOverview() {
     return <Loader2 className="w-8 h-8 text-li-infra animate-spin mx-auto my-20" />;
   }
 
-  const { bookings, partners, quoteNew, reviews, reviewPending, pendingPayouts, paidPayouts, aiReferrals } = data;
+  const { bookings, partners, quoteNew, reviews, reviewPending, pendingPayouts, paidPayouts, aiReferrals, visitsReport } = data;
   // Test records (internal_test) are tracked separately — live ops never include them.
   const live = bookings.filter((b) => (b.record_type || "service") !== "internal_test");
   const testCount = bookings.length - live.length;
@@ -89,6 +93,21 @@ export default function AdminOverview() {
         <p className="font-plex text-sm text-li-slate mt-1">Live network status across all Canadian service cities · all figures from real records{testCount > 0 ? ` · ${testCount} test booking${testCount === 1 ? "" : "s"} excluded from all figures` : ""}</p>
       </div>
 
+      {/* One overview → five dedicated intelligence areas */}
+      <CommandAreas />
+
+      <div>
+        <h2 className="text-lg font-bold text-li-carbon tracking-tight mb-3">Master gauges</h2>
+        <OSAdminGauges
+          visits={visitsReport}
+          completionRate={completionRate}
+          closed={closed}
+          acceptanceRate={acceptanceRate}
+          dispatchedCount={dispatchedCount}
+          dispatchSuccess={dispatchSuccess}
+        />
+      </div>
+
       <div>
         <h2 className="text-lg font-bold text-li-carbon tracking-tight mb-3">Business gauges</h2>
         <BiGaugeBattery />
@@ -109,34 +128,14 @@ export default function AdminOverview() {
         <KpiCard label="AI search referrals" value={aiReferrals} sub="Visits from AI assistants, 30 days" tone="emerald" href="/admin/analytics" />
       </div>
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
-        <RingGauge
-          label="Completion rate"
-          value={completionRate === null ? undefined : completionRate}
-          sub={completionRate === null ? "No completed or cancelled jobs yet" : `${completed.length} completed of ${closed} closed`}
-        />
-        <RingGauge
-          label="Contractor acceptance"
-          value={acceptanceRate === null ? undefined : acceptanceRate}
-          sub={dispatchedCount === 0 ? "No dispatched jobs yet" : `${acceptedDispatches} accepted of ${dispatchedCount} dispatched`}
-        />
-        <RingGauge
-          label="Dispatch success"
-          value={dispatchSuccess === null ? undefined : dispatchSuccess}
-          sub={dispatchedCount === 0 ? "No dispatched jobs yet" : `${completedDispatches} completed of ${dispatchedCount} dispatched`}
-        />
-        <RingGauge
-          label="Average rating"
-          value={rating === null ? undefined : rating}
-          max={5}
-          sub={rating === null ? "No approved reviews yet" : `${reviews.length} approved review${reviews.length === 1 ? "" : "s"}`}
-        />
-      </div>
-
       <div className="grid md:grid-cols-2 gap-3 md:gap-4">
         <AdminTrendChart bookings={live} />
         <StatusBar bookings={live} />
       </div>
+
+      <NationalOpsMap />
+
+      <SystemHealthStrip />
 
       <ScoreExplainer />
 
