@@ -83,7 +83,7 @@
     --si-ink: 165 30% 13%;
     --si-muted: 156 9% 42%;
     --si-line: 150 21% 89%;
-    --si-amber: 38 79% 57%;
+    --si-amber: 39 100% 48%;     /* harmonized with ri-amber */
     --si-blue: 200 43% 54%;
     /* Canadian Service Observatory — midnight graphite canvas (constant) */
     --obs-bg: 168 48% 7%;
@@ -95,7 +95,7 @@
     --obs-line: 167 24% 28%;
     --obs-mint: 161 64% 59%;
     --obs-amber: 38 88% 52%;
-    --obs-cyan: 189 94% 43%;
+    --obs-cyan: 185 66% 52%;     /* harmonized with cine-cyan — one cyan for all signals */
     --obs-map-ocean: 172 30% 9%;
     /* Living Intelligence universal design system (ri-*) — consumer-facing brand tokens */
     --ri-forest: 165 56% 16%;    /* #123F34 deep forest green */
@@ -575,6 +575,7 @@ h1, h2, h3, h4, p, a, span, li, button {
   .mascot-ring,
   .mascot-wave,
   .mascot-wave-once,
+  .menu-drop,
   .network-pulse,
   .data-flow,
   .pulse-arc-spin,
@@ -673,6 +674,120 @@ h1, h2, h3, h4, p, a, span, li, button {
 .admin-li [class*="border-[#54D9AE]"]:not([class*=":border-[#54D9AE]"]) { border-color: hsl(var(--li-mint)); }
 .admin-li [class*="focus:border-[#54D9AE]"]:focus { border-color: hsl(var(--li-mint)); }
 .admin-li [class*="text-[#e2b04a]"] { color: hsl(var(--li-amber)); }
+
+/* ---- Command 3: global legacy-colour harmonization ----
+   Legacy hex spellings of the brand palette map onto the unified Recycling OS
+   tokens app-wide (admin keeps its brighter action emerald via the more
+   specific .admin-li layer above). Pure presentation — no logic touched. */
+
+/* Legacy ink text → charcoal token */
+[class*="text-[#102B2A]"]:not([class*=":text-[#102B2A]"]) { color: hsl(var(--ri-charcoal)); }
+
+/* Legacy forest/emerald text → emerald/forest tokens */
+[class*="text-[#187B65]"]:not([class*=":text-[#187B65]"]) { color: hsl(var(--ri-emerald)); }
+[class*="text-[#0f5c3f]"] { color: hsl(var(--ri-forest)); }
+[class*="text-[#125C4E]"] { color: hsl(var(--ri-forest)); }
+[class*="text-[#1FA184]"] { color: hsl(var(--ri-emerald)); }
+
+/* Solid emerald surfaces → emerald token; hover → forest */
+[class*="bg-[#187B65]"]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--ri-emerald)); }
+[class*=":bg-[#125C4E]"]:hover, [class*=":bg-[#125c4e]"]:hover, [class*=":bg-[#1FA184]"]:hover { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#187B65]/15"] { background-color: hsl(var(--ri-emerald) / 0.15); }
+[class*="bg-[#187B65]/20"] { background-color: hsl(var(--ri-emerald) / 0.2); }
+[class*="bg-[#187B65]/30"] { background-color: hsl(var(--ri-emerald) / 0.3); }
+[class*="bg-[#187B65]/50"] { background-color: hsl(var(--ri-emerald) / 0.5); }
+[class*=":bg-[#187B65]/"]:hover { background-color: hsl(var(--ri-emerald) / 0.25); }
+[class*="border-[#187B65]"]:not([class*=":border-[#187B65]"]) { border-color: hsl(var(--ri-emerald)); }
+[class*="hover:border-[#187B65]"]:hover { border-color: hsl(var(--ri-emerald)); }
+[class*="focus:border-[#187B65]"]:focus { border-color: hsl(var(--ri-emerald)); }
+[class*="focus:ring-[#187B65]"]:focus { --tw-ring-color: hsl(var(--ri-emerald)); }
+
+/* Legacy emerald CTA with dark ink → white ink (AA contrast on emerald) */
+[class*="bg-[#187B65]"][class*="text-[#102B2A]"]:not([class*=":bg-"]) { color: hsl(0 0% 100%); }
+
+/* Legacy navy surfaces → forest token */
+[class*="bg-[#102B2A]"]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--ri-forest)); }
+[class*=":bg-[#102B2A]"]:hover { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#102B2A]/40"] { background-color: hsl(var(--ri-charcoal) / 0.4); }
+[class*="border-[#102B2A]"] { border-color: hsl(var(--ri-forest)); }
+
+/* Legacy dark panel surfaces → deep forest system */
+[class*="bg-[#051511]"], [class*="bg-[#0a2b1e]"], [class*="bg-[#06251b]"], [class*="bg-[#0c3b24]"] { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#0a3020]"]:not([class*=":bg-"]):not([class*="/"]) { background-color: hsl(var(--ri-forest)); }
+[class*="bg-[#0a2b1e]/50"] { background-color: hsl(var(--ri-forest) / 0.5); }
+[class*="bg-[#0c3b24]/60"] { background-color: hsl(var(--ri-forest) / 0.6); }
+
+/* Legacy light surfaces → ivory token */
+[class*="bg-[#f4f7f5]"]:not([class*=":bg-"]),
+[class*="bg-[#f6f9f8]"],
+[class*="bg-[#f6f8f7]"] { background-color: hsl(var(--ri-ivory)); }
+[class*=":bg-[#f4f7f5]"]:hover { background-color: hsl(var(--ri-mint) / 0.4); }
+
+/* Tailwind-palette emeralds on consumer pages → tokens */
+.text-emerald-500 { color: hsl(var(--ri-emerald)); }
+.text-emerald-600 { color: hsl(var(--ri-forest)); }
+.hover\:text-emerald-600:hover { color: hsl(var(--ri-forest)); }
+.bg-emerald-500 { background-color: hsl(var(--ri-emerald)); }
+.hover\:bg-emerald-600:hover { background-color: hsl(var(--ri-forest)); }
+.border-emerald-500 { border-color: hsl(var(--ri-emerald)); }
+
+/* ---- Command 3: unified surfaces, typography, lighting ---- */
+
+/* Standard light panel: one radius, one border weight, one shadow depth */
+.surface {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--si-line));
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(16, 43, 42, 0.05);
+}
+
+.surface-hover {
+  transition: border-color var(--motion-standard) var(--ease-cine), box-shadow var(--motion-standard) var(--ease-cine);
+}
+.surface-hover:hover {
+  border-color: hsl(var(--si-mint) / 0.5);
+  box-shadow: 0 6px 20px rgba(16, 43, 42, 0.08);
+}
+
+/* Intelligence panel: refined depth for midnight environments */
+.surface-dark {
+  background: hsl(var(--os-surface) / 0.7);
+  border: 1px solid hsl(var(--cine-line) / 0.5);
+  border-radius: 1.5rem;
+}
+
+/* Tabular numerals for every data display */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Metric values and restrained technical labels */
+.metric {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.data-label {
+  font-family: var(--font-plex);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Shared navigation menu transition (mobile dropdowns, all navs) */
+@keyframes menu-drop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.menu-drop {
+  animation: menu-drop 200ms var(--ease-cine) both;
+}
+
+/* Restrained ambient lighting — soft cyan illumination behind instruments */
+.ambient-glow {
+  background: radial-gradient(closest-side, hsl(var(--cine-cyan) / 0.1), transparent 70%);
+}
 
 /* ---- Canadian Service Radar — cinematic intelligence surfaces ---- */
 

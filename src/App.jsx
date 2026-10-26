@@ -148,7 +148,7 @@ const AdminShell = ({ children }) => <div className="admin-li">{children}</div>;
 
 const RouteFallback = () => (
   <div className="min-h-[70vh] flex items-center justify-center" role="status" aria-label="Loading page">
-    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-li-infra rounded-full animate-spin"></div>
   </div>
 );
 

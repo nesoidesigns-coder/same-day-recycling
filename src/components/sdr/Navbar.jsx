@@ -41,7 +41,7 @@ export default function Navbar() {
         </button>
       </div>
       {open && (
-        <div className="md:hidden border-t border-si-line bg-white px-4 py-4 flex flex-col gap-3">
+        <div className="menu-drop md:hidden border-t border-si-line bg-white px-4 py-4 flex flex-col gap-3">
           {primaryLinks.map((l) => (
             <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-bold text-ri-forest py-1">
               {l.label}

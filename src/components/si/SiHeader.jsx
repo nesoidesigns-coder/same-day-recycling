@@ -37,7 +37,7 @@ export default function SiHeader() {
           ))}
           <Link
             to="/request-service"
-            className="rounded-full bg-si-forest px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-si-mint hover:text-si-forest"
+            className="btn-float rounded-full bg-ri-amber px-5 py-2.5 text-sm font-bold text-ri-charcoal shadow-sm transition-colors hover:brightness-95"
           >
             Get a Free Quote
           </Link>
@@ -47,7 +47,7 @@ export default function SiHeader() {
         </button>
       </div>
       {open && (
-        <div className="flex flex-col gap-1 border-t border-si-line bg-white px-4 py-3 md:hidden">
+        <div className="menu-drop flex flex-col gap-1 border-t border-si-line bg-white px-4 py-3 md:hidden">
           {NAV.map((n) => (
             <a key={n.label} href={n.to} onClick={() => setOpen(false)} className="rounded-lg px-2 py-2.5 text-sm font-bold text-si-ink hover:bg-si-bg2">
               {n.label}

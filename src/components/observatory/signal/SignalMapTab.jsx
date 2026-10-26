@@ -18,12 +18,12 @@ const TYPE_LABEL = {
 // Six intelligence layers over the live demand map. Each layer has a distinct
 // accessible colour and states its measurement basis — nothing is fabricated.
 const LAYERS = [
-  { key: "A", name: "Search Demand", color: "#f59e0b", basis: "Relative/aggregate search interest — indices, not absolute counts", pick: (s) => s.demand_type === "search_interest" },
-  { key: "B", name: "Public Requests", color: "#0ea5e9", basis: "Source-backed public posts, shown at municipality level only", pick: (s) => s.demand_type === "observed_public_request" },
-  { key: "C", name: "Service Categories", color: "#a78bfa", basis: "Signals grouped by market category (select below)", pick: null },
-  { key: "D", name: "Contractor Coverage", color: "#10b981", basis: "Verified contractor territories from Partner records", pick: null },
-  { key: "E", name: "Commercial Opportunities", color: "#f43f5e", basis: "Scored, review-eligible requests awaiting owner decision", pick: (s) => ["observed_public_request", "platform_inquiry"].includes(s.demand_type) && s.review_status !== "dismissed" },
-  { key: "F", name: "Network Performance", color: "#f97316", basis: "Confirmed bookings and completed jobs recorded on-platform", pick: (s) => s.demand_type === "confirmed_booking" },
+  { key: "A", name: "Search Demand", color: "#E8B66A", basis: "Relative/aggregate search interest — indices, not absolute counts", pick: (s) => s.demand_type === "search_interest" },
+  { key: "B", name: "Public Requests", color: "#6C9DF1", basis: "Source-backed public posts, shown at municipality level only", pick: (s) => s.demand_type === "observed_public_request" },
+  { key: "C", name: "Service Categories", color: "#9A82E6", basis: "Signals grouped by market category (select below)", pick: null },
+  { key: "D", name: "Contractor Coverage", color: "#55C7A1", basis: "Verified contractor territories from Partner records", pick: null },
+  { key: "E", name: "Commercial Opportunities", color: "#E77B83", basis: "Scored, review-eligible requests awaiting owner decision", pick: (s) => ["observed_public_request", "platform_inquiry"].includes(s.demand_type) && s.review_status !== "dismissed" },
+  { key: "F", name: "Network Performance", color: "#E8B66A", basis: "Confirmed bookings and completed jobs recorded on-platform", pick: (s) => s.demand_type === "confirmed_booking" },
 ];
 
 export default function SignalMapTab({ feed }) {

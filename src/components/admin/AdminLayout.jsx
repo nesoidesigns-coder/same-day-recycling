@@ -106,12 +106,12 @@ function NavList({ pathname, onNavigate }) {
 function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5 px-3">
-      <span className="w-9 h-9 rounded-xl bg-li-mint text-li-graphite flex items-center justify-center">
+      <span className="w-9 h-9 rounded-xl bg-li-forest text-li-mint flex items-center justify-center">
         <Recycle className="w-5 h-5" />
       </span>
       <span>
         <span className="block text-sm font-bold text-white leading-tight">Same Day Recycling</span>
-        <span className="font-plex block text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-300">Recycling OS Command Centre</span>
+        <span className="font-plex block text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-300">Recycling OS Command Centre</span>
       </span>
     </Link>
   );
