@@ -11,7 +11,7 @@ import { CITIES } from "@/lib/cities";
 // code can submit — nothing is represented as confirmed service until a
 // provider accepts. Verified territories show a direct-booking shortcut.
 // Accepts ?city= and ?service= params so other forms can hand off inquiries.
-export default function NationalRequestForm({ handoff, onProgress, onSubmitted }) {
+export default function NationalRequestForm({ handoff, estimate, onProgress, onSubmitted }) {
   const params = new URLSearchParams(window.location.search);
   const prefillCity = (params.get("city") || "").slice(0, 120);
   const prefillProvince = REGIONS.some((r) => r.code === (params.get("province") || "").toUpperCase()) ? params.get("province").toUpperCase() : "";
@@ -159,6 +159,11 @@ export default function NationalRequestForm({ handoff, onProgress, onSubmitted }
           )}
         </Field>
         <div className="font-plex text-[10px] font-bold uppercase tracking-[0.15em] text-ri-emerald pt-2">Step 5 · Confirm</div>
+        {estimate && (
+          <div className="rounded-xl bg-si-bg2 border border-si-line px-4 py-3 text-xs leading-relaxed text-si-muted">
+            <span className="font-bold text-si-ink">Your preliminary estimate:</span> {estimate.range} ({estimate.eighths}/8 of a truck) — a preliminary range only. The final price is confirmed and approved by you before any work happens.
+          </div>
+        )}
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="Name" required>
             <input value={form.name} onChange={update("name")} required className="input" placeholder="Your name" />

@@ -57,17 +57,22 @@ export default function RequestService() {
       {/* Intake + contextual intelligence, side by side on desktop */}
       <section className="max-w-6xl mx-auto px-4 pb-12 grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
+          <div id="ri-intake" className="scroll-mt-24">
           <RequestIntake
             city={city}
             onServiceType={(service_type) => setHandoff((h) => ({ ...h, service_type }))}
             onFill={(items_description) => setHandoff((h) => ({ ...h, items_description }))}
             onEstimate={setEstimate}
           />
+          </div>
+          <div id="request-form" className="scroll-mt-24">
           <NationalRequestForm
             handoff={handoff}
+            estimate={estimate}
             onProgress={setFormSnapshot}
             onSubmitted={() => setSubmitted(true)}
           />
+          </div>
         </div>
         <div className="lg:sticky lg:top-20">
           <LocalIntelligencePanel

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Sparkles, Armchair, Refrigerator, PackageOpen, Recycle, Check } from "lucide-react";
+import { Loader2, Sparkles, Armchair, Refrigerator, PackageOpen, Recycle, Check, ArrowDown } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { setRexContext } from "@/lib/rexSession";
 
@@ -148,6 +148,12 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
               <Check className="w-3 h-3" /> Items added to your request below — edit or add details anytime.
             </p>
           )}
+          <a
+            href="#request-form"
+            className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-ri-forest px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-ri-emerald sm:w-auto"
+          >
+            Continue — confirm your details <ArrowDown className="w-3.5 h-3.5" />
+          </a>
         </div>
       )}
     </div>
