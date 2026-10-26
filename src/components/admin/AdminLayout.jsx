@@ -9,7 +9,9 @@ import {
   Target, FileSearch, ListChecks, UsersRound, Radar, Radio, Crosshair, Gauge as GaugeIcon, Rocket as RocketIcon, Orbit,
 } from "lucide-react";
 
-const OPS = [
+// Command Centre navigation — four unified intelligence groups (Recycling OS
+// unification). Every existing page appears exactly once; nothing moved.
+const OPERATIONS = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/gauges", label: "Gauge Wall", icon: GaugeIcon },
   { to: "/admin/ops", label: "Live Operations", icon: Radio },
@@ -22,51 +24,51 @@ const OPS = [
   { to: "/admin/partners", label: "Partners", icon: Users },
   { to: "/admin/payouts", label: "Payouts", icon: Wallet },
   { to: "/admin/revenue", label: "Revenue Intelligence", icon: PieChart },
-  { to: "/admin/conversion", label: "Conversion Funnel", icon: Filter },
-  { to: "/admin/gbp", label: "GBP Funnel", icon: MapPin },
   { to: "/admin/agreements", label: "Agreements", icon: FileSignature },
   { to: "/admin/disputes", label: "Disputes", icon: Scale },
   { to: "/admin/reputation", label: "Reputation", icon: ShieldCheck },
+  { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
+  { to: "/admin/white-label", label: "White Label", icon: Globe },
+  { to: "/admin/gallery", label: "Fleet Gallery", icon: Images },
+];
+const ACQUISITION = [
+  { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
+  { to: "/admin/conversion", label: "Conversion Funnel", icon: Filter },
   { to: "/admin/sales", label: "Sales Intelligence", icon: TrendingUp },
   { to: "/admin/contractor-acquisition", label: "Contractor Acquisition", icon: Target },
-];
-const INTELLIGENCE = [
+  { to: "/admin/gbp", label: "GBP Funnel", icon: MapPin },
   { to: "/admin/marketing-command", label: "Marketing Command", icon: Radar, exact: true },
-  { to: "/admin/business-master", label: "AI Business Master", icon: BrainCircuit, exact: true },
-  { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
-  { to: "/admin/growth-engine", label: "Network Growth Engine", icon: RocketIcon },
-  { to: "/admin/growth-command", label: "Owner Command Centre", icon: ShieldCheck },
-  { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
-  { to: "/admin/acquisition", label: "Customer Acquisition", icon: Users, exact: true },
-  { to: "/admin/bi", label: "Live Business Intelligence", icon: BarChart3, exact: true },
-  { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
-  { to: "/admin/seo-action", label: "SEO Action Engine", icon: Crosshair },
-  { to: "/admin/improvements", label: "Improvement Queue", icon: ListChecks },
-  { to: "/admin/community", label: "Community", icon: UsersRound },
-  { to: "/admin/discovery", label: "Opportunity Discovery", icon: Radar },
-  { to: "/admin/ads", label: "Community Ads", icon: Megaphone },
-  { to: "/admin/demand", label: "Market Intelligence", icon: Globe2 },
-  { to: "/admin/observatory", label: "Demand Observatory", icon: Orbit },
-  { to: "/admin/contractor-ops", label: "Contractor Operations", icon: Briefcase, exact: true },
-  { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },
-  { to: "/admin/integrity", label: "Platform Integrity", icon: ShieldCheck, exact: true },
-];
-const CONFIG = [
-  { to: "/admin/pricing", label: "Pricing", icon: Tag },
-  { to: "/admin/cities", label: "City Management", icon: MapPin },
-  { to: "/admin/reviews", label: "Reviews", icon: Star },
-  { to: "/admin/keywords", label: "Search Keywords", icon: Search },
-  { to: "/admin/franchise-review", label: "Franchise Review", icon: FileSearch },
-];
-const ADVANCED = [
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/admin/search-intelligence", label: "Search Intelligence", icon: LineChart },
-  { to: "/admin/seo", label: "SEO Command", icon: Wand2 },
   { to: "/admin/marketing", label: "Marketing Hub", icon: Megaphone },
   { to: "/admin/facebook", label: "Facebook AI", icon: MessagesSquare },
   { to: "/admin/sms", label: "SMS Inbox", icon: MessageSquare },
-  { to: "/admin/white-label", label: "White Label", icon: Globe },
-  { to: "/admin/gallery", label: "Fleet Gallery", icon: Images },
+  { to: "/admin/community", label: "Community", icon: UsersRound },
+  { to: "/admin/ads", label: "Community Ads", icon: Megaphone },
+  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+];
+const DEMAND = [
+  { to: "/admin/demand", label: "Market Intelligence", icon: Globe2 },
+  { to: "/admin/observatory", label: "Demand Observatory", icon: Orbit },
+  { to: "/admin/discovery", label: "Opportunity Discovery", icon: Radar },
+  { to: "/admin/search-authority", label: "Search Authority", icon: Search, exact: true },
+  { to: "/admin/search-intelligence", label: "Search Intelligence", icon: LineChart },
+  { to: "/admin/keywords", label: "Search Keywords", icon: Search },
+  { to: "/admin/seo", label: "SEO Command", icon: Wand2 },
+  { to: "/admin/seo-action", label: "SEO Action Engine", icon: Crosshair },
+  { to: "/admin/intelligence", label: "Brand & Market Intelligence", icon: Sparkles, exact: true },
+  { to: "/admin/bi", label: "Live Business Intelligence", icon: BarChart3, exact: true },
+  { to: "/admin/growth", label: "Growth Intelligence", icon: TrendingUp, exact: true },
+  { to: "/admin/growth-engine", label: "Network Growth Engine", icon: RocketIcon },
+  { to: "/admin/improvements", label: "Improvement Queue", icon: ListChecks },
+  { to: "/admin/business-master", label: "AI Business Master", icon: BrainCircuit, exact: true },
+];
+const SYSTEM_HEALTH = [
+  { to: "/admin/integrity", label: "Platform Integrity", icon: ShieldCheck, exact: true },
+  { to: "/admin/system", label: "System Administration", icon: Activity, exact: true },
+  { to: "/admin/growth-command", label: "Owner Command Centre", icon: ShieldCheck },
+  { to: "/admin/pricing", label: "Pricing", icon: Tag },
+  { to: "/admin/cities", label: "City Management", icon: MapPin },
+  { to: "/admin/reviews", label: "Reviews", icon: Star },
+  { to: "/admin/franchise-review", label: "Franchise Review", icon: FileSearch },
 ];
 
 function NavList({ pathname, onNavigate }) {
@@ -95,10 +97,10 @@ function NavList({ pathname, onNavigate }) {
   );
   return (
     <>
-      {group("Intelligence", INTELLIGENCE)}
-      {group("Operations", OPS)}
-      {group("Configuration", CONFIG)}
-      {group("Advanced", ADVANCED)}
+      {group("Operations Intelligence", OPERATIONS)}
+      {group("Acquisition Intelligence", ACQUISITION)}
+      {group("Demand Intelligence", DEMAND)}
+      {group("System Health", SYSTEM_HEALTH)}
     </>
   );
 }
