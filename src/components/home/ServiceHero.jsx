@@ -43,7 +43,7 @@ export default function ServiceHero() {
       <MotionConfig reducedMotion="user">
       <div className="mx-auto grid max-w-[1280px] items-center gap-8 px-4 py-8 md:px-8 md:py-20 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <motion.div initial="hidden" animate="show" variants={stagger}>
-          <motion.h1 variants={fadeUp} className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[56px]">
+          <motion.h1 variants={fadeUp} className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[46px] lg:text-[50px]">
             Same-day junk removal.
             <br />
             <span className="text-ri-forest">Know your price first.</span>
