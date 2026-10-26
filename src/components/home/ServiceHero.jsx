@@ -6,9 +6,8 @@ import { Image } from "@/components/ui/image";
 import { setRexContext } from "@/lib/rexSession";
 
 // Service-first hero: one clear message — same-day junk removal and recycling
-// across Canada. Customers enter their location, describe their need, and get
-// an estimate; availability is always shown from verified coverage records,
-// never implied where no provider is verified.
+// across Canada, nationwide. Customers enter their location, describe their
+// need, and get an estimate; no availability check — the service is national.
 const SERVICE_CHIPS = [
   { label: "Junk Removal", to: "/request-service", Icon: Trash2 },
   { label: "Furniture Removal", to: "/furniture-removal", Icon: Armchair },
@@ -27,7 +26,7 @@ export default function ServiceHero() {
   const [need, setNeed] = useState("");
   const [place, setPlace] = useState("");
 
-  const checkAvailability = () => {
+  const startService = () => {
     const q = place.trim() ? `?city=${encodeURIComponent(place.trim())}` : "";
     setRexContext({ page: "homepage", ...(place.trim() ? { city: place.trim() } : {}) });
     navigate(`/request-service${q}`);
@@ -69,19 +68,19 @@ export default function ServiceHero() {
                 id="hero-place"
                 value={place}
                 onChange={(e) => setPlace(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && checkAvailability()}
+                onKeyDown={(e) => e.key === "Enter" && startService()}
                 placeholder="City or postal code — e.g. Vancouver"
                 className="input flex-1 !rounded-full py-3 text-sm"
               />
               <button
-                onClick={checkAvailability}
+                onClick={startService}
                 className="inline-flex items-center justify-center gap-1.5 rounded-full border border-ri-forest/30 px-5 py-3 text-sm font-bold text-ri-forest transition-colors hover:bg-ri-forest hover:text-white"
               >
-                Check availability
+                Get Started <ArrowRight className="h-4 w-4" />
               </button>
             </div>
             <p className="mt-1.5 text-xs leading-snug text-si-muted">
-              We show verified provider coverage for your location before anything is scheduled — same-day pickup only where a provider is confirmed.
+              Same-day service is available nationwide — enter your location and we'll route your request to a crew right away.
             </p>
 
             <div className="my-3 border-t border-si-line" />
@@ -120,7 +119,7 @@ export default function ServiceHero() {
           {/* Trust proof at the decision point — promises and phone, next to the quote action */}
           <motion.div variants={fadeUp} className="mt-4 flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-ri-mint px-3 py-1.5 text-xs font-bold text-ri-forest">
-              <Clock className="h-3.5 w-3.5" /> Book before noon for same-day pickup where available
+              <Clock className="h-3.5 w-3.5" /> Book before noon for same-day pickup — nationwide
             </span>
             <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest transition-colors hover:border-ri-emerald">
               <Phone className="h-3.5 w-3.5" /> (604) 849-1745
