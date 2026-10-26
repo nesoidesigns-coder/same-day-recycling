@@ -36,7 +36,7 @@ export default function CanadaSignalSection() {
   const layerChips = [
     {
       label: "Recorded activity",
-      value: gauges?.recorded_activity?.available ? `${gauges.recorded_activity.value} observations` : "No records yet",
+      value: gauges?.recorded_activity?.available ? `${gauges.recorded_activity.value} observations` : "No verified records yet",
       ok: Boolean(gauges?.recorded_activity?.available),
       title: "Counted demand records — public requests, inquiries and confirmed work, each labelled separately.",
     },

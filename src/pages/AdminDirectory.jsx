@@ -85,7 +85,7 @@ export default function AdminDirectory() {
           <GaugeCard title="Geographic coverage" status="Verified" updated={`Updated ${today()}`}
             tooltip="Provider listings by province or territory (top 4 shown).">
             {topProvinces.length === 0 ? (
-              <p className="text-xs text-slate-400 py-8 text-center">No listings yet</p>
+              <p className="text-xs text-slate-400 py-8 text-center">No provider listings collected yet</p>
             ) : (
               <ul className="space-y-2.5">
                 {topProvinces.map(([prov, count]) => (
@@ -134,7 +134,7 @@ export default function AdminDirectory() {
                   </td>
                 </tr>
               ))}
-              {providers.length === 0 && <tr><td colSpan="6" className="px-4 py-8 text-center text-slate-400 text-sm">No provider listings yet.</td></tr>}
+              {providers.length === 0 && <tr><td colSpan="6" className="px-4 py-8 text-center text-slate-400 text-sm">No provider listings collected yet — run the directory sync to populate them.</td></tr>}
             </tbody>
           </table>
         </div>
@@ -168,7 +168,7 @@ export default function AdminDirectory() {
                   </td>
                 </tr>
               ))}
-              {reports.length === 0 && <tr><td colSpan="5" className="px-4 py-8 text-center text-slate-400 text-sm">No reports yet.</td></tr>}
+              {reports.length === 0 && <tr><td colSpan="5" className="px-4 py-8 text-center text-slate-400 text-sm">No listing reports filed yet.</td></tr>}
             </tbody>
           </table>
         </div>

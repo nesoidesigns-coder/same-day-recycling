@@ -254,7 +254,7 @@ function JourneyList({ title, rows }) {
     <div className="rounded-2xl bg-slate-50 px-4 py-4">
       <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{title}</div>
       {(rows || []).length === 0 ? (
-        <p className="mt-2 text-xs text-slate-500">No records in this period.</p>
+        <p className="mt-2 text-xs text-slate-500">No booking activity recorded in this period.</p>
       ) : (
         <div className="mt-2 space-y-1.5">
           {rows.map(([k, n]) => (

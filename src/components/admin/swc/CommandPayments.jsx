@@ -25,7 +25,7 @@ export default function CommandPayments({ transactions }) {
       const res = await base44.functions.invoke("paypalCheckout", { action: "refund", order_id: t.paypal_order_id });
       setNote(`Refund ${res?.data?.refund_status || "processed"} — refresh to see the updated log.`);
     } catch (e) {
-      setNote("Refund failed: " + ((e && e.message) || "unknown error"));
+      setNote("Refund failed: " + ((e && e.message) || "no details returned — check payment settings"));
     } finally {
       setRefundingId(null);
     }

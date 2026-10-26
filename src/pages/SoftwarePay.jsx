@@ -46,7 +46,7 @@ export default function SoftwarePay() {
         await loadLicense();
         setVerifying(false);
       } catch (e) {
-        setError(e?.response?.data?.error || e.message || "Something went wrong.");
+        setError(e?.response?.data?.error || e.message || "Payment setup hit a problem — try again, or call (604) 849-1745.");
         setLoading(false);
         setVerifying(false);
       }

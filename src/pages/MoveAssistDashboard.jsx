@@ -126,7 +126,7 @@ export default function MoveAssistDashboard() {
                     </label>
                   </li>
                 ))}
-                {!(project.inventory || []).length && <li className="text-sm text-market-muted">No items recorded yet.</li>}
+                {!(project.inventory || []).length && <li className="text-sm text-market-muted">No inventory items recorded yet — add them in the wizard or from photos.</li>}
               </ul>
               {(project.photos || []).length > 0 && <p className="mt-3 text-xs text-market-muted">{project.photos.length} photo{(project.photos.length > 1 ? "s" : "")} saved privately with this project.</p>}
             </div>

@@ -11,7 +11,7 @@ export function CityTable({ title, rows, note }) {
     <div className={panel}>
       <h2 className={h}>{title}</h2>
       {note && <p className="text-xs text-slate-500 -mt-2 mb-3">{note}</p>}
-      {rows.length === 0 ? <Empty>No records yet.</Empty> : (
+      {rows.length === 0 ? <Empty>No sales records yet — rows appear as jobs and inquiries are logged.</Empty> : (
         <div className="space-y-1.5">
           {rows.map((r) => (
             <div key={r.city} className="flex items-center justify-between rounded-lg bg-[#f6f8f7] px-3 py-2 text-sm">

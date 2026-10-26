@@ -64,7 +64,7 @@ function OverviewTab() {
             {Object.entries(m.by_channel || {}).map(([c, n]) => (
               <span key={c} className="rounded-full bg-[#f4f7f5] border border-[#187B65]/30 px-3 py-1 text-xs font-bold text-[#102B2A]">{c.replace(/_/g, ' ')}: {n}</span>
             ))}
-            {Object.keys(m.by_channel || {}).length === 0 && <span className="text-xs text-slate-400">No discussions yet.</span>}
+            {Object.keys(m.by_channel || {}).length === 0 && <span className="text-xs text-slate-400">No community discussions recorded yet.</span>}
           </div>
         </div>
       )}
@@ -227,7 +227,7 @@ function LibraryAdminTab() {
               )}
             </div>
           ))}
-          {resources.data?.length === 0 && <p className="text-xs text-slate-400">No resources yet.</p>}
+          {resources.data?.length === 0 && <p className="text-xs text-slate-400">No community resources published yet.</p>}
         </div>
       </div>
     </div>

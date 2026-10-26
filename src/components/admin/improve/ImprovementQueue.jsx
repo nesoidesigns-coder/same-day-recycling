@@ -69,7 +69,7 @@ export default function ImprovementQueue() {
       setNotice(`Scan complete: ${r.checked} pages checked, ${r.new_findings?.length || 0} new findings (${r.critical_count || 0} critical).`);
       await load();
     } catch (e) {
-      setNotice("Scan failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+      setNotice("Scan failed: " + (e?.response?.data?.error || e?.message || "no details returned — retry from this panel"));
     } finally {
       setScanning(false);
     }
@@ -83,7 +83,7 @@ export default function ImprovementQueue() {
       setNotice(`Imported ${r.imported} open finding(s) from the Evidence Inspector.`);
       await load();
     } catch (e) {
-      setNotice("Import failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+      setNotice("Import failed: " + (e?.response?.data?.error || e?.message || "no details returned — retry from this panel"));
     } finally {
       setImporting(false);
     }
@@ -98,7 +98,7 @@ export default function ImprovementQueue() {
       setNotice(`Render test complete: ${r.tested} pages tested, ${r.new_findings?.length || 0} new findings queued.`);
       await load();
     } catch (e) {
-      setNotice("Render test failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+      setNotice("Render test failed: " + (e?.response?.data?.error || e?.message || "no details returned — retry from this panel"));
     } finally {
       setRendering(false);
     }
@@ -118,7 +118,7 @@ export default function ImprovementQueue() {
       setNotice("Measurement recorded: " + note);
       await load();
     } catch (e) {
-      setNotice("Measurement failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+      setNotice("Measurement failed: " + (e?.response?.data?.error || e?.message || "no details returned — retry from this panel"));
     } finally {
       setMeasuringId("");
     }
@@ -132,7 +132,7 @@ export default function ImprovementQueue() {
       setExpanded(id);
       await load();
     } catch (e) {
-      setNotice("Rex diagnosis failed: " + (e?.response?.data?.error || e?.message || "unknown error"));
+      setNotice("Rex diagnosis failed: " + (e?.response?.data?.error || e?.message || "no details returned — retry from this panel"));
     } finally {
       setDiagId("");
     }

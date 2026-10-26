@@ -143,7 +143,7 @@ export default function MoveWizard({ onComplete }) {
       else onComplete({ reference_code });
     } catch (err) {
       setBusy(false);
-      setError(err?.response?.data?.error || err?.message || "Something went wrong — please try again.");
+      setError(err?.response?.data?.error || err?.message || "Saving your cleanout plan hit a problem — try again, or call (604) 849-1745.");
     }
   };
 

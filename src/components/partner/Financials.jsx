@@ -57,7 +57,7 @@ export default function Financials() {
       <div className={`${panel} p-4`}>
         <div className={label} style={{ marginBottom: 10 }}>Payment history</div>
         {(data.payments || []).length === 0 ? (
-          <p className="text-xs text-emerald-100/40">No completed jobs yet.</p>
+          <p className="text-xs text-emerald-100/40">No completed jobs recorded yet — financial rows appear as jobs finish.</p>
         ) : (
           <div className="space-y-2">
             {data.payments.map((p) => (

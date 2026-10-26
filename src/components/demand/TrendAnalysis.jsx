@@ -107,8 +107,8 @@ export default function TrendAnalysis() {
                     <YAxis yAxisId="service" orientation="right" tick={{ fontSize: 11, fill: "#64748b" }} width={30} allowDecimals={false} />
                     <Tooltip
                       formatter={(value, name) => name === "Search demand (est.)"
-                        ? [value == null ? "No data" : formatCount(value), name]
-                        : [value == null ? "No data" : value, name]}
+                        ? [value == null ? "Awaiting records" : formatCount(value), name]
+                        : [value == null ? "Awaiting records" : value, name]}
                       labelStyle={{ fontWeight: 700 }}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />

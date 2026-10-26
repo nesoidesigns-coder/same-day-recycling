@@ -258,7 +258,7 @@ export default function PartnersDashboard() {
 
         <h2 className="text-xl font-bold text-white tracking-tight mt-10 mb-4">Completed history</h2>
         {history.length === 0 ? (
-          <p className={`${panel} p-8 text-center text-emerald-100/50 text-sm`}>No completed jobs yet.</p>
+          <p className={`${panel} p-8 text-center text-emerald-100/50 text-sm`}>No completed jobs in your territory yet — they appear here once dispatch confirms them.</p>
         ) : (
           <div className="space-y-3">
             {history.map((b) => (

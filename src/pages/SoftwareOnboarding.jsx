@@ -125,7 +125,7 @@ export default function SoftwareOnboarding() {
       sessionStorage.removeItem(STORE_KEY);
       window.location.href = `/software-pay?pay=${data.pay_token}`;
     } catch (err) {
-      setError(err?.response?.data?.error || err?.message || "Something went wrong. Please try again.");
+      setError(err?.response?.data?.error || err?.message || "Setup hit a problem — try again, or call (604) 849-1745.");
       setBusy(false);
     }
   };

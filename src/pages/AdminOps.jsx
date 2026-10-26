@@ -117,7 +117,7 @@ export default function AdminOps() {
                 {p.latest ? (
                   <p className="text-[11px] text-slate-600 tabular-nums">{p.latest.clicks} clicks · {p.latest.impressions} impressions · pos {p.latest.avg_position || "—"} ({p.latest.snapshot_date})</p>
                 ) : (
-                  <p className="text-[11px] text-slate-400">No snapshot yet</p>
+                  <p className="text-[11px] text-slate-400">No intake snapshot yet — it records on the next sync</p>
                 )}
               </div>
             ))}

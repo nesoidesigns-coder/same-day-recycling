@@ -38,7 +38,7 @@ export default function OpsSheetsCard() {
       if (res.data?.error) setError(res.data.error);
       await load();
     } catch (e) {
-      setError(e?.response?.data?.error || e.message || "Failed");
+      setError(e?.response?.data?.error || e.message || "Sync failed — check the Ops sheet connection.");
     } finally {
       setBusy(false);
     }

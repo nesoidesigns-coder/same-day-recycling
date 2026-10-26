@@ -166,7 +166,7 @@ export default function AdminDiscovery() {
         <div className="mt-4 grid md:grid-cols-2 gap-6">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">By classification</p>
-            {byClassification.length === 0 ? <p className="text-xs text-slate-500">No discoveries yet.</p> : (
+            {byClassification.length === 0 ? <p className="text-xs text-slate-500">No discoveries collected yet — they appear after the next discovery run.</p> : (
               <div className="space-y-2">
                 {byClassification.map((r) => (
                   <div key={r.classification}>
@@ -179,7 +179,7 @@ export default function AdminDiscovery() {
           </div>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">By province</p>
-            {byProvince.length === 0 ? <p className="text-xs text-slate-500">No discoveries yet.</p> : (
+            {byProvince.length === 0 ? <p className="text-xs text-slate-500">No discoveries collected yet — they appear after the next discovery run.</p> : (
               <div className="space-y-2">
                 {byProvince.map((r) => (
                   <div key={r.province_code}>

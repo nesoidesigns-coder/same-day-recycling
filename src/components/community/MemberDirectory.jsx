@@ -46,7 +46,7 @@ export default function MemberDirectory() {
       {members.isPending && <div className="flex items-center gap-2 py-10 text-sm text-slate-500" role="status"><Loader2 className="w-5 h-5 animate-spin text-[#187B65]" /> Loading members…</div>}
       {members.data && visible.length === 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-          <p className="text-sm font-bold text-[#102B2A]">No members match yet.</p>
+          <p className="text-sm font-bold text-[#102B2A]">No members match these filters yet.</p>
         </div>
       )}
       <div className="grid sm:grid-cols-2 gap-3">

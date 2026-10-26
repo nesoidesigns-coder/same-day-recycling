@@ -147,7 +147,7 @@ export default function AdminDispatch() {
 
   const accept = async (b) => {
     await base44.entities.Booking.update(b.id, withHistory(b, { assignment_status: "accepted" }));
-    flash("Partner accepted the job");
+    flash(`Accepted by ${b.partner_name || "the partner"} — ready to confirm a pickup date`);
     refresh();
   };
 
@@ -238,10 +238,10 @@ export default function AdminDispatch() {
     closeModal();
     flash(
       payload.reconcile
-        ? "External payment reconciled"
+        ? `External payment reconciled for ${b.name}`
         : payload.external
-          ? "Marked paid externally · no platform transaction created"
-          : `Payments recorded${patch.assignment_status === "paid" ? " · job fully paid" : ""}`
+          ? `${b.name} marked paid externally · no platform transaction created`
+          : `Payments recorded for ${b.name}${patch.assignment_status === "paid" ? " · job fully paid" : ""}`
     );
     refresh();
   };
@@ -254,7 +254,7 @@ export default function AdminDispatch() {
     await base44.entities.Booking.update(b.id, { photo_uri: file_uri });
     setBusy(false);
     closeModal();
-    flash("Photo attached");
+    flash(`Photo attached to ${b.name}'s job`);
     refresh();
   };
 
@@ -268,7 +268,7 @@ export default function AdminDispatch() {
       verified: !p.verified,
       verified_date: !p.verified ? new Date().toISOString().slice(0, 10) : "",
     });
-    flash(p.verified ? `${p.name} marked unverified` : `${p.name} verified — now assignable`);
+    flash(p.verified ? `${p.name} marked unverified — no longer assignable` : `${p.name} verified — now assignable to jobs`);
     loadPartners();
   };
 
@@ -290,7 +290,7 @@ export default function AdminDispatch() {
     setBusy(true);
     try {
       const res = await base44.functions.invoke("sendSmsAlert", { booking_id: b.id, message: smsMsg });
-      flash(res.data?.ok ? "Text sent" : "Text failed: " + (res.data?.error || "unknown"));
+      flash(res.data?.ok ? `Text sent to ${b.name}` : "Text failed: " + (res.data?.error || "no details returned"));
     } catch (e) {
       flash("Text failed: " + (e?.response?.data?.error || e.message || "failed"));
     } finally {
@@ -342,7 +342,7 @@ export default function AdminDispatch() {
         // calendar sync is best-effort — the status change still applies
       }
     }
-    flash(`Marked ${status}`);
+    flash(`Status updated to ${STATUS_LABELS[status] || status}`);
     refresh();
   };
 
@@ -354,7 +354,7 @@ export default function AdminDispatch() {
           <button onClick={() => setModal({ mode: "assign", booking: b })} className={`${cls} bg-li-btn text-white font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"} hover:bg-li-btn-hover`}>Assign</button>
         )}
         {b.assignment_status === "assigned" && (
-          <button onClick={() => accept(b)} className={`${cls} border border-blue-300 text-blue-700 font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Accept</button>
+          <button onClick={() => accept(b)} className={`${cls} border border-blue-300 text-blue-700 font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Mark accepted</button>
         )}
         {["assigned", "accepted"].includes(b.assignment_status) && b.status !== "cancelled" && (
           <button onClick={() => setModal({ mode: "schedule", booking: b })} className={`${cls} border border-indigo-300 text-indigo-700 font-bold ${mobile ? "px-4 py-2 text-xs" : "px-2.5 py-1.5 text-xs"}`}>Confirm pickup</button>
@@ -504,7 +504,7 @@ export default function AdminDispatch() {
         {loading && !bookings.length ? (
           <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-12" />
         ) : bookings.length === 0 ? (
-          <p className="text-slate-500 text-center py-12">No jobs match these filters.</p>
+          <p className="text-slate-500 text-center py-12">No jobs match these filters — clear a filter or widen the date range.</p>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-[#f6f8f7] border-b border-slate-100">
@@ -563,7 +563,7 @@ export default function AdminDispatch() {
         {loading && !bookings.length ? (
           <Loader2 className="w-8 h-8 text-[#187B65] animate-spin mx-auto my-12" />
         ) : bookings.length === 0 ? (
-          <p className="text-slate-500 text-center py-12 bg-white rounded-2xl border border-slate-200/70">No jobs match these filters.</p>
+          <p className="text-slate-500 text-center py-12 bg-white rounded-2xl border border-slate-200/70">No jobs match these filters — clear a filter or widen the date range.</p>
         ) : (
           sorted.map((b) => (
             <div key={b.id} className="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-4">

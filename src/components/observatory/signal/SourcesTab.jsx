@@ -13,7 +13,7 @@ const WEIGHT_FACTORS = [
 ];
 
 function sourceState(row) {
-  if (!row.last_collected) return "no data";
+  if (!row.last_collected) return "Not collected yet";
   const days = (Date.now() - new Date(row.last_collected).getTime()) / 86400000;
   if (days <= 2) return "connected";
   if (days <= 7) return "delayed";

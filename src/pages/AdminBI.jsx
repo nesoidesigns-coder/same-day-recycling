@@ -144,7 +144,7 @@ export default function AdminBI() {
                 <div className="rounded-2xl border border-slate-200 bg-white p-4">
                   <h2 className="text-sm font-bold text-[#102B2A]">Acquisition sources (30d human)</h2>
                   {(t.sources || []).length === 0 ? (
-                    <p className="mt-2 text-xs text-slate-500">No source data in this window.</p>
+                    <p className="mt-2 text-xs text-slate-500">No intelligence source data collected in this window.</p>
                   ) : (
                     <div className="mt-3 space-y-2.5">
                       {t.sources.map((s) => (
