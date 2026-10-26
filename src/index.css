@@ -733,11 +733,42 @@ h1, h2, h3, h4, p, a, span, li, button {
   animation: cine-pulse-ring 1.2s ease-out 1 both;
 }
 
+/* Orbital elements — two precise, very slow drift dots (not a radar sweep) */
+@keyframes orb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.orb-slow {
+  transform-box: view-box;
+  transform-origin: 260px 260px;
+  animation: orb-spin 150s linear infinite;
+}
+
+.orb-fast {
+  transform-box: view-box;
+  transform-origin: 260px 260px;
+  animation: orb-spin 100s linear infinite reverse;
+}
+
+/* One-shot dial draw during the instrument's assembly */
+@keyframes cine-draw {
+  from { stroke-dashoffset: 1560; }
+  to { stroke-dashoffset: 0; }
+}
+
+.cine-draw {
+  stroke-dasharray: 1560;
+  animation: cine-draw 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .radar-halo,
   .radar-in,
   .cine-fade-up,
-  .cine-pulse-ring {
+  .cine-pulse-ring,
+  .orb-slow,
+  .orb-fast,
+  .cine-draw {
     animation: none !important;
   }
 }
