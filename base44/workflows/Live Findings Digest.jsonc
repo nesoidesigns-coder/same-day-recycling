@@ -1,0 +1,71 @@
+{
+  "name": "Live Findings Digest",
+  "description": "Every Tuesday 8:30am, compiles the week's verified intelligence records from Canada Live and emails the owner a plain-language digest",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 8 * * 2",
+      "one_time_date": null,
+      "timezone": "America/Vancouver",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "live_findings_digest",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "gather_findings": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "liveFindingsDigest",
+            "args": {}
+          },
+          "then": "send_digest",
+          "x-base44": {
+            "title": "Compile the week's verified findings",
+            "description": "Canada Live records and contractor coverage, labelled by source"
+          }
+        }
+      },
+      {
+        "send_digest": {
+          "call": "send_email",
+          "with": {
+            "template_name": "LiveFindingsDigest",
+            "to": "nesoidesigns@gmail.com",
+            "description": "Weekly plain-language digest of verified Canada Live intelligence",
+            "variables": {
+              "period": "${ .gather_findings.period }",
+              "total": "${ .gather_findings.total }",
+              "summary": "${ .gather_findings.summary }",
+              "categories_line": "${ .gather_findings.categories_line }",
+              "coverage_line": "${ .gather_findings.coverage_line }",
+              "finding_1": "${ .gather_findings.finding_1 }",
+              "finding_2": "${ .gather_findings.finding_2 }",
+              "finding_3": "${ .gather_findings.finding_3 }",
+              "finding_4": "${ .gather_findings.finding_4 }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email the digest",
+            "description": "Weekly Canada Live report to the owner"
+          }
+        }
+      }
+    ]
+  }
+}

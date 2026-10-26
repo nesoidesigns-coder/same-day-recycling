@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, MapPin, ArrowRight, Sparkles, RefreshCw } from "lucide-react";
 import { CITIES } from "@/lib/cities";
 import { base44 } from "@/api/base44Client";
+import { setRexContext } from "@/lib/rexSession";
 
 const SERVICES = [
   { label: "Junk Removal", to: "/request-service" },
@@ -100,7 +101,10 @@ export default function ServiceSearch({ cov, onPickCity }) {
           <div className="mt-3 flex flex-wrap gap-2">
             <Link
               to={`/request-service?city=${encodeURIComponent(result.city.name)}`}
-              onClick={() => onPickCity(result.city)}
+              onClick={() => {
+                setRexContext({ page: "live", city: result.city.name, intent: `Needs ${service.toLowerCase()}` });
+                onPickCity(result.city);
+              }}
               className="inline-flex items-center gap-1.5 rounded-full bg-ri-amber px-4 py-2 text-xs font-bold text-ri-charcoal hover:brightness-95 transition-all"
             >
               Request {service.toLowerCase()} in {result.city.name} <ArrowRight className="w-3.5 h-3.5" />

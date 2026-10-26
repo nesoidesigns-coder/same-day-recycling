@@ -7,6 +7,7 @@ import useCoverageStatus from "@/hooks/useCoverageStatus";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
 import { LIVE_CATEGORIES } from "@/lib/liveCategories";
+import { setRexContext } from "@/lib/rexSession";
 import LiveActivityMap from "@/components/live/LiveActivityMap";
 import LiveCommunityFeed from "@/components/live/LiveCommunityFeed";
 import RexPriceCompare from "@/components/home/RexPriceCompare";
@@ -115,6 +116,7 @@ export default function LiveCentre() {
           cov={cov}
           onPickCity={(city) => {
             const code = REGIONS.find((r) => r.name === city.province)?.code || "";
+            setRexContext({ page: "live", city: city.name });
             setFilters((f) => ({ ...f, province: code, city: city.name }));
           }}
         />
@@ -236,7 +238,17 @@ export default function LiveCentre() {
         </div>
 
         {/* Conversion: explore → understand → compare → quote → book */}
-        <Link to="/request-service" className="mt-10 block rounded-[20px] bg-ri-forest px-6 py-10 text-center transition-colors hover:bg-ri-charcoal">
+        <Link
+          to="/request-service"
+          onClick={() =>
+            setRexContext({
+              page: "live",
+              ...(filters.city ? { city: filters.city } : {}),
+              ...(filters.category ? { intent: `Exploring ${LIVE_CATEGORIES[filters.category]} on Canada Live` } : {}),
+            })
+          }
+          className="mt-10 block rounded-[20px] bg-ri-forest px-6 py-10 text-center transition-colors hover:bg-ri-charcoal"
+        >
           <div className="text-2xl font-bold text-white">Ready to clear your space?</div>
           <div className="mt-2 text-sm text-ri-ivory/70">Request a pickup in any Canadian city — the price is approved by you before anything is scheduled.</div>
           <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-ri-amber px-6 py-3 text-sm font-bold text-ri-charcoal">

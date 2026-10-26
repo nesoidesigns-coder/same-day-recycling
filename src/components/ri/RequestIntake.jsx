@@ -117,6 +117,22 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
         <p className="mt-1.5 text-[11px] text-ri-slate">We recognize your items and give an indicative range before you fill in any details.</p>
       </div>
 
+      <button
+        type="button"
+        onClick={() =>
+          window.dispatchEvent(new CustomEvent("rex:open", {
+            detail: {
+              question: description.trim()
+                ? `Which service category fits this need: "${description.trim().slice(0, 200)}"?`
+                : "Which service category fits my job? Help me choose.",
+            },
+          }))
+        }
+        className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-ri-forest hover:underline"
+      >
+        <Sparkles className="w-3.5 h-3.5" /> Not sure which category fits? Ask Rex
+      </button>
+
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
       {estimate && !error && (
@@ -148,12 +164,25 @@ export default function RequestIntake({ city, onServiceType, onFill, onEstimate 
               <Check className="w-3 h-3" /> Items added to your request below — edit or add details anytime.
             </p>
           )}
-          <a
-            href="#request-form"
-            className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-ri-forest px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-ri-emerald sm:w-auto"
-          >
-            Continue — confirm your details <ArrowDown className="w-3.5 h-3.5" />
-          </a>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <a
+              href="#request-form"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-ri-forest px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-ri-emerald sm:w-auto"
+            >
+              Continue — confirm your details <ArrowDown className="w-3.5 h-3.5" />
+            </a>
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("rex:open", {
+                  detail: { question: `Explain this estimate: ${estimate.range}, about ${estimate.eighths}/8 of a truck.` },
+                }))
+              }
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-ri-forest hover:underline"
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Ask Rex about this estimate
+            </button>
+          </div>
         </div>
       )}
     </div>
