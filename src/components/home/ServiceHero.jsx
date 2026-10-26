@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion, MotionConfig } from "framer-motion";
 import { ArrowRight, Armchair, Building2, Clock, Home, Phone, Recycle, Refrigerator, Trash2 } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { setRexContext } from "@/lib/rexSession";
@@ -14,6 +15,10 @@ const SERVICE_CHIPS = [
   { label: "Recycling Services", to: "/recycling", Icon: Recycle },
   { label: "Moving & Estate Cleanouts", to: "/move-assist", Icon: Home },
 ];
+
+const EASE = [0.22, 1, 0.36, 1];
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } } };
 
 export default function ServiceHero() {
   const navigate = useNavigate();
@@ -35,19 +40,20 @@ export default function ServiceHero() {
         className="pointer-events-none absolute -right-32 -top-24 h-80 w-80 rounded-full"
         style={{ background: "radial-gradient(circle, hsl(var(--ri-emerald) / 0.12), transparent 70%)" }}
       />
+      <MotionConfig reducedMotion="user">
       <div className="mx-auto grid max-w-[1280px] items-center gap-8 px-4 py-8 md:px-8 md:py-20 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <div>
-          <h1 className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[56px]">
+        <motion.div initial="hidden" animate="show" variants={stagger}>
+          <motion.h1 variants={fadeUp} className="text-[32px] font-extrabold leading-[1.08] tracking-tight text-ri-charcoal sm:text-4xl md:text-[56px]">
             Same-day junk removal.
             <br />
             <span className="text-ri-forest">Priced before we book.</span>
-          </h1>
-          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ri-slate md:mt-5 md:text-lg">
+          </motion.h1>
+          <motion.p variants={fadeUp} className="mt-3 max-w-xl text-[15px] leading-relaxed text-ri-slate md:mt-5 md:text-lg">
             One couch or a full cleanout — clear pricing up front, and nothing leaves without your approval.
-          </p>
+          </motion.p>
 
           {/* Natural-language service selector */}
-          <div className="mt-7 max-w-xl rounded-[20px] border border-si-line bg-white p-4 shadow-sm">
+          <motion.div variants={fadeUp} className="mt-7 max-w-xl rounded-[20px] border border-si-line bg-white p-4 shadow-sm">
             <label htmlFor="hero-need" className="text-xs font-bold text-si-muted">Tell us what needs to go</label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row">
               <input
@@ -60,7 +66,7 @@ export default function ServiceHero() {
               />
               <button
                 onClick={estimate}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-ri-amber px-6 py-3 text-sm font-bold text-ri-charcoal transition-all hover:brightness-95"
+                className="btn-float inline-flex items-center justify-center gap-1.5 rounded-full bg-ri-amber px-6 py-3 text-sm font-bold text-ri-charcoal transition-all hover:brightness-95"
               >
                 Get My Pickup Estimate <ArrowRight className="h-4 w-4" />
               </button>
@@ -77,25 +83,30 @@ export default function ServiceHero() {
                 </Link>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Trust proof at the decision point — promises and phone, next to the quote action */}
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <motion.div variants={fadeUp} className="mt-4 flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-ri-mint px-3 py-1.5 text-xs font-bold text-ri-forest">
               <Clock className="h-3.5 w-3.5" /> Book before noon for same-day pickup
             </span>
             <a href="tel:+16048491745" className="inline-flex items-center gap-1.5 rounded-full border border-si-line bg-white px-3 py-1.5 text-xs font-bold text-ri-forest transition-colors hover:border-ri-emerald">
               <Phone className="h-3.5 w-3.5" /> (604) 849-1745
             </a>
-          </div>
+          </motion.div>
 
           <Link to="/services" className="mt-4 inline-flex text-sm font-bold text-ri-forest underline-offset-4 hover:underline">
             Explore Services <ArrowRight className="ml-1 inline h-4 w-4" />
           </Link>
-        </div>
+        </motion.div>
 
         {/* Real service imagery — relief and transformation, not dashboards */}
-        <div className="relative">
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.7, ease: EASE }}
+        >
           <div className="overflow-hidden rounded-[24px] border border-si-line shadow-md">
             <Image
               src="https://media.base44.com/images/public/6ac93990cde830898b8dbc65/27e2d989f_generated_image.png"
@@ -109,8 +120,9 @@ export default function ServiceHero() {
               Cleared, sorted and accounted for — donated first, recycled second, responsibly disposed last.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
+      </MotionConfig>
     </section>
   );
 }

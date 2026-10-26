@@ -515,6 +515,16 @@ h1, h2, h3, h4, p, a, span, li, button {
   animation: geo-fade 200ms ease-out 1 both;
 }
 
+/* ---- Hero: premium float on the primary action button ---- */
+@keyframes btn-float {
+  0%, 100% { transform: translateY(0); box-shadow: 0 4px 14px rgba(246, 160, 0, 0.28); }
+  50% { transform: translateY(-3px); box-shadow: 0 9px 24px rgba(246, 160, 0, 0.38); }
+}
+
+.btn-float {
+  animation: btn-float 3.2s ease-in-out infinite;
+}
+
 /* ---- Reduced motion: calm every ambient animation at once ---- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -535,7 +545,8 @@ h1, h2, h3, h4, p, a, span, li, button {
   .gauge-pulse,
   .rex-orb--processing::before,
   .rex-orb--listening,
-  .rex-orb--processing .rex-orb__core {
+  .rex-orb--processing .rex-orb__core,
+  .btn-float {
     animation: none !important;
   }
 
