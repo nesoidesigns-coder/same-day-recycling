@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DollarSign, MapPin, Recycle, Users, ArrowRight, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useSEO } from "@/lib/seo";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
+import useLiveGauge from "@/hooks/useLiveGauge";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
 import { LIVE_CATEGORIES } from "@/lib/liveCategories";
@@ -35,40 +36,9 @@ export default function LiveCentre() {
   const cov = useCoverageStatus();
   const geo = useCanadaGeography();
   const [filters, setFilters] = useState({ province: "", city: "", category: "", days: 30 });
-  const [gauge, setGauge] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [pulseKey, setPulseKey] = useState(0);
-  const lastGenerated = useRef(null);
 
-  useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    base44.functions.invoke("liveIntelligence", {
-      action: "gauge",
-      days: filters.days,
-      province: filters.province,
-      city: filters.city,
-      category: filters.category,
-    })
-      .then((res) => {
-        if (!alive) return;
-        setGauge(res.data);
-        setError(false);
-      })
-      .catch(() => alive && setError(true));
-    return () => {
-      alive = false;
-    };
-  }, [filters]);
-
-  // One brief pulse when the feed genuinely refreshed — never fabricated.
-  useEffect(() => {
-    if (gauge?.generated_at && gauge.generated_at !== lastGenerated.current) {
-      lastGenerated.current = gauge.generated_at;
-      setPulseKey((k) => k + 1);
-    }
-  }, [gauge]);
+  // The one live radar connection: verified feed + realtime refresh as activity happens.
+  const { data: gauge, loading, error, pulseKey } = useLiveGauge(filters);
 
   const provinceCityOptions = useMemo(() => {
     const target = REGIONS.find((r) => r.code === filters.province)?.name || "";

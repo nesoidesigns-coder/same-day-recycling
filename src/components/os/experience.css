@@ -101,7 +101,7 @@
    midnight intelligence tokens at light equivalents inside these scopes. Gauges,
    panels, maps and charts all render through these tokens, so the whole
    dashboard surface re-skins coherently without touching any page logic. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) {
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) {
   --os-core: 0 0% 100%;
   --os-deep: 150 23% 96%;
   --os-surface: 0 0% 100%;
@@ -145,7 +145,7 @@
   --obs-cyan: 190 70% 38%;
 }
 /* Midnight-appearance gauges adopt the same light palette in these scopes. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) .os-gauge[data-appearance="dark"] {
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) .os-gauge[data-appearance="dark"] {
   --os-core: 0 0% 100%;
   --os-deep: 150 23% 96%;
   --os-surface: 0 0% 100%;
@@ -155,7 +155,7 @@
   --os-hairline: 150 21% 89%;
 }
 /* Formerly-dark panels map onto light card surfaces. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) :is(
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) :is(
     .admin-console, .holo-panel-deep, .surface-dark, .obs-panel,
     [class~="bg-[#051511]"], [class~="bg-[#051511]/95"], [class~="bg-[#06251b]"],
     [class~="bg-[#0a2b1e]"], [class~="bg-[#0a2b1e]/50"], [class~="bg-[#0c3b24]"],
@@ -165,7 +165,7 @@
   background-color: hsl(var(--os-surface));
 }
 /* Text and hairlines that assumed a dark surface become light-theme ink. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) :is(
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) :is(
     .admin-console, .holo-panel-deep, .surface-dark, .obs-panel,
     [class~="bg-[#051511]"], [class~="bg-[#051511]/95"], [class~="bg-[#06251b]"],
     [class~="bg-[#0a2b1e]"], [class~="bg-[#0a2b1e]/50"], [class~="bg-[#0c3b24]"],
@@ -175,7 +175,7 @@
   color: hsl(var(--os-ink));
 }
 /* Same-element case: a remapped panel that itself carries light text. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) :is(
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) :is(
     .admin-console, .holo-panel-deep, .surface-dark, .obs-panel,
     [class~="bg-[#051511]"], [class~="bg-[#051511]/95"], [class~="bg-[#06251b]"],
     [class~="bg-[#0a2b1e]"], [class~="bg-[#0a2b1e]/50"], [class~="bg-[#0c3b24]"],
@@ -184,7 +184,7 @@
   color: hsl(var(--os-ink));
 }
 /* Hairline borders that assumed a dark surface. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) :is(
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) :is(
     .admin-console, .holo-panel-deep, .surface-dark, .obs-panel,
     [class~="bg-[#051511]"], [class~="bg-[#051511]/95"], [class~="bg-[#06251b]"],
     [class~="bg-[#0a2b1e]"], [class~="bg-[#0a2b1e]/50"], [class~="bg-[#0c3b24]"],
@@ -193,13 +193,32 @@
   border-color: hsl(var(--si-line));
 }
 /* Subtle white overlay rows become pale mint tints. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) [class*="bg-white/"] {
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) [class*="bg-white/"] {
   background-color: hsl(var(--si-bg2) / 0.55);
 }
 /* Gradient headline built for dark surfaces → forest gradient on light. */
-:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"]) .admin-headline {
+:is(.os-experience[data-experience="admin"], .os-experience[data-experience="contractor"], .os-experience[data-experience="workspace"], .os-experience[data-experience="intelligence"]) .admin-headline {
   background: linear-gradient(180deg, hsl(var(--ri-forest)), hsl(var(--li-infra)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+/* ---- Live Intelligence in light premium tones ----
+   The intelligence environments keep every instrument, connector and honest
+   empty state; only the surface tokens move to the ivory / forest / mint
+   identity, so gauges, maps and panels re-skin coherently. */
+.os-experience[data-experience="intelligence"] .cine-glass {
+  background: hsl(var(--card) / 0.82);
+  border-color: hsl(var(--si-line));
+}
+.os-experience[data-experience="intelligence"] .cine-glow {
+  background: radial-gradient(closest-side, hsl(var(--ri-mint) / 0.55), transparent 72%);
+}
+.os-experience[data-experience="intelligence"] .cine-input {
+  background: hsl(var(--card));
+  border-color: hsl(var(--si-line));
+  color: hsl(var(--ri-charcoal));
+}
+.os-experience[data-experience="intelligence"] .cine-input:focus {
+  border-color: hsl(var(--ri-emerald-ink) / 0.6);
 }

@@ -1,39 +1,16 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin } from "lucide-react";
-import { base44 } from "@/api/base44Client";
 import OSIntelligenceGauge from "@/components/os/OSIntelligenceGauge";
 import { OS_COLORS } from "@/components/os/gaugeCore";
+import useLiveGauge from "@/hooks/useLiveGauge";
 
 // Compact homepage preview of the master Live Intelligence gauge — the same
-// circular geometry, midnight palette, lighting and honest empty states as the
-// Canadian Service Radar on /live. One verified metric: observed service
-// records in the last 30 days (real records only — never estimates).
+// circular geometry, light premium palette and honest empty states as the
+// Canadian Service Radar on /live, on the same live connection (it updates as
+// activity happens). One verified metric: observed service records in the
+// last 30 days (real records only — never estimates).
 export default function LiveGaugePreview() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    base44.functions
-      .invoke("liveIntelligence", { action: "gauge", days: 30 })
-      .then((res) => {
-        if (!alive) return;
-        setData(res.data);
-        setError(false);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (!alive) return;
-        setError(true);
-        setLoading(false);
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const { data, loading, error } = useLiveGauge({ days: 30 });
 
   const total = data?.total ?? null;
   const bookings = (data?.rows || []).reduce(

@@ -67,7 +67,7 @@ export default function LiveHero({ data, loading, error, filters, onFilter, pick
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(120% 90% at 50% 42%, transparent 42%, rgba(5,11,22,0.9) 100%)" }}
+        style={{ background: "radial-gradient(120% 90% at 50% 42%, transparent 42%, rgba(16, 43, 42, 0.06) 100%)" }}
       />
 
       {/* top — compact branding, title, data freshness, service action */}
