@@ -1,0 +1,139 @@
+/* Same Day Recycling — Light Mint Intelligence, applied to the legacy site.
+   Loaded last, after every other stylesheet, so it has the final word.
+
+   The consumer pages were built on two families of hardcoded colour:
+   1. near-black green panels (#051511 … #0f3d33) carrying white and mint text,
+   2. deep forest brand panels (#102b2a) used for primary actions.
+
+   Only family 1 is converted here: those panels become the soft mint / warm
+   white surfaces of the new identity, and the text inside them flips from
+   white and loud mint to deep forest ink, sage support text and rich teal.
+   Family 2 stays — a deep forest button or brand band is a deliberate accent
+   in this system, not a leftover.
+
+   No markup, component or data changes: this is a presentation layer over
+   class names the pages already carry. `!important` is deliberate and scoped
+   to this migration file only — the earlier layers in index.css use
+   `:not([class*="/"])` selectors with higher specificity, and this layer must
+   win them regardless of order. The admin and contractor operating systems are
+   scoped by `.admin-li` rules and keep their own treatment until converted. */
+
+/* ---- Near-black panels → warm white / soft mint surfaces ---- */
+[class*="bg-[#051511]" i],
+[class*="bg-[#0a2b1e]" i],
+[class*="bg-[#0a3020]" i],
+[class*="bg-[#0c3b24]" i],
+[class*="bg-[#06251b]" i],
+[class*="bg-[#041a10]" i],
+[class*="bg-[#0d211f]" i],
+[class*="bg-[#0d201f]" i],
+[class*="bg-[#0c2a22]" i],
+[class*="bg-[#0a2e25]" i],
+[class*="bg-[#0f1f16]" i],
+[class*="bg-[#172b28]" i],
+[class*="bg-[#0a3d31]" i],
+[class*="bg-[#032015]" i],
+[class*="bg-[#0f3d33]" i],
+[class*="bg-[#0e2a3d]" i],
+[class*="bg-[#0a1220]" i] {
+  background-color: hsl(var(--lm-bg-2)) !important;
+  /* No !important here: an inline photo background (real imagery) must win,
+     while Tradewind gradient washes built from dark hexes are cleared. */
+  background-image: none;
+  border-color: hsl(var(--lm-line)) !important;
+  color: hsl(var(--lm-ink)) !important;
+}
+
+/* ---- Copy inside those panels ---- */
+
+/* White primary copy → deep forest ink. */
+[class*="bg-[#051511]" i] .text-white,
+[class*="bg-[#0a2b1e]" i] .text-white,
+[class*="bg-[#0a3020]" i] .text-white,
+[class*="bg-[#0c3b24]" i] .text-white,
+[class*="bg-[#06251b]" i] .text-white,
+[class*="bg-[#041a10]" i] .text-white,
+[class*="bg-[#0d211f]" i] .text-white,
+[class*="bg-[#0d201f]" i] .text-white,
+[class*="bg-[#0c2a22]" i] .text-white,
+[class*="bg-[#0a2e25]" i] .text-white,
+[class*="bg-[#0f1f16]" i] .text-white,
+[class*="bg-[#172b28]" i] .text-white,
+[class*="bg-[#0a3d31]" i] .text-white,
+[class*="bg-[#032015]" i] .text-white,
+[class*="bg-[#0f3d33]" i] .text-white,
+[class*="bg-[#0e2a3d]" i] .text-white,
+[class*="bg-[#0a1220]" i] .text-white {
+  color: hsl(var(--lm-ink)) !important;
+}
+
+/* Faded white secondary copy → sage. */
+[class*="bg-[#051511]" i] [class*="text-white/"],
+[class*="bg-[#0a2b1e]" i] [class*="text-white/"],
+[class*="bg-[#0a3020]" i] [class*="text-white/"],
+[class*="bg-[#0c3b24]" i] [class*="text-white/"],
+[class*="bg-[#06251b]" i] [class*="text-white/"],
+[class*="bg-[#041a10]" i] [class*="text-white/"],
+[class*="bg-[#0a2e25]" i] [class*="text-white/"],
+[class*="bg-[#172b28]" i] [class*="text-white/"],
+[class*="bg-[#0a3d31]" i] [class*="text-white/"],
+[class*="bg-[#0e2a3d]" i] [class*="text-white/"] {
+  color: hsl(var(--lm-muted)) !important;
+}
+
+/* Loud mint accents were unreadable on light → brand teal at AA contrast. */
+[class*="bg-[#051511]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#0a2b1e]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#0a3020]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#0c3b24]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#06251b]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#172b28]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#0e2a3d]" i] [class*="text-[#54d9ae]" i],
+[class*="bg-[#051511]" i] .text-emerald-300,
+[class*="bg-[#0a2b1e]" i] .text-emerald-300,
+[class*="bg-[#0a3020]" i] .text-emerald-300,
+[class*="bg-[#0c3b24]" i] .text-emerald-300,
+[class*="bg-[#172b28]" i] .text-emerald-300 {
+  color: hsl(var(--lm-teal)) !important;
+}
+
+/* Translucent white borders and fills → mist hairlines and mint tints. */
+[class*="bg-[#051511]" i] [class*="border-white/"],
+[class*="bg-[#0a2b1e]" i] [class*="border-white/"],
+[class*="bg-[#0a3020]" i] [class*="border-white/"],
+[class*="bg-[#0c3b24]" i] [class*="border-white/"],
+[class*="bg-[#06251b]" i] [class*="border-white/"],
+[class*="bg-[#172b28]" i] [class*="border-white/"],
+[class*="bg-[#0e2a3d]" i] [class*="border-white/"] {
+  border-color: hsl(var(--lm-line)) !important;
+}
+
+[class*="bg-[#051511]" i] [class*="bg-white/"],
+[class*="bg-[#0a2b1e]" i] [class*="bg-white/"],
+[class*="bg-[#0a3020]" i] [class*="bg-white/"],
+[class*="bg-[#0c3b24]" i] [class*="bg-white/"],
+[class*="bg-[#06251b]" i] [class*="bg-white/"],
+[class*="bg-[#172b28]" i] [class*="bg-white/"],
+[class*="bg-[#0e2a3d]" i] [class*="bg-white/"] {
+  background-color: hsl(var(--lm-bg)) !important;
+}
+
+/* ---- Long-form prose written for a dark panel ---- */
+[class*="bg-[#051511]" i] .prose-invert,
+[class*="bg-[#0a2b1e]" i] .prose-invert,
+[class*="bg-[#0a3020]" i] .prose-invert,
+[class*="bg-[#0c3b24]" i] .prose-invert,
+[class*="bg-[#172b28]" i] .prose-invert,
+[class*="bg-[#0e2a3d]" i] .prose-invert {
+  --tw-prose-body: hsl(var(--lm-muted));
+  --tw-prose-headings: hsl(var(--lm-ink));
+  --tw-prose-bold: hsl(var(--lm-ink));
+  --tw-prose-links: hsl(var(--lm-teal));
+  --tw-prose-bullets: hsl(var(--lm-teal));
+  --tw-prose-hr: hsl(var(--lm-line));
+  --tw-prose-quotes: hsl(var(--lm-ink));
+  --tw-prose-quote-borders: hsl(var(--lm-line));
+  --tw-prose-captions: hsl(var(--lm-muted));
+  --tw-prose-code: hsl(var(--lm-ink));
+  color: hsl(var(--lm-muted)) !important;
+}

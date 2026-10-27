@@ -71,8 +71,8 @@
     --li-pale: 150 23% 95%;      /* si-bg2 */
     --li-amber: 35 68% 53%;
     --li-red: 5 51% 51%;
-    --li-btn: 165 62% 37%;       /* bright action emerald — admin buttons */
-    --li-btn-hover: 165 58% 30%;
+    --li-btn: 173 88% 29%;       /* brand teal — every primary action */
+    --li-btn-hover: 173 92% 22%;
     --font-plex: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     /* Service Intelligence homepage prototype — light consumer palette */
     --si-bg: 80 19% 97%;         /* warm ivory page canvas */
@@ -98,8 +98,8 @@
     --obs-cyan: 185 66% 52%;     /* harmonized with cine-cyan — one cyan for all signals */
     --obs-map-ocean: 172 30% 9%;
     /* Living Intelligence universal design system (ri-*) — consumer-facing brand tokens */
-    --ri-forest: 165 56% 16%;    /* #123F34 deep forest green */
-    --ri-emerald: 171 72% 31%;   /* #168977 intelligent emerald */
+    --ri-forest: 165 56% 16%;    /* #123F34 deep forest green — ink & primary actions */
+    --ri-emerald: 173 91% 29%;   /* #078C7D brand teal (was #168977) */
     --ri-mint: 157 38% 89%;      /* #D9EEE6 soft mint */
     --ri-ivory: 80 19% 97%;      /* #F7F8F5 warm ivory */
     --ri-amber: 39 100% 48%;     /* #F6A000 premium amber — conversion CTA */
