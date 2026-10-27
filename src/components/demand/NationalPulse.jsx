@@ -160,7 +160,7 @@ export default function NationalPulse() {
                           <span className="font-plex text-sm font-bold text-li-infra">{n}</span>
                         </div>
                         <div className="h-2 rounded-full bg-li-pale overflow-hidden">
-                          <div className="h-full rounded-full bg-li-infra" style={{ width: `${Math.round((n / detailRow.count) * 100)}%` }} />
+                          <div className="h-full rounded-full bg-li-infra" style={{ width: `${detailRow.count ? Math.round((n / detailRow.count) * 100) : 0}%` }} />
                         </div>
                       </div>
                     ))}

@@ -24,7 +24,7 @@ export default function CommandOverview({ licenses, transactions, customers, pic
     byProvince[p] = (byProvince[p] || 0) + 1;
   });
   const provinces = Object.entries(byProvince).sort((a, b) => b[1] - a[1]);
-  const maxProv = provinces.length ? provinces[0][1] : 1;
+  const maxProv = provinces.length ? Math.max(1, provinces[0][1]) : 1;
 
   const openInvoices = invoices.filter((i) => i.status === "sent" || i.status === "draft");
   const openInvoiced = openInvoices.reduce((s, i) => s + (Number(i.amount) || 0), 0);
