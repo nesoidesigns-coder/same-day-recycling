@@ -67,7 +67,7 @@ export default function MarketGauge({ label, metric, change = false, level = nul
           ) : (
             <>
               <span className="text-lg font-bold text-market-muted">—</span>
-              <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-market-muted">pending</span>
+              <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-market-muted">data unavailable</span>
             </>
           )}
         </PulseRing>

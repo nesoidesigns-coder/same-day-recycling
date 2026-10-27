@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, Trash2, Filter } from "lucide-react";
+import { Loader2, Plus, Trash2, Filter, Download } from "lucide-react";
 import { CATEGORY_LABELS, PROVINCES } from "@/lib/demandShared";
 
 const MEASURE_OPTIONS = [
@@ -23,6 +23,20 @@ export default function DemandDataTab() {
   const [message, setMessage] = useState("");
   const [form, setForm] = useState({ keyword: "", category: "junk_removal", geo_type: "province", province: "BC", city: "", volume: "", period: "", source: "", source_url: "", methodology_note: "", search_engine: "google", comparison_group: "", metric_type: "monthly_volume", competition: "unknown", trend_direction: "unknown", close_variants: "" });
   const [filterText, setFilterText] = useState("");
+
+  // Export exactly what is on screen — source-labeled rows, no aggregation and
+  // no derived columns, so the file can be audited against its provider.
+  const exportCsv = () => {
+    const cols = ["keyword", "service_category", "geo_type", "geo_key", "city", "province_code", "period", "metric_type", "est_monthly_volume", "volume_basis", "source", "competition", "last_updated"];
+    const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = [cols.join(","), ...filtered.map((r) => cols.map((c) => esc(r[c])).join(","))].join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `demand-observations-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [filterMeasure, setFilterMeasure] = useState("all");
 
   const load = async () => {
@@ -172,6 +186,9 @@ export default function DemandDataTab() {
             {MEASURE_OPTIONS.map(([v, label]) => <SelectItem key={v} value={v}>{label}</SelectItem>)}
           </SelectContent>
         </Select>
+        <Button variant="outline" onClick={exportCsv} disabled={!filtered.length} className="gap-2">
+          <Download className="w-4 h-4" /> Export CSV ({filtered.length})
+        </Button>
       </div>
 
       {loading ? (

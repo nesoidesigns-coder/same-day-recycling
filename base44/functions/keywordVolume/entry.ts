@@ -105,6 +105,14 @@ export default async function(req) {
         missing,
         period,
         cadence: CADENCE,
+        // Collection plan, exposed for the admin panel: what would be requested
+        // and where. Listing a keyword never implies a volume exists for it.
+        keyword_library: SEEDS,
+        geographies: {
+          national: ['Canada'],
+          provinces: Object.entries(PROVINCE_NAMES).map(([code, name]) => ({ code, name })),
+          cities: CITIES,
+        },
       });
     }
 
