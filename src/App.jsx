@@ -142,6 +142,7 @@ const AdminGauges = lazyPage(() => import('./pages/AdminGauges'));
 const Track = lazyPage(() => import('./pages/Track'));
 const MoveAssist = lazyPage(() => import('./pages/MoveAssist'));
 const MoveAssistDashboard = lazyPage(() => import('./pages/MoveAssistDashboard'));
+const CustomerPortal = lazyPage(() => import('./pages/CustomerPortal'));
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityRedirect from '@/components/CityRedirect';
 
@@ -310,6 +311,9 @@ const AuthenticatedApp = () => {
         <Route path="/partners" element={<AdminShell><PartnersDashboard /></AdminShell>} />
         <Route path="/partner-register" element={<PartnerRegister />} />
         <Route path="/realtor-dashboard" element={<AdminShell><RealtorDashboard /></AdminShell>} />
+        {/* Customer-facing OS — its own shell, outside the admin frame. */}
+        <Route path="/portal" element={<CustomerPortal />} />
+        <Route path="/portal/contractor" element={<PartnersDashboard />} />
       </Route>
       <Route path="/city/:cityName" element={<CityRedirect />} />
       <Route path="/:pageSlug" element={<CityPage />} />
