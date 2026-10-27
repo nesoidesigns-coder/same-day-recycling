@@ -118,6 +118,26 @@
   background-color: hsl(var(--lm-bg)) !important;
 }
 
+/* ---- The intelligence panel (.na-panel) ----
+   The homepage hero's gauge card was the last midnight-navy block on the
+   consumer site. Its inner type is written against the na-* tokens
+   (text-na-warm, border-na-cyan/15), so re-pointing those tokens inside the
+   panel converts the card and all of its copy in one place — no markup change. */
+.na-panel {
+  --na-navy: var(--lm-bg-2);
+  --na-deep: var(--lm-bg);
+  --na-warm: var(--lm-ink);
+  --na-cloud: var(--lm-bg);
+  --na-slate: var(--lm-muted);
+  --na-cyan: var(--lm-teal);
+  --na-teal: var(--lm-teal);
+  --na-green: var(--lm-emerald);
+  --na-amber: var(--lm-amber);
+  background: hsl(var(--lm-bg-2));
+  border: 1px solid hsl(var(--lm-line));
+  box-shadow: 0 18px 44px -28px hsl(var(--lm-ink) / 0.3);
+}
+
 /* ---- Long-form prose written for a dark panel ---- */
 [class*="bg-[#051511]" i] .prose-invert,
 [class*="bg-[#0a2b1e]" i] .prose-invert,
