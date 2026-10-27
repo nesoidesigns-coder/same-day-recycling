@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import KpiCard from "@/components/admin/KpiCard";
 import CommandAreas from "@/components/admin/CommandAreas";
+import DualMarketOverview from "@/components/admin/command/DualMarketOverview";
 import OSAdminGauges from "@/components/admin/OSAdminGauges";
 import SystemHealthStrip from "@/components/admin/SystemHealthStrip";
 import NationalOpsMap from "@/components/admin/NationalOpsMap";
@@ -92,6 +93,9 @@ export default function AdminOverview() {
         <h1 className="text-2xl md:text-3xl font-bold text-li-carbon tracking-tight">Operations Overview</h1>
         <p className="font-plex text-sm text-li-slate mt-1">Live network status across all Canadian service cities · all figures from real records{testCount > 0 ? ` · ${testCount} test booking${testCount === 1 ? "" : "s"} excluded from all figures` : ""}</p>
       </div>
+
+      {/* Both commercial markets, side by side, from recorded values */}
+      <DualMarketOverview />
 
       {/* One overview → five dedicated intelligence areas */}
       <CommandAreas />

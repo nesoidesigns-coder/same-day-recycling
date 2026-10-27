@@ -28,6 +28,7 @@ const Privacy = lazyPage(() => import('./pages/Privacy'));
 const Terms = lazyPage(() => import('./pages/Terms'));
 const AdminPricing = lazyPage(() => import('./pages/AdminPricing'));
 const AdminOverview = lazyPage(() => import('./pages/AdminOverview'));
+const AdminAllPages = lazyPage(() => import('./pages/AdminAllPages'));
 const AdminLayout = lazyPage(() => import('@/components/admin/AdminLayout'));
 const AdminDispatch = lazyPage(() => import('./pages/AdminDispatch'));
 const AdminLeads = lazyPage(() => import('./pages/AdminLeads'));
@@ -284,6 +285,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin/integrity" element={<AdminIntegrity />} />
           <Route path="/admin/bi" element={<AdminBI />} />
           <Route path="/admin/gauges" element={<AdminGauges />} />
+          <Route path="/admin/all-pages" element={<AdminAllPages />} />
           <Route path="/admin/ops" element={<AdminOps />} />
           <Route path="/admin/ads" element={<AdminAds />} />
           <Route path="/admin/publisher" element={<AdminCommunityPublisher />} />
