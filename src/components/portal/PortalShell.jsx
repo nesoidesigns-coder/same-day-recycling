@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { LogOut, Home, ArrowLeft } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { Image } from "@/components/ui/image";
+
+const LOGO = "https://media.base44.com/images/public/6ac93990cde830898b8dbc65/02e81d056_logo.png";
 
 // The customer-facing shell. Deliberately separate from the admin shell: no
 // internal chrome, no admin navigation, one place the signed-in customer
@@ -10,9 +13,9 @@ export default function PortalShell({ title, subtitle, email, children }) {
     <div className="min-h-screen bg-ri-ivory">
       <header className="border-b border-si-line bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
-          <Link to="/portal" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-ri-forest text-sm font-bold text-white">SD</span>
-            <span className="font-heading text-sm font-bold text-ri-charcoal">Recycling OS</span>
+          <Link to="/portal" className="flex items-center gap-2.5">
+            <Image src={LOGO} alt="Same Day Recycling" className="h-9 w-auto" fittingType="fit" />
+            <span className="hidden font-heading text-sm font-bold text-ri-charcoal sm:inline">Same Day Recycling</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link

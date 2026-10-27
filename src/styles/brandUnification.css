@@ -33,3 +33,40 @@ h4, h5, h6 {
 .text-ri-ivory\/50,
 .text-ri-ivory\/60 { color: hsl(var(--ri-ivory) / 0.72); }
 .text-ri-ivory\/70 { color: hsl(var(--ri-ivory) / 0.78); }
+
+/* ---- Command 7: palette & geometry convergence ----
+   The 2026-10 design audit measured the app's remaining design debt: a long
+   tail of one-off colour values left outside the token map, plus six arbitrary
+   corner radii. Conversion CTAs are already unified on the amber token; this
+   block closes the accents, neutrals and geometry so one brand change
+   propagates everywhere. Pure presentation — no logic touched. */
+
+/* Residual ambers & golds → the single master amber */
+[class*="bg-[#fbbf24]" i], [class*="bg-[#f59e0b]" i], [class*="bg-[#fcd34d]" i],
+[class*="bg-[#ffb733]" i], [class*="bg-[#f0b429]" i] { background-color: hsl(var(--ri-amber)); }
+[class*="text-[#fbbf24]" i], [class*="text-[#f59e0b]" i], [class*="text-[#fcd34d]" i],
+[class*="text-[#ffb733]" i] { color: hsl(var(--li-amber)); }
+[class*="border-[#f59e0b]" i], [class*="border-[#fbbf24]" i], [class*="border-[#fcd34d]" i] { border-color: hsl(var(--li-amber) / 0.5); }
+
+/* Stray neutral greys → the ink scale and line token */
+[class*="text-[#94a3b8]" i] { color: hsl(156 12% 33%); }
+[class*="text-[#64748b]" i] { color: hsl(156 12% 30%); }
+[class*="text-[#475569]" i] { color: hsl(165 30% 16%); }
+[class*="text-[#111827]" i] { color: hsl(var(--ri-charcoal)); }
+[class*="text-[#6b7280]" i] { color: hsl(var(--ri-slate)); }
+[class*="border-[#e5e7eb]" i], [class*="border-[#e2e8f0]" i], [class*="border-[#d1d5db]" i] { border-color: hsl(var(--si-line)); }
+
+/* Stray emerald tints and four near-identical hero greens → tokens */
+[class*="bg-[#ecfdf5]" i], [class*="bg-[#d1fae5]" i] { background-color: hsl(var(--ri-mint) / 0.55); }
+[class*="bg-[#a7f3d0]" i] { background-color: hsl(var(--ri-mint)); }
+[class*="bg-[#123f34]" i], [class*="bg-[#133c33]" i], [class*="bg-[#0d3a2f]" i],
+[class*="bg-[#0e382d]" i] { background-color: hsl(var(--ri-forest)); }
+/* The off-palette near-black utility strip → brand ink */
+[class*="bg-[#1a202c]" i] { background-color: hsl(var(--ri-charcoal)); }
+
+/* Geometry: collapse arbitrary radii onto the three-step scale
+   (0.75rem controls · 1rem cards · 1.5rem feature panels). */
+[class*="rounded-[12px]"], [class*="rounded-[14px]"] { border-radius: 0.75rem; }
+[class*="rounded-[16px]"], [class*="rounded-[18px]"] { border-radius: 1rem; }
+[class*="rounded-[20px]"], [class*="rounded-[22px]"], [class*="rounded-[24px]"] { border-radius: 1.5rem; }
+[class*="rounded-[26px]"], [class*="rounded-[28px]"], [class*="rounded-[32px]"] { border-radius: 1.75rem; }

@@ -1265,3 +1265,6 @@ h1, h2, h3, h4, p, a, span, li, button {
 /* Yellow strays → amber */
 .text-yellow-700 { color: hsl(var(--ri-amber-ink)); }
 .bg-yellow-100 { background-color: hsl(var(--ri-amber) / 0.12); }
+
+/* Residual palette & geometry convergence lives in src/styles/brandUnification.css
+   (loaded after this file so it cascades last across the whole site). */
