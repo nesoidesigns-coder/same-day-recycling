@@ -18,6 +18,7 @@
         "site_diagnostics",
         "brand_scan",
         "evidence_inspector",
+        "performance_intelligence",
         "manual"
       ],
       "default": "manual",
@@ -26,7 +27,7 @@
     "source_ref": {
       "type": "string",
       "default": "",
-      "description": "Id of the RexFinding / BrandScan / scan run this came from."
+      "description": "Id of the RexFinding / BrandScan / PerformanceAudit record this came from."
     },
     "evidence_url": {
       "type": "string",
@@ -70,6 +71,18 @@
       ],
       "default": "moderate",
       "description": "Estimated implementation effort."
+    },
+    "fix_key": {
+      "type": "string",
+      "default": "",
+      "maxLength": 60,
+      "description": "Rex's classification of the fix class (e.g. reduce_render_blocking_css, split_entry_bundle). Used to group and de-duplicate performance findings; never a claim that a change was applied."
+    },
+    "builder_action": {
+      "type": "string",
+      "default": "",
+      "maxLength": 2000,
+      "description": "The exact change Rex prepared for the performance finding: which file, what to change, and the expected effect. Written by Rex on 'apply'; the code edit itself is executed by the builder."
     },
     "owner": {
       "type": "string",
@@ -134,7 +147,7 @@
         }
       },
       "default": [],
-      "description": "Immutable event log: created, reviewed, approved, rex_diagnosed, testing, verified, completed, declined."
+      "description": "Immutable event log: created, reviewed, approved, rex_diagnosed, rex_applied, rex_verified, testing, verified, completed, declined."
     }
   },
   "required": [

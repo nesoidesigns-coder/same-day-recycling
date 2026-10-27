@@ -1,0 +1,47 @@
+{
+  "name": "Rex Performance Monitor",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "rex_performance_monitor",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "measure_site": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "rexPerformance",
+            "args": {
+              "action": "monitor"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Rex measures mobile performance",
+            "description": "Records a real PSI run and queues regressions"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * 1",
+      "one_time_date": null,
+      "timezone": "America/Toronto",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Weekly mobile performance check: Rex measures the live site, queues any real regression and alerts the owner."
+}

@@ -5,6 +5,7 @@ import {
   AlertTriangle, ShieldCheck, ExternalLink, CheckCircle2, ArrowRight, Monitor,
   TrendingUp, MapPin, Clock, X,
 } from "lucide-react";
+import RexPerformancePanel from "@/components/admin/improve/RexPerformancePanel";
 
 const FLOW = ["detected", "reviewed", "approved", "in_progress", "testing", "verified", "completed"];
 const OPEN_FLOW = FLOW.slice(0, 6);
@@ -189,6 +190,8 @@ export default function ImprovementQueue() {
           </button>
         </div>
       </div>
+
+      <RexPerformancePanel onChanged={load} />
 
       {notice && (
         <div className="rounded-2xl border border-[#187B65]/40 bg-[#eef6f2] px-4 py-3 text-sm text-[#102B2A] mb-5 flex items-start justify-between gap-3">
