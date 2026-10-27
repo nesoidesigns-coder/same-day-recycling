@@ -30,6 +30,7 @@ export const PAGES = [
   { path: "/admin/routes", name: "Route Intelligence", purpose: "Planned routes and daily run optimisation", role: "admin", section: "command", status: "active", sources: ["RoutePlan", "Booking"] },
   { path: "/admin/bi", name: "Live Business Intelligence", purpose: "Cross-business performance readings", role: "admin", section: "command", status: "active", sources: ["Booking", "Partner", "Visit"] },
   { path: "/admin/growth-command", name: "Owner Command Centre", purpose: "Owner-level decisions and escalations", role: "admin", section: "command", status: "active", sources: ["GrowthDecision", "Improvement"] },
+  { path: "/admin/adaptive", name: "Adaptive OS", purpose: "Observe → diagnose → approve → verify improvement cycle", role: "admin", section: "command", status: "active", sources: ["Improvement", "GrowthDecision", "RexFinding", "IntegrityRun", "SeoChangeLog", "DemandSyncLog", "PerformanceAudit"] },
 
   // ---------------- Customer Business (Market A) ----------------
   { path: "/admin/leads", name: "Leads", purpose: "Inbound customer enquiries waiting for a response", role: "admin", section: "customer", status: "active", sources: ["QuoteLead", "Booking", "NationalRequest"] },
