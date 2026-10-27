@@ -57,7 +57,7 @@ export default function CommandGauges({ data, loading, error }) {
       {data && (
         <>
           <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <MarketGauge label="Estimated Monthly Canadian Searches" metric={overview} level="national" />
+            <MarketGauge label="Estimated Monthly Canadian Service Searches" metric={overview} level="national" />
             <FactCard
               title="Estimated Daily Search Demand"
               metric={overview}

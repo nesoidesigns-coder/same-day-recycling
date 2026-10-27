@@ -42,6 +42,7 @@ const SERVICE_TO_MARKETS: Record<string, string[]> = {
   bin_rentals: ['renovation_construction_debris'],
   commercial_waste: ['commercial_office_cleanouts'],
   same_day_pickup: ['urgent_same_day'],
+  moving_services: ['moving_downsizing', 'urgent_same_day'],
   other: [],
 };
 

@@ -69,6 +69,7 @@
         "scrap_metal",
         "bin_rentals",
         "same_day_pickup",
+        "moving_services",
         "other"
       ],
       "default": "other"

@@ -19,23 +19,37 @@ const REQUIRED = [
   'GOOGLE_ADS_REFRESH_TOKEN',
 ];
 
+// Canadian service keyword library. Each seed is a real search expression the
+// business serves or is asked about; Keyword Planner broadens them into
+// related ideas. Geography is applied per request through geoTargetConstants,
+// so "near me"/city variants are never simulated locally — they come back from
+// the source or not at all.
 const SEEDS = [
-  'junk removal',
-  'furniture removal',
-  'appliance removal',
-  'mattress disposal',
-  'estate cleanout services',
-  'construction waste removal',
-  'demolition debris removal',
-  'electronics recycling',
-  'waste disposal services',
-  'recycling pickup',
-  'yard waste removal',
-  'commercial waste removal',
-  'hot tub removal',
-  'scrap metal recycling',
-  'bin rental',
-  'same day junk removal',
+  // Junk / general hauling
+  'junk removal', 'same day junk removal', 'junk removal near me', 'junk pickup',
+  'junk hauling', 'garbage removal', 'garbage pickup', 'trash removal', 'rubbish removal',
+  // Furniture
+  'furniture removal', 'couch removal', 'sofa removal', 'furniture disposal',
+  // Appliances
+  'appliance removal', 'same day appliance pickup', 'appliance pickup',
+  'refrigerator removal', 'washer dryer removal',
+  // Mattress
+  'mattress disposal', 'mattress removal',
+  // Recycling / specialty
+  'recycling pickup', 'scrap metal recycling', 'scrap metal pickup',
+  'electronics recycling', 'e waste pickup', 'hot tub removal',
+  // Cleanouts
+  'property cleanout', 'estate cleanout services', 'house cleanout',
+  'garage cleanout', 'basement cleanout', 'hoarding cleanup', 'office cleanout',
+  // Construction / renovation
+  'construction debris removal', 'construction waste removal',
+  'renovation debris removal', 'demolition debris removal', 'drywall removal',
+  // Commercial / large containers
+  'commercial junk removal', 'commercial waste removal', 'bin rental', 'dumpster rental',
+  // Waste / yard
+  'waste disposal services', 'yard waste removal',
+  // Same-day moving
+  'same day moving services', 'same day movers',
 ];
 
 const PROVINCE_NAMES = {
@@ -195,7 +209,7 @@ export default async function(req) {
       });
     }
 
-    // ---- 4. Keep the top 3 keyword observations per category per geography ----
+    // ---- 4. Keep the single canonical keyword per category per geography ----
     // avgMonthlySearches is a 12-month ROLLING AVERAGE, so it is stored with
     // metric_type monthly_average and period_end = retrieval month. When the
     // API reports per-month monthlySearchVolumes, the latest actual month is
@@ -225,7 +239,16 @@ export default async function(req) {
       }
       for (const [cat, entries] of perCat) {
         entries.sort((a, b) => Math.max(b.avg, b.latestMonth?.searches || 0) - Math.max(a.avg, a.latestMonth?.searches || 0));
-        for (const e of entries.slice(0, 3)) {
+        // Double-counting guard: one canonical term per service category and
+        // geography — the highest-volume term. Overlapping provider ideas
+        // ("junk removal near me", "couch removal", city variants) are stored
+        // as close variants of that term, so a national total never adds two
+        // expressions that describe the same underlying demand.
+        const canonical = entries[0];
+        const grouped = [...new Set([...(canonical.variants || []), ...entries.slice(1).map((e) => e.keyword)])]
+          .filter((v) => v && v !== canonical.keyword)
+          .slice(0, 25);
+        for (const e of [canonical]) {
           const base = {
             geo_type: r.scope.geo_type,
             geo_key: r.scope.geo_key,
@@ -233,7 +256,7 @@ export default async function(req) {
             city: r.scope.city || '',
             service_category: cat,
             keyword: e.keyword,
-            close_variants: e.variants,
+            close_variants: grouped,
             competition: e.competition,
             trend_direction: e.trend,
             source: 'Google Ads Keyword Planner (API)',

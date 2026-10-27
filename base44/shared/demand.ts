@@ -7,7 +7,7 @@ export const SERVICE_CATEGORIES = [
   'junk_removal', 'furniture_removal', 'mattress_disposal', 'appliance_removal', 'electronics',
   'recycling', 'waste_disposal', 'estate_cleanout', 'construction_debris', 'demolition_cleanup',
   'yard_waste_removal', 'commercial_waste', 'hot_tub_removal', 'scrap_metal',
-  'bin_rentals', 'same_day_pickup', 'other',
+  'bin_rentals', 'same_day_pickup', 'moving_services', 'other',
 ];
 
 // Every tracked service category (all but "other") shown on the homepage
@@ -31,6 +31,7 @@ export const CATEGORY_LABELS = {
   scrap_metal: 'Scrap Metal Recycling',
   bin_rentals: 'Bin Rentals',
   same_day_pickup: 'Same-Day Junk Pickup',
+  moving_services: 'Same-Day Moving',
   other: 'Other Services',
 };
 
@@ -82,15 +83,37 @@ const CATEGORY_ALIASES = {
   'disposal bin': 'bin_rentals',
   'same day junk removal': 'same_day_pickup', 'same day pickup': 'same_day_pickup',
   'same day junk pickup': 'same_day_pickup',
+  'junk removal near me': 'junk_removal', 'junk pickup': 'junk_removal', 'junk hauling': 'junk_removal',
+  'trash removal': 'junk_removal', 'rubbish removal': 'junk_removal',
+  'property cleanout': 'estate_cleanout', 'house cleanout': 'estate_cleanout',
+  'garage cleanout': 'estate_cleanout', 'basement cleanout': 'estate_cleanout',
+  'office cleanout': 'estate_cleanout', 'hoarding cleanup': 'estate_cleanout',
+  'construction debris removal': 'construction_debris', 'renovation debris removal': 'construction_debris',
+  'recycling pickup': 'recycling', 'curbside recycling': 'recycling',
+  'same day appliance pickup': 'appliance_removal', 'appliance pickup': 'appliance_removal',
+  'same day moving services': 'moving_services', 'same day moving': 'moving_services',
+  'same day movers': 'moving_services', 'moving services': 'moving_services',
   other: 'other',
 };
+
+// Longest alias first: a specific term ("bin rental") must beat a broader one
+// ("garbage") inside the same keyword.
+const ALIAS_KEYS_BY_LENGTH = Object.keys(CATEGORY_ALIASES)
+  .filter((k) => k !== 'other')
+  .sort((a, b) => b.length - a.length);
 
 export function normalizeCategory(raw) {
   const value = String(raw || '').toLowerCase().trim().replace(/[\s-]+/g, ' ');
   if (!value) return 'other';
   if (CATEGORY_ALIASES[value]) return CATEGORY_ALIASES[value];
   const snake = value.replace(/\s+/g, '_');
-  return SERVICE_CATEGORIES.includes(snake) ? snake : 'other';
+  if (SERVICE_CATEGORIES.includes(snake)) return snake;
+  // Geo- and intent-modified provider keywords ("junk removal near me",
+  // "couch removal vancouver") still belong to their service category.
+  for (const key of ALIAS_KEYS_BY_LENGTH) {
+    if (value.includes(key)) return CATEGORY_ALIASES[key];
+  }
+  return 'other';
 }
 
 export function normalizeCompetition(raw) {
