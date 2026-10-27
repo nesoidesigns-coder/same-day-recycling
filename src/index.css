@@ -184,6 +184,17 @@
     --na-cloud: 198 37% 95%;    /* Cloud White #EDF4F7 */
     --na-slate: 208 19% 40%;    /* Slate Text #526779 */
     --na-amber: 36 74% 67%;     /* Soft Amber #E9B76D */
+    /* Service Intelligence console — the dark radar identity (public shell) */
+    --cn-bg: 174 61% 11%;       /* #0B2E2D */
+    --cn-surface: 175 52% 16%;  /* #14403D */
+    --cn-surface-2: 175 44% 21%;
+    --cn-line: 175 30% 27%;
+    --cn-ink: 168 33% 94%;
+    --cn-muted: 172 14% 65%;
+    --cn-teal: 172 100% 37%;    /* #00BFA5 */
+    --cn-cyan: 180 100% 42%;    /* #00D4D4 */
+    --cn-green: 159 56% 52%;
+    --cn-orange: 36 100% 50%;   /* #FF9800 */
   }
 
   .dark {
@@ -1174,6 +1185,37 @@ h1, h2, h3, h4, p, a, span, li, button {
 /* Yellow strays → amber */
 .text-yellow-700 { color: hsl(var(--ri-amber-ink)); }
 .bg-yellow-100 { background-color: hsl(var(--ri-amber) / 0.12); }
+
+/* ---- Service Intelligence console (dark radar identity) ----
+   The public dashboard shell: deep forest canvas, translucent panels, teal
+   data, orange conversion. Scoped to .console-app so the admin OS and the
+   older light surfaces are untouched until they are migrated. */
+.console-app {
+  background:
+    radial-gradient(1100px 640px at 80% -14%, hsl(var(--cn-teal) / 0.16), transparent 68%),
+    radial-gradient(760px 540px at 8% 106%, hsl(var(--cn-cyan) / 0.09), transparent 72%),
+    hsl(var(--cn-bg)) !important;
+  color: hsl(var(--cn-ink));
+}
+
+.console-panel {
+  background: hsl(var(--cn-surface) / 0.62);
+  border: 1px solid hsl(var(--cn-line) / 0.75);
+  border-radius: 1rem;
+}
+
+.console-label {
+  font-family: var(--font-plex);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(var(--cn-muted));
+}
+
+.console-track {
+  background: hsl(var(--cn-line) / 0.55);
+}
 
 /* Residual palette & geometry convergence lives in src/styles/brandUnification.css
    (loaded after this file so it cascades last across the whole site). */

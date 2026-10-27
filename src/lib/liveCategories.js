@@ -12,6 +12,18 @@ export const LIVE_CATEGORIES = {
   donation_reuse_circular: "Donation & Reuse",
 };
 
+// Short console labels — the radar strip has room for one word per market.
+export const LIVE_CATEGORY_SHORT = {
+  furniture_appliance_removal: "Furniture",
+  moving_downsizing: "Moving",
+  renovation_construction_debris: "Construction",
+  property_management_turnover: "Property",
+  recycling_specialty_disposal: "Recycling",
+  commercial_office_cleanouts: "Commercial",
+  urgent_same_day: "Same-Day",
+  donation_reuse_circular: "Donation",
+};
+
 export const DEMAND_TYPE_LABELS = {
   observed_public_request: "Observed public requests",
   platform_inquiry: "Platform inquiries",
