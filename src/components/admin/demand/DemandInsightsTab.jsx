@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Loader2, ChevronRight, MapPin, FileSignature } from "lucide-react";
+import { Sparkles, Loader2, ChevronRight, MapPin, FileSignature, CheckCircle2, ArrowRight } from "lucide-react";
+import InsightProvenance from "@/components/admin/demand/InsightProvenance";
 
 const SECTIONS = [
   ["high_demand_categories", "High-demand service categories", "category"],
@@ -62,11 +63,41 @@ export default function DemandInsightsTab() {
         </div>
       ) : (
         <div>
-          <div className="text-xs text-slate-400 mb-4">
-            Data period {latest.period || "—"} · Generated {new Date(latest.created_date).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })} · All outputs are AI estimates.
-          </div>
+          <InsightProvenance insight={latest} />
           {latest.summary && (
             <div className="rounded-2xl bg-[#f6f9f8] border border-slate-100 p-5 mb-5 text-sm text-[#102B2A] leading-relaxed">{latest.summary}</div>
+          )}
+          {(analysis.next_actions || []).length > 0 && (
+            <div className="rounded-2xl bg-white border border-[#187B65]/30 p-5 mb-5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65] mb-3 flex items-center gap-1.5">
+                <ArrowRight className="w-3.5 h-3.5" /> Recommended next actions
+              </div>
+              <ul className="space-y-2">
+                {analysis.next_actions.map((n, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-[#187B65] shrink-0 mt-0.5" />
+                    <span className="text-[#102B2A]">
+                      <span className="font-semibold">{n.action}</span>
+                      {n.because && <span className="text-slate-500"> — because {n.because}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {(analysis.reliability || []).length > 0 && (
+            <div className="rounded-2xl bg-white border border-slate-100 p-5 mb-5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65] mb-3">How reliable is this</div>
+              <ul className="space-y-2">
+                {analysis.reliability.map((r, i) => (
+                  <li key={i} className="text-sm text-slate-600">
+                    <span className="font-semibold text-[#102B2A]">{r.claim}</span>
+                    {r.evidence && <span> — evidence: {r.evidence}</span>}
+                    {r.confidence && <span className="ml-1.5 rounded-full bg-[#f6f9f8] border border-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-500">{r.confidence}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
           <div className="grid md:grid-cols-2 gap-4">
             {SECTIONS.map(([key, label, field]) => (

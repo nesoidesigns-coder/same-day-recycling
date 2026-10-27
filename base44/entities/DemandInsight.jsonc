@@ -4,12 +4,62 @@
   "properties": {
     "period": {
       "type": "string",
-      "description": "Data period the analysis was generated from, e.g. '2026-10'."
+      "description": "Data period the analysis was generated FROM (the reporting period of the underlying observations), e.g. '2026-10'. Empty when no valid period exists on file \u2014 the generation month is never substituted for it."
+    },
+    "data_period": {
+      "type": "string",
+      "default": "",
+      "description": "Explicit copy of the data period used in the analysis. Empty = data period unavailable."
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "Timestamp the analysis was actually produced."
+    },
+    "last_source_refresh": {
+      "type": "string",
+      "description": "Most recent retrieval/refresh timestamp across the source records behind this analysis."
+    },
+    "sources_used": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Providers/engines that supplied the underlying observations."
+    },
+    "record_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of underlying demand observation records after deduplication."
+    },
+    "geo_coverage": {
+      "type": "object",
+      "default": {},
+      "description": "Geographic coverage of the evidence: {provinces, cities, unresolved}."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "moderate",
+        "low",
+        "insufficient"
+      ],
+      "default": "insufficient",
+      "description": "Deterministic evidence-quality label computed from record volume and geographic breadth. Not an AI opinion."
+    },
+    "missing_data": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Datasets or labels that were unavailable when the analysis ran, listed so gaps are never mistaken for zero."
     },
     "analysis": {
       "type": "object",
       "default": {},
-      "description": "Rex's AI analysis: high_demand_categories, underserved_markets, seasonal_opportunities, rising_terms, contractor_recruitment, landing_page_recommendations."
+      "description": "Rex's AI analysis: summary sections, high_demand_categories, underserved_markets, seasonal_opportunities, rising_terms, contractor_recruitment, landing_page_recommendations, reliability, next_actions."
     },
     "summary": {
       "type": "string",
