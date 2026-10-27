@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { dedupeObservations, summarizeDemand, currentPeriod } from '../../shared/demand.ts';
+import { detectMarkets } from '../../shared/demandTaxonomy.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 import { secrets } from 'base44:runtime';
 
@@ -185,7 +186,12 @@ export default async function(req) {
     const obsPage = obsLatest
       ? await svc.entities.DemandObservation.filter({ period: obsLatest }, { limit: 500 })
       : await svc.entities.DemandObservation.list({ limit: 500 });
-    const industry = summarizeDemand(dedupeObservations(obsPage.items || []));
+    // Same market-relevance gate as the dashboard and Rex analysis: only
+    // removal/recycling keywords count as this platform's industry demand.
+    const inMarket = dedupeObservations(obsPage.items || []).filter(
+      (r: any) => detectMarkets(`${r.keyword || ''} ${(r.close_variants || []).join(' ')}`, r.service_category || '').length > 0,
+    );
+    const industry = summarizeDemand(inMarket);
 
     return Response.json({
       ok: true,

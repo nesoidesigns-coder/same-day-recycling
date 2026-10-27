@@ -1,4 +1,5 @@
 import { CATEGORY_LABELS, MARKET_CATEGORIES, PROVINCE_NAMES, previousPeriod } from './demand.ts';
+import { detectMarkets } from './demandTaxonomy.ts';
 
 const norm = (v) => String(v || '').trim().toLowerCase();
 const unique = (xs) => [...new Set(xs.filter(Boolean))];
@@ -85,7 +86,15 @@ function ranked(rows, field, period, scope) {
 }
 
 export function buildMarketCommand(input, filters = {}, storedCount = input.length) {
-  const all = cleanObservations(input);
+  const cleaned = cleanObservations(input);
+  // Market-relevance gate — one rule, applied once, for every dashboard view.
+  // The observation table samples every industry group tracked (veterinary,
+  // dental, software...), and those keywords are not removal/recycling demand.
+  // Off-market rows are excluded from every figure and reported separately.
+  const all = cleaned.filter(
+    (r) => detectMarkets(`${r.keyword || ''} ${(r.close_variants || []).join(' ')}`, r.service_category || '').length > 0,
+  );
+  const offMarketExcluded = cleaned.length - all.length;
   const province = String(filters.province || '').toUpperCase();
   const city = String(filters.city || '').trim();
   const category = filters.category || 'all';
@@ -177,7 +186,7 @@ export function buildMarketCommand(input, filters = {}, storedCount = input.leng
   const comparableProvinces = provinces.length > 1 && provinces.every((r) => provinceCohort(r) === provinceCohort(provinces[0]));
   const dataState = overview.available ? 'available' : storedCount === 0 ? 'not_backfilled' : 'no_matching_observations';
   return { overview, categories, latest_period: latest, scope: scopeLabel, level, engine, measure:desired, click_metrics:clickMetrics, fastest_growing:fastest,
-    data_status:{state:dataState,stored_observations:storedCount,historical_market_data:overview.available ? 'source_observations_loaded' : 'not_determined_from_internal_database',website_activity_used:false,
+    data_status:{state:dataState,stored_observations:storedCount,off_market_excluded:offMarketExcluded,in_market_observations:all.length,historical_market_data:overview.available ? 'source_observations_loaded' : 'not_determined_from_internal_database',website_activity_used:false,
       note:storedCount === 0 ? 'Historical market data has not been backfilled into this app. An empty internal database is not evidence that Canadian market history does not exist. Provider authorization and retrieval are pending.' : overview.available ? 'Indicators use source-reported market periods without a website-launch cutoff. Website visits, bookings and advertising clicks are not inputs.' : 'The app contains market observations, but none match this geography, engine and measure. This is a dataset coverage gap, not evidence of absent market demand.'},
     history_coverage:{first_period:monthlyPeriods[0] || null,last_period:monthlyPeriods.at(-1) || null,months:complete.length,seasonality_comparable:comparableSeason},
     highest_province:comparableProvinces ? provinces[0] : null, regional_period:latest || regionalLatest,

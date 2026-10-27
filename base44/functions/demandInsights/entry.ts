@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { dedupeObservations, summarizeDemand, currentPeriod, PROVINCES } from '../../shared/demand.ts';
+import { detectMarkets } from '../../shared/demandTaxonomy.ts';
 import { isTestPartner } from '../../shared/coverageStatus.ts';
 
 // Admin-only: Rex analyzes the demand database and produces clearly-labeled
@@ -23,7 +24,15 @@ export default async function(req) {
       if (!page.has_more) break;
       cursor = page.next_cursor;
     }
-    const deduped = dedupeObservations(rows);
+    const allDeduped = dedupeObservations(rows);
+    // Market-relevance gate: the observation table samples every industry group
+    // tracked (veterinary, dental, software...). Only keywords resolving to one
+    // of the removal/recycling markets are analysed as this platform's demand;
+    // everything else is excluded and reported, never merged into the figures.
+    const deduped = allDeduped.filter(
+      (r: any) => detectMarkets(`${r.keyword || ''} ${(r.close_variants || []).join(' ')}`, r.service_category || '').length > 0,
+    );
+    const excludedOffMarket = allDeduped.length - deduped.length;
     const industry = summarizeDemand(deduped);
 
     const snaps = await svc.entities.DemandSnapshot.list({ sort: '-refreshed_at', limit: 1 });
@@ -48,6 +57,7 @@ export default async function(req) {
     const missingData: string[] = [];
     if (!industry.latest_period) missingData.push('No reporting period is on file for the demand observations');
     if (!(industry.volume_basis || []).length) missingData.push('Observations carry no volume basis label (estimate type unrecorded)');
+    if (!geoCoverage.provinces && !geoCoverage.cities) missingData.push('No geographic evidence on file: observations are national-level only, so no city or province can be named');
     if (!capture.gsc) missingData.push('Google Search Console capture is not available for this window');
     if (!capture.ga) missingData.push('Google Analytics capture is not available for this window');
     if (!coveredCities.length) missingData.push('No active verified contractor is on file, so coverage gaps cannot be measured');
@@ -147,7 +157,7 @@ Return STRICT JSON with exactly this shape:
       analysis,
       summary: String(analysis.summary || '').slice(0, 3000),
       generated_by: 'rex_ai',
-      basis: `DemandObservation database (${deduped.length} records, period ${industry.latest_period || 'unavailable'}, basis ${(industry.volume_basis || []).join(', ') || 'n/a'}), latest DemandSnapshot capture, ${partners.length} active verified partners.`,
+      basis: `DemandObservation database (${deduped.length} in-market records, ${excludedOffMarket} off-market excluded, period ${industry.latest_period || 'unavailable'}, basis ${(industry.volume_basis || []).join(', ') || 'n/a'}), latest DemandSnapshot capture, ${partners.length} active verified partners.`,
     });
     return Response.json({ ok: true, insight: record });
   } catch (error) {

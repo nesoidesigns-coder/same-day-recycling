@@ -10,6 +10,12 @@ export default function MarketSourceAudit() {
     {query.isError && <p role="alert" className="mt-2 text-sm text-destructive">The market-data audit could not be loaded.</p>}
     {report && <>
       <p className="mt-2 text-sm">Stored source observations: <strong>{report.data_status.stored_observations.toLocaleString('en-CA')}</strong></p>
+      {report.data_status.off_market_excluded > 0 && (
+        <p className="mt-1 text-sm">
+          In removal &amp; recycling markets: <strong>{(report.data_status.in_market_observations || 0).toLocaleString('en-CA')}</strong>
+          <span className="text-muted-foreground"> · {report.data_status.off_market_excluded.toLocaleString('en-CA')} other-industry observations excluded from every figure</span>
+        </p>
+      )}
       <p className="mt-2 text-sm text-muted-foreground">{report.data_status.note}</p>
       <p className="mt-2 text-xs text-muted-foreground">Historical coverage: {report.history_coverage.first_period || 'not backfilled'}{report.history_coverage.last_period ? ` to ${report.history_coverage.last_period}` : ''}. Website launch date, visits, campaign clicks and bookings are not market-data inputs.</p>
       <p className="mt-2 text-xs text-muted-foreground">Source observations do not prove a current API connection. Authorization is verified only by a successful provider request; a provider error is not an absence of Canadian search history.</p>
