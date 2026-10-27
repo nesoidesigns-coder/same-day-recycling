@@ -3,6 +3,7 @@ import { ArrowRight, Recycle } from "lucide-react";
 import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
 import { setRexContext } from "@/lib/rexSession";
 import NationalDemandGauge from "@/components/os/NationalDemandGauge";
+import CategoryDots from "@/components/si/CategoryDots";
 import { deriveModel, periodLabel } from "@/components/cinematic/RadarInstrument";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
@@ -13,11 +14,6 @@ const DAY_OPTIONS = [
   { value: 90, label: "90 days" },
   { value: 365, label: "12 months" },
 ];
-
-const chipClass = (active) =>
-  `shrink-0 snap-start rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${
-    active ? "bg-cine-cyan text-[#0a1220]" : "border border-cine-line/70 text-cine-ink hover:border-cine-cyan/50"
-  }`;
 
 // Floating indicator: elegant typography with a hairline connector reaching
 // toward the instrument. On mobile the connector disappears and the
@@ -162,17 +158,12 @@ export default function LiveHero({ data, loading, error, filters, onFilter, pick
       {/* bottom — category navigation + the pathway to pricing and booking */}
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-5">
         <div className="flex flex-col gap-3 border-t border-cine-line/50 pt-3">
-          <div className="flex snap-x gap-2 overflow-x-auto pb-1">
-            <button onClick={() => pickCategory("")} className={chipClass(!filters.category)}>
-              All categories
-            </button>
-            {m.rows.map((r) => (
-              <button key={r.key} onClick={() => pickCategory(r.key)} className={chipClass(filters.category === r.key)}>
-                <span className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: r.count ? r.fill : "#DCEDE9" }} />
-                {r.label} <span className="tabular-nums opacity-70">{r.count}</span>
-              </button>
-            ))}
-          </div>
+          <CategoryDots
+            items={m.rows.map((r) => ({ key: r.key, label: r.label, count: r.count }))}
+            activeKey={filters.category}
+            onSelect={pickCategory}
+            allLabel="All categories"
+          />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <details className="min-w-0">
               <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 font-plex text-[10px] font-bold uppercase tracking-[0.2em] text-cine-muted transition-colors hover:text-cine-cyan">

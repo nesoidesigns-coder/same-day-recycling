@@ -6,6 +6,7 @@ import { SIGNAL_CATEGORY_LABEL } from "./canadaShared";
 import useLivingSignals from "@/components/signals/useLivingSignals";
 import DiscoveryStream from "@/components/signals/DiscoveryStream";
 import DataFreshness from "@/components/signals/DataFreshness";
+import CategoryDots from "@/components/si/CategoryDots";
 import { CITIES } from "@/lib/cities";
 import { setRexContext } from "@/lib/rexSession";
 
@@ -97,22 +98,17 @@ export default function CanadaSignalSection() {
             isLoading={feed.isLoading}
             periodOverride={shortPeriod}
           />
-          <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-            <button
-              onClick={() => setCategory("")}
-              className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${!category ? "bg-ri-forest text-white" : "bg-ri-ivory text-ri-charcoal hover:bg-ri-mint"}`}
-            >
-              All markets
-            </button>
-            {categories.map((c) => (
-              <button
-                key={c.key}
-                onClick={() => setCategory(category === c.key ? "" : c.key)}
-                className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${category === c.key ? "bg-ri-forest text-white" : "bg-ri-ivory text-ri-charcoal hover:bg-ri-mint"}`}
-              >
-                {c.label}
-              </button>
-            ))}
+          <div className="mt-4">
+            <CategoryDots
+              items={categories.map((c) => ({
+                key: c.key,
+                label: c.label,
+                count: c.available ? c.value : null,
+              }))}
+              activeKey={category}
+              onSelect={setCategory}
+              allLabel="All markets"
+            />
           </div>
         </div>
 
