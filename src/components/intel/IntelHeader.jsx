@@ -25,7 +25,7 @@ export default function IntelHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-lm-line bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-lm-line bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-[1360px] flex-wrap items-center gap-x-5 gap-y-3 px-4 py-3 lg:flex-nowrap">
         <Link to="/" className="flex shrink-0 items-center gap-2.5">
           <Image src={LOGO} alt="Same Day Recycling" className="h-8 w-8" fittingType="fit" />
@@ -76,6 +76,21 @@ export default function IntelHeader() {
             <span className="hidden font-normal text-white/60 md:inline">Call or Text 24/7</span>
           </a>
         </div>
+      </div>
+
+      {/* Phones and tablets: the same destinations as a scrollable strip */}
+      <div className="flex gap-2 overflow-x-auto border-t border-lm-line px-4 py-2 xl:hidden">
+        {NAV.map(({ to, label }) => (
+          <Link
+            key={to}
+            to={to}
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-[12px] font-bold transition-colors ${
+              pathname === to ? "border-lm-teal bg-lm-teal text-white" : "border-lm-line text-lm-muted"
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
       </div>
     </header>
   );

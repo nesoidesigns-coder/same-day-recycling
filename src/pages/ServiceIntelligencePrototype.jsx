@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { useSEO } from "@/lib/seo";
 import Footer from "@/components/sdr/Footer";
-import SiHeader from "@/components/si/SiHeader";
-import ServiceHero from "@/components/home/ServiceHero";
-import TransparencyPanel from "@/components/home/TransparencyPanel";
+import IntelShell from "@/components/intel/IntelShell";
+import HomeInstruments from "@/components/home/HomeInstruments";
+import TrustStrip from "@/components/sdr/TrustStrip";
 import ImpactEstimator from "@/components/home/ImpactEstimator";
 import CanadaSignalSection from "@/components/canada/CanadaSignalSection";
 import ServiceCards from "@/components/si/ServiceCards";
 import BookingSteps from "@/components/home/BookingSteps";
+import TransparencyPanel from "@/components/home/TransparencyPanel";
 import PricingPreview from "@/components/home/PricingPreview";
 import LocalIntelPreview from "@/components/si/LocalIntelPreview";
 import ContractorEntrance from "@/components/si/ContractorEntrance";
-import TrustStrip from "@/components/sdr/TrustStrip";
 import FinalServiceCta from "@/components/si/FinalServiceCta";
 import useServiceIntelligence from "@/components/si/useServiceIntelligence";
 import { CITIES } from "@/lib/cities";
 
-// The homepage — bright, service-first, powered by the Canada Signal.
-// Hero → service selector → Canada Signal → categories → booking steps →
-// transparent pricing → verified local coverage → contractor entrance.
+// The homepage, composed in the platform's one design language: the reference
+// dashboard frame and instruments first (live readings), then the service
+// proof, pricing and booking sections underneath.
 export default function ServiceIntelligencePrototype() {
   useSEO({
     title: "Same Day Junk Removal & Recycling Services Across Canada | Same Day Recycling",
@@ -39,58 +39,47 @@ export default function ServiceIntelligencePrototype() {
   const cityNames = CITIES.map((c) => c.name);
 
   return (
-    <div className="min-h-screen bg-si-bg font-body text-si-ink">
-      <SiHeader />
+    <>
+      <IntelShell>
+        <div className="space-y-3">
+          <HomeInstruments />
 
-      <ServiceHero />
+          <TrustStrip />
 
-      {/* Customer trust and proof — verified reviews and promises only */}
-      <TrustStrip />
+          <ImpactEstimator />
 
-      <main className="mx-auto flex max-w-[1280px] flex-col gap-10 px-4 py-10 md:px-8 md:py-14">
-        {/* Signature tool — instant, shareable impact estimate */}
-        <ImpactEstimator />
+          <CanadaSignalSection />
 
-        {/* Signature technology — one coherent, interactive gauge */}
-        <CanadaSignalSection />
+          <ServiceCards
+            city={city}
+            prices={si.prices.data?.prices}
+            coverage={si.coverage}
+            cities={cityNames}
+          />
 
-        {/* Clear service categories */}
-        <ServiceCards
-          city={city}
-          prices={si.prices.data?.prices}
-          coverage={si.coverage}
-          cities={cityNames}
-        />
+          <BookingSteps />
 
-        {/* Simple explanation of how booking works */}
-        <BookingSteps />
+          <TransparencyPanel />
 
-        {/* How pricing, matching, confirmation and disposal actually work */}
-        <TransparencyPanel />
+          <PricingPreview prices={si.prices.data?.prices} />
 
-        {/* Transparent pricing preview */}
-        <PricingPreview prices={si.prices.data?.prices} />
+          <LocalIntelPreview
+            city={city}
+            onCity={setCity}
+            locations={mapLocations}
+            coverage={si.coverage}
+            prices={si.prices.data?.prices}
+            resources={si.resources}
+            activity={si.activity.data}
+          />
 
-        {/* Verified local service coverage */}
-        <LocalIntelPreview
-          city={city}
-          onCity={setCity}
-          locations={mapLocations}
-          coverage={si.coverage}
-          prices={si.prices.data?.prices}
-          resources={si.resources}
-          activity={si.activity.data}
-        />
+          <FinalServiceCta />
 
-        {/* Final booking action */}
-        <FinalServiceCta />
-      </main>
-
-      <div className="mx-auto max-w-[1280px] px-4 pb-10 md:px-8">
-        <ContractorEntrance />
-      </div>
+          <ContractorEntrance />
+        </div>
+      </IntelShell>
 
       <Footer />
-    </div>
+    </>
   );
 }
