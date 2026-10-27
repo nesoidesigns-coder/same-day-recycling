@@ -501,6 +501,47 @@ h1, h2, h3, h4, p, a, span, li, button {
   animation: gauge-pulse-glow 3.4s ease-in-out infinite;
 }
 
+/* ---- Premium gauge life: ambient bloom, orbit, travelling comet, ring ---- */
+
+/* Soft breathing bloom behind an instrument — light, never neon. */
+@keyframes gauge-halo-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.035); }
+}
+
+.gauge-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gauge-halo-breathe 6s ease-in-out infinite;
+}
+
+/* One slow reference orbit around the dial (decorative, carries no data). */
+@keyframes gauge-orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+.gauge-orbit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gauge-orbit-spin 34s linear infinite;
+}
+
+.donut-orbit {
+  animation: gauge-orbit-spin 42s linear infinite reverse;
+}
+
+/* The arc head pulses like a live reading, then settles. */
+@keyframes gauge-comet-beat {
+  0%, 100% { opacity: 0.75; transform: scale(0.94); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+
+.gauge-comet {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gauge-comet-beat 2.8s ease-in-out infinite;
+}
+
 /* ---- Rex orb states (idle · listening · processing · success · attention) ---- */
 
 .rex-orb {
@@ -662,6 +703,10 @@ h1, h2, h3, h4, p, a, span, li, button {
   .pulse-arc-spin,
   .gauge-sweep,
   .gauge-pulse,
+  .gauge-halo,
+  .gauge-orbit,
+  .donut-orbit,
+  .gauge-comet,
   .rex-orb--processing::before,
   .rex-orb--listening,
   .rex-orb--processing .rex-orb__core,
