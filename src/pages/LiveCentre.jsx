@@ -11,7 +11,6 @@ import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
 import { setRexContext } from "@/lib/rexSession";
 import { useIntelligence } from "@/lib/intelligenceContext";
 import IntelHeader from "@/components/intel/IntelHeader";
-import IntelSidebar from "@/components/intel/IntelSidebar";
 import IntelCard from "@/components/intel/IntelCard";
 import DemandDonut from "@/components/intel/DemandDonut";
 import StatRail from "@/components/intel/StatRail";
@@ -116,10 +115,8 @@ export default function LiveCentre() {
     <div className="min-h-screen bg-lm-bg pb-24 text-lm-ink lg:pb-10">
       <IntelHeader />
 
-      <div className="mx-auto flex max-w-[1360px] gap-6 px-4 py-4">
-        <IntelSidebar />
-
-        <main className="min-w-0 flex-1 space-y-3">
+      <div className="mx-auto max-w-[1360px] px-4 py-4">
+        <main className="min-w-0 space-y-3">
           {/* Title row: what this is, how fresh, the window, the way to book */}
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="min-w-0">

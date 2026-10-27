@@ -102,7 +102,7 @@
     --ri-emerald: 173 91% 29%;   /* #078C7D brand teal (was #168977) */
     --ri-mint: 157 38% 89%;      /* #D9EEE6 soft mint */
     --ri-ivory: 80 19% 97%;      /* #F7F8F5 warm ivory */
-    --ri-amber: 39 100% 48%;     /* #F6A000 premium amber — conversion CTA */
+    --ri-amber: 35 100% 55%;     /* #FF9F1C accent orange — conversion CTA */
     --ri-charcoal: 170 27% 13%;  /* #182A27 main text */
     --ri-slate: 159 10% 27%;     /* #4C5B54 supporting text */
     --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
@@ -111,20 +111,20 @@
   /* Light Mint Intelligence — the platform's one visual language.
      Every intelligence surface reads from these values; changing the brand is
      a change here, not across pages. AA contrast verified on the pale canvas. */
-  --lm-bg: 165 25% 97%;            /* Canvas mint     #F5F9F8 */
-  --lm-bg-2: 165 25% 99%;          /* Warm white      #FCFDFD */
+  --lm-bg: 210 20% 98%;            /* Page canvas     #F9FAFB */
+  --lm-bg-2: 0 0% 100%;            /* Card white      #FFFFFF */
   --lm-surface: 0 0% 100%;         /* Card white      #FFFFFF */
-  --lm-sidebar: 165 22% 97%;       /* Rail mint       #F5F9F8 */
-  --lm-ink: 196 33% 15%;           /* Deep navy ink   #1A2B34 */
-  --lm-muted: 197 13% 47%;         /* Muted slate     #6B7C84 */
-  --lm-teal: 175 100% 33%;         /* Brand teal      #00A699 */
-  --lm-turquoise: 176 80% 43%;     /* Data turquoise  #16C7BA */
-  --lm-cyan: 186 72% 62%;          /* Soft electric   #58D6E4 */
-  --lm-emerald: 161 58% 50%;       /* Success emerald #35C99A */
-  --lm-amber: 40 100% 50%;         /* Warm amber      #FFAB00 */
-  --lm-line: 165 22% 90%;          /* Mist hairline   #E3EDEA */
-  --lm-land: 165 37% 87%;          /* map land        #B8E5DB */
-  --lm-land-hover: 165 34% 78%;
+  --lm-sidebar: 210 20% 98%;       /* Rail canvas     #F9FAFB */
+  --lm-ink: 221 39% 11%;           /* Primary text    #111827 */
+  --lm-muted: 220 9% 46%;          /* Secondary text  #6B7280 */
+  --lm-teal: 168 100% 23%;         /* Brand green     #007661 */
+  --lm-turquoise: 168 62% 34%;     /* Data green      #1E8C75 */
+  --lm-cyan: 168 45% 55%;          /* Soft green      #59BCA8 */
+  --lm-emerald: 160 55% 40%;       /* Success green   #2E9E76 */
+  --lm-amber: 35 100% 55%;         /* Accent orange   #FF9F1C */
+  --lm-line: 220 13% 91%;          /* Hairline        #E5E7EB */
+  --lm-land: 210 20% 92%;          /* map land        #E5E9EE */
+  --lm-land-hover: 210 16% 84%;
   --lm-glow: 176 80% 43%;          /* ambient turquoise */
 
   /* The cinematic/intelligence layer now renders in Light Mint Intelligence.
