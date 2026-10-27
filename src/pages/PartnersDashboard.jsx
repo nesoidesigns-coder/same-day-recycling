@@ -5,6 +5,7 @@ import TerritoryCard from "@/components/partner/TerritoryCard";
 import IncomingRequests from "@/components/partner/IncomingRequests";
 import Financials from "@/components/partner/Financials";
 import Performance from "@/components/partner/Performance";
+import LocalDemand from "@/components/partner/LocalDemand";
 import ValueDashboard from "@/components/partner/ValueDashboard";
 import ComplianceCard from "@/components/partner/ComplianceCard";
 import SubscriptionTerms from "@/components/partner/SubscriptionTerms";
@@ -171,6 +172,7 @@ export default function PartnersDashboard() {
         <EarningsSimulator />
 
         <Performance />
+        <LocalDemand city={partner.city} />
 
         <ValueDashboard />
 

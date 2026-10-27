@@ -11,7 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 const TABS = [
   ["command", "Market Intelligence"],
-  ["health", "Source Health"],
+  ["health", "Search Volume & Sources"],
   ["data", "Industry Data"],
   ["import", "Import Data"],
   ["insights", "Rex Analysis"],

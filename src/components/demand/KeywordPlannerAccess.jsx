@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import HistoricalAccessRequirements from '@/components/demand/HistoricalAccessRequirements';
+import KeywordLibraryEditor from '@/components/demand/KeywordLibraryEditor';
 
 // Google Ads Keyword Planner connection + collection plan.
 // Nothing here invents a volume: it reports which credential fields are
@@ -65,5 +66,7 @@ export default function KeywordPlannerAccess({ onSynced }) {
         </> : <p className="mt-2 text-xs text-muted-foreground">Run the configuration check to list the targeted geographies.</p>}
       </div>
     </div>}
+
+    <KeywordLibraryEditor onSaved={() => run(true)} />
   </section>;
 }

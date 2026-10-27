@@ -1,0 +1,71 @@
+{
+  "name": "SearchVolumeSettings",
+  "type": "object",
+  "properties": {
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Admin-managed keyword library requested from the search-volume source. Listing a keyword never implies a volume exists for it. Empty = the built-in Canadian library is used."
+    },
+    "cities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Cities targeted for retrieval, resolved to Google geo target constants at run time. Empty = the built-in city list is used."
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      },
+      "default": [],
+      "description": "Auditable record of collection-plan changes."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "maxLength": 1000,
+      "description": "Optional free-text description of this record for admin reference."
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

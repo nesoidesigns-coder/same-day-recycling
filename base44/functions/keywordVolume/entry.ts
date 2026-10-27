@@ -95,6 +95,13 @@ export default async function(req) {
     const period = currentPeriod(now);
     const CADENCE = 'Monthly retrieval via Google Ads API (Keyword Planner volumes are 12-month rolling averages published monthly)';
 
+    // Admin-managed collection plan: which keywords and cities to request.
+    // Falls back to the built-in Canadian library when no plan is saved.
+    const settings = await svc.entities.SearchVolumeSettings.list().catch(() => []);
+    const plan = (Array.isArray(settings) ? settings[0] : null) || {};
+    const keywords = Array.isArray(plan.keywords) && plan.keywords.length ? plan.keywords : SEEDS;
+    const cities = Array.isArray(plan.cities) && plan.cities.length ? plan.cities : CITIES;
+
     // Connection check (no API work) — also used by the admin panel.
     const missing = REQUIRED.filter((n) => !secrets.get(n));
     if (payload.checkOnly || missing.length > 0) {
@@ -107,11 +114,12 @@ export default async function(req) {
         cadence: CADENCE,
         // Collection plan, exposed for the admin panel: what would be requested
         // and where. Listing a keyword never implies a volume exists for it.
-        keyword_library: SEEDS,
+        keyword_library: keywords,
+        plan_source: Array.isArray(plan.keywords) && plan.keywords.length ? 'admin_plan' : 'built_in',
         geographies: {
           national: ['Canada'],
           provinces: Object.entries(PROVINCE_NAMES).map(([code, name]) => ({ code, name })),
-          cities: CITIES,
+          cities,
         },
       });
     }
@@ -144,7 +152,7 @@ export default async function(req) {
 
     // ---- 2. Resolve Canadian geo targets (national fixed, rest by name) ----
     let API = 'https://googleads.googleapis.com/v18';
-    const nameList = [...new Set([...Object.values(PROVINCE_NAMES), ...CITIES])]
+    const nameList = [...new Set([...Object.values(PROVINCE_NAMES), ...cities])]
       .map((n) => `'${n.replace(/'/g, "\\'")}'`)
       .join(', ');
     const geoQuery = `SELECT geo_target_constant.resource_name, geo_target_constant.canonical_name, geo_target_constant.country_code, geo_target_constant.target_type FROM geo_target_constant WHERE geo_target_constant.canonical_name IN (${nameList})`;
@@ -177,7 +185,7 @@ export default async function(req) {
         scope: `province:${code}`, label: `${name} (province)`, geo_type: 'province', geo_key: code,
         province_code: code, city: '', resource: geoIndex.get(normName(name)) || '',
       })),
-      ...CITIES.map((city) => ({
+      ...cities.map((city) => ({
         scope: `city:${city}`, label: `${city} (city)`, geo_type: 'city', geo_key: city,
         province_code: '', city, resource: geoIndex.get(normName(city)) || '',
       })),
@@ -191,7 +199,7 @@ export default async function(req) {
         method: 'POST',
         headers: authHeaders,
         body: JSON.stringify({
-          keywordSeed: { keywords: SEEDS },
+          keywordSeed: { keywords },
           geoTargetConstants: [scope.resource],
           languageConstant: 'languageConstants/1000',
           keywordPlanNetwork: 'GOOGLE_SEARCH',
