@@ -25,11 +25,19 @@ export default function MetricGauge({
   return (
     <div className="os-metric-gauge relative mx-auto w-full" style={{ maxWidth: size }} data-appearance={appearance}>
       <OSIntelligenceGauge size="feature" appearance={appearance} loading={loading} ariaLabel={`${label}: ${loading ? "loading" : unavailable || !present ? "unavailable" : shown}${unit}`} layers={layers} />
-      <div className="pointer-events-none absolute inset-0 grid place-items-center px-[21%] text-center">
+      <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center px-[21%] text-center">
         <div className="w-full min-w-0">
           {loading ? <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent text-muted-foreground" role="status" aria-label="Loading metric" /> : children || <>
-            <div className="os-metric-value metric text-xl leading-tight sm:text-2xl">{unavailable || !present || (shown === null || shown === undefined || String(shown).trim() === "") ? "—" : shown}</div>
-            {unit && <div className="os-metric-unit mt-1 text-[10px] font-semibold">{unit}</div>}
+            <div
+              className="os-metric-value metric text-xl leading-tight sm:text-2xl"
+              style={{ color: `hsl(var(${appearance === "dark" ? "--os-ink" : "--ri-charcoal"}))` }}
+            >{unavailable || !present || (shown === null || shown === undefined || String(shown).trim() === "") ? "—" : shown}</div>
+            {unit && (
+              <div
+                className="os-metric-unit mt-1 text-[10px] font-semibold"
+                style={{ color: `hsl(var(${appearance === "dark" ? "--os-silver" : "--ri-slate"}))` }}
+              >{unit}</div>
+            )}
           </>}
         </div>
       </div>

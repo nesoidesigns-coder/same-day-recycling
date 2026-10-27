@@ -93,11 +93,14 @@ export default function OSIntelligenceGauge({
       </svg>
 
       {center && (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center">
+        <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center">
           <div className="relative text-center">
             {livePulse > 0 && <span key={livePulse} className="cine-pulse-ring absolute -inset-6 rounded-full" aria-hidden="true" />}
             <div className={`font-plex font-bold uppercase text-os-cyan ${CENTER_SCALE[size].title}`}>{center.title}</div>
-            <div className={`metric mt-1.5 ${CENTER_SCALE[size].value} ${center.value != null && center.value !== "" ? "text-os-ink" : "text-os-silver"}`}>
+            <div
+              className={`metric relative mt-1.5 ${CENTER_SCALE[size].value}`}
+              style={{ color: `hsl(var(${appearance === "light" ? "--ri-charcoal" : "--os-ink"}))` }}
+            >
               {center.value != null && center.value !== "" ? center.value : "—"}
             </div>
             <div className={`os-gauge-status mt-1 font-plex uppercase tracking-[0.08em] text-os-silver ${CENTER_SCALE[size].status}`}>{center.status}</div>
