@@ -69,7 +69,10 @@ export default async function(req) {
       if (res.ok) {
         const html = await res.text();
         siteTitle = /<title[^>]*>\s*[^<\s]/i.test(html);
-        siteDescription = /<meta[^>]+name=["']description["'][^>]+content=["']\s*[^"'\s]/i.test(html);
+        // Attribute order is not guaranteed in served HTML (the platform emits
+        // content before name), so match the tag and require both attributes.
+        siteDescription = /<meta[^>]*name=["']description["'][^>]*content=["'][^"'\s]/i.test(html)
+          || /<meta[^>]*content=["'][^"'\s][^>]*name=["']description["']/i.test(html);
         siteCanonical = /<link[^>]+rel=["']canonical["']/i.test(html);
       }
     } catch (e) {
