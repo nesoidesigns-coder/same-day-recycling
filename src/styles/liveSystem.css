@@ -1,0 +1,156 @@
+/* Live Intelligence — the platform's single visual language.
+   Loaded last, after every other stylesheet, so the identity defined on the
+   Live Intelligence page (soft ice-mint canvas, white hairline cards on a 24px
+   radius, forest ink, sage support copy, rich-teal actions, turquoise reserved
+   for data fills, mono instrument labels) governs every route: the public site,
+   the customer and contractor portals and the admin operating system.
+
+   Presentation only — no markup, component, data or behaviour changes. Every
+   rule reads from the --lm-* palette tokens in index.css, so the brand remains
+   editable in one place. `!important` is confined to the small number of
+   properties that must win over earlier migration layers. */
+
+/* ---- 1. Canvas: one soft mint field with a turquoise bloom above ---- */
+.os-experience {
+  background:
+    radial-gradient(880px 460px at 50% -14%, hsl(var(--lm-glow) / 0.13), transparent 70%),
+    radial-gradient(620px 420px at 100% 108%, hsl(var(--lm-teal) / 0.06), transparent 72%),
+    hsl(var(--lm-bg)) !important;
+  color: hsl(var(--lm-ink));
+}
+
+/* Page-root shells painted opaque white hid the canvas; let it read through.
+   Cards, sheets and modals keep their own solid surfaces. */
+.os-experience .min-h-screen:is(
+    .bg-white,
+    .bg-si-bg,
+    .bg-si-bg2,
+    .bg-ri-ivory,
+    .bg-li-cloud,
+    .bg-os-frost,
+    .bg-slate-50,
+    [class~="bg-[#f4f7f5]"],
+    [class~="bg-[#f6f9f8]"],
+    [class~="bg-[#fafcfb]"]
+  ) {
+  background: transparent !important;
+}
+
+/* ---- 2. Surfaces: white card, mist hairline, one elevation ---- */
+.os-experience :is(div, section, article, aside, li, form, details, header, footer)[class*="rounded"]:is(
+    [class~="border-slate-100"],
+    [class~="border-slate-200"],
+    [class~="border-slate-300"],
+    [class~="border-gray-100"],
+    [class~="border-gray-200"],
+    [class~="border-li-steel"],
+    [class~="border-si-line"],
+    [class~="border-border"]
+  ) {
+  border-color: hsl(var(--lm-line));
+}
+
+.os-experience :is(.shadow-sm, .shadow, .shadow-md) {
+  box-shadow: 0 1px 2px hsl(var(--lm-ink) / 0.05) !important;
+}
+
+.os-experience :is(.shadow-lg, .shadow-xl, .shadow-2xl) {
+  box-shadow: 0 20px 46px -32px hsl(var(--lm-ink) / 0.4) !important;
+}
+
+/* The site header and every sticky nav become the airy frosted band. */
+.os-experience [data-os-nav] {
+  background-color: hsl(var(--lm-bg-2) / 0.82) !important;
+  border-color: hsl(var(--lm-line)) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* ---- 3. Instrument typography ----
+   Uppercase micro-copy is the gauge language: IBM Plex Mono, tight ink, wide
+   tracking. Applied only where a label already declares uppercase + tracking,
+   so prose and headings are untouched. */
+.os-experience :is(span, p, div, dt, th, label, summary)[class*="uppercase"][class*="tracking-"] {
+  font-family: var(--font-plex);
+}
+
+.os-experience :is(table, .metric, .tabular-nums) {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ---- 4. Data surfaces: tables follow the same hairline rhythm ---- */
+.os-experience thead th {
+  background-color: hsl(var(--lm-bg));
+  color: hsl(var(--lm-muted));
+  font-family: var(--font-plex);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.os-experience :is(tbody, tr)[class*="divide-y"] {
+  border-color: hsl(var(--lm-line));
+}
+
+.os-experience tbody tr:hover {
+  background-color: hsl(var(--lm-bg) / 0.7);
+}
+
+/* ---- 5. One accent family ----
+   Rich teal carries actions, links and live values; amber stays the single
+   conversion treatment; stray palette families collapse into these. */
+.os-experience [class*="bg-black"]:not([class*="bg-black/"]),
+.os-experience [class~="bg-slate-900"]:not([class*=":bg-"]) {
+  background-color: hsl(var(--lm-ink)) !important;
+  color: hsl(var(--lm-bg-2)) !important;
+}
+
+.os-experience :is([class~="bg-indigo-500"], [class~="bg-violet-500"], [class~="bg-purple-500"], [class~="bg-fuchsia-500"]) {
+  background-color: hsl(var(--lm-teal)) !important;
+}
+
+.os-experience :is([class~="bg-sky-500"], [class~="bg-cyan-500"], [class~="bg-teal-500"]) {
+  background-color: hsl(var(--lm-teal)) !important;
+}
+
+/* ---- 6. Controls: pill geometry, teal focus, calm hover ---- */
+.os-experience :is(a, button, summary, tr, li)[class*="transition"] {
+  transition-timing-function: var(--ease-cine);
+}
+
+.os-experience :is(input, select, textarea):focus-visible,
+.os-experience :is(button, a, summary):focus-visible {
+  outline: 2px solid hsl(var(--lm-teal));
+  outline-offset: 3px;
+}
+
+/* ---- 7. Everyday brand marks on the mint canvas ---- */
+.os-experience :is(.data-label, .obs-section-label) {
+  color: hsl(var(--lm-muted));
+}
+
+.os-experience :is(.surface, .glass) {
+  background-color: hsl(var(--lm-surface) / 0.86);
+  border-color: hsl(var(--lm-line));
+}
+
+/* The ambient glow behind hero instrument panels. */
+.os-experience .ambient-glow {
+  background: radial-gradient(closest-side, hsl(var(--lm-glow) / 0.14), transparent 72%);
+}
+
+/* ---- 8. Operating-system chrome: frosted mint rails, not flat white ---- */
+.os-experience .admin-li > aside {
+  background-color: hsl(var(--lm-sidebar) / 0.94) !important;
+  border-color: hsl(var(--lm-line)) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.os-experience .admin-li > header.sticky {
+  background-color: hsl(var(--lm-bg-2) / 0.9) !important;
+  border-color: hsl(var(--lm-line)) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}

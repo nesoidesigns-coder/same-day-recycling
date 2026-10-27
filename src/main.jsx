@@ -7,6 +7,8 @@ import '@/components/os/experience.css'
 import '@/styles/brandUnification.css'
 // Last word on legacy surfaces — must load after every other stylesheet.
 import '@/styles/lightSite.css'
+// Live Intelligence — the platform identity, applied after every migration layer.
+import '@/styles/liveSystem.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <App />
