@@ -26,6 +26,12 @@ export default function BeforeAfterGallery({ service }) {
 
   if (!service || pairs === null || pairs.length === 0) return null;
 
+  // Provenance decides the wording. AI-generated imagery is labelled as an
+  // illustration; only photos tagged as real completed jobs are described as
+  // real pickups.
+  const isReal = (p) => p?.provenance === "verified_job";
+  const allVerified = pairs.every((p) => isReal(p.before) && isReal(p.after));
+
   return (
     <section className="bg-[#f4f7f5]">
       <div className="max-w-7xl mx-auto px-4 py-14">
@@ -33,7 +39,11 @@ export default function BeforeAfterGallery({ service }) {
           <Camera className="w-5 h-5 text-[#187B65]" />
           <h2 className="text-3xl font-bold tracking-tight text-[#102B2A] text-center">Before &amp; After</h2>
         </div>
-        <p className="text-center text-slate-600 mt-2 text-sm">Real pickups from our crews — see exactly how a job goes.</p>
+        <p className="text-center text-slate-600 mt-2 text-sm">
+          {allVerified
+            ? "Real pickups from our crews — see exactly how a job goes."
+            : "Illustrative example of a typical pickup — not a specific customer's job."}
+        </p>
         <div className="mt-8 grid sm:grid-cols-2 gap-4">
           {pairs.map((p, i) => (
             <div key={p.before.id || i} className="rounded-2xl border border-slate-100 bg-white overflow-hidden">
@@ -50,6 +60,9 @@ export default function BeforeAfterGallery({ service }) {
               <div className="p-4">
                 <p className="font-bold text-[#102B2A] text-sm">{p.after.title || p.before.title}</p>
                 {(p.after.caption || p.before.caption) && <p className="text-xs text-slate-500 mt-0.5">{p.after.caption || p.before.caption}</p>}
+                {!(isReal(p.before) && isReal(p.after)) && (
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">Illustrative image</p>
+                )}
               </div>
             </div>
           ))}

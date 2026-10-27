@@ -24,8 +24,16 @@ export default function PhotoGallery() {
 
   const shown = (photos || []).filter((p) => tab === "all" || p.category === tab);
 
+  // Anything not tagged as a real completed job is shown as an illustration.
+  const hasIllustrative = shown.some((p) => p.provenance && p.provenance !== "verified_job");
+
   return (
     <div>
+      {hasIllustrative && (
+        <p className="mb-4 text-xs font-semibold text-slate-500">
+          Images marked “Illustrative” show the type of work we do, not a specific customer's job.
+        </p>
+      )}
       <div className="flex flex-wrap gap-2 mb-8">
         {TABS.map((t) => (
           <button
@@ -59,6 +67,11 @@ export default function PhotoGallery() {
               <span className="absolute top-3 left-3 rounded-full bg-[#102B2A]/80 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65]">
                 {CAT_LABEL[p.category] || "Trucks"}
               </span>
+              {p.provenance && p.provenance !== "verified_job" && (
+                <span className="absolute top-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#102B2A]">
+                  Illustrative
+                </span>
+              )}
               <figcaption className="absolute inset-x-0 bottom-0 p-4 pt-8 bg-gradient-to-t from-[#102B2A]/95 via-[#102B2A]/60 to-transparent">
                 <p className="font-bold text-white text-sm leading-tight">{p.title}</p>
                 {p.caption && <p className="text-xs text-emerald-100/80 mt-0.5 line-clamp-2">{p.caption}</p>}

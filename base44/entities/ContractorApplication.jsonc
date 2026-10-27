@@ -98,6 +98,11 @@
       "default": false,
       "description": "True once the applicant received the approval email. Prevents duplicate sends."
     },
+    "source": {
+      "type": "string",
+      "default": "contractors_page",
+      "description": "Where the application came from (contractors_page, city_page, referral). Used for contractor acquisition attribution."
+    },
     "reviewed_date": {
       "type": "string",
       "format": "date"
@@ -110,7 +115,7 @@
     "city"
   ],
   "rls": {
-    "create": null,
+    "create": {},
     "read": {
       "user_condition": {
         "role": "admin"

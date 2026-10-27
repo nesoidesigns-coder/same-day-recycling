@@ -4,6 +4,16 @@ import { base44 } from "@/api/base44Client";
 
 const TRUCK_SIZES = ["Pickup truck", "Pickup + trailer", "1-ton + dump trailer", "Full dump truck"];
 const CITY_OPTIONS = [
+  // Lower Mainland first — where the network actually operates today.
+  "Vancouver",
+  "North Vancouver",
+  "Burnaby",
+  "Surrey",
+  "Richmond",
+  "Coquitlam",
+  "Victoria",
+  "Kelowna",
+  "Kamloops",
   "Edmonton",
   "Calgary",
   "Halifax",
@@ -38,14 +48,18 @@ export default function PartnerApplicationForm() {
     }
     setStatus("sending");
     try {
-      await base44.entities.QuoteLead.create({
-        name: form.name,
-        phone: form.phone,
+      // Contractor inquiries belong to the contractor CRM, not the customer
+      // quote pipeline. Saving them as QuoteLead hid every partner application
+      // from the contractor funnel and mixed operators into customer leads.
+      await base44.entities.ContractorApplication.create({
+        company: form.company,
+        owner_name: form.name,
         email: form.email,
+        phone: form.phone,
         city: form.city,
-        items_text: `${form.company} · ${form.truck_size} · Insured: ${form.insured}`,
-        estimate: "",
-        description: `PARTNER APPLICATION — ${form.message || "no message"}`,
+        fleet_description: form.truck_size,
+        equipment: [form.truck_size].filter(Boolean),
+        description: `Insured: ${form.insured}. ${form.message || "No additional notes."}`,
         status: "new",
       });
       setStatus("done");

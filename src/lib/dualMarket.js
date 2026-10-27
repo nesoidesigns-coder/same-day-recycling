@@ -106,7 +106,17 @@ export function buildDualMarket({ bookings, licences, partners, applications, na
   );
 
   const partnerRows = partners || [];
-  const verifiedPartners = partnerRows.filter((p) => p.verified && p.active !== false);
+  // Test fixtures (ZZTEST… records created by lifecycle checks) are never real
+  // operational coverage. Counting them would overstate the network, so both
+  // the verified count and the coverage cities exclude them.
+  const isTestPartner = (p) => {
+    const name = String(p.name || "").toLowerCase();
+    const email = String(p.email || "").toLowerCase();
+    return name.startsWith("zztest") || email.startsWith("zztest") || name.includes("test simulation contractor");
+  };
+  const realPartners = partnerRows.filter((p) => !isTestPartner(p));
+  const testFixtures = partnerRows.length - realPartners.length;
+  const verifiedPartners = realPartners.filter((p) => p.verified && p.active !== false);
   const contractorEmails = new Set(partnerRows.map((p) => normEmail(p.email)).filter(Boolean));
   const licenceEmails = new Set(allLicences.map((l) => normEmail(l.email)).filter(Boolean));
   const bothMarkets = [...contractorEmails].filter((e) => licenceEmails.has(e)).length;
@@ -129,10 +139,15 @@ export function buildDualMarket({ bookings, licences, partners, applications, na
     acquisitionApplications: applications || 0,
     arpc: activeLicences.length ? money(mrr / activeLicences.length) : null,
     contractsOnFile: 0,
-    partners: partnerRows.length,
+    partners: realPartners.length,
     verifiedPartners: verifiedPartners.length,
+    testFixturesExcluded: testFixtures,
     bothMarkets,
     notes: [
+      testFixtures > 0
+        ? `${testFixtures} test partner record${testFixtures === 1 ? "" : "s"} excluded from coverage — not real capacity.`
+        : null,
+      verifiedPartners.length === 0 ? "No verified contractor capacity yet — open requests have no confirmed operator in any city." : null,
       allLicences.length > 0 && activeLicences.length === 0
         ? `${allLicences.length} licence${allLicences.length === 1 ? "" : "s"} on file, none yet on an active monthly subscription — MRR is $0 rather than projected.`
         : null,
