@@ -16,18 +16,18 @@ export const OS_COLORS = {
 
 // Categorical sector palette: tints of the four semantic accents, ordered so
 // adjacent sectors stay distinguishable. Never repurposed for statuses.
-export const CATEGORY_PALETTE = ["#32C7D5", "#6C9DF1", "#9A82E6", "#55C7A1", "#67B8DC", "#8FB6F4", "#C0A9F0", "#7ED4BC"];
+export const CATEGORY_PALETTE = ["#16C7BA", "#078C7D", "#58D6E4", "#35C99A", "#0AAE9B", "#4DBCE8", "#7FD8CF", "#9AE3DB"];
 
 // Record-type colours — semantic: cyan = observed public activity,
 // green = confirmed/verified, amber = qualified/pending, violet = modeled.
 export const TYPE_COLORS = {
-  observed_public_request: "#32C7D5",
-  platform_inquiry: "#6C9DF1",
-  confirmed_booking: "#55C7A1",
-  qualified_opportunity: "#E8B66A",
-  search_interest: "#9A82E6",
-  market_indicator: "#67B8DC",
-  unknown: "#5C7391",
+  observed_public_request: "#16C7BA",
+  platform_inquiry: "#078C7D",
+  confirmed_booking: "#35C99A",
+  qualified_opportunity: "#F5A000",
+  search_interest: "#4DBCE8",
+  market_indicator: "#58D6E4",
+  unknown: "#617D76",
 };
 
 // Five size variants (design targets — adapt to the container).

@@ -24,28 +24,31 @@ const ARC_SWEEP = 340;  // degrees of usable arc (the gap reads as calm)
 
 // Category tints of the national palette — teal family first, adjacent
 // sectors stay distinguishable. Never repurposed for statuses.
-const CAT_COLORS = ["#19B8AD", "#176B91", "#63DCE5", "#42C99A", "#67A9BC", "#7ED4BC"];
+const CAT_COLORS = ["#16C7BA", "#078C7D", "#58D6E4", "#35C99A", "#0AAE9B", "#4DBCE8"];
 
+// One instrument, one palette: Light Mint Intelligence. Both appearances read
+// from the same values so the gauge looks identical wherever it is placed —
+// turquoise arcs, rich-teal sectors, forest-green readings on the pale canvas.
 const PALETTE = {
   dark: {
-    track: "rgba(99, 220, 229, 0.10)",
-    arc: "#19B8AD",
-    hairline: "rgba(99, 220, 229, 0.14)",
-    title: "#63DCE5",
-    ink: "#F8FAFC",
-    muted: "#9FB3C2",
-    green: "#42C99A",
-    amber: "#E9B76D",
+    track: "rgba(7, 140, 125, 0.12)",
+    arc: "#16C7BA",
+    hairline: "rgba(7, 140, 125, 0.16)",
+    title: "#078C7D",
+    ink: "#123D37",
+    muted: "#617D76",
+    green: "#35C99A",
+    amber: "#C97C00",
   },
   light: {
-    track: "rgba(23, 107, 145, 0.10)",
-    arc: "#176B91",
-    hairline: "rgba(23, 107, 145, 0.13)",
-    title: "#176B91",
-    ink: "#081827",
-    muted: "#526779",
-    green: "#1E9E77",
-    amber: "#B47A2E",
+    track: "rgba(7, 140, 125, 0.12)",
+    arc: "#16C7BA",
+    hairline: "rgba(7, 140, 125, 0.16)",
+    title: "#078C7D",
+    ink: "#123D37",
+    muted: "#617D76",
+    green: "#35C99A",
+    amber: "#C97C00",
   },
 };
 
@@ -140,9 +143,9 @@ export default function NationalDemandGauge({
       <svg viewBox="0 0 520 520" className="block w-full" role="img" aria-label={ariaLabel}>
         <defs>
           <radialGradient id={gradId} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#19B8AD" stopOpacity={appearance === "dark" ? 0.14 : 0.08} />
-            <stop offset="55%" stopColor="#176B91" stopOpacity={appearance === "dark" ? 0.05 : 0.03} />
-            <stop offset="100%" stopColor="#19B8AD" stopOpacity="0" />
+            <stop offset="0%" stopColor="#16C7BA" stopOpacity={appearance === "dark" ? 0.1 : 0.08} />
+            <stop offset="55%" stopColor="#58D6E4" stopOpacity={appearance === "dark" ? 0.05 : 0.03} />
+            <stop offset="100%" stopColor="#16C7BA" stopOpacity="0" />
           </radialGradient>
         </defs>
 

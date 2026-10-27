@@ -76,7 +76,7 @@ export default function LiveHero({ data, loading, error, filters, onFilter, pick
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(120% 90% at 50% 42%, transparent 42%, rgba(16, 43, 42, 0.06) 100%)" }}
+        style={{ background: "radial-gradient(120% 90% at 50% 42%, transparent 42%, rgba(22, 199, 186, 0.06) 100%)" }}
       />
 
       {/* top — compact branding, title, data freshness, service action */}
@@ -168,7 +168,7 @@ export default function LiveHero({ data, loading, error, filters, onFilter, pick
             </button>
             {m.rows.map((r) => (
               <button key={r.key} onClick={() => pickCategory(r.key)} className={chipClass(filters.category === r.key)}>
-                <span className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: r.count ? r.fill : "#3A4A63" }} />
+                <span className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: r.count ? r.fill : "#DCEDE9" }} />
                 {r.label} <span className="tabular-nums opacity-70">{r.count}</span>
               </button>
             ))}

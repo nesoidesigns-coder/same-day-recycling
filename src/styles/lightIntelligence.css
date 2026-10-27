@@ -1,0 +1,148 @@
+/* Same Day Recycling — Light Mint Intelligence
+   The shared visual language for every intelligence surface: the panel, the
+   form control, the geography, and the motion primitives the signature radar
+   is built from. Loaded after index.css so these are the last word on
+   surface styling; the palette itself lives in index.css as --lm-* tokens.
+
+   Card:   pure white, mist-green hairline, 20px radius, diffuse elevation.
+   Canvas: soft ice mint (#F1FAF8) with a subtle turquoise glow.
+   Ink:    deep forest (#123D37) with muted sage (#617D76) supporting text.
+   Accent: bright turquoise (#16C7BA) readings, rich teal (#078C7D) sectors,
+           warm amber (#F5A000) reserved for conversion and exceptions. */
+
+/* ---- The platform card ---- */
+.cine-glass {
+  background: hsl(var(--lm-surface));
+  border: 1px solid hsl(var(--lm-line));
+  border-radius: 1.25rem;
+  box-shadow: 0 6px 24px rgba(18, 61, 55, 0.05);
+  transition: box-shadow var(--motion-standard) var(--ease-cine), border-color var(--motion-standard) var(--ease-cine);
+}
+
+.cine-glass:hover {
+  border-color: hsl(var(--lm-turquoise) / 0.35);
+  box-shadow: 0 10px 32px rgba(18, 61, 55, 0.08);
+}
+
+/* Ambient turquoise illumination behind the signature instrument — subtle by
+   design, never a neon wash. */
+.cine-glow {
+  background: radial-gradient(circle, hsl(var(--lm-glow) / 0.09) 0%, transparent 65%);
+}
+
+/* ---- Form controls ---- */
+.cine-input {
+  width: 100%;
+  border-radius: 9999px;
+  background: hsl(var(--lm-surface));
+  border: 1px solid hsl(var(--lm-line));
+  color: hsl(var(--lm-ink));
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cine-input:focus {
+  border-color: hsl(var(--lm-teal) / 0.55);
+  box-shadow: 0 0 0 3px hsl(var(--lm-turquoise) / 0.12);
+  outline: none;
+}
+
+.cine-input option { color: #123d37; }
+
+/* ---- Geography: pale mint land on a pale blue sea, white outlines ---- */
+.cine-province {
+  fill: hsl(var(--lm-land));
+  stroke: hsl(var(--lm-surface));
+  stroke-width: 0.8;
+  cursor: pointer;
+  transition: fill 0.18s ease;
+}
+
+.cine-province:hover { fill: hsl(var(--lm-land-hover)); }
+
+.cine-province-selected {
+  fill: hsl(var(--lm-land-hover));
+  stroke: hsl(var(--lm-teal));
+  stroke-width: 1.2;
+}
+
+/* ---- Motion primitives: assemble, drift, one-shot draw ----
+   Durations stay inside the restraint budget (180–450ms for interactions);
+   ambient rotation is the only long-running motion and it is disabled
+   entirely under prefers-reduced-motion. */
+@keyframes radar-halo-spin { to { transform: rotate(360deg); } }
+
+.radar-halo {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+  animation: radar-halo-spin 120s linear infinite;
+}
+
+@keyframes cine-assemble {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.radar-in {
+  animation: cine-assemble 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cine-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.cine-fade-up {
+  animation: cine-fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cine-pulse-ring {
+  from { box-shadow: 0 0 0 0 rgba(22, 199, 186, 0.35); }
+  to { box-shadow: 0 0 0 14px rgba(22, 199, 186, 0); }
+}
+
+.cine-pulse-ring {
+  animation: cine-pulse-ring 1.2s ease-out 1 both;
+}
+
+/* Orbital elements — two precise, very slow drift dots (not a radar sweep) */
+@keyframes orb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.orb-slow {
+  transform-box: view-box;
+  transform-origin: 260px 260px;
+  animation: orb-spin 150s linear infinite;
+}
+
+.orb-fast {
+  transform-box: view-box;
+  transform-origin: 260px 260px;
+  animation: orb-spin 100s linear infinite reverse;
+}
+
+/* One-shot dial draw during the instrument's assembly */
+@keyframes cine-draw {
+  from { stroke-dashoffset: 1560; }
+  to { stroke-dashoffset: 0; }
+}
+
+.cine-draw {
+  stroke-dasharray: 1560;
+  animation: cine-draw 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-halo,
+  .radar-in,
+  .cine-fade-up,
+  .cine-pulse-ring,
+  .orb-slow,
+  .orb-fast,
+  .cine-draw {
+    animation: none !important;
+  }
+}

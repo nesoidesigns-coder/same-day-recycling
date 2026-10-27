@@ -108,20 +108,46 @@
     --ri-sky: 193 50% 95%;       /* #EAF5F8 soft sky blue */
     --ri-amber-ink: 35 100% 28%;    /* #8F5D00 — dark amber for text on light tints (AA) */
   /* Recycling OS master intelligence palette (midnight system) */
-  --cine-bg: 211 61% 8%;        /* Midnight Core #081421 */
-  --cine-surface: 208 55% 12%;  /* Deep Ocean #0E2030 */
-  --cine-ink: 201 50% 95%;      /* Arctic White #EAF3F8 */
-  --cine-muted: 204 24% 70%;    /* Mist Silver #9FB5C4 */
-  --cine-line: 209 40% 25%;
-  --cine-cyan: 185 66% 52%;     /* Signal Cyan #32C7D5 */
-  --cine-arctic: 218 83% 68%;   /* Intelligence Blue #6C9DF1 */
-  --cine-blue: 214 70% 60%;
-  --cine-violet: 254 79% 75%;   /* Forecast Violet #9A82E6 */
-  --cine-green: 160 50% 56%;    /* Verified Green #55C7A1 */
-  --cine-amber: 36 73% 66%;     /* #E8B66A */
-  --cine-coral: 356 69% 69%;    /* #E77B83 */
-  --cine-land: 208 45% 13%;
-  --cine-land-hover: 207 45% 20%;
+  /* Light Mint Intelligence — the platform's one visual language.
+     Every intelligence surface reads from these values; changing the brand is
+     a change here, not across pages. AA contrast verified on the pale canvas. */
+  --lm-bg: 163 47% 96%;            /* Soft ice mint   #F1FAF8 */
+  --lm-bg-2: 160 40% 99%;          /* Warm white      #FAFDFC */
+  --lm-surface: 0 0% 100%;         /* Card white      #FFFFFF */
+  --lm-sidebar: 165 37% 96%;       /* Sidebar mint    #F0F8F6 */
+  --lm-ink: 172 54% 15%;           /* Deep forest     #123D37 */
+  --lm-muted: 165 13% 44%;         /* Muted sage      #617D76 */
+  --lm-teal: 173 91% 29%;          /* Rich teal       #078C7D */
+  --lm-turquoise: 176 80% 43%;     /* Bright turquoise #16C7BA */
+  --lm-cyan: 186 72% 62%;          /* Soft electric   #58D6E4 */
+  --lm-emerald: 161 58% 50%;       /* Success emerald #35C99A */
+  --lm-amber: 39 100% 48%;         /* Warm amber      #F5A000 */
+  --lm-line: 166 32% 90%;          /* Mist green      #DCEDE9 */
+  --lm-land: 165 37% 87%;          /* map land        #B8E5DB */
+  --lm-land-hover: 165 34% 78%;
+  --lm-glow: 176 80% 43%;          /* ambient turquoise */
+
+  /* The cinematic/intelligence layer now renders in Light Mint Intelligence.
+     These aliases keep every existing `cine-*` surface on the one palette —
+     no page markup changes, no dark navy dashboards. */
+  --cine-bg: 163 47% 96%;        /* #F1FAF8 */
+  --cine-surface: 0 0% 100%;     /* white card */
+  --cine-ink: 172 54% 15%;       /* #123D37 */
+  --cine-muted: 165 13% 44%;     /* #617D76 */
+  --cine-line: 166 32% 90%;      /* #DCEDE9 */
+  /* Text and UI accent: rich teal (AA on white). The brighter turquoise
+     #16C7BA is reserved for gauge arcs and data fills, where it carries no
+     body copy — see --lm-turquoise. */
+  --cine-cyan: 173 91% 29%;      /* #078C7D */
+  --cine-cyan-bright: 176 80% 43%; /* #16C7BA data fills only */
+  --cine-arctic: 173 91% 29%;    /* #078C7D rich teal */
+  --cine-blue: 186 72% 62%;      /* #58D6E4 */
+  --cine-violet: 173 91% 29%;    /* collapsed to teal — one accent family */
+  --cine-green: 161 58% 50%;     /* #35C99A */
+  --cine-amber: 39 100% 48%;     /* #F5A000 */
+  --cine-coral: 39 100% 48%;     /* exceptions read as amber, never red noise */
+  --cine-land: 165 37% 87%;
+  --cine-land-hover: 165 34% 78%;
   /* Recycling OS master tokens — canonical names for the gauge family */
   --os-core: 211 61% 8%;
   --os-deep: 208 55% 12%;
@@ -914,127 +940,10 @@ h1, h2, h3, h4, p, a, span, li, button {
 
 /* ---- Canadian Service Radar — cinematic intelligence surfaces ---- */
 
-.cine-glass {
-  background: rgba(14, 32, 48, 0.55);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(74, 118, 165, 0.22);
-}
+/* Intelligence surfaces (.cine-glass, .cine-input, .cine-province) live in
+   src/styles/lightIntelligence.css — loaded after this file. */
 
-.cine-glow {
-  background: radial-gradient(closest-side, hsl(var(--cine-cyan) / 0.14), transparent 72%);
-}
-
-.cine-input {
-  width: 100%;
-  border-radius: 9999px;
-  background: rgba(12, 19, 37, 0.6);
-  border: 1px solid rgba(74, 118, 165, 0.3);
-  color: hsl(var(--cine-ink));
-  padding: 0.55rem 1rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  transition: border-color 0.15s ease;
-}
-
-.cine-input:focus {
-  border-color: hsl(var(--cine-cyan) / 0.6);
-  outline: none;
-}
-
-.cine-input option { color: #0a1220; }
-
-.cine-province {
-  fill: hsl(var(--cine-land));
-  stroke: hsl(var(--cine-line));
-  stroke-width: 0.6;
-  cursor: pointer;
-  transition: fill 0.15s ease;
-}
-
-.cine-province:hover { fill: hsl(var(--cine-land-hover)); }
-
-.cine-province-selected {
-  fill: hsl(var(--cine-land-hover));
-  stroke: hsl(var(--cine-cyan) / 0.7);
-  stroke-width: 1;
-}
-
-/* Cinematic motion system — assembly, idle halo, update pulse */
-@keyframes radar-halo-spin { to { transform: rotate(360deg); } }
-
-.radar-halo {
-  transform-box: view-box;
-  transform-origin: 200px 200px;
-  animation: radar-halo-spin 120s linear infinite;
-}
-
-@keyframes cine-assemble {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.radar-in {
-  animation: cine-assemble 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes cine-fade-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
-}
-
-.cine-fade-up {
-  animation: cine-fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes cine-pulse-ring {
-  from { box-shadow: 0 0 0 0 rgba(50, 199, 213, 0.4); }
-  to { box-shadow: 0 0 0 14px rgba(50, 199, 213, 0); }
-}
-
-.cine-pulse-ring {
-  animation: cine-pulse-ring 1.2s ease-out 1 both;
-}
-
-/* Orbital elements — two precise, very slow drift dots (not a radar sweep) */
-@keyframes orb-spin {
-  to { transform: rotate(360deg); }
-}
-
-.orb-slow {
-  transform-box: view-box;
-  transform-origin: 260px 260px;
-  animation: orb-spin 150s linear infinite;
-}
-
-.orb-fast {
-  transform-box: view-box;
-  transform-origin: 260px 260px;
-  animation: orb-spin 100s linear infinite reverse;
-}
-
-/* One-shot dial draw during the instrument's assembly */
-@keyframes cine-draw {
-  from { stroke-dashoffset: 1560; }
-  to { stroke-dashoffset: 0; }
-}
-
-.cine-draw {
-  stroke-dasharray: 1560;
-  animation: cine-draw 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .radar-halo,
-  .radar-in,
-  .cine-fade-up,
-  .cine-pulse-ring,
-  .orb-slow,
-  .orb-fast,
-  .cine-draw {
-    animation: none !important;
-  }
-}
+/* Intelligence motion primitives live in src/styles/lightIntelligence.css. */
 
 /* ---- Command 5: full-spectrum unification ----
    1) Legacy brand hexes in ANY letter case → tokens (the earlier layers only

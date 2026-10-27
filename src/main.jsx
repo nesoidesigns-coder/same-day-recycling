@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from '@/App.jsx'
 import '@/index.css'
+import '@/styles/lightIntelligence.css'
 import '@/components/os/experience.css'
 import '@/styles/brandUnification.css'
 
