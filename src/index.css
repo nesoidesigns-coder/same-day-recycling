@@ -111,18 +111,18 @@
   /* Light Mint Intelligence — the platform's one visual language.
      Every intelligence surface reads from these values; changing the brand is
      a change here, not across pages. AA contrast verified on the pale canvas. */
-  --lm-bg: 163 47% 96%;            /* Soft ice mint   #F1FAF8 */
-  --lm-bg-2: 160 40% 99%;          /* Warm white      #FAFDFC */
+  --lm-bg: 165 25% 97%;            /* Canvas mint     #F5F9F8 */
+  --lm-bg-2: 165 25% 99%;          /* Warm white      #FCFDFD */
   --lm-surface: 0 0% 100%;         /* Card white      #FFFFFF */
-  --lm-sidebar: 165 37% 96%;       /* Sidebar mint    #F0F8F6 */
-  --lm-ink: 172 54% 15%;           /* Deep forest     #123D37 */
-  --lm-muted: 165 13% 44%;         /* Muted sage      #617D76 */
-  --lm-teal: 173 91% 29%;          /* Rich teal       #078C7D */
-  --lm-turquoise: 176 80% 43%;     /* Bright turquoise #16C7BA */
+  --lm-sidebar: 165 22% 97%;       /* Rail mint       #F5F9F8 */
+  --lm-ink: 196 33% 15%;           /* Deep navy ink   #1A2B34 */
+  --lm-muted: 197 13% 47%;         /* Muted slate     #6B7C84 */
+  --lm-teal: 175 100% 33%;         /* Brand teal      #00A699 */
+  --lm-turquoise: 176 80% 43%;     /* Data turquoise  #16C7BA */
   --lm-cyan: 186 72% 62%;          /* Soft electric   #58D6E4 */
   --lm-emerald: 161 58% 50%;       /* Success emerald #35C99A */
-  --lm-amber: 39 100% 48%;         /* Warm amber      #F5A000 */
-  --lm-line: 166 32% 90%;          /* Mist green      #DCEDE9 */
+  --lm-amber: 40 100% 50%;         /* Warm amber      #FFAB00 */
+  --lm-line: 165 22% 90%;          /* Mist hairline   #E3EDEA */
   --lm-land: 165 37% 87%;          /* map land        #B8E5DB */
   --lm-land-hover: 165 34% 78%;
   --lm-glow: 176 80% 43%;          /* ambient turquoise */

@@ -1,43 +1,49 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { DollarSign, MapPin, Recycle, Users, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, DollarSign, Loader2, MapPin, Recycle, Users } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useSEO } from "@/lib/seo";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
 import useLiveGauge from "@/hooks/useLiveGauge";
 import { REGIONS } from "@/lib/regions";
 import { CITIES } from "@/lib/cities";
-import { LIVE_CATEGORIES } from "@/lib/liveCategories";
+import { LIVE_CATEGORIES, DEMAND_TYPE_LABELS } from "@/lib/liveCategories";
 import { setRexContext } from "@/lib/rexSession";
 import { useIntelligence } from "@/lib/intelligenceContext";
-import LiveHero from "@/components/cinematic/LiveHero";
-import CinematicCanadaMap from "@/components/cinematic/CinematicCanadaMap";
-import useCanadaGeography from "@/components/cinematic/useCanadaGeography";
-import RexIntelligenceStrip from "@/components/cinematic/RexIntelligenceStrip";
-import ConsumerActions, { BookNowBar } from "@/components/cinematic/ConsumerActions";
-import { CineCard } from "@/components/cinematic/CinePrimitives";
+import IntelHeader from "@/components/intel/IntelHeader";
+import IntelSidebar from "@/components/intel/IntelSidebar";
+import IntelCard from "@/components/intel/IntelCard";
+import DemandDonut from "@/components/intel/DemandDonut";
+import StatRail from "@/components/intel/StatRail";
+import MetricTiles from "@/components/intel/MetricTiles";
+import DemandMapCard from "@/components/intel/DemandMapCard";
+import CategoryTiles from "@/components/intel/CategoryTiles";
+import ActivityList from "@/components/intel/ActivityList";
+import TopCities from "@/components/intel/TopCities";
+import RexInsight from "@/components/intel/RexInsight";
 import LiveCommunityFeed from "@/components/live/LiveCommunityFeed";
 import RexPriceCompare from "@/components/home/RexPriceCompare";
-import ServiceSearch from "@/components/live/ServiceSearch";
-import InsightPanel from "@/components/live/InsightPanel";
-import TrendStrip from "@/components/live/TrendStrip";
 import HowItWorks from "@/components/live/HowItWorks";
+import { BookNowBar } from "@/components/cinematic/ConsumerActions";
 
-// Same Day Recycling LIVE — the Canadian Service Radar. The first viewport is
-// one unified immersive instrument (LiveHero); below it, the working
-// intelligence surfaces continue on the same midnight-navy environment.
-// One shared filter state drives the instrument, the map and every panel.
-// Real records only, honest empty states, no account needed.
+const DAY_OPTIONS = [
+  { value: 7, label: "7D" },
+  { value: 30, label: "30D" },
+  { value: 90, label: "90D" },
+];
+
+const periodLabel = (days) => ({ 7: "7-day window", 30: "30-day window", 90: "90-day window" }[days] || `${days}-day window`);
+
+// Live Intelligence — the Canadian Service Radar dashboard. One shared filter
+// state drives every reading on the page; every figure is a verified record and
+// missing data is shown as such.
 export default function LiveCentre() {
   useSEO({
     title: "Same Day Recycling LIVE | Canadian Service Intelligence Observatory",
-    description: "Explore Canadian service demand on the Canadian Service Radar — observed requests, verified contractor coverage, pricing intelligence and community research. Free to explore — no account needed.",
+    description: "Explore Canadian service demand — observed requests, verified contractor coverage, pricing intelligence and community research. Free to explore, no account needed.",
     path: "/live",
   });
   const cov = useCoverageStatus();
-  const geo = useCanadaGeography();
-  // Shared intelligence state: a location selected on the homepage (or in the
-  // booking flow) opens Live Intelligence already focused on it.
   const intel = useIntelligence();
   const [filters, setFilters] = useState(() => {
     const city = intel.selection.city || "";
@@ -46,22 +52,51 @@ export default function LiveCentre() {
     return { province: code, city, category: "", days: 30 };
   });
 
-  // The one live radar connection: verified feed + realtime refresh as activity happens.
-  const { data: gauge, loading, error, pulseKey } = useLiveGauge(filters);
-  // Trailing 90-day basis for the outer activity arc (same shared filters).
-  const { data: g90 } = useLiveGauge({ days: 90, province: filters.province, city: filters.city, category: filters.category });
+  const { data: gauge, loading, error } = useLiveGauge(filters);
 
-  const provinceCityOptions = useMemo(() => {
-    const target = REGIONS.find((r) => r.code === filters.province)?.name || "";
-    return CITIES.filter((c) => !filters.province || String(c.province || "") === target);
-  }, [filters.province]);
+  const rows = useMemo(
+    () =>
+      Object.keys(LIVE_CATEGORIES).map((key) => ({
+        key,
+        label: LIVE_CATEGORIES[key],
+        count: gauge?.rows?.find((r) => r.key === key)?.count || 0,
+        types: gauge?.rows?.find((r) => r.key === key)?.demand_types || {},
+      })),
+    [gauge]
+  );
+
+  const total = gauge?.total || 0;
+  const topRow = [...rows].sort((a, b) => b.count - a.count)[0];
+  const selectedRow = filters.category ? rows.find((r) => r.key === filters.category) || null : null;
+  const topCity = gauge?.cities?.[0] || null;
+  const regionalName = filters.city || topCity?.city || "";
+  const regionalCount = filters.city
+    ? gauge?.cities?.find((c) => String(c.city).toLowerCase() === filters.city.toLowerCase())?.count || null
+    : topCity?.count || null;
+
+  const topType = useMemo(() => {
+    const entries = Object.entries(gauge?.by_type || {}).sort((a, b) => b[1] - a[1]);
+    return entries.length ? { label: DEMAND_TYPE_LABELS[entries[0][0]] || entries[0][0], count: entries[0][1] } : null;
+  }, [gauge]);
+
+  const change = useMemo(() => {
+    const nowMonth = new Date().toISOString().slice(0, 7);
+    const complete = (gauge?.trend || []).filter((t) => t.month < nowMonth);
+    const prev = complete[complete.length - 2];
+    const last = complete[complete.length - 1];
+    return prev && last ? { prev: prev.month, last: last.month, delta: last.count - prev.count } : null;
+  }, [gauge]);
+
+  const monitored = (cov.verifiedCityNames?.length || 0) + (cov.matchingCityNames?.length || 0) + (cov.recruitingCityNames?.length || 0);
+  const updatedAt = gauge?.generated_at
+    ? new Date(gauge.generated_at).toLocaleString("en-CA", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+    : null;
 
   const pickCategory = (key) => {
     if (key) base44.analytics.track({ eventName: "live_category_explore", properties: { category: key } });
     setFilters((f) => ({ ...f, category: f.category === key ? "" : key }));
   };
 
-  const focusProvince = (code) => setFilters((f) => ({ ...f, province: f.province === code ? "" : code, city: "" }));
   const focusCity = (name) => {
     const city = CITIES.find((c) => c.name.toLowerCase() === String(name).toLowerCase());
     const code = city ? REGIONS.find((r) => r.name === city.province)?.code || "" : filters.province;
@@ -69,22 +104,6 @@ export default function LiveCentre() {
     intel.setSelection({ city: name });
     setFilters((f) => ({ ...f, province: code, city: name }));
   };
-
-  const applyFilter = (key, value) => {
-    if (key === "province") setFilters((f) => ({ ...f, province: value, city: "" }));
-    else if (key === "city") {
-      if (value) {
-        setRexContext({ page: "live", city: value });
-        intel.setSelection({ city: value });
-      }
-      setFilters((f) => ({ ...f, city: value }));
-    } else if (key === "days") setFilters((f) => ({ ...f, days: Number(value) }));
-  };
-
-  const matchingCities = cov.matchingCityNames || [];
-  const recruitingCities = cov.recruitingCityNames || [];
-  const verifiedCities = cov.verifiedCityNames || [];
-  const selectedRow = gauge?.rows?.find((r) => r.key === filters.category) || null;
 
   const goRequest = () =>
     setRexContext({
@@ -94,153 +113,229 @@ export default function LiveCentre() {
     });
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-cine-bg pb-28 text-cine-ink lg:pb-16">
-      {/* The immersive first viewport — the instrument */}
-      <LiveHero
-        data={gauge}
-        loading={loading}
-        error={error}
-        filters={filters}
-        onFilter={applyFilter}
-        pickCategory={pickCategory}
-        focusCity={focusCity}
-        cov={cov}
-        baseTotal={g90?.total ?? 0}
-      />
+    <div className="min-h-screen bg-lm-bg pb-24 text-lm-ink lg:pb-10">
+      <IntelHeader />
 
-      {/* Rex as invisible intelligence — a quiet contextual strip */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-8">
-        <RexIntelligenceStrip categoryLabel={filters.category ? LIVE_CATEGORIES[filters.category] : ""} city={filters.city} />
-      </div>
+      <div className="mx-auto flex max-w-[1360px] gap-6 px-4 py-4">
+        <IntelSidebar />
 
-      {/* Geographic intelligence — coordinates with the instrument */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-8">
-        <CineCard id="live-map" title="Canadian Intelligence Map" note="Province and city lighting reflects real observed records — never fabricated activity.">
-          <CinematicCanadaMap
-            geography={geo.geography}
-            geoError={geo.error}
-            cities={gauge?.cities || []}
-            coverageCities={verifiedCities}
-            requests={gauge?.recent || []}
-            province={filters.province}
-            selectedCity={filters.city}
-            onProvince={focusProvince}
-            onCity={focusCity}
-          />
-        </CineCard>
-      </div>
-
-      {/* Category intelligence — plain-language guidance beside the records */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-8">
-        <InsightPanel data={gauge} selectedRow={selectedRow} cov={cov} />
-      </div>
-
-      {/* Demand trends — verified records by month, same filters as the radar */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-8">
-        <CineCard title="Demand trend" note="Verified records by month across the observed period. Every evidence type is counted separately — never merged into a single demand score.">
-          <TrendStrip data={gauge} days={filters.days} />
-        </CineCard>
-      </div>
-
-      {/* Consumer-first service search + actions */}
-      <div className="relative mx-auto grid max-w-6xl gap-5 px-4 pt-8 lg:grid-cols-2">
-        <ServiceSearch
-          cov={cov}
-          onPickCity={(city) => {
-            const code = REGIONS.find((r) => r.name === city.province)?.code || "";
-            setRexContext({ page: "live", city: city.name });
-            intel.setSelection({ city: city.name });
-            setFilters((f) => ({ ...f, province: code, city: city.name }));
-          }}
-        />
-        <CineCard title="Consumer actions" note="Move from research to service in one step.">
-          <ConsumerActions />
-        </CineCard>
-      </div>
-
-      {/* Community requests */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-8">
-        <CineCard title="Community Requests" note="Recent public posts from Canadians — moderated, personal details never shown.">
-          <LiveCommunityFeed />
-        </CineCard>
-      </div>
-
-      {/* Pricing, resources, opportunities, participation */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-8">
-        <div className="grid gap-5 md:grid-cols-2">
-          <section id="live-pricing" className="cine-glass rounded-[24px] p-5">
-            <h2 className="flex items-center gap-2 font-bold text-cine-ink"><DollarSign className="h-4 w-4 text-cine-cyan" /> Pricing Intelligence</h2>
-            <p className="mt-1 text-sm text-cine-muted">Published rates and sourced public prices — advertised starting prices clearly separated from approved final prices.</p>
-            <div className="mt-3"><RexPriceCompare /></div>
-          </section>
-
-          <section className="cine-glass rounded-[24px] p-5">
-            <h2 className="flex items-center gap-2 font-bold text-cine-ink"><Recycle className="h-4 w-4 text-cine-cyan" /> Recycling Resources</h2>
-            <p className="mt-1 text-sm text-cine-muted">Where materials really go, with cited sources and location-aware guidance.</p>
-            <ul className="mt-3 space-y-2 text-sm font-semibold text-cine-cyan">
-              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/recycling-centers">Recycling centre directory <ArrowRight className="h-3.5 w-3.5" /></Link></li>
-              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/recycling-assistant">Disposal advisor <ArrowRight className="h-3.5 w-3.5" /></Link></li>
-              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/demand">Full market intelligence <ArrowRight className="h-3.5 w-3.5" /></Link></li>
-            </ul>
-          </section>
-
-          <section className="cine-glass rounded-[24px] p-5">
-            <h2 className="flex items-center gap-2 font-bold text-cine-ink"><MapPin className="h-4 w-4 text-cine-cyan" /> Regional Service Opportunities</h2>
-            <p className="mt-1 text-sm text-cine-muted">Permanent network coverage vs active, job-specific provider sourcing — from verified coverage records. Requests stay open in every city.</p>
-            <div className="mt-3 space-y-3 text-sm">
-              <div>
-                <div className="font-plex text-[10px] font-bold uppercase tracking-[0.18em] text-cine-muted">Open matching activity</div>
-                {cov.loaded ? (
-                  matchingCities.length ? <p className="mt-1 text-cine-ink">{matchingCities.join(", ")}</p> : <p className="mt-1 text-cine-muted">No cities currently awaiting contractor matches.</p>
-                ) : <LoadingLine />}
-              </div>
-              <div>
-                <div className="font-plex text-[10px] font-bold uppercase tracking-[0.18em] text-cine-muted">Providers being sourced</div>
-                {cov.loaded ? (
-                  recruitingCities.length ? <p className="mt-1 text-cine-ink">{recruitingCities.join(", ")}</p> : <p className="mt-1 text-cine-muted">Every city with demand already has verified coverage or active matching.</p>
-                ) : <LoadingLine />}
-              </div>
+        <main className="min-w-0 flex-1 space-y-3">
+          {/* Title row: what this is, how fresh, the window, the way to book */}
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="truncate font-heading text-[22px] font-extrabold leading-tight tracking-tight text-lm-ink">
+                Canadian Service Radar <span className="font-semibold text-lm-muted">• Same Day Recycling</span>
+              </h1>
+              <p className="mt-0.5 text-[11.5px] text-lm-muted">
+                {error ? "Signal unavailable — the feed reconnects on refresh." : updatedAt ? `Last updated ${updatedAt}` : "Connecting to verified records…"}
+              </p>
             </div>
-          </section>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-0.5 rounded-full border border-lm-line bg-lm-surface p-0.5" role="group" aria-label="Reporting window">
+                {DAY_OPTIONS.map((o) => (
+                  <button
+                    key={o.value}
+                    onClick={() => setFilters((f) => ({ ...f, days: o.value }))}
+                    aria-pressed={filters.days === o.value}
+                    className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-colors ${
+                      filters.days === o.value ? "bg-lm-teal text-white" : "text-lm-muted hover:text-lm-ink"
+                    }`}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+              <select
+                value={filters.province}
+                onChange={(e) => {
+                  const code = e.target.value;
+                  setFilters((f) => ({ ...f, province: code, city: "" }));
+                }}
+                aria-label="Province"
+                className="rounded-full border border-lm-line bg-lm-surface px-3 py-2 text-[11.5px] font-semibold text-lm-ink focus:outline-none focus:ring-2 focus:ring-lm-teal"
+              >
+                <option value="">All Canada</option>
+                {REGIONS.map((r) => (
+                  <option key={r.code} value={r.code}>{r.name}</option>
+                ))}
+              </select>
+              <Link
+                to="/request-service"
+                onClick={goRequest}
+                className="inline-flex items-center gap-1.5 rounded-full bg-lm-amber px-4 py-2 text-[12px] font-bold text-[#241800] shadow-sm transition hover:brightness-95"
+              >
+                Get pickup estimate <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
 
-          <section className="cine-glass rounded-[24px] p-5">
-            <h2 className="flex items-center gap-2 font-bold text-cine-ink"><Users className="h-4 w-4 text-cine-cyan" /> Get Involved</h2>
-            <p className="mt-1 text-sm text-cine-muted">Use the platform as a customer — every verified interaction improves national service intelligence.</p>
-            <ul className="mt-3 space-y-2 text-sm font-semibold text-cine-cyan">
-              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/community">Community &amp; requests <ArrowRight className="h-3.5 w-3.5" /></Link></li>
-              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/request-service">Request a pickup <ArrowRight className="h-3.5 w-3.5" /></Link></li>
-              <li><Link className="hover:underline inline-flex items-center gap-1.5" to="/move-assist">Plan a moving cleanout <ArrowRight className="h-3.5 w-3.5" /></Link></li>
-            </ul>
-          </section>
-        </div>
+          {/* Instrument row: verified rail · the ring · readings and the map */}
+          <div className="grid gap-3 lg:grid-cols-12">
+            <div className="lg:col-span-3 xl:col-span-2">
+              <StatRail
+                cov={cov}
+                monitored={monitored}
+                regionalName={regionalName}
+                regionalCount={regionalCount}
+                loading={!cov.loaded}
+              />
+            </div>
 
-        {/* Methodology — the full evidence panel, kept off the main visual */}
-        <div id="live-methods" className="pt-8">
-          <CineCard title="Methodology & Data Layers" note="What each measurement means, where it comes from, and how missing data is handled.">
-            <HowItWorks />
-          </CineCard>
-        </div>
+            <div className="rounded-2xl border border-lm-line bg-lm-surface p-4 shadow-[0_1px_2px_rgba(18,61,55,0.04)] lg:col-span-5 xl:col-span-5">
+              <DemandDonut
+                total={total}
+                rows={rows}
+                loading={loading}
+                selected={filters.category}
+                onSelect={pickCategory}
+                periodLabel={periodLabel(filters.days)}
+                updatedAt={updatedAt}
+              />
+            </div>
 
-        {/* Conversion — the booking bridge */}
-        <Link
-          to="/request-service"
-          onClick={goRequest}
-          className="mt-8 block rounded-[24px] border border-cine-line/60 bg-cine-surface/70 px-6 py-10 text-center transition-colors hover:border-cine-cyan/40"
-        >
-          <div className="text-2xl font-bold text-cine-ink">Ready to clear your space?</div>
-          <div className="mt-2 text-sm text-cine-muted">Request a pickup in any Canadian city — the price is approved by you before anything is scheduled.</div>
-          <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-6 py-3 text-sm font-bold text-[#0a1220]">
-            Get My Pickup Estimate <ArrowRight className="h-4 w-4" />
-          </span>
-        </Link>
+            <div className="space-y-3 lg:col-span-4 xl:col-span-5">
+              <MetricTiles
+                total={total}
+                periodLabel={periodLabel(filters.days)}
+                topType={topType}
+                change={change}
+                trend={gauge?.trend || []}
+                focusLabel={selectedRow ? LIVE_CATEGORIES[selectedRow.key] : ""}
+                focusCount={selectedRow ? selectedRow.count : null}
+              />
+              <IntelCard
+                title="Cities with observed demand"
+                note="Verified records only — clusters grow as real requests arrive."
+                bodyClass="p-3"
+                action={
+                  <button onClick={() => focusCity("")} className="shrink-0 text-[10.5px] font-bold text-lm-teal hover:underline">
+                    Reset
+                  </button>
+                }
+              >
+                <DemandMapCard cities={gauge?.cities || []} selected={regionalName} onSelect={focusCity} />
+              </IntelCard>
+            </div>
+          </div>
+
+          {/* Service strip */}
+          <div className="rounded-2xl border border-lm-line bg-lm-surface p-2 shadow-[0_1px_2px_rgba(18,61,55,0.04)]">
+            <CategoryTiles rows={rows} total={total} selected={filters.category} onSelect={pickCategory} />
+          </div>
+
+          {/* Bottom panels */}
+          <div className="grid gap-3 lg:grid-cols-12">
+            <div className="lg:col-span-6">
+              <IntelCard title="Latest service activity" note="Verified platform records and labelled public observations.">
+                <ActivityList recent={gauge?.recent || []} loading={loading} />
+              </IntelCard>
+            </div>
+            <div className="lg:col-span-3">
+              <IntelCard title="Top cities by observed demand" note={`${periodLabel(filters.days)} window.`}>
+                <TopCities cities={gauge?.cities || []} selected={regionalName} onSelect={focusCity} />
+              </IntelCard>
+            </div>
+            <div className="lg:col-span-3">
+              <RexInsight
+                total={total}
+                topRow={topRow}
+                selectedRow={selectedRow}
+                verifiedCities={cov.verifiedCityNames?.length || 0}
+                recruitingCities={cov.recruitingCityNames?.length || 0}
+                periodLabel={periodLabel(filters.days)}
+              />
+            </div>
+          </div>
+
+          {/* Continuing intelligence surfaces */}
+          <div className="grid gap-3 pt-1 md:grid-cols-2">
+            <IntelCard title="Community requests" note="Public posts from Canadians — moderated, personal details never shown.">
+              <LiveCommunityFeed />
+            </IntelCard>
+
+            <div className="space-y-3">
+              <section id="live-pricing" className="rounded-2xl border border-lm-line bg-lm-surface p-4">
+                <h2 className="flex items-center gap-2 font-heading text-sm font-bold text-lm-ink">
+                  <DollarSign className="h-4 w-4 text-lm-teal" /> Pricing intelligence
+                </h2>
+                <p className="mt-1 text-[11.5px] text-lm-muted">Published rates and sourced public prices — advertised starting prices clearly separated from approved final prices.</p>
+                <div className="mt-2"><RexPriceCompare /></div>
+              </section>
+
+              <section className="rounded-2xl border border-lm-line bg-lm-surface p-4">
+                <h2 className="flex items-center gap-2 font-heading text-sm font-bold text-lm-ink">
+                  <MapPin className="h-4 w-4 text-lm-teal" /> Regional service opportunities
+                </h2>
+                <p className="mt-1 text-[11.5px] text-lm-muted">Permanent network coverage versus active, job-specific provider sourcing.</p>
+                <div className="mt-2 space-y-2 text-[12px]">
+                  <div>
+                    <div className="font-plex text-[9px] font-bold uppercase tracking-[0.16em] text-lm-muted">Open matching activity</div>
+                    {cov.loaded ? (
+                      cov.matchingCityNames.length
+                        ? <p className="mt-0.5 text-lm-ink">{cov.matchingCityNames.join(", ")}</p>
+                        : <p className="mt-0.5 text-lm-muted">No cities currently awaiting contractor matches.</p>
+                    ) : <LoadingLine />}
+                  </div>
+                  <div>
+                    <div className="font-plex text-[9px] font-bold uppercase tracking-[0.16em] text-lm-muted">Providers being sourced</div>
+                    {cov.loaded ? (
+                      cov.recruitingCityNames.length
+                        ? <p className="mt-0.5 text-lm-ink">{cov.recruitingCityNames.join(", ")}</p>
+                        : <p className="mt-0.5 text-lm-muted">Every city with demand already has verified coverage or active matching.</p>
+                    ) : <LoadingLine />}
+                  </div>
+                </div>
+              </section>
+
+              <section className="rounded-2xl border border-lm-line bg-lm-surface p-4">
+                <h2 className="flex items-center gap-2 font-heading text-sm font-bold text-lm-ink">
+                  <Recycle className="h-4 w-4 text-lm-teal" /> Recycling resources
+                </h2>
+                <ul className="mt-2 space-y-1.5 text-[12px] font-semibold text-lm-teal">
+                  <li><Link className="inline-flex items-center gap-1.5 hover:underline" to="/recycling-centers">Recycling centre directory <ArrowRight className="h-3 w-3" /></Link></li>
+                  <li><Link className="inline-flex items-center gap-1.5 hover:underline" to="/recycling-assistant">Disposal advisor <ArrowRight className="h-3 w-3" /></Link></li>
+                  <li><Link className="inline-flex items-center gap-1.5 hover:underline" to="/demand">Full market intelligence <ArrowRight className="h-3 w-3" /></Link></li>
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-lm-line bg-lm-surface p-4">
+                <h2 className="flex items-center gap-2 font-heading text-sm font-bold text-lm-ink">
+                  <Users className="h-4 w-4 text-lm-teal" /> Get involved
+                </h2>
+                <ul className="mt-2 space-y-1.5 text-[12px] font-semibold text-lm-teal">
+                  <li><Link className="inline-flex items-center gap-1.5 hover:underline" to="/community">Community &amp; requests <ArrowRight className="h-3 w-3" /></Link></li>
+                  <li><Link className="inline-flex items-center gap-1.5 hover:underline" to="/request-service">Request a pickup <ArrowRight className="h-3 w-3" /></Link></li>
+                  <li><Link className="inline-flex items-center gap-1.5 hover:underline" to="/move-assist">Plan a moving cleanout <ArrowRight className="h-3 w-3" /></Link></li>
+                </ul>
+              </section>
+            </div>
+          </div>
+
+          <div id="live-methods">
+            <IntelCard title="Methodology & data layers" note="What each measurement means, where it comes from, and how missing data is handled.">
+              <HowItWorks />
+            </IntelCard>
+          </div>
+
+          <Link
+            to="/request-service"
+            onClick={goRequest}
+            className="block rounded-2xl border border-lm-line bg-lm-surface px-6 py-8 text-center transition-colors hover:border-lm-teal"
+          >
+            <div className="font-heading text-xl font-extrabold text-lm-ink">Ready to clear your space?</div>
+            <div className="mt-1.5 text-[12.5px] text-lm-muted">Request a pickup in any Canadian city — you approve the price before anything is scheduled.</div>
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-lm-amber px-5 py-2.5 text-[12.5px] font-bold text-[#241800]">
+              Get my pickup estimate <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        </main>
       </div>
 
-      {/* Persistent mobile booking action */}
       <BookNowBar city={filters.city} />
     </div>
   );
 }
 
 function LoadingLine() {
-  return <p className="mt-1 flex items-center gap-1.5 text-cine-muted"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading coverage records…</p>;
+  return <p className="mt-0.5 flex items-center gap-1.5 text-lm-muted"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading coverage records…</p>;
 }

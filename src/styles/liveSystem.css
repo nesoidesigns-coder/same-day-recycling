@@ -36,6 +36,17 @@
   background: transparent !important;
 }
 
+/* Card geometry from the reference dashboard: 16px corners, never a bigger
+   radius on panels, cards or wells (pills and avatars keep rounded-full). */
+.os-experience [class*="rounded-3xl"],
+.os-experience [class*="rounded-[24px]"],
+.os-experience [class*="rounded-[22px]"],
+.os-experience [class*="rounded-[20px]"],
+.os-experience [class*="rounded-[1.25rem]"],
+.os-experience [class*="rounded-[1.5rem]"] {
+  border-radius: 1rem;
+}
+
 /* ---- 2. Surfaces: white card, mist hairline, one elevation ---- */
 .os-experience :is(div, section, article, aside, li, form, details, header, footer)[class*="rounded"]:is(
     [class~="border-slate-100"],
