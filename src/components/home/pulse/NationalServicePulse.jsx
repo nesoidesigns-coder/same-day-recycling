@@ -26,19 +26,32 @@ export default function NationalServicePulse() {
     let alive = true;
     setLoading(true);
     const base = { province, city, category };
-    Promise.allSettled(
-      [7, 30, 90].map((d) => base44.functions.invoke("liveIntelligence", { action: "gauge", days: d, ...base }))
-    ).then((results) => {
-      if (!alive) return;
-      const next = {};
-      [7, 30, 90].forEach((d, i) => {
-        const p = results[i];
-        next[d] = p.status === "fulfilled" ? (p.value?.data ?? p.value) : null;
+    const run = () => {
+      Promise.allSettled(
+        [7, 30, 90].map((d) => base44.functions.invoke("liveIntelligence", { action: "gauge", days: d, ...base }))
+      ).then((results) => {
+        if (!alive) return;
+        const next = {};
+        [7, 30, 90].forEach((d, i) => {
+          const p = results[i];
+          next[d] = p.status === "fulfilled" ? (p.value?.data ?? p.value) : null;
+        });
+        setData(next);
+        setLoading(false);
       });
-      setData(next);
-      setLoading(false);
-    });
-    return () => { alive = false; };
+    };
+    let idleId;
+    let timeoutId;
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(run, { timeout: 2000 });
+    } else {
+      timeoutId = setTimeout(run, 200);
+    }
+    return () => {
+      alive = false;
+      if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
   }, [province, city, category]);
 
   const c7 = data[7]?.total ?? 0;
