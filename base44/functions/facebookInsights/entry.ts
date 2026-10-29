@@ -87,7 +87,7 @@ async function runEngagement(base44: any) {
   const headers = { Authorization: `Bearer ${pageToken}` };
 
   const postsRes = await fetch(
-    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_impressions,post_clicks_by_type){values}&limit=10`,
+    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_media_view){values}&limit=10`,
     { headers, signal: AbortSignal.timeout(15000) }
   );
   const postsData = await postsRes.json();
@@ -107,7 +107,7 @@ async function runEngagement(base44: any) {
       post_id: String(p.id),
       post_excerpt: String(p.message || '(no text)').slice(0, 120),
       posted_date: String(p.created_time || '').slice(0, 10),
-      views: metric('post_impressions'),
+      views: metric('post_media_view'),
       clicks: metric('post_clicks_by_type'),
       insights_date: today,
     };
@@ -120,7 +120,7 @@ async function runEngagement(base44: any) {
   let engagementLine = '';
   try {
     const insightsRes = await fetch(
-      `${GRAPH}/${pageId}/insights?metric=page_impressions_unique,page_post_engagements,page_follows&period=week`,
+      `${GRAPH}/${pageId}/insights?metric=page_total_media_view_unique,page_post_engagements,page_follows&period=week`,
       { headers, signal: AbortSignal.timeout(15000) }
     );
     const insightsRaw = await insightsRes.text();
@@ -132,7 +132,7 @@ async function runEngagement(base44: any) {
     for (const row of insightsData.data || []) {
       const vals = row.values || [];
       const last7 = vals.slice(-7).reduce((s: number, v: any) => s + (Number(v.value) || 0), 0);
-      if (row.name === 'page_impressions_unique') lines.push(`${last7.toLocaleString()} unique page views`);
+      if (row.name === 'page_total_media_view_unique') lines.push(`${last7.toLocaleString()} unique page views`);
       if (row.name === 'page_post_engagements') lines.push(`${last7.toLocaleString()} post engagements`);
       if (row.name === 'page_follows') lines.push(`${last7.toLocaleString()} new followers`);
     }
