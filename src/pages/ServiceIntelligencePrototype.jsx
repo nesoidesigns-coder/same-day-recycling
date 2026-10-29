@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { useSEO } from "@/lib/seo";
 import useLiveGauge from "@/hooks/useLiveGauge";
 import useCoverageStatus from "@/hooks/useCoverageStatus";
@@ -8,10 +8,13 @@ import Footer from "@/components/sdr/Footer";
 import LandingHero from "@/components/landing/LandingHero";
 import BookingCard from "@/components/landing/BookingCard";
 import PopularRightNow from "@/components/landing/PopularRightNow";
-import ServiceTiles from "@/components/landing/ServiceTiles";
-import LiveIntelligenceSection from "@/components/landing/LiveIntelligenceSection";
-import HowItWorksStrip from "@/components/landing/HowItWorksStrip";
-import PartnerStrip from "@/components/landing/PartnerStrip";
+
+// Below the fold: split out of the main chunk so the hero + booking card
+// (the LCP content) don't wait on them.
+const ServiceTiles = lazy(() => import("@/components/landing/ServiceTiles"));
+const LiveIntelligenceSection = lazy(() => import("@/components/landing/LiveIntelligenceSection"));
+const HowItWorksStrip = lazy(() => import("@/components/landing/HowItWorksStrip"));
+const PartnerStrip = lazy(() => import("@/components/landing/PartnerStrip"));
 
 const periodLabel = (days) => ({ 7: "7-day window", 30: "30-day window", 90: "90-day window" }[days] || `${days}-day window`);
 
@@ -70,6 +73,8 @@ export default function ServiceIntelligencePrototype() {
       </div>
 
       <div className="space-y-6 pb-8 pt-5">
+        {/* min-height placeholder keeps the footer below the fold while chunks load (avoids layout shift) */}
+        <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 1200 }} />}>
         <ServiceTiles />
 
         <LiveIntelligenceSection
@@ -83,6 +88,7 @@ export default function ServiceIntelligencePrototype() {
 
         <HowItWorksStrip />
         <PartnerStrip />
+        </Suspense>
       </div>
 
       <Footer />
