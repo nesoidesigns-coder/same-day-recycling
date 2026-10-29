@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Calculator, Loader2, Plus, Minus, ArrowRight } from "lucide-react";
 import { CITIES, cityLabel } from "@/lib/cities";
 import { isCityActive } from "@/lib/coverage";
+import { getSessionId } from "@/lib/visitSession";
 import QuoteLeadCapture from "@/components/sdr/QuoteLeadCapture";
 
 const CATALOG = [
@@ -30,6 +31,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
     try {
       const payload = items.length ? { items } : { description: description.trim() };
       if (city) payload.city = city;
+      payload.sid = getSessionId();
       payload.curbside = curbside;
       payload.travel_km = travelKm;
       const res = await base44.functions.invoke("quoteEstimate", payload);
@@ -69,7 +71,7 @@ export default function QuoteCalculator({ onBook, city: fixedCity }) {
                   {CITIES.map((c) => <option key={c.slug} value={c.name}>{cityLabel(c)}</option>)}
                 </select>
                 {city && !isCityActive(city) && (
-                  <span className="mt-2 block text-xs font-semibold text-amber-700">Inquiries open in {city} — this is a standard-rate estimate; local availability and scheduling are confirmed after you submit your inquiry.</span>
+                  <span className="mt-2 block text-xs font-semibold text-amber-700">Inquiries open in {city} — this is a standard-rate estimate; local availability and scheduling are confirmed after review.</span>
                 )}
               </label>
             )}
