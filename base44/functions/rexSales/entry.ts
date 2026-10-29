@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { paypal, paypalAppOrigin, parseQuoteAmount, CURRENCY } from '../../shared/paypal.ts';
 import { categorizeLoad, buildImpactPdf, COMMERCIAL_RE } from '../../shared/impactReceipt.ts';
 import { sendSms } from '../../shared/twilio.ts';
+import { recordTrackingEvent } from '../../shared/tracking.ts';
 
 // Agent-facing sales actions for Rex: payment links and recycling receipts.
 export default async function (req) {
@@ -27,10 +28,11 @@ export default async function (req) {
             to: booking.email,
             subject: 'Payment received - Same Day Recycling',
             from_name: 'Same Day Recycling',
-            body: 'Hi ' + (booking.name || 'there') + ',\n\nPayment received - thank you. Your pickup is on the books and our team will be in touch with your arrival window.\n\nSame Day Recycling | (604) 849-1745 | samedayrecycling.ca',
+            body: 'Hi ' + (booking.name || 'there') + ',\n\nPayment received - thank you. Your pickup is on the books and our team will be in touch with your arrival window.\n\nSame Day Recycling ?',
           });
         }
       }
+      try { if (booking) { await recordTrackingEvent(svc, { booking_id: booking.id, reference_code: booking.reference_code || '', stage: 'payment_captured', actor: 'system', source: 'rexSales', note: 'PayPal payment captured.' }); } } catch (e) { console.error('payment_captured failed:', e.message); }
       return Response.redirect(origin + '/?paid=1', 302);
     }
 
@@ -152,6 +154,7 @@ export default async function (req) {
           role: 'system',
         });
       }
+      try { await recordTrackingEvent(svc, { booking_id: booking.id, reference_code: booking.reference_code || '', stage: 'receipt_issued', actor: 'system', source: 'rexSales', note: 'Receipt emailed.' }); } catch (e) { console.error('receipt_issued failed:', e.message); }
       return Response.json({ sent: true, to: booking.email, pdf: true });
     }
 
