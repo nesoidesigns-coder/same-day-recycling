@@ -108,7 +108,7 @@ async function runEngagement(base44: any) {
       post_excerpt: String(p.message || '(no text)').slice(0, 120),
       posted_date: String(p.created_time || '').slice(0, 10),
       views: metric('post_media_view'),
-      clicks: metric('post_clicks_by_type'),
+      clicks: 0,
       insights_date: today,
     };
   });
