@@ -90,7 +90,7 @@ async function runChecks(base44, req, full = false) {
     if (duplicateCapacity.length) details.push(`${duplicateCapacity.length} partner city(ies) with verified capacity are outside the service-territory registry: ${duplicateCapacity.slice(0, 10).join(', ')}.`);
     if (dupes.length) details.push(`Duplicate registry entries: ${[...new Set(dupes)].join(', ')}.`);
     results.push(check('coverage_consistency', sev,
-      dupes.length ? 'Duplicate registry cities found.' : duplicateCapacity.length ? 'Verified capacity exists outside the registry.' : `${ACTIVE_CITIES.length} registry cities consistent; ${Object.keys(capacity).length} with verified contractor capacity.`,
+      dupes.length ? 'Duplicate registry cities found.' : duplicateCapacity.length ? 'Verified capacity exists outside the registry.' : `${ACTIVE_CITIES.length} registry cities consistent; ${Object.keys(capacity).length} cities currently have verified partner capacity.`,
       ['/coverage', '/city-pages', '/junk-removal-vancouver'], details));
   }
 
@@ -136,20 +136,20 @@ async function runChecks(base44, req, full = false) {
       `${zeroCapacity.length} registry cities show "Recruitment Open" — requests stay open, no capacity is implied.`,
       'Matching-enabled cities never imply contractor availability: capacity comes only from verified partner records.',
     ];
-    results.push(check('booking_availability', sev, 'Booking gate matches the live capacity layer — no city implies a confirmed provider without a verified partner record.', ['/request-service', '/booking', '/city-pages'], details));
+    results.push(check('booking_availability', sev, 'Booking gate matches the live capacity layer — no city implies a confirmed provider without a verified partner record.', ['/request-service', '/coverage'], details));
   }
 
   // ---- 4. Contractor status ----
   {
     const missingCity = realPartners.filter((p) => !String(p.city || '').trim());
-    const missingProvince = realPartners.filter((p) => String(p.city || '').trim() && !String(p.province || '').trim());
+    const missingProvince = realPartners.filter((p) => String(p.city || '').trim() && !String(p.province_code || '').trim());
     const sev = missingCity.length ? 'warning' : 'pass';
     const details = [
       `${realPartners.length} active verified partners form contractor capacity; ${testPartnerCount} test/simulation records excluded.`,
       missingCity.length ? `${missingCity.length} verified partner(s) missing a city — they cannot be counted toward any city's capacity.` : 'All verified partners have a city on file.',
       missingProvince.length ? `${missingProvince.length} verified partner(s) missing a province.` : 'Partner provinces recorded.',
     ];
-    results.push(check('contractor_status', sev, sev === 'pass' ? 'Contractor records complete; capacity derived only from verified, active partners.' : 'Some contractor records are incomplete.', ['/coverage', '/partners', '/admin/partners'], details));
+    results.push(check('contractor_status', sev, sev === 'pass' ? 'Contractor records complete; capacity derived only from verified, active partners.' : 'Some contractor records are incomplete.', ['/coverage', '/admin/partners'], details));
   }
 
   // ---- 5. Payment integration health ----
@@ -179,7 +179,7 @@ async function runChecks(base44, req, full = false) {
       `${txCount} transactions and ${webhookCount} webhook events recorded in the last 30 days${(txCount || webhookCount) ? '' : ' (no recent activity — may simply mean no sales)'}.`,
       'Integrity checks never read or modify live payment transactions.',
     ];
-    results.push(check('payment_integration_health', sev, paypalConfigured ? 'Payment integration credentials present; recent activity counted without touching transactions.' : 'Payment credentials missing — checkout cannot work.', ['/checkout', '/booking', '/software-pay', '/membership-pay'], details));
+    results.push(check('payment_integration_health', sev, paypalConfigured ? 'Payment integration credentials present; recent activity counted without touching transactions.' : 'Payment credentials missing or incomplete.', ['/pricing', '/checkout'], details));
   }
 
   // ---- 6. Review verification ----
@@ -199,7 +199,7 @@ async function runChecks(base44, req, full = false) {
       `${approved.length} approved review(s) checked against rating range, attribution and content requirements.`,
       bad.length ? `Flagged: ${bad.slice(0, 10).join(' | ')}` : 'All approved reviews carry a valid rating, a customer name and review text.',
     ];
-    results.push(check('review_verification', sev, sev === 'pass' ? 'All displayed reviews trace to approved review records with valid ratings.' : 'Some approved reviews are missing required fields.', ['/reviews', '/review', '/city-pages'], details));
+    results.push(check('review_verification', sev, sev === 'pass' ? 'All displayed reviews trace to approved review records with valid ratings.' : 'Some approved reviews are missing required fields.', ['/reviews'], details));
   }
 
   // ---- 7. Page rendering ----
@@ -233,22 +233,20 @@ async function runChecks(base44, req, full = false) {
     }
     const sev = !sitemap.ok ? 'warning' : (failures.length ? 'error' : 'pass');
     results.push(check('broken_links', sev,
-      !sitemap.ok ? 'Sitemap could not be fetched for link checking.' : locs.length ? (failures.length ? `${failures.length} of ${locs.length} sampled sitemap URLs failed.` : `${locs.length} sampled sitemap URLs all respond.`) : 'Sitemap contained no URLs.',
+      !sitemap.ok ? 'Sitemap could not be fetched for link checking.' : locs.length ? (failures.length ? `${failures.length} of ${locs.length} sampled sitemap URLs failed.` : `${locs.length} sampled sitemap URLs passed.`) : 'No sitemap URLs were available for validation.',
       sitemap.ok ? ['/sitemap', ...locs.map((u) => u.replace(origin, '')).slice(0, 10)] : ['/sitemap'],
       failures.length ? failures.slice(0, 20) : (locs.length ? [`Checked ${locs.length} URLs from the sitemap.`] : [])));
   }
 
   // ---- 9. Conflicting claims ----
   {
-    // Public pages quote these national rates verbatim; the check catches any
-    // drift between the quote engine's DEFAULT_PRICES and the published claims.
     const CLAIMED = { minimum_pickup: 139, eighth_truck: 189, quarter_truck: 269, half_truck: 419, three_quarter_truck: 549, full_truck: 649 };
     const drift = Object.keys(CLAIMED).filter((k) => DEFAULT_PRICES[k] !== CLAIMED[k]);
     const sev = drift.length ? 'error' : 'pass';
     const details = drift.length
-      ? [`Published national rates (${drift.map((k) => `${k}=$${CLAIMED[k]}`).join(', ')}) no longer match the quote engine: ${drift.map((k) => `${k}=$${DEFAULT_PRICES[k]}`).join(', ')}. Update the public pages.`]
+      ? [`Published national rates (${drift.map((k) => `${k}=$${CLAIMED[k]}`).join(', ')}) no longer match the quote engine: ${drift.map((k) => `${k}=$${DEFAULT_PRICES[k]}`).join(', ')}. Update the public copy or the pricing defaults.`]
       : ['Published national rate claims match the quote engine defaults exactly.'];
-    results.push(check('conflicting_claims', sev, sev === 'pass' ? 'No pricing-claim drift between public pages and the quote engine.' : 'Public pricing claims conflict with the quote engine.', ['/pricing', '/faq', '/realtor-partners', '/city-pages'], details));
+    results.push(check('conflicting_claims', sev, sev === 'pass' ? 'No pricing-claim drift between public pages and the quote engine.' : 'Public pricing claims conflict with the quote engine.', ['/pricing', '/quote'], details));
   }
 
   // ---- 10. Meta claim drift: served page metadata vs stored records (full audit) ----
@@ -287,7 +285,6 @@ async function runChecks(base44, req, full = false) {
         details.push(`${page.path}: no stored meta record — the page serves generated metadata. Create one through the SEO Action Engine approval flow.`);
       }
     }
-    // Approval-gated repair: queue metadata re-application for admin review.
     if (conflictPages.length) {
       const pending = (await base44.asServiceRole.entities.SeoRecommendation.filter({ status: 'pending_review' }, { limit: 50 })).items || [];
       const today = new Date().toISOString().slice(0, 10);
@@ -323,7 +320,6 @@ async function runChecks(base44, req, full = false) {
   if (full) {
     const stages = [];
     let ok = true;
-    // Stage 1: quote through the real pricing engine.
     let quote = null;
     try {
       const { items: vRows } = await base44.asServiceRole.entities.PricingSettings.filter({ city: 'Vancouver' }, { limit: 1 });
@@ -331,13 +327,12 @@ async function runChecks(base44, req, full = false) {
       const eighths = itemsToEighths([{ name: 'sofa', quantity: 1 }, { name: 'mattress', quantity: 1 }]);
       quote = computeQuote(eighths, prices, {});
       const valid = Number.isFinite(quote.low) && Number.isFinite(quote.high) && quote.low > 0 && quote.high >= quote.low;
-      stages.push({ stage: 'quote', ok: valid, detail: valid ? `Quote engine returned ${quote.range} (${quote.label}) from the ${vRows[0] ? 'live Vancouver' : 'national'} rate table.` : 'Quote engine returned an invalid range.' });
+      stages.push({ stage: 'quote', ok: valid, detail: valid ? `Quote engine returned ${quote.range} (${quote.label}) from the ${vRows[0] ? 'live Vancouver' : 'national'} rate table.` : 'Quote engine returned invalid results.' });
       ok = valid;
     } catch (e) {
       stages.push({ stage: 'quote', ok: false, detail: String(e.message || e) });
       ok = false;
     }
-    // Stage 2: booking (internal_test — excluded from all metrics and dispatch queues).
     let booking = null;
     if (ok) {
       try {
@@ -369,7 +364,6 @@ async function runChecks(base44, req, full = false) {
         ok = false;
       }
     }
-    // Stage 3 + 4: lifecycle tracking events and reference-code lookup.
     if (ok) {
       const srole = base44.asServiceRole;
       try {
@@ -386,14 +380,13 @@ async function runChecks(base44, req, full = false) {
           const lkPage = await srole.entities.TrackingEvent.filter({ reference_code: ref }, { limit: 20 });
           const lk = lkPage.items || lkPage;
           const lkOk = lk.length >= 4 && lk.every((e) => e.booking_id === booking.id);
-          stages.push({ stage: 'reference_lookup', ok: lkOk, detail: lkOk ? `Reference code ${ref} resolves the full timeline — the same path the customer portal uses.` : 'Reference-code lookup failed or returned events from another job.' });
+          stages.push({ stage: 'reference_lookup', ok: lkOk, detail: lkOk ? `Reference code ${ref} resolves the full timeline — the same path the customer portal uses.` : 'Reference-code lookup did not resolve all tracking events.' });
           ok = lkOk;
         }
       } catch (e) {
         stages.push({ stage: 'tracking_events', ok: false, detail: String(e.message || e) });
         ok = false;
       }
-      // Cleanup: remove ONLY this run's records.
       let cleaned = true;
       try {
         const evPage = await srole.entities.TrackingEvent.filter({ booking_id: booking.id }, { limit: 50 });
@@ -412,7 +405,6 @@ async function runChecks(base44, req, full = false) {
       stages.map((s) => `${s.ok ? 'PASS' : 'FAIL'} — ${s.stage}: ${s.detail}`)));
   }
 
-  // ---- Persist ----
   const error_count = results.filter((r) => r.severity === 'error').length;
   const warning_count = results.filter((r) => r.severity === 'warning').length;
   const runStatus = error_count ? 'failed' : (warning_count ? 'warning' : 'success');
@@ -422,7 +414,6 @@ async function runChecks(base44, req, full = false) {
     generated_at: startedAt,
   };
 
-  // Record coverage changes by diffing against the previous run's snapshot.
   const previous = (await base44.asServiceRole.entities.IntegrityRun.filter({}, { sort: '-created_date', limit: 1 })).items[0];
   const prevCap = previous?.coverage_snapshot?.verified_capacity || {};
   const changeLogs = [];
@@ -450,7 +441,7 @@ async function runChecks(base44, req, full = false) {
     error_count,
     warning_count,
     coverage_snapshot: snapshot,
-    notes: `Automated integrity run: ${results.length} checks in ${Math.max(1, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000))}s.` + (repairs.length ? ` Repairs: ${repairs.join(' | ')}` : ''),
+    notes: `Automated integrity run: ${results.length} checks in ${Math.max(1, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000))}s.` + (repairs.length ? ` Repairs: ${repairs.join(' | ')}.` : ''),
   });
 
   return Response.json({ ok: true, status: runStatus, error_count, warning_count, checks: results, coverage_changes_logged: changeLogs.length, repairs, journey: full ? (results.find((r) => r.check === 'quote_journey') || null) : null });
@@ -471,7 +462,7 @@ async function fetchPage(url) {
 }
 
 function extractTag(html, tag) {
-  const m = String(html || '').match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'));
+  const m = String(html || '').match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, 'i'));
   return m ? m[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200) : '';
 }
 
