@@ -40,7 +40,7 @@ async function runDigest(base44: any) {
       prompt:
         'You analyze Facebook Messenger conversations for Same Day Recycling, a same-day junk removal service across Canada. ' +
         'Below are the last 24 hours of conversations (customer message + the AI receptionist reply). ' +
-        'Produce: 1) a 2-3 sentence summary of the day\u2019s chats; 2) hot_leads (0-3 people showing clear buying intent who are NOT yet booked as a customer, with what they want and urgency); ' +
+        'Produce: 1) a 2-3 sentence summary of the day’s chats; 2) hot_leads (0-3 people showing clear buying intent who are NOT yet booked as a customer, with what they want and urgency); ' +
         '3) follow_ups (0-3 short concrete actions, e.g. who to call and why).\n\nConversations:\n' + transcript +
         (unansweredList.length ? '\n\nMessages still unanswered:\n' + unansweredList.join('\n') : ''),
       response_json_schema: {
@@ -87,7 +87,7 @@ async function runEngagement(base44: any) {
   const headers = { Authorization: `Bearer ${pageToken}` };
 
   const postsRes = await fetch(
-    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_media_view,post_clicks){values}&limit=10`,
+    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_impressions,post_clicks_by_type){values}&limit=10`,
     { headers, signal: AbortSignal.timeout(15000) }
   );
   const postsData = await postsRes.json();
@@ -107,8 +107,8 @@ async function runEngagement(base44: any) {
       post_id: String(p.id),
       post_excerpt: String(p.message || '(no text)').slice(0, 120),
       posted_date: String(p.created_time || '').slice(0, 10),
-      views: metric('post_media_view'),
-      clicks: metric('post_clicks'),
+      views: metric('post_impressions'),
+      clicks: metric('post_clicks_by_type'),
       insights_date: today,
     };
   });
@@ -120,7 +120,7 @@ async function runEngagement(base44: any) {
   let engagementLine = '';
   try {
     const insightsRes = await fetch(
-      `${GRAPH}/${pageId}/insights?metric=page_total_media_view_unique,page_post_engagements,page_follows&period=week`,
+      `${GRAPH}/${pageId}/insights?metric=page_impressions_unique,page_post_engagements,page_follows&period=week`,
       { headers, signal: AbortSignal.timeout(15000) }
     );
     const insightsRaw = await insightsRes.text();
@@ -132,7 +132,7 @@ async function runEngagement(base44: any) {
     for (const row of insightsData.data || []) {
       const vals = row.values || [];
       const last7 = vals.slice(-7).reduce((s: number, v: any) => s + (Number(v.value) || 0), 0);
-      if (row.name === 'page_total_media_view_unique') lines.push(`${last7.toLocaleString()} unique page views`);
+      if (row.name === 'page_impressions_unique') lines.push(`${last7.toLocaleString()} unique page views`);
       if (row.name === 'page_post_engagements') lines.push(`${last7.toLocaleString()} post engagements`);
       if (row.name === 'page_follows') lines.push(`${last7.toLocaleString()} new followers`);
     }
