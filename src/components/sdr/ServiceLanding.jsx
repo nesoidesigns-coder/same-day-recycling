@@ -67,6 +67,8 @@ export default function ServiceLanding({ config }) {
               <Phone className="w-4 h-4 text-ri-emerald-ink" /> (604) 849-1745
             </a>
           </div>
+          <p className="text-xs text-ri-slate mt-3 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#187B65]" />No surprise fees — final price approved before pickup</p>
+          <div id="quote" className="mt-8 scroll-mt-20"><PriceEstimator /></div>
         </div>
       </section>
 
@@ -83,8 +85,6 @@ export default function ServiceLanding({ config }) {
           ))}
         </div>
       </section>
-
-      <PriceEstimator />
 
       <section className="bg-ri-ivory">
         <div className="max-w-7xl mx-auto px-4 py-14">
@@ -150,10 +150,16 @@ export default function ServiceLanding({ config }) {
           <Link to="/#book" className="mt-7 inline-flex items-center gap-2 rounded-full bg-ri-amber text-ri-charcoal font-bold px-8 py-4 hover:brightness-95 transition-colors">
             Book a Pickup <ArrowRight className="w-4 h-4" />
           </Link>
+          <p className="text-xs text-slate-300 mt-3 flex items-center justify-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#62C5A4]" />No surprise fees — final price approved before pickup</p>
         </div>
       </section>
 
       <Footer />
+      {/* Sticky mobile quote CTA — preserve space above the fixed footer control */}
+      <div className="h-20 md:hidden" aria-hidden="true" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#102B2A] border-t border-[#187B65]/20 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg">
+        <button type="button" onClick={() => document.getElementById("quote")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} className="w-full rounded-full bg-[#187B65] text-white font-bold py-3 text-sm flex items-center justify-center gap-2">Get a quote in 30 seconds <ArrowRight className="w-4 h-4" /></button>
+      </div>
     </div>
   );
 }
