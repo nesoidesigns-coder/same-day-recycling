@@ -15,6 +15,7 @@ export default async function(req) {
       : [];
 
     const city = typeof body?.city === 'string' ? body.city.slice(0, 60) : '';
+    const sid = typeof body?.sid === 'string' ? body.sid.trim().slice(0, 40) : '';
     const readRows = (page) => (Array.isArray(page) ? page : page?.items) || [];
     let prices = DEFAULT_PRICES;
     try {
@@ -83,7 +84,18 @@ export default async function(req) {
     const travelKm = Number(body?.travel_km);
     const travel_km = Number.isFinite(travelKm) ? Math.max(0, Math.min(500, travelKm)) : 0;
     const quote = computeQuote(eighths, prices, { curbside, travel_km });
-    return Response.json({ ...quote, eighths, city, items: estimateItems, curbside, travel_km });
+
+    try {
+      const itemsSummary = estimateItems.length ? estimateItems.map(i => i.quantity + 'x ' + i.name).join(', ') : description.slice(0, 200) || 'Load estimated by photo';
+      await base44.asServiceRole.entities.ServiceQuery.create({
+        query_text: 'ESTIMATE — ' + itemsSummary + ' | ' + (city || 'Unknown city') + ' | Price: $' + quote.low + '–$' + quote.high + ' (' + quote.label + ') | Eighths: ' + eighths,
+        source: 'receptionist', platform: 'Site chat', city: city || '', service: 'junk_removal',
+        intent: 'estimate_generated | sid=' + sid + ' | price_low=' + quote.low + ' | price_high=' + quote.high + ' | eighths=' + eighths,
+        status: 'new', captured_date: new Date().toISOString().slice(0, 10),
+      });
+    } catch (e) { console.error('Estimate persist failed:', e.message); }
+
+    return Response.json({ ...quote, eighths, city, items: estimateItems, curbside, travel_km, sid });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
