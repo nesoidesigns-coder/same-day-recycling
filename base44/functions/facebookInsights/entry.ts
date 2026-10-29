@@ -10,8 +10,9 @@ async function runDigest(base44: any) {
 
   // Unanswered: live conversations whose latest customer message was never replied to
   let unansweredList: string[] = [];
+  let unansweredError = '';
   try {
-    const { pageId, pageToken } = await getFacebookPage(svc);
+    const { pageId, pageToken } = await getFacebookPage(base44);
     const convRes = await fetch(
       `${GRAPH}/${pageId}/conversations?fields=id,messages.limit(1){id,from,message,created_time}&limit=15`,
       { headers: { Authorization: `Bearer ${pageToken}` }, signal: AbortSignal.timeout(15000) }
@@ -28,7 +29,9 @@ async function runDigest(base44: any) {
       if (unanswered.length >= 5) break;
     }
     unansweredList = unanswered;
-  } catch {}
+  } catch (e: any) {
+    unansweredError = String(e?.message || e).slice(0, 200);
+  }
 
   const transcript = logs.map((l: any) =>
     `${l.sender_name || 'Customer'} asked: ${String(l.message_text || '').slice(0, 160)}\nAI replied: ${String(l.reply_text || l.error || '(no reply)').slice(0, 160)}${l.lead_captured ? '\n(booking captured)' : ''}`
@@ -72,6 +75,7 @@ async function runDigest(base44: any) {
     messages_count: logs.length,
     bookings_captured: bookings,
     unanswered_count: unansweredList.length,
+    unanswered_error: unansweredError,
     summary: (ai && ai.summary) || (logs.length ? 'Conversations recorded, but no analysis was returned.' : 'No Messenger messages in the last 24 hours.'),
     leads,
     lead_1: leads[0] || '',
@@ -87,7 +91,7 @@ async function runEngagement(base44: any) {
   const headers = { Authorization: `Bearer ${pageToken}` };
 
   const postsRes = await fetch(
-    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_media_view){values}&limit=10`,
+    `${GRAPH}/${pageId}/posts?fields=id,message,created_time,insights.metric(post_media_view){name,values}&limit=10`,
     { headers, signal: AbortSignal.timeout(15000) }
   );
   const postsData = await postsRes.json();
@@ -113,11 +117,16 @@ async function runEngagement(base44: any) {
     };
   });
 
+  const postsWithInsights = (postsData.data || []).filter((p: any) => p.insights && p.insights.data && p.insights.data.length).length;
+  const top = [...records].sort((a: any, b: any) => b.views - a.views).slice(0, 3);
+
   if (records.length) {
     await svc.entities.FacebookEngagement.upsert(records, { key: 'post_id' });
   }
 
   let engagementLine = '';
+  let insightsError = '';
+  let insightsDebug: any[] = [];
   try {
     const insightsRes = await fetch(
       `${GRAPH}/${pageId}/insights?metric=page_total_media_view_unique,page_post_engagements,page_follows&period=week`,
@@ -125,9 +134,10 @@ async function runEngagement(base44: any) {
     );
     const insightsRaw = await insightsRes.text();
     if (!insightsData_ok(insightsRes.status) || !insightsRaw.includes('"data"') || insightsRaw.includes('"error"')) {
-      return Response.json({ ok: true, posts_tracked: records.length, engagement_line: '', top });
+      return Response.json({ ok: true, posts_tracked: records.length, posts_with_insights: postsWithInsights, engagement_line: '', insights_error: insightsRaw.slice(0, 400), top });
     }
     const insightsData = JSON.parse(insightsRaw);
+    insightsDebug = (insightsData.data || []).map((r: any) => ({ name: r.name, period: r.period, values_count: (r.values || []).length, last_end_time: ((r.values || []).slice(-1)[0] || {}).end_time || null }));
     const lines: string[] = [];
     for (const row of insightsData.data || []) {
       const vals = row.values || [];
@@ -137,10 +147,11 @@ async function runEngagement(base44: any) {
       if (row.name === 'page_follows') lines.push(`${last7.toLocaleString()} new followers`);
     }
     engagementLine = lines.join(', ');
-  } catch {}
+  } catch (e: any) {
+    insightsError = String(e?.message || e).slice(0, 300);
+  }
 
-  const top = [...records].sort((a: any, b: any) => b.views - a.views).slice(0, 3);
-  return Response.json({ ok: true, posts_tracked: records.length, engagement_line: engagementLine, top });
+  return Response.json({ ok: true, posts_tracked: records.length, posts_with_insights: postsWithInsights, engagement_line: engagementLine, insights_error: insightsError, insights_debug: insightsDebug, top });
 }
 
 function insightsData_ok(status: number): boolean {
