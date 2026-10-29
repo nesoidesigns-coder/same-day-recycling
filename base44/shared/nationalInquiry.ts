@@ -1,5 +1,6 @@
 import { normalizePostal, provinceFromFsa } from './geo.ts';
 import { startMatching } from './dispatchEngine.ts';
+import { recordTrackingEvent } from './tracking.ts';
 
 const SERVICE_TYPES = ['junk_removal', 'furniture', 'appliances', 'electronics', 'metal_pickup', 'cleanouts', 'other'];
 
@@ -23,6 +24,7 @@ export async function submitNationalInquiry(base44, input) {
   const email = str(input.email, 200);
   const address = str(input.address, 200);
   const notes = str(input.notes, 1000);
+  const sid = str(input.sid, 40);
 
   // Verified pickup location — one authoritative location record. Coordinates
   // are accepted only from the address engine (verified geocode) or the
@@ -86,7 +88,7 @@ export async function submitNationalInquiry(base44, input) {
     partner_name = matched.name || matched.company;
     status = 'matched';
     quote_status = 'pending_provider';
-    message = `Your request is saved. We operate nationwide — our dispatch team is confirming your local contractor in ${city}. Pricing, pickup availability and your arrival window are confirmed before any appointment is guaranteed. We'll contact you at ${phone}.`;
+    message = `Your request is saved. We operate nationwide — our dispatch team is confirming your local contractor in ${city}. Pricing, pickup availability and your arrival window are confirmed after a local provider accepts.`;
   } else {
     // No verified contractor in this market yet. The inquiry is never
     // rejected: the auto-created sourcing task below drives fulfillment, and
@@ -121,7 +123,7 @@ export async function submitNationalInquiry(base44, input) {
     // Escalate unfilled requests to dispatch — admins must recruit, source
     // or manually assign before anything is promised to the customer.
     needsRecruitAlert = true;
-    message = `Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor in ${city}. We'll contact you at ${phone} with pricing, pickup availability and your arrival window as soon as a contractor is confirmed. Nothing is scheduled or charged before a contractor accepts.`;
+    message = `Your request is saved. We operate in every Canadian city — our dispatch team is sourcing your local contractor in ${city}. We'll contact you at ${phone} with pricing, pickup availability and the arrival window after a local contractor is confirmed.`;
   }
 
   const reference_code = crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase();
@@ -137,6 +139,7 @@ export async function submitNationalInquiry(base44, input) {
     service_type,
     items_description,
     preferred_date,
+    ...(sid ? { sid } : {}),
     notes,
     coverage_status,
     partner_id,
@@ -187,11 +190,34 @@ export async function submitNationalInquiry(base44, input) {
         to: 'samedayrecycling@gmail.com',
         from_name: 'Same Day Recycling',
         subject: `Dispatch needed: ${city}${province_code ? ', ' + province_code : ''} — no verified contractor`,
-        text: `Request ${reference_code} from ${city}${province_code ? ', ' + province_code : ''} has no verified contractor available. Recruit or manually assign a contractor in the dispatch center (/admin/national). Customer: ${name}, ${phone}. Nothing is promised to the customer until a contractor accepts.`,
+        text: `Request ${reference_code} from ${city}${province_code ? ', ' + province_code : ''} has no verified contractor available. Recruit or manually assign a contractor in the dispatch center.`,
       });
     } catch (e) {
       console.error('Admin dispatch alert failed:', (e && e.message) || e);
     }
+  }
+
+  try {
+    await recordTrackingEvent(srole, {
+      booking_id: record.id,
+      reference_code,
+      stage: 'inquiry_received',
+      actor: 'system',
+      source: 'nationalRequest',
+      note: 'Nationwide request from ' + city + '. Coverage: ' + coverage_status + '.',
+    });
+    if (status === 'provider_matching' || needsRecruitAlert) {
+      await recordTrackingEvent(srole, {
+        booking_id: record.id,
+        reference_code,
+        stage: 'contractor_matching',
+        actor: 'system',
+        source: 'dispatchEngine',
+        note: needsRecruitAlert ? 'No verified contractor in ' + city : 'Matching initiated for ' + city,
+      });
+    }
+  } catch (e) {
+    console.error('Tracking failed:', e.message);
   }
 
   return {
