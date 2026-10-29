@@ -205,6 +205,14 @@ export default function InstantQuoteFlow() {
     requestAnimationFrame(() => document.getElementById("pickup-map-experience")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
   };
 
+  // Analytics are best-effort and must never block a customer request.
+  const trackQuoteStep = (eventName, properties = {}) => {
+    try {
+      const pending = base44.analytics?.track?.({ eventName, properties: { lang, ...properties } });
+      if (pending && typeof pending.catch === "function") pending.catch(() => {});
+    } catch { /* analytics unavailable */ }
+  };
+
   const goPostal = () => {
     const norm = normalizePostal(postalRaw);
     if (location && !getPickupLocation()?.pinConfirmed) {
@@ -221,6 +229,7 @@ export default function InstantQuoteFlow() {
     setCity(knownCity?.name || city.trim());
     setError("");
     setFsa(norm);
+    trackQuoteStep("quote_step_postal", { province: postalProvince || "" });
     setStep(1);
     // Geographic focus on the hero map — booking itself never waits on it.
     try {
@@ -264,6 +273,8 @@ export default function InstantQuoteFlow() {
         : { description };
       const res = await base44.functions.invoke("quoteEstimate", { ...payload, city: city.trim() });
       setEstimate(res.data);
+      trackQuoteStep("quote_step_materials", { itemCount: selected.length });
+      trackQuoteStep("quote_step_estimate", { province: province || "" });
       setStep(2);
       base44.analytics.track({ eventName: "quote_calculated", properties: { flow: "instant", province } });
     } catch {
@@ -279,6 +290,7 @@ export default function InstantQuoteFlow() {
     if (location && !location.pinConfirmed) { setError(lang === "fr" ? "Confirmez la nouvelle épingle avant d'envoyer." : "Confirm the current pickup pin before submitting."); return; }
     setError("");
     setLoading(true);
+    trackQuoteStep("quote_step_submit", { province: province || "" });
     try {
       const itemsText = selected.map((m) => `${qty[m.key]} × ${lang === "fr" ? m.fr : m.en}`).join(", ");
       const res = await base44.functions.invoke("nationalRequest", {
@@ -298,6 +310,7 @@ export default function InstantQuoteFlow() {
       });
       if (!res.data?.ok || !res.data?.reference_code) throw new Error("Request confirmation unavailable");
       setResult(res.data);
+      trackQuoteStep("quote_step_complete", { province: province || "" });
       setStep(3);
       base44.analytics.track({ eventName: "national_request_submitted", properties: { flow: "instant", province, service: activeService } });
     } catch (err) {
