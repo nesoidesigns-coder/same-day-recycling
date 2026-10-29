@@ -3,6 +3,7 @@ import { checkRateLimit, rateLimitedResponse } from '../../shared/rateLimit.ts';
 import { sendBookingNotifications } from '../../shared/bookingNotify.ts';
 import { isActiveCity } from '../../shared/coverageStatus.ts';
 import { provinceForCity } from '../../shared/canadaTax.ts';
+import { recordTrackingEvent } from '../../shared/tracking.ts';
 
 export default async function(req) {
   try {
@@ -53,7 +54,7 @@ export default async function(req) {
     if (!city || !isActiveCity(city)) {
       return Response.json({
         error: 'service_not_available',
-        message: 'Confirmed direct bookings are only available in active service territories. Submit a nationwide service request and our dispatch team will confirm your local contractor, pricing and pickup window before anything is scheduled.',
+        message: 'Confirmed direct bookings are only available in active service territories. Submit a nationwide service request and our dispatch team will confirm your local contractor, pricing and availability after your request is received.',
       }, { status: 422 });
     }
     // Public tracking code: shown to the customer so they can look up their
@@ -80,6 +81,27 @@ export default async function(req) {
       ...(pickup_location_source && pickup_lat !== null ? { pickup_location_source } : {}),
       ...(Object.keys(access_notes).length ? { access_notes } : {}),
     });
+
+    try {
+      await recordTrackingEvent(base44.asServiceRole, {
+        booking_id: booking.id,
+        reference_code,
+        stage: 'inquiry_received',
+        actor: 'system',
+        source: 'createBooking',
+        note: 'Booking created by customer.' + (sid ? ' Session: ' + sid + '.' : ''),
+      });
+      if (quote_estimate) {
+        await recordTrackingEvent(base44.asServiceRole, {
+          booking_id: booking.id,
+          reference_code,
+          stage: 'quote_approved',
+          actor: 'customer',
+          source: 'createBooking',
+          note: 'Customer booked with quote: ' + quote_estimate,
+        });
+      }
+    } catch (e) { console.error('Tracking event failed:', e.message); }
 
     const notified = await sendBookingNotifications(base44.asServiceRole, {
       name,
