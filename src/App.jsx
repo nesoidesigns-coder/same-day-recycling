@@ -14,15 +14,15 @@ import SearchIndexing from '@/components/seo/SearchIndexing';
 import ExperienceTheme from '@/components/os/ExperienceTheme';
 import { IntelligenceProvider } from '@/lib/intelligenceContext';
 // Add page imports here.
-// Route-level code splitting: only the home page (LCP target) and auth pages
-// load upfront; every other page is fetched on demand.
+// Route-level code splitting: only the home page (LCP target) loads upfront;
+// every other page, including the auth pages, is fetched on demand.
 import ServiceIntelligencePrototype from './pages/ServiceIntelligencePrototype';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 
 const lazyPage = (loader) => lazy(loader);
+const Login = lazyPage(() => import('./pages/Login'));
+const Register = lazyPage(() => import('./pages/Register'));
+const ForgotPassword = lazyPage(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazyPage(() => import('./pages/ResetPassword'));
 const LivingInfrastructureHome = lazyPage(() => import('./pages/LivingInfrastructureHome'));
 const Privacy = lazyPage(() => import('./pages/Privacy'));
 const Terms = lazyPage(() => import('./pages/Terms'));
