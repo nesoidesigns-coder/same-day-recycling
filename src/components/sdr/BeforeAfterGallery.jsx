@@ -49,11 +49,11 @@ export default function BeforeAfterGallery({ service }) {
             <div key={p.before.id || i} className="rounded-2xl border border-slate-100 bg-white overflow-hidden">
               <div className="grid grid-cols-2">
                 <div className="relative">
-                  <Image src={p.before.file_url} alt={p.before.title || "Before pickup"} className="w-full aspect-[4/3]" fittingType="fill" />
+                  <Image src={p.before.file_url} alt={p.before.title || "Before pickup"} className="w-full aspect-[4/3]" fittingType="fill" loading="lazy" decoding="async" />
                   <span className="absolute top-2 left-2 rounded-full bg-[#102B2A]/85 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.15em] text-white">Before</span>
                 </div>
                 <div className="relative">
-                  <Image src={p.after.file_url} alt={p.after.title || "After pickup"} className="w-full aspect-[4/3]" fittingType="fill" />
+                  <Image src={p.after.file_url} alt={p.after.title || "After pickup"} className="w-full aspect-[4/3]" fittingType="fill" loading="lazy" decoding="async" />
                   <span className="absolute top-2 left-2 rounded-full bg-[#187B65] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.15em] text-white">After</span>
                 </div>
               </div>
