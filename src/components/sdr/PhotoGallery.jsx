@@ -63,7 +63,7 @@ export default function PhotoGallery() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {shown.map((p) => (
             <figure key={p.id} className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-100 aspect-[4/3]">
-              <Image src={p.file_url} alt={p.title} className="w-full h-full" fittingType="fill" />
+              <Image src={p.file_url} alt={p.title} className="w-full h-full" fittingType="fill" loading="lazy" decoding="async" />
               <span className="absolute top-3 left-3 rounded-full bg-[#102B2A]/80 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#187B65]">
                 {CAT_LABEL[p.category] || "Trucks"}
               </span>
