@@ -133,7 +133,7 @@ export default function AdminSearchAuthority() {
             <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-slate-500 mb-4">Top search queries (28 days)</h2>
             <Table
               head={["Query", "Clicks", "Impressions", "CTR", "Position"]}
-              rows={data.queries.map((q) => [q.query, num(q.clicks), num(q.impressions), pct(q.ctr), q.position ? `#${q.position}` : "—"])}
+              rows={data.queries.map((q) => [q.key, num(q.clicks), num(q.impressions), pct(q.ctr), q.position ? `#${q.position}` : "—"])}
               empty="No queries with meaningful volume in this window yet."
             />
           </div>
